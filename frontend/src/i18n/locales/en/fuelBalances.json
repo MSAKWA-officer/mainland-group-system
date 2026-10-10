@@ -1,0 +1,80 @@
+{
+  "title": "Fuel balances",
+  "intro": "Fuel money given to drivers that has not been spent yet. A balance is the funding minus the fuel usage recorded against it.",
+  "views": {
+    "funding": "By funding",
+    "vehicle": "By vehicle",
+    "driver": "By driver"
+  },
+  "groupBy": "Group balances by",
+  "stats": {
+    "funded": "Funded",
+    "spent": "Spent",
+    "balance": "Balance (unspent)"
+  },
+  "filters": {
+    "state": "Filter by state",
+    "openOnly": "Money still unspent",
+    "settled": "Fully used",
+    "all": "All fundings",
+    "vehicle": "Filter by vehicle",
+    "allVehicles": "All vehicles",
+    "driver": "Filter by driver",
+    "allDrivers": "All drivers",
+    "search": "Search balances",
+    "searchPlaceholder": "Search funding no, plate, driver",
+    "givenFrom": "Given from",
+    "to": "to"
+  },
+  "heads": {
+    "fundingNo": "Funding no",
+    "givenOn": "Given on",
+    "vehicle": "Vehicle",
+    "driver": "Driver",
+    "funded": "Funded",
+    "spent": "Spent",
+    "balance": "Balance",
+    "litresBought": "Litres bought",
+    "state": "State",
+    "daysUnspent": "Days unspent",
+    "actions": "Actions",
+    "fundings": "Fundings",
+    "withMoneyLeft": "With money left"
+  },
+  "empty": {
+    "filtered": "No balances match your filters.",
+    "none": "No unspent fuel money. Everything given out has been used.",
+    "groupFiltered": "Nothing matches your filters.",
+    "groupNone": "No approved fuel funding yet."
+  },
+  "planned": "planned {{litres}}",
+  "actions": {
+    "view": "View",
+    "recordUsage": "Record usage"
+  },
+  "view": {
+    "fallbackTitle": "Fuel balance",
+    "back": "Back to list",
+    "vehicle": "Vehicle",
+    "driver": "Driver",
+    "purpose": "Purpose",
+    "paidBy": "Paid by",
+    "moneyGivenOn": "Money given on",
+    "litres": "Litres",
+    "litresBought": "{{bought}} bought",
+    "litresBoughtOf": "{{bought}} bought of {{planned}} planned",
+    "lastUsage": "Last usage",
+    "daysUnspent": "Days unspent",
+    "daysUnspentValue": "{{count}} days since the money was given",
+    "usageTitle": "Fuel usage ({{count}})",
+    "usageNo": "Usage no",
+    "date": "Date",
+    "litresCol": "Litres",
+    "amount": "Amount",
+    "pricePerLitre": "Price / L",
+    "odometer": "Odometer",
+    "station": "Station",
+    "receipt": "Receipt",
+    "nothing": "Nothing recorded yet."
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "title": "Idhini",
+  "registered": "{{total}} zimesajiliwa",
+  "newRequest": "+ Ombi Jipya",
+  "empty": "Hakuna maombi bado. Tumia “+ Ombi Jipya” kuunda rasimu, kisha uiwasilishe.",
+  "records": "Rekodi {{total}}",
+  "previous": "Iliyotangulia",
+  "next": "Inayofuata",
+  "more": "Zaidi",
+  "less": "Punguza",
+  "actionsCol": "Vitendo",
+  "cols": {
+    "created": "Imeundwa",
+    "type": "Aina",
+    "requestedBy": "Imeombwa na",
+    "submitted": "Imewasilishwa",
+    "status": "Hali",
+    "decision": "Uamuzi",
+    "requestNote": "Maelezo ya ombi",
+    "decisionNote": "Maelezo ya uamuzi",
+    "executed": "Imetekelezwa",
+    "relatedRecord": "Rekodi inayohusiana"
+  },
+  "actions": {
+    "view": "Angalia",
+    "edit": "Hariri",
+    "submit": "Wasilisha",
+    "cancel": "Ghairi",
+    "approve": "Idhinisha",
+    "reject": "Kataa",
+    "delete": "Futa"
+  },
+  "confirmDelete": "Futa ombi hili kabisa? Ufutaji unabaki kwenye kumbukumbu za ukaguzi.",
+  "rejectPrompt": "Sababu ya kukataa:",
+  "status": {
+    "DRAFT": "Rasimu",
+    "SUBMITTED": "Imewasilishwa",
+    "APPROVED": "Imeidhinishwa",
+    "EXECUTED": "Imetekelezwa",
+    "REJECTED": "Imekataliwa",
+    "CANCELLED": "Imeghairiwa"
+  },
+  "types": {
+    "TEST_NOOP": "Idhini ya majaribio (haina athari kwa biashara)",
+    "SALES_ORDER": "Oda ya mauzo",
+    "CREDIT_SALE": "Mauzo ya mkopo",
+    "STOCK_RECEIVING": "Mapokezi ya stoo",
+    "STOCK_ADJUSTMENT": "Marekebisho ya stoo",
+    "STOCK_REJECT_IN": "Zilizokataliwa ndani (mteja amerudisha)",
+    "STOCK_REJECT_OUT": "Zilizokataliwa nje (kurudisha kwa msambazaji)",
+    "STOCK_EXPIRED": "Kuondoa stoo iliyoisha muda",
+    "STOCK_DAMAGED": "Kuondoa stoo iliyoharibika"
+  },
+  "entities": {
+    "SalesOrder": "Oda ya mauzo",
+    "Sale": "Mauzo",
+    "StockDocument": "Hati ya stoo",
+    "ApprovalRequest": "Ombi la idhini"
+  },
+  "view": {
+    "defaultTitle": "Ombi la idhini",
+    "loading": "Inapakia…",
+    "back": "← Rudi kwenye orodha",
+    "requestedBy": "Imeombwa na",
+    "created": "Imeundwa",
+    "submitted": "Imewasilishwa",
+    "note": "Maelezo",
+    "decision": "Uamuzi",
+    "decisionNote": "Maelezo ya uamuzi",
+    "executed": "Imetekelezwa",
+    "deleted": "Ombi limefutwa."
+  },
+  "form": {
+    "requestType": "Aina ya ombi",
+    "note": "Maelezo",
+    "saving": "Inahifadhi…"
+  },
+  "create": {
+    "title": "Ombi jipya la idhini",
+    "subtitle": "Hakuna kinachotumwa kuidhinishwa hadi uwasilishe rasimu.",
+    "back": "← Rudi kwenye orodha",
+    "saveDraft": "Hifadhi kama rasimu",
+    "saved": "Rasimu imehifadhiwa. Iwasilishe ukiwa tayari."
+  },
+  "edit": {
+    "title": "Hariri ombi la idhini",
+    "subtitle": "Rasimu pekee ndizo zinazoweza kuhaririwa.",
+    "back": "← Rudi",
+    "locked": "Ombi hili ni “{{status}}” na haliwezi kuhaririwa tena.",
+    "saveChanges": "Hifadhi mabadiliko",
+    "updated": "Rasimu imesasishwa."
+  }
+}

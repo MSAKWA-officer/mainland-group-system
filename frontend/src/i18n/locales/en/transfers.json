@@ -1,0 +1,79 @@
+{
+  "status": {
+    "POSTED": "Posted",
+    "VOIDED": "Voided",
+    "ALL": "All"
+  },
+  "list": {
+    "title": "Transfers",
+    "subtitle": "Money moved between your own bank accounts.",
+    "new": "New Transfer",
+    "search": "Search reference or details",
+    "searchAria": "Search transfers",
+    "fromAny": "From: any account",
+    "toAny": "To: any account",
+    "filterStatusAria": "Filter by status",
+    "emptyFiltered": "No transfers match your filters.",
+    "emptyNone": "No transfers yet.",
+    "columns": {
+      "date": "Date",
+      "fromAccount": "From account",
+      "toAccount": "To account",
+      "details": "Details",
+      "amount": "Amount",
+      "doneBy": "Done by",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "void": "Void",
+    "voidPrompt": "Reason for voiding this transfer of {{amount}}?\n(Both sides are voided.)",
+    "voided": "Transfer voided."
+  },
+  "create": {
+    "title": "New transfer",
+    "sub": "The sending account cannot go below zero unless it allows overdraft.",
+    "back": "Back to list",
+    "fromAccount": "From account",
+    "toAccount": "To account",
+    "selectAccount": "Select an account…",
+    "amount": "Amount",
+    "amountCur": "Amount ({{currency}})",
+    "date": "Transfer date",
+    "reference": "Reference",
+    "description": "Description",
+    "hint": "Add a reference or a description (at least one).",
+    "posting": "Posting…",
+    "submit": "Post transfer",
+    "saved": "Transfer posted.",
+    "err": {
+      "sameAccount": "Choose two different accounts",
+      "currencyMismatch": "Cannot transfer between {{from}} and {{to}} accounts.",
+      "amountPositive": "Amount must be greater than 0",
+      "needRefOrDesc": "Add a reference or a description"
+    }
+  },
+  "between": {
+    "title": "Transfer between accounts",
+    "sub": "Both accounts must use the same currency. Voiding either side of a transfer voids both.",
+    "back": "Back to list"
+  },
+  "view": {
+    "fallbackTitle": "Transfer",
+    "back": "Back to list",
+    "amount": "Amount",
+    "from": "From (money out)",
+    "to": "To (money in)",
+    "date": "Date",
+    "reference": "Reference",
+    "description": "Description",
+    "doneBy": "Done by",
+    "recorded": "Recorded",
+    "voidedBy": "Voided by",
+    "voidedOn": "Voided on",
+    "voidReason": "Void reason",
+    "reconciledSuffix": " · reconciled"
+  }
+}

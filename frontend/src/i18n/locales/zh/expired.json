@@ -1,0 +1,64 @@
+{
+  "saving": "保存中…",
+  "registered": "已登记 {{count}} 条",
+  "newWriteOff": "+ 新建报损",
+  "allStatuses": "所有状态",
+  "from": "从",
+  "to": "至",
+  "heads": {
+    "docNo": "单据编号",
+    "date": "日期",
+    "reference": "参考号",
+    "notes": "备注",
+    "lines": "行数",
+    "createdBy": "创建人",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "list": {
+    "title": "过期库存报损",
+    "search": "搜索单据编号或参考号",
+    "empty": "暂无过期库存报损单。"
+  },
+  "create": {
+    "title": "新建过期库存报损",
+    "subtitle": "仅可对按有效期管理的商品报损。报损单提交并获批准后库存才会减少。",
+    "saveDraft": "保存为草稿",
+    "draftSaved": "草稿 {{docNo}} 已保存。准备好后请提交审批。"
+  },
+  "edit": {
+    "title": "编辑过期库存报损",
+    "subtitle": "{{doc}} — 只能编辑您自己的草稿。",
+    "back": "← 返回",
+    "notEditable": "此报损单状态为“{{status}}”或属于他人，无法再编辑。",
+    "saveChanges": "保存更改",
+    "draftUpdated": "草稿已更新。"
+  },
+  "form": {
+    "date": "日期",
+    "reference": "参考号",
+    "notes": "备注",
+    "items": "过期商品",
+    "qty": "报损数量"
+  },
+  "view": {
+    "fallbackTitle": "过期库存报损",
+    "backToList": "← 返回列表",
+    "date": "日期",
+    "reference": "参考号",
+    "notes": "备注",
+    "createdBy": "创建人",
+    "created": "创建时间",
+    "submitted": "提交时间",
+    "decision": "审批结果",
+    "decisionValue": "{{status}}，{{date}}",
+    "decisionNote": "审批备注",
+    "postedToStock": "库存过账时间",
+    "item": "商品",
+    "quantity": "数量",
+    "batch": "批次",
+    "expiry": "有效期",
+    "remarks": "备注",
+    "deleted": "报损单 {{docNo}} 已删除。"
+  }
+}

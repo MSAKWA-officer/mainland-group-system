@@ -1,0 +1,68 @@
+{
+  "list": {
+    "title": "Vifaa vya EFD",
+    "subtitle": "{{total}} vimesajiliwa",
+    "new": "Kifaa Kipya",
+    "search": "Tafuta namba ya mfululizo, jina, TIN au eneo",
+    "searchAria": "Tafuta vifaa",
+    "filterStatusAria": "Chuja kwa hali",
+    "allStatuses": "Hali zote",
+    "emptyFiltered": "Hakuna vifaa vinavyolingana na vichujio vyako.",
+    "emptyNone": "Bado hakuna vifaa vya EFD. Tumia “Kifaa Kipya” kusajili cha kwanza.",
+    "columns": {
+      "serialNo": "Namba ya mfululizo",
+      "name": "Jina",
+      "tin": "TIN",
+      "vrn": "VRN",
+      "location": "Eneo",
+      "receipts": "Risiti",
+      "status": "Hali",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Tazama",
+    "edit": "Hariri",
+    "activate": "Washa",
+    "deactivate": "Zima",
+    "delete": "Futa",
+    "deactivatePrompt": "Sababu ya kuzima “{{name}}”:",
+    "deleteConfirm": "Futa kifaa “{{name}}” kabisa? Hatua hii haiwezi kutenduliwa.",
+    "deleted": "Kifaa kimefutwa."
+  },
+  "form": {
+    "serialNo": "Namba ya mfululizo",
+    "serialTitle": "Herufi, tarakimu na - tu",
+    "serialLocked": "Imefungwa: risiti tayari zimerekodiwa kwenye kifaa hiki.",
+    "name": "Jina",
+    "namePlaceholder": "mf. Kaunta kuu ya duka",
+    "tin": "TIN (namba ya mlipakodi)",
+    "vrn": "VRN (si lazima)",
+    "location": "Eneo (si lazima)",
+    "notes": "Maelezo (si lazima)"
+  },
+  "create": {
+    "title": "Kifaa kipya cha EFD",
+    "sub": "Sajili kifaa cha kodi ili namba zake za risiti ziweze kurekodiwa dhidi ya oda.",
+    "submit": "Hifadhi kifaa",
+    "saved": "Kifaa kimesajiliwa."
+  },
+  "update": {
+    "title": "Hariri kifaa cha EFD",
+    "submit": "Hifadhi mabadiliko",
+    "saved": "Kifaa kimesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Kifaa cha EFD",
+    "serialNo": "Namba ya mfululizo",
+    "name": "Jina",
+    "tin": "TIN",
+    "vrn": "VRN",
+    "location": "Eneo",
+    "receipts": "Risiti zilizorekodiwa",
+    "status": "Hali",
+    "notes": "Maelezo",
+    "created": "Kiliundwa",
+    "updated": "Kilisasishwa mwisho"
+  }
+}

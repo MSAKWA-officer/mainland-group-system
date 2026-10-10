@@ -1,0 +1,58 @@
+{
+  "title": "Stock adjustments",
+  "registered": "{{total}} registered",
+  "search": "Search document no. or reference",
+  "allStatuses": "All statuses",
+  "to": "To",
+  "cols": {
+    "docNo": "Document no.",
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason",
+    "lines": "Lines",
+    "createdBy": "Created by",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "empty": "No adjustments yet.",
+  "newTitle": "New stock adjustment",
+  "newSubtitle": "Stock does not change until the adjustment is submitted and approved.",
+  "saveDraft": "Save as draft",
+  "saving": "Saving…",
+  "saveChanges": "Save changes",
+  "draftSaved": "Draft {{docNo}} saved. Submit it for approval when you are ready.",
+  "draftUpdated": "Draft updated.",
+  "editTitle": "Edit stock adjustment",
+  "editSubtitle": "{{docNo}} — only your own drafts can be edited.",
+  "back": "← Back",
+  "cannotEdit": "This adjustment is {{status}} or belongs to someone else and can no longer be edited.",
+  "deleted": "Adjustment {{docNo}} deleted.",
+  "form": {
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason (required)"
+  },
+  "view": {
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason",
+    "createdBy": "Created by",
+    "created": "Created",
+    "submitted": "Submitted",
+    "decision": "Decision",
+    "decisionNote": "Decision note",
+    "posted": "Posted to stock",
+    "itemsAdjusted": "Items adjusted"
+  },
+  "lineCols": {
+    "item": "Item",
+    "action": "Action",
+    "quantity": "Quantity",
+    "batch": "Batch",
+    "expiry": "Expiry",
+    "unitCost": "Unit cost",
+    "remarks": "Remarks"
+  },
+  "from": "From",
+  "new": "+ New Adjustment"
+}

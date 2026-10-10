@@ -1,0 +1,68 @@
+{
+  "saving": "Inahifadhi…",
+  "registered": "{{count}} zimesajiliwa",
+  "newReturn": "+ Rejesho Jipya",
+  "allStatuses": "Hali zote",
+  "from": "Kuanzia",
+  "to": "Hadi",
+  "heads": {
+    "docNo": "Namba ya hati",
+    "date": "Tarehe",
+    "party": "Msambazaji",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu",
+    "lines": "Mistari",
+    "createdBy": "Imeundwa na",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "create": {
+    "title": "Rejesho jipya kwa msambazaji",
+    "subtitle": "Stoo haipungui hadi rejesho litakapowasilishwa na kuidhinishwa.",
+    "saveDraft": "Hifadhi kama rasimu",
+    "draftSaved": "Rasimu {{docNo}} imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari."
+  },
+  "edit": {
+    "title": "Hariri rejesho kwa msambazaji",
+    "subtitle": "{{doc}} — ni rasimu zako mwenyewe tu zinazoweza kuhaririwa.",
+    "back": "← Rudi",
+    "notEditable": "Rejesho hili liko katika hali ya {{status}} au ni la mtu mwingine, hivyo haliwezi kuhaririwa tena.",
+    "saveChanges": "Hifadhi mabadiliko",
+    "draftUpdated": "Rasimu imesasishwa."
+  },
+  "form": {
+    "dateReturned": "Tarehe ya kurejesha",
+    "party": "Msambazaji",
+    "reference": "Kumbukumbu (namba ya ankara ya ununuzi au hati ya kupokelea mzigo)",
+    "reason": "Sababu ya kurejesha (lazima)",
+    "itemsReturned": "Bidhaa zilizorejeshwa",
+    "qtyReturned": "Idadi iliyorejeshwa"
+  },
+  "view": {
+    "fallbackTitle": "Rejesho kwa msambazaji",
+    "backToList": "← Rudi kwenye orodha",
+    "dateReturned": "Tarehe ya kurejesha",
+    "party": "Msambazaji",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu ya kurejesha",
+    "createdBy": "Imeundwa na",
+    "created": "Imeundwa",
+    "submitted": "Imewasilishwa",
+    "decision": "Uamuzi",
+    "decisionValue": "{{status}}, {{date}}",
+    "decisionNote": "Maelezo ya uamuzi",
+    "postedToStock": "Imewekwa kwenye stoo",
+    "item": "Bidhaa",
+    "quantity": "Idadi",
+    "batch": "Bechi",
+    "expiry": "Muda wa kuisha",
+    "unitCost": "Gharama kwa kipimo",
+    "remarks": "Maelezo",
+    "deleted": "Rejesho {{docNo}} limefutwa."
+  },
+  "list": {
+    "title": "Reject out (marejesho kwa wasambazaji)",
+    "search": "Tafuta namba ya hati, msambazaji au kumbukumbu",
+    "empty": "Hakuna marejesho kwa wasambazaji bado."
+  }
+}

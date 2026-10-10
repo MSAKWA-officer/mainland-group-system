@@ -1,0 +1,107 @@
+{
+  "status": {
+    "ACTIVE": "有效",
+    "VOIDED": "已作废",
+    "ALL": "所有状态"
+  },
+  "fuelType": {
+    "DIESEL": "柴油",
+    "PETROL": "汽油",
+    "GAS": "燃气",
+    "OTHER": "其他"
+  },
+  "fundingLeft": "{{no}} · {{plate}} · {{driver}} · 剩余 {{amount}}",
+  "list": {
+    "title": "燃油使用",
+    "subtitle": "司机使用已批准的燃油拨款实际购买的燃油。",
+    "new": "记录使用",
+    "stats": {
+      "spent": "已支出（有效，当前筛选）",
+      "litres": "升数（有效，当前筛选）",
+      "records": "记录数"
+    },
+    "search": "搜索使用编号、车牌、司机、加油站、收据",
+    "searchAria": "搜索燃油使用",
+    "filterStatusAria": "按状态筛选",
+    "emptyFiltered": "没有符合筛选条件的燃油使用记录。",
+    "emptyNone": "暂无燃油使用记录。请使用“记录使用”添加第一条。",
+    "columns": {
+      "usageNo": "使用编号",
+      "date": "日期",
+      "vehicle": "车辆",
+      "driver": "司机",
+      "litres": "升数",
+      "amount": "金额",
+      "pricePerLitre": "单价 / 升",
+      "odometer": "里程表",
+      "funding": "拨款",
+      "status": "状态",
+      "recordedBy": "记录人",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "void": "作废",
+    "voidPrompt": "请输入作废 {{no}} 的原因。",
+    "voided": "燃油使用记录已作废。"
+  },
+  "form": {
+    "left": "此拨款剩余金额：{{amount}}",
+    "over": " —— 此金额超过了剩余金额。",
+    "date": "日期",
+    "litres": "升数",
+    "amount": "已付金额",
+    "price": "每升单价：{{price}}",
+    "priceHint": "每升单价由 金额 ÷ 升数 计算得出。",
+    "odometer": "里程表读数，公里（可选）",
+    "fullTank": "已加满油箱（计算每升公里数时需要）",
+    "station": "加油站（可选）",
+    "receiptNo": "收据号码（可选）",
+    "notes": "备注（可选）"
+  },
+  "create": {
+    "title": "记录燃油使用",
+    "sub": "录入司机使用燃油拨款资金购买的内容。",
+    "back": "返回列表",
+    "funding": "燃油拨款",
+    "selectFunding": "选择拨款…",
+    "hint": "仅列出已批准且仍有剩余资金的拨款。",
+    "chooseFunding": "请选择购买此燃油所用的拨款",
+    "saving": "正在保存…",
+    "submit": "记录使用",
+    "saved": "燃油使用已记录。"
+  },
+  "update": {
+    "title": "编辑燃油使用",
+    "back": "返回",
+    "locked": "此使用记录{{status}}，无法再编辑。",
+    "saving": "正在保存…",
+    "submit": "保存更改",
+    "saved": "燃油使用已更新。"
+  },
+  "view": {
+    "fallbackTitle": "燃油使用",
+    "back": "返回列表",
+    "amountPaid": "已付金额",
+    "litres": "升数",
+    "pricePerLitre": "每升单价",
+    "funding": "燃油拨款",
+    "vehicle": "车辆",
+    "driver": "司机",
+    "date": "日期",
+    "odometer": "里程表",
+    "tankFilled": "已加满油箱",
+    "yes": "是",
+    "partFill": "否（部分加油）",
+    "station": "加油站",
+    "receiptNo": "收据号码",
+    "notes": "备注",
+    "recordedBy": "记录人",
+    "recorded": "记录时间",
+    "voidedBy": "作废人",
+    "voidedOn": "作废时间",
+    "voidReason": "作废原因"
+  }
+}

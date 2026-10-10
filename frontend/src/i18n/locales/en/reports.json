@@ -1,0 +1,97 @@
+{
+  "title": "Stock reports",
+  "subtitle": "A live summary of your stock and the reports behind it.",
+  "countWithin": "Count batches expiring within",
+  "days": "days",
+  "tiles": {
+    "activeItems": "Active items",
+    "totalUnits": "Total units in stock",
+    "outOfStock": "Out of stock",
+    "lowStock": "Low stock",
+    "expiredBatches": "Expired batches",
+    "expiringWithin": "Expiring within {{days}} days",
+    "pendingApprovals": "Documents awaiting approval",
+    "stockValue": "Stock value (at cost)"
+  },
+  "list": {
+    "report": "Report",
+    "whatItShows": "What it shows",
+    "actions": "Actions",
+    "viewReport": "View report"
+  },
+  "defs": {
+    "stock-on-hand": {
+      "title": "Stock on hand",
+      "desc": "Current quantity of every active item, by category."
+    },
+    "low-stock": {
+      "title": "Low stock",
+      "desc": "Items at or below their reorder level, with the shortfall."
+    },
+    "expiry": {
+      "title": "Expiry",
+      "desc": "Batches that are expired or expiring soon."
+    },
+    "movements": {
+      "title": "Movement summary",
+      "desc": "Stock in and out over a date range, by type or by item."
+    },
+    "write-offs": {
+      "title": "Write-offs and losses",
+      "desc": "Stock lost to expiry, damage, supplier returns and negative adjustments."
+    },
+    "valuation": {
+      "title": "Stock valuation",
+      "desc": "Stock value by category at cost price."
+    }
+  },
+  "view": {
+    "backToReports": "← Back to reports",
+    "noData": "No data for these filters.",
+    "from": "From",
+    "to": "To",
+    "leaveEmpty": "Leave empty for the last 30 days.",
+    "searchPlaceholder": "Search name or SKU",
+    "allCategories": "All categories",
+    "includeZero": "Include items with zero stock",
+    "expiringWithin": "Expiring within",
+    "daysSuffix": "days",
+    "includeExpired": "Include already expired",
+    "groupByType": "Group by type",
+    "groupByItem": "Group by item",
+    "byType": "By type",
+    "topLost": "Top 20 items by quantity lost",
+    "totalValue": "Total stock value: {{value}}",
+    "emptyLow": "No items are below their reorder level.",
+    "emptyExpiry": "No batches are expired or expiring in this window."
+  },
+  "cols": {
+    "sku": "SKU",
+    "item": "Item",
+    "category": "Category",
+    "unit": "Unit",
+    "quantity": "Quantity",
+    "reorderLevel": "Reorder level",
+    "sellingPrice": "Selling price",
+    "costPrice": "Cost price",
+    "stockValue": "Stock value",
+    "shortfall": "Shortfall",
+    "batch": "Batch",
+    "expiryDate": "Expiry date",
+    "daysLeft": "Days left",
+    "status": "Status",
+    "qtyIn": "Quantity in",
+    "qtyOut": "Quantity out",
+    "balance": "Current balance",
+    "type": "Type",
+    "direction": "Direction",
+    "movements": "Movements",
+    "value": "Value",
+    "items": "Items",
+    "valueAtCost": "Value (at cost)"
+  },
+  "expiryStatus": {
+    "EXPIRED": "Expired",
+    "EXPIRING": "Expiring"
+  }
+}

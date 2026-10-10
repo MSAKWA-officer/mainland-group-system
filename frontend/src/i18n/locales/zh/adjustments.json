@@ -1,0 +1,58 @@
+{
+  "title": "库存调整",
+  "registered": "已登记 {{total}} 条",
+  "search": "搜索单据编号或参考号",
+  "allStatuses": "所有状态",
+  "to": "至",
+  "cols": {
+    "docNo": "单据编号",
+    "date": "日期",
+    "reference": "参考号",
+    "reason": "原因",
+    "lines": "行数",
+    "createdBy": "创建人",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "empty": "暂无调整单据。",
+  "newTitle": "新建库存调整",
+  "newSubtitle": "调整单提交并获批准后，库存才会变动。",
+  "saveDraft": "保存为草稿",
+  "saving": "保存中…",
+  "saveChanges": "保存更改",
+  "draftSaved": "草稿 {{docNo}} 已保存。准备好后请提交审批。",
+  "draftUpdated": "草稿已更新。",
+  "editTitle": "编辑库存调整",
+  "editSubtitle": "{{docNo}} — 只能编辑您自己的草稿。",
+  "back": "← 返回",
+  "cannotEdit": "此调整单状态为{{status}}或属于他人，无法再编辑。",
+  "deleted": "调整单 {{docNo}} 已删除。",
+  "form": {
+    "date": "日期",
+    "reference": "参考号",
+    "reason": "原因（必填）"
+  },
+  "view": {
+    "date": "日期",
+    "reference": "参考号",
+    "reason": "原因",
+    "createdBy": "创建人",
+    "created": "创建时间",
+    "submitted": "提交时间",
+    "decision": "审批结果",
+    "decisionNote": "审批意见",
+    "posted": "入库时间",
+    "itemsAdjusted": "调整商品"
+  },
+  "lineCols": {
+    "item": "商品",
+    "action": "操作",
+    "quantity": "数量",
+    "batch": "批次",
+    "expiry": "到期日",
+    "unitCost": "单位成本",
+    "remarks": "备注"
+  },
+  "from": "从",
+  "new": "+ 新建调整"
+}

@@ -1,0 +1,87 @@
+{
+  "status": {
+    "ACTIVE": "Inatumika",
+    "INACTIVE": "Haitumiki"
+  },
+  "list": {
+    "title": "Benki",
+    "subtitle": "{{total}} zimesajiliwa",
+    "new": "Benki Mpya",
+    "search": "Tafuta jina, msimbo au SWIFT",
+    "searchAria": "Tafuta benki",
+    "filterStatusAria": "Chuja kwa hali",
+    "allStatuses": "Hali zote",
+    "emptyFiltered": "Hakuna benki zinazolingana na vichujio vyako.",
+    "emptyNone": "Bado hakuna benki. Tumia “Benki Mpya” kusajili ya kwanza.",
+    "columns": {
+      "code": "Msimbo",
+      "name": "Jina",
+      "shortName": "Jina fupi",
+      "swift": "SWIFT",
+      "country": "Nchi",
+      "accounts": "Akaunti",
+      "status": "Hali",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Tazama",
+    "edit": "Hariri",
+    "deactivate": "Zima",
+    "activate": "Washa",
+    "delete": "Futa",
+    "deactivatePrompt": "Sababu ya kuzima “{{name}}”:",
+    "deleteConfirm": "Futa benki “{{name}}” moja kwa moja? Hatua hii haiwezi kutenduliwa.",
+    "deleted": "Benki imefutwa."
+  },
+  "form": {
+    "newTitle": "Benki mpya",
+    "editTitle": "Hariri benki",
+    "newSub": "Sajili benki ili akaunti ziweze kufunguliwa chini yake. Msimbo wa benki unatengenezwa kiotomatiki.",
+    "back": "Rudi",
+    "backToList": "Rudi kwenye orodha",
+    "name": "Jina la benki",
+    "namePlaceholder": "mf. CRDB Bank PLC",
+    "shortName": "Jina fupi (si lazima)",
+    "shortNamePlaceholder": "mf. CRDB",
+    "swift": "SWIFT / BIC (si lazima)",
+    "swiftTitle": "Herufi 8 au 11",
+    "country": "Nchi (msimbo wa herufi 2)",
+    "countryTitle": "mf. TZ",
+    "phone": "Simu (si lazima)",
+    "phoneTitle": "Tarakimu, nafasi, + ( ) -",
+    "website": "Tovuti (si lazima)",
+    "notes": "Maelezo (si lazima)",
+    "saving": "Inahifadhi…",
+    "saveChanges": "Hifadhi mabadiliko",
+    "saveNew": "Hifadhi benki",
+    "updated": "Benki imesasishwa.",
+    "created": "Benki imesajiliwa."
+  },
+  "view": {
+    "fallbackTitle": "Benki",
+    "back": "Rudi kwenye orodha",
+    "code": "Msimbo wa benki",
+    "name": "Jina",
+    "shortName": "Jina fupi",
+    "swift": "SWIFT / BIC",
+    "country": "Nchi",
+    "phone": "Simu",
+    "website": "Tovuti",
+    "accounts": "Akaunti",
+    "status": "Hali",
+    "notes": "Maelezo",
+    "created": "Iliundwa",
+    "updated": "Ilisasishwa mwisho",
+    "accountsTitle": "Akaunti za benki hii",
+    "newAccount": "Akaunti mpya",
+    "noAccounts": "Bado hakuna akaunti chini ya benki hii.",
+    "cols": {
+      "accountNo": "Namba ya akaunti",
+      "accountName": "Jina la akaunti",
+      "type": "Aina",
+      "currency": "Sarafu",
+      "status": "Hali"
+    }
+  }
+}

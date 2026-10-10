@@ -1,0 +1,102 @@
+{
+  "scope": {
+    "ALL": "All items",
+    "CATEGORY": "Category",
+    "ITEM": "Single item"
+  },
+  "state": {
+    "INACTIVE": "Inactive",
+    "EXPIRED": "Expired",
+    "SCHEDULED": "Scheduled",
+    "ACTIVE": "Active"
+  },
+  "fallback": {
+    "item": "Item",
+    "category": "Category"
+  },
+  "anyCustomer": "Any customer",
+  "noEnd": "No end",
+  "list": {
+    "title": "Discounts",
+    "subtitle": "{{total}} defined",
+    "new": "New Discount",
+    "search": "Search name or code",
+    "searchAria": "Search discounts",
+    "filterScopeAria": "Filter by scope",
+    "allScopes": "All scopes",
+    "filterStatusAria": "Filter by status",
+    "allStatuses": "All statuses",
+    "usable": "Usable today",
+    "active": "Active",
+    "inactive": "Inactive",
+    "emptyFiltered": "No discounts match your filters.",
+    "emptyNone": "No discounts yet. Use “New Discount” to add the first one.",
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "percent": "Percent",
+      "appliesTo": "Applies to",
+      "customer": "Customer",
+      "minQty": "Min qty",
+      "valid": "Valid",
+      "used": "Used",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "delete": "Delete",
+    "deactivatePrompt": "Reason for deactivating “{{name}}”:",
+    "deleteConfirm": "Delete the discount “{{name}}” permanently? This cannot be undone.",
+    "deleted": "Discount deleted."
+  },
+  "form": {
+    "newTitle": "New discount",
+    "editTitle": "Edit discount",
+    "newSub": "Define a ready-made discount that can be used on sales order lines.",
+    "back": "Back",
+    "backToList": "Back to list",
+    "name": "Name",
+    "percent": "Percent (%)",
+    "description": "Description (optional)",
+    "appliesTo": "Applies to",
+    "minQty": "Minimum quantity",
+    "category": "Category",
+    "chooseCategory": "Choose a category",
+    "item": "Item",
+    "chooseItem": "Choose an item",
+    "customer": "Only for one customer (optional)",
+    "anyCustomerPlaceholder": "Any customer",
+    "validFrom": "Valid from",
+    "validTo": "Valid to (optional)",
+    "saveChanges": "Save changes",
+    "saveNew": "Save discount",
+    "updated": "Discount updated.",
+    "created": "Discount created.",
+    "saving": "Saving…"
+  },
+  "view": {
+    "fallbackTitle": "Discount",
+    "code": "Code",
+    "name": "Name",
+    "description": "Description",
+    "percent": "Percent",
+    "scope": "Scope",
+    "category": "Category",
+    "item": "Item",
+    "customer": "Customer",
+    "minQty": "Minimum quantity",
+    "none": "None",
+    "validFrom": "Valid from",
+    "validTo": "Valid to",
+    "noEndDate": "No end date",
+    "used": "Used on order lines",
+    "status": "Status",
+    "created": "Created",
+    "updated": "Last updated"
+  }
+}

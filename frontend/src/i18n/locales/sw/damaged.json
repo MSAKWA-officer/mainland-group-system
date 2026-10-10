@@ -1,0 +1,64 @@
+{
+  "saving": "Inahifadhi…",
+  "registered": "Zilizosajiliwa: {{count}}",
+  "newWriteOff": "+ Uondoaji Mpya",
+  "allStatuses": "Hali zote",
+  "from": "Kuanzia",
+  "to": "Hadi",
+  "heads": {
+    "docNo": "Namba ya hati",
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu",
+    "lines": "Mistari",
+    "createdBy": "Imeundwa na",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "list": {
+    "title": "Uondoaji wa stoo iliyoharibika",
+    "search": "Tafuta namba ya hati au kumbukumbu",
+    "empty": "Bado hakuna uondoaji wa stoo iliyoharibika."
+  },
+  "create": {
+    "title": "Uondoaji mpya wa stoo iliyoharibika",
+    "subtitle": "Stoo haipungui hadi uondoaji utakapowasilishwa na kuidhinishwa.",
+    "saveDraft": "Hifadhi kama rasimu",
+    "draftSaved": "Rasimu {{docNo}} imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari."
+  },
+  "edit": {
+    "title": "Hariri uondoaji wa stoo iliyoharibika",
+    "subtitle": "{{doc}} — ni rasimu zako mwenyewe tu zinazoweza kuhaririwa.",
+    "back": "← Rudi",
+    "notEditable": "Uondoaji huu uko katika hali ya {{status}} au ni wa mtu mwingine, hivyo hauwezi kuhaririwa tena.",
+    "saveChanges": "Hifadhi mabadiliko",
+    "draftUpdated": "Rasimu imesasishwa."
+  },
+  "form": {
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu / maelezo ya uharibifu (lazima)",
+    "items": "Bidhaa zilizoharibika",
+    "qty": "Idadi iliyoharibika"
+  },
+  "view": {
+    "fallbackTitle": "Uondoaji wa stoo iliyoharibika",
+    "backToList": "← Rudi kwenye orodha",
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu",
+    "createdBy": "Imeundwa na",
+    "created": "Imeundwa",
+    "submitted": "Imewasilishwa",
+    "decision": "Uamuzi",
+    "decisionValue": "{{status}}, {{date}}",
+    "decisionNote": "Maelezo ya uamuzi",
+    "postedToStock": "Imewekwa kwenye stoo",
+    "item": "Bidhaa",
+    "quantity": "Idadi",
+    "batch": "Bechi",
+    "expiry": "Muda wa kuisha",
+    "remarks": "Maelezo",
+    "deleted": "Uondoaji {{docNo}} umefutwa."
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "title": "Stock",
+  "subtitle": "Stock changes only through approved adjustments.",
+  "newAdjustment": "+ New Adjustment",
+  "tabs": {
+    "levels": "Stock levels",
+    "adjustments": "Adjustments"
+  },
+  "level": {
+    "in": "In stock",
+    "low": "Low stock",
+    "out": "Out of stock"
+  },
+  "filters": {
+    "searchLevels": "Search name, SKU or barcode",
+    "allCategories": "All categories",
+    "allLevels": "All levels",
+    "searchAdj": "Search document no. or reference",
+    "allStatuses": "All statuses"
+  },
+  "levelsCols": {
+    "sku": "SKU",
+    "item": "Item",
+    "category": "Category",
+    "unit": "Unit",
+    "inStock": "In stock",
+    "reorder": "Reorder level",
+    "level": "Level",
+    "actions": "Actions"
+  },
+  "adjCols": {
+    "docNo": "Document no.",
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason",
+    "lines": "Lines",
+    "createdBy": "Created by",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "empty": {
+    "levels": "No stock records found.",
+    "adjustments": "No adjustments yet."
+  },
+  "rowActions": {
+    "viewItem": "View item and batches",
+    "adjustStock": "Adjust stock"
+  },
+  "lines": {
+    "itemsToAdjust": "Items to adjust",
+    "searchItems": "Search items by name, SKU or barcode",
+    "item": "Item",
+    "selectItem": "Select item",
+    "optionAdjust": "{{sku}} — {{name}} ({{qty}} {{unit}})",
+    "optionOut": "{{sku}} — {{name}} ({{qty}} {{unit}} in stock)",
+    "action": "Action",
+    "addStock": "Add stock (+)",
+    "removeStock": "Remove stock (−)",
+    "quantity": "Quantity",
+    "quantityUnit": "{{label}} ({{unit}})",
+    "batchNumber": "Batch number",
+    "expiryDate": "Expiry date",
+    "batch": "Batch",
+    "selectBatch": "Select batch",
+    "batchOption": "{{batchNo}} — expires {{date}} — {{qty}} left",
+    "batchOptionExpired": "{{batchNo}} — expires {{date}} (expired) — {{qty}} left",
+    "unitCost": "Unit cost",
+    "remarks": "Remarks",
+    "removeLine": "Remove line",
+    "addAnother": "Add another item"
+  },
+  "create": {
+    "title": "New stock adjustment",
+    "subtitle": "Stock does not change until the adjustment is submitted and approved.",
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason (required)",
+    "saveDraft": "Save as draft",
+    "saving": "Saving…",
+    "saved": "Draft {{docNo}} saved. Submit it for approval when you are ready."
+  },
+  "update": {
+    "title": "Edit stock adjustment",
+    "subtitle": "{{docNo}} — only your own drafts can be edited.",
+    "back": "← Back",
+    "notEditable": "This adjustment is {{status}} or belongs to someone else and can no longer be edited.",
+    "saveChanges": "Save changes",
+    "updated": "Draft updated."
+  },
+  "view": {
+    "fallbackTitle": "Stock adjustment",
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason",
+    "createdBy": "Created by",
+    "created": "Created",
+    "submitted": "Submitted",
+    "decision": "Decision",
+    "decisionNote": "Decision note",
+    "posted": "Posted to stock",
+    "items": "Items",
+    "cols": {
+      "item": "Item",
+      "action": "Action",
+      "quantity": "Quantity",
+      "batch": "Batch",
+      "expiry": "Expiry",
+      "unitCost": "Unit cost",
+      "remarks": "Remarks"
+    },
+    "deleted": "Adjustment {{docNo}} deleted."
+  }
+}

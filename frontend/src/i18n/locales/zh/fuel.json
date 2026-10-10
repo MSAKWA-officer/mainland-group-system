@@ -1,0 +1,25 @@
+{
+  "state": {
+    "UNUSED": "尚未使用",
+    "PARTIAL": "部分使用",
+    "SETTLED": "已用完",
+    "ACTIVE": "有效",
+    "VOIDED": "已作废",
+    "INACTIVE": "未启用",
+    "PENDING": "等待审批",
+    "APPROVED": "已批准",
+    "REJECTED": "已驳回"
+  },
+  "fuelType": {
+    "DIESEL": "柴油",
+    "PETROL": "汽油",
+    "GAS": "燃气",
+    "OTHER": "其他"
+  },
+  "unit": {
+    "litres": "{{value}} 升",
+    "km": "{{value}} 公里",
+    "days_one": "{{count}} 天",
+    "days_other": "{{count}} 天"
+  }
+}

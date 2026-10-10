@@ -1,0 +1,131 @@
+{
+  "category": {
+    "RENT": "Kodi ya pango",
+    "UTILITIES": "Huduma (maji, umeme)",
+    "SALARIES": "Mishahara",
+    "TRANSPORT": "Usafiri",
+    "FUEL": "Mafuta",
+    "MARKETING": "Masoko",
+    "MAINTENANCE": "Matengenezo",
+    "OFFICE": "Ofisi",
+    "TAXES": "Kodi",
+    "BANK_CHARGES": "Ada za benki",
+    "OTHER": "Nyingine"
+  },
+  "status": {
+    "PENDING": "Inasubiri idhini",
+    "APPROVED": "Imeidhinishwa",
+    "REJECTED": "Imekataliwa",
+    "VOIDED": "Imebatilishwa",
+    "ALL": "Hali zote"
+  },
+  "payStatus": {
+    "UNPAID": "Haijalipwa",
+    "PARTIAL": "Imelipwa kidogo",
+    "PAID": "Imelipwa"
+  },
+  "list": {
+    "title": "Matumizi",
+    "subtitle": "Gharama ambazo biashara imetumia. Pesa hutoka tu pale malipo yanapofanywa dhidi ya matumizi yaliyoidhinishwa.",
+    "new": "Matumizi Mapya",
+    "stats": {
+      "approvedFilter": "Yaliyoidhinishwa (kichujio hiki)",
+      "approvedPeriod": "Yaliyoidhinishwa kwa kipindi",
+      "records": "Rekodi"
+    },
+    "byCategory": "Kwa kategoria:",
+    "search": "Tafuta namba ya matumizi, maelezo, mlipwaji",
+    "searchAria": "Tafuta matumizi",
+    "allCategories": "Kategoria zote",
+    "filterCategoryAria": "Chuja kwa kategoria",
+    "filterStatusAria": "Chuja kwa hali",
+    "filterPaymentAria": "Chuja kwa malipo",
+    "anyPayment": "Hali yoyote ya malipo",
+    "emptyFiltered": "Hakuna matumizi yanayolingana na vichujio vyako.",
+    "emptyNone": "Bado hakuna matumizi. Tumia “Matumizi Mapya” kuwasilisha la kwanza.",
+    "to": "Kwa: {{payee}}",
+    "columns": {
+      "expenseNo": "Namba ya matumizi",
+      "date": "Tarehe",
+      "category": "Kategoria",
+      "description": "Maelezo",
+      "amount": "Kiasi",
+      "paid": "Kilicholipwa",
+      "status": "Hali",
+      "submittedBy": "Aliyewasilisha",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Tazama",
+    "edit": "Hariri",
+    "approve": "Idhinisha",
+    "reject": "Kataa",
+    "pay": "Lipa",
+    "void": "Batilisha",
+    "approveConfirm": "Idhinisha {{no}} kwa {{amount}}?",
+    "rejectPrompt": "Sababu ya kukataa {{no}}?",
+    "voidPrompt": "Sababu ya kubatilisha {{no}}?",
+    "approved": "Matumizi yameidhinishwa.",
+    "rejected": "Matumizi yamekataliwa.",
+    "voided": "Matumizi yamebatilishwa."
+  },
+  "form": {
+    "category": "Kategoria",
+    "amount": "Kiasi",
+    "description": "Maelezo",
+    "descriptionPlaceholder": "Matumizi haya ni ya nini?",
+    "payee": "Mlipwaji (si lazima)",
+    "payeePlaceholder": "Nani atalipwa",
+    "reference": "Ankara / kumbukumbu (si lazima)",
+    "expenseDate": "Tarehe ya matumizi",
+    "notes": "Maelezo ya ziada (si lazima)"
+  },
+  "create": {
+    "title": "Matumizi mapya",
+    "sub": "Wasilisha gharama ili iidhinishwe. Ikishaidhinishwa inaweza kulipwa.",
+    "back": "Rudi kwenye orodha",
+    "saving": "Inahifadhi…",
+    "submit": "Wasilisha matumizi",
+    "saved": "Matumizi yamewasilishwa kwa idhini."
+  },
+  "update": {
+    "title": "Hariri matumizi",
+    "back": "Rudi",
+    "locked": "Matumizi haya {{status}} na hayawezi tena kuhaririwa.",
+    "saving": "Inahifadhi…",
+    "submit": "Hifadhi mabadiliko",
+    "saved": "Matumizi yamesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Matumizi",
+    "back": "Rudi kwenye orodha",
+    "amount": "Kiasi",
+    "paid": "Kilicholipwa",
+    "stillToPay": "Kinachobaki kulipwa",
+    "category": "Kategoria",
+    "description": "Maelezo",
+    "payee": "Mlipwaji",
+    "reference": "Kumbukumbu",
+    "expenseDate": "Tarehe ya matumizi",
+    "notes": "Maelezo ya ziada",
+    "submittedBy": "Aliyewasilisha",
+    "submitted": "Yaliwasilishwa",
+    "approvedBy": "Aliyeidhinisha",
+    "rejectedBy": "Aliyekataa",
+    "decidedOn": "Uamuzi ulifanyika",
+    "decisionNote": "Maelezo ya uamuzi",
+    "voidedBy": "Yalibatilishwa na",
+    "voidedOn": "Yalibatilishwa tarehe",
+    "voidReason": "Sababu ya kubatilisha",
+    "paymentsTitle": "Malipo",
+    "cols": {
+      "paymentNo": "Namba ya malipo",
+      "date": "Tarehe",
+      "method": "Njia",
+      "amount": "Kiasi",
+      "status": "Hali"
+    },
+    "noPayments": "Bado hakuna malipo yaliyofanywa."
+  }
+}

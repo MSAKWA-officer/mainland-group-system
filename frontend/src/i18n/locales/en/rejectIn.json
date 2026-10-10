@@ -1,0 +1,79 @@
+{
+  "saving": "Saving…",
+  "registered": "{{count}} registered",
+  "newReturn": "+ New Return",
+  "allStatuses": "All statuses",
+  "from": "From",
+  "to": "To",
+  "heads": {
+    "docNo": "Document no.",
+    "date": "Date",
+    "party": "Customer",
+    "reference": "Reference",
+    "reason": "Reason",
+    "lines": "Lines",
+    "createdBy": "Created by",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "create": {
+    "title": "New customer return",
+    "subtitle": "Stock does not increase until the return is submitted and approved.",
+    "saveDraft": "Save as draft",
+    "draftSaved": "Draft {{docNo}} saved. Submit it for approval when you are ready."
+  },
+  "edit": {
+    "title": "Edit customer return",
+    "subtitle": "{{doc}} — only your own drafts can be edited.",
+    "back": "← Back",
+    "notEditable": "This return is {{status}} or belongs to someone else and can no longer be edited.",
+    "saveChanges": "Save changes",
+    "draftUpdated": "Draft updated."
+  },
+  "form": {
+    "dateReturned": "Date returned",
+    "party": "Customer",
+    "reference": "Reference (sales invoice or credit note no.)",
+    "reason": "Reason for return (required)",
+    "itemsReturned": "Items returned",
+    "qtyReturned": "Quantity returned",
+    "item": "Item",
+    "selectItem": "Select item",
+    "itemOption": "{{sku}} — {{name}} ({{qty}} {{unit}} in stock)",
+    "qtyReturnedUnit": "Quantity returned ({{unit}})",
+    "unitCost": "Unit cost",
+    "batchNo": "Batch number",
+    "expiryDate": "Expiry date",
+    "remarks": "Remarks",
+    "removeLine": "Remove line",
+    "searchItems": "Search items by name, SKU or barcode",
+    "addItem": "Add another item"
+  },
+  "view": {
+    "fallbackTitle": "Customer return",
+    "backToList": "← Back to list",
+    "dateReturned": "Date returned",
+    "party": "Customer",
+    "reference": "Reference",
+    "reason": "Reason for return",
+    "createdBy": "Created by",
+    "created": "Created",
+    "submitted": "Submitted",
+    "decision": "Decision",
+    "decisionValue": "{{status}}, {{date}}",
+    "decisionNote": "Decision note",
+    "postedToStock": "Posted to stock",
+    "item": "Item",
+    "quantity": "Quantity",
+    "batch": "Batch",
+    "expiry": "Expiry",
+    "unitCost": "Unit cost",
+    "remarks": "Remarks",
+    "deleted": "Return {{docNo}} deleted."
+  },
+  "list": {
+    "title": "Reject in (customer returns)",
+    "search": "Search document no., customer or reference",
+    "empty": "No customer returns yet."
+  }
+}

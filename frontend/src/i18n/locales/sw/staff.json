@@ -1,0 +1,88 @@
+{
+  "title": "Wafanyakazi",
+  "registered": "{{count}} wamesajiliwa. Mwongeze mtu hapa kwanza, kisha mpe akaunti kwenye Usimamizi wa watumiaji.",
+  "add": "Ongeza mfanyakazi",
+  "search": "Tafuta mfanyakazi",
+  "searchPlaceholder": "Tafuta jina, msimbo, simu au wadhifa",
+  "filterAccount": "Chuja kwa akaunti",
+  "allPeople": "Watu wote",
+  "noAccountYet": "Bado hana akaunti",
+  "hasAccount": "Ana akaunti",
+  "filterStatus": "Chuja kwa hali",
+  "allStatuses": "Hali zote",
+  "active": "Hai",
+  "inactive": "Si hai",
+  "noAccount": "Hana akaunti",
+  "heads": {
+    "code": "Msimbo",
+    "name": "Jina",
+    "position": "Wadhifa",
+    "phone": "Simu",
+    "account": "Akaunti ya kuingia",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "empty": {
+    "filtered": "Hakuna mfanyakazi anayelingana na vichujio vyako.",
+    "none": "Bado hakuna wafanyakazi. Tumia “Ongeza mfanyakazi” kusajili mtu wa kwanza."
+  },
+  "actions": {
+    "view": "Tazama",
+    "createAccount": "Tengeneza akaunti",
+    "edit": "Hariri",
+    "deactivate": "Zima",
+    "activate": "Washa",
+    "delete": "Futa"
+  },
+  "prompts": {
+    "deactivate": "Sababu ya kumzima “{{name}}”:",
+    "delete": "Je, kumfuta “{{name}}” moja kwa moja? Hili haliwezi kutenduliwa."
+  },
+  "msg": {
+    "deleted": "Mfanyakazi amefutwa.",
+    "added": "Mfanyakazi ameongezwa. Sasa unaweza kumpa akaunti kwenye Usimamizi wa watumiaji.",
+    "updated": "Taarifa za mfanyakazi zimesasishwa."
+  },
+  "form": {
+    "addTitle": "Ongeza mfanyakazi",
+    "editTitle": "Hariri mfanyakazi",
+    "addSub": "Msajili mtu kwanza. Hatapata akaunti ya kuingia hadi Mmiliki amtengenezee.",
+    "back": "Rudi kwenye orodha",
+    "accountNote": "Mtu huyu ana akaunti. Mabadiliko ya jina, simu na barua pepe yatatumika pia kwenye akaunti.",
+    "fullName": "Jina kamili",
+    "positionOpt": "Wadhifa (hiari)",
+    "positionPh": "mf. Keshia, Dereva",
+    "phone": "Simu",
+    "phonePh": "+255 ...",
+    "emailOpt": "Barua pepe (hiari)",
+    "addressOpt": "Anwani (hiari)",
+    "save": "Hifadhi mfanyakazi",
+    "saveChanges": "Hifadhi mabadiliko",
+    "saving": "Inahifadhi…"
+  },
+  "view": {
+    "fallbackTitle": "Mfanyakazi",
+    "back": "Rudi kwenye orodha",
+    "details": "Taarifa binafsi",
+    "loginAccount": "Akaunti ya kuingia",
+    "code": "Msimbo",
+    "fullName": "Jina kamili",
+    "position": "Wadhifa",
+    "phone": "Simu",
+    "email": "Barua pepe",
+    "address": "Anwani",
+    "status": "Hali",
+    "username": "Jina la mtumiaji",
+    "role": "Jukumu",
+    "accountStatus": "Hali ya akaunti",
+    "noAccountNote": "Mtu huyu bado hana akaunti ya kuingia.",
+    "created": "Alisajiliwa tarehe",
+    "updated": "Alisasishwa mwisho",
+    "accountStates": {
+      "ACTIVE": "Hai",
+      "INACTIVE": "Si hai",
+      "LOCKED": "Imefungwa",
+      "DISABLED": "Imezimwa"
+    }
+  }
+}

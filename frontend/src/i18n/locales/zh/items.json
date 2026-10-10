@@ -1,0 +1,63 @@
+{
+  "title": "商品",
+  "registered": "已登记 {{total}} 个",
+  "addButton": "+ 添加商品",
+  "searchPlaceholder": "搜索名称、SKU 或条码",
+  "allCategories": "所有分类",
+  "empty": "未找到商品。",
+  "more": "更多",
+  "less": "收起",
+  "backToList": "← 返回列表",
+  "back": "← 返回",
+  "actions": {
+    "deactivate": "停用",
+    "activate": "启用",
+    "deactivatePrompt": "为什么要停用 {{name}}？",
+    "confirmDelete": "确定删除商品“{{name}}”（{{sku}}）吗？只有没有库存记录的商品才能删除。删除操作会保留在审计日志中。"
+  },
+  "fields": {
+    "sku": "SKU",
+    "name": "商品",
+    "itemName": "商品名称",
+    "category": "分类",
+    "stock": "库存",
+    "sellingPrice": "售价",
+    "status": "状态",
+    "unit": "单位",
+    "costPrice": "成本价",
+    "reorder": "补货水平",
+    "trackExpiry": "跟踪有效期",
+    "description": "描述",
+    "created": "创建时间",
+    "updated": "最后更新",
+    "barcode": "条码",
+    "skuAuto": "SKU（留空则自动生成）",
+    "unitHint": "单位（件、公斤、箱…）",
+    "actions": "操作"
+  },
+  "yes": "是",
+  "no": "否",
+  "saving": "保存中…",
+  "create": {
+    "title": "添加商品",
+    "subtitle": "新商品的初始库存为零。",
+    "selectCategory": "选择分类",
+    "trackExpiryLabel": "跟踪此商品的批次和有效期",
+    "save": "创建商品",
+    "done": "商品 {{name}} 已创建。请通过“入库”添加期初库存。"
+  },
+  "edit": {
+    "title": "编辑商品",
+    "save": "保存更改",
+    "done": "商品已更新。"
+  },
+  "view": {
+    "fallbackTitle": "商品",
+    "batches": "库存批次",
+    "batchNo": "批号",
+    "expiryDate": "有效期至",
+    "quantity": "数量",
+    "noBatches": "没有库存批次。",
+    "deleted": "商品 {{name}} 已删除。"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "list": {
+    "title": "Drivers",
+    "subtitle": "The people who drive company vehicles and receive fuel money. The licence status is worked out from the expiry date.",
+    "new": "New Driver",
+    "search": "Search name, code, phone, licence no",
+    "searchAria": "Search drivers",
+    "filterStatusAria": "Filter by status",
+    "allStatuses": "All statuses",
+    "filterLicenceAria": "Filter by licence",
+    "anyLicence": "Any licence",
+    "licenceValid": "Valid",
+    "licenceExpiringSoon": "Expiring within 30 days",
+    "licenceExpired": "Expired",
+    "sortAria": "Sort drivers",
+    "sort": {
+      "nameAsc": "Name A–Z",
+      "nameDesc": "Name Z–A",
+      "code": "Code",
+      "expiryAsc": "Licence expiring soonest",
+      "expiryDesc": "Licence expiring last"
+    },
+    "emptyFiltered": "No drivers match your filters.",
+    "emptyNone": "No drivers yet. Use “New Driver” to register the first one.",
+    "staff": "Staff: {{code}}",
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "phone": "Phone",
+      "licenceNo": "Licence no",
+      "class": "Class",
+      "licenceExpiry": "Licence expiry",
+      "vehicles": "Vehicles",
+      "fuelFundings": "Fuel fundings",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "delete": "Delete",
+    "deactivatePrompt": "Reason for deactivating “{{name}}”:",
+    "deleteConfirm": "Delete the driver “{{name}}” permanently? This cannot be undone.",
+    "deactivated": "Driver deactivated.",
+    "activated": "Driver activated.",
+    "deleted": "Driver deleted."
+  },
+  "form": {
+    "fullName": "Full name",
+    "phone": "Phone (optional)",
+    "phonePlaceholder": "+255…",
+    "licenseNo": "Licence number",
+    "licenseClass": "Licence class (optional)",
+    "licenseClassPlaceholder": "e.g. C",
+    "licenseExpiry": "Licence expiry date",
+    "address": "Address (optional)",
+    "staff": "Linked staff member (optional)",
+    "staffPlaceholder": "Not linked to a staff member",
+    "staffHint": "Use this when the driver is also an employee. A staff member can be linked to one driver only.",
+    "notes": "Notes (optional)"
+  },
+  "create": {
+    "title": "New driver",
+    "sub": "Register a person who drives company vehicles. The driver code is generated for you.",
+    "back": "Back to list",
+    "saving": "Saving…",
+    "submit": "Register driver",
+    "saved": "Driver registered."
+  },
+  "update": {
+    "title": "Edit driver",
+    "back": "Back",
+    "saving": "Saving…",
+    "submit": "Save changes",
+    "saved": "Driver updated."
+  },
+  "view": {
+    "fallbackTitle": "Driver",
+    "back": "Back to list",
+    "licenceExpires": "Licence expires",
+    "vehicles": "Vehicles",
+    "fuelFundings": "Fuel fundings",
+    "code": "Code",
+    "fullName": "Full name",
+    "phone": "Phone",
+    "licenseNo": "Licence number",
+    "licenseClass": "Licence class",
+    "licenseExpiry": "Licence expiry",
+    "address": "Address",
+    "linkedStaff": "Linked staff",
+    "status": "Status",
+    "notes": "Notes",
+    "created": "Created",
+    "updated": "Last updated",
+    "inactive": "inactive",
+    "defaultDriverOf": "Default driver of ({{n}})",
+    "noVehicles": "No vehicle has this driver as its default driver.",
+    "seeFunding": "See this driver’s fuel funding requests"
+  }
+}

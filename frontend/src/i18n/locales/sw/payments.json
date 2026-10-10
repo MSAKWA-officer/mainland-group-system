@@ -1,0 +1,112 @@
+{
+  "status": {
+    "ACTIVE": "Halali",
+    "VOIDED": "Imebatilishwa",
+    "POSTED": "Imerekodiwa",
+    "ALL": "Zote"
+  },
+  "txnType": {
+    "DEPOSIT": "Amana",
+    "WITHDRAWAL": "Utoaji",
+    "TRANSFER_IN": "Uhamisho kuingia",
+    "TRANSFER_OUT": "Uhamisho kutoka",
+    "CHARGE": "Ada",
+    "INTEREST": "Riba",
+    "CUSTOMER_PAYMENT": "Malipo ya mteja"
+  },
+  "list": {
+    "title": "Malipo",
+    "subtitle": "Pesa zinazotolewa — kulipa matumizi yaliyoidhinishwa au kumlipa mtu moja kwa moja.",
+    "new": "Malipo Mapya",
+    "stats": {
+      "paidOut": "Zilizolipwa (halali, kichujio hiki)",
+      "records": "Rekodi"
+    },
+    "search": "Tafuta namba ya malipo, mlipwaji au kumbukumbu",
+    "searchAria": "Tafuta malipo",
+    "filterStatusAria": "Chuja kwa hali",
+    "filterMethodAria": "Chuja kwa njia",
+    "allMethods": "Njia zote",
+    "allBankAccounts": "Akaunti zote za benki",
+    "clearExpense": "Inaonyesha matumizi moja · futa kichujio",
+    "emptyFiltered": "Hakuna malipo yanayolingana na vichujio vyako.",
+    "emptyNone": "Bado hakuna malipo. Tumia “Malipo Mapya” kurekodi la kwanza.",
+    "directPayment": "Malipo ya moja kwa moja",
+    "notFromBank": "Si kutoka akaunti ya benki",
+    "columns": {
+      "paymentNo": "Namba ya malipo",
+      "date": "Tarehe",
+      "paidTo": "Alilipwa",
+      "expense": "Matumizi",
+      "method": "Njia",
+      "paidFrom": "Yalitoka",
+      "amount": "Kiasi",
+      "status": "Hali",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Tazama",
+    "void": "Batilisha",
+    "voidPrompt": "Sababu ya kubatilisha {{no}} ({{amount}} kwa {{payee}})?\n(Utoaji wowote wa benki uliofanywa nao utarudishwa pia.)",
+    "voided": "Malipo yamebatilishwa."
+  },
+  "create": {
+    "title": "Malipo mapya",
+    "sub": "Rekodi pesa zinazotolewa — kwa matumizi yaliyoidhinishwa, au moja kwa moja kwa mlipwaji.",
+    "back": "Rudi kwenye orodha",
+    "kindExpense": "Lipa matumizi yaliyoidhinishwa",
+    "kindDirect": "Mlipe mtu moja kwa moja",
+    "expense": "Matumizi",
+    "expensePlaceholder": "Tafuta kwa namba ya matumizi, maelezo au mlipwaji",
+    "left": "(yamebaki {{amount}})",
+    "expenseSummary": "{{category}} · tarehe {{date}} · jumla <b>{{total}}</b> · yamelipwa {{paid}} · <b>yanayobaki kulipwa {{left}}</b>",
+    "payeeExpense": "Mlipwaji (si lazima, huchukuliwa kutoka kwenye matumizi)",
+    "paidTo": "Alilipwa",
+    "amount": "Kiasi",
+    "fullBalance": "Salio lote",
+    "method": "Njia",
+    "paidFrom": "Yalilipwa kutoka akaunti ya benki",
+    "paidFromOptional": "Yalilipwa kutoka akaunti ya benki (si lazima)",
+    "selectAccount": "Chagua akaunti…",
+    "notFromBank": "Si kutoka akaunti ya benki",
+    "noOverdraft": "Akaunti haiwezi kushuka chini ya sifuri. ",
+    "onlyTzs": "Akaunti za TZS pekee ndizo zinazoweza kutumika.",
+    "reference": "Kumbukumbu",
+    "referenceOptional": "Kumbukumbu (si lazima)",
+    "referencePlaceholder": "Namba ya muamala / risiti / hundi",
+    "paymentDate": "Tarehe ya malipo",
+    "notes": "Maelezo (si lazima)",
+    "saving": "Inahifadhi…",
+    "submit": "Rekodi malipo",
+    "saved": "Malipo yamerekodiwa.",
+    "err": {
+      "chooseExpense": "Chagua matumizi ya kulipa.",
+      "payeeRequired": "Weka malipo haya yanafanywa kwa nani",
+      "amountPositive": "Kiasi lazima kiwe kikubwa kuliko 0",
+      "atMost": "Zaidi ni {{max}}",
+      "chooseBank": "Chagua akaunti ya benki ambayo malipo haya yanatoka",
+      "needRef": "Kumbukumbu ya malipo inahitajika kwa njia hii"
+    }
+  },
+  "view": {
+    "fallbackTitle": "Malipo",
+    "back": "Rudi kwenye orodha",
+    "amountPaid": "Kiasi kilicholipwa",
+    "paidTo": "Alilipwa",
+    "expense": "Matumizi",
+    "paymentDate": "Tarehe ya malipo",
+    "method": "Njia",
+    "reference": "Kumbukumbu",
+    "paidFrom": "Yalitoka",
+    "notFromBank": "Si kutoka akaunti ya benki",
+    "recordedBy": "Alirekodi",
+    "recorded": "Yalirekodiwa",
+    "notes": "Maelezo",
+    "voidedBy": "Yalibatilishwa na",
+    "voidedOn": "Yalibatilishwa tarehe",
+    "voidReason": "Sababu ya kubatilisha",
+    "ledgerTitle": "Leja ya benki",
+    "reconciledSuffix": " · imesuluhishwa"
+  }
+}

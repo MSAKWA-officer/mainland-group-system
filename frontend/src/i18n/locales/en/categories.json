@@ -1,0 +1,50 @@
+{
+  "title": "Categories",
+  "registered": "{{total}} registered",
+  "newButton": "New Category",
+  "searchPlaceholder": "Search by name",
+  "searchAria": "Search categories",
+  "filterStatusAria": "Filter by status",
+  "allStatuses": "All statuses",
+  "columns": {
+    "name": "Name",
+    "parent": "Parent",
+    "description": "Description",
+    "items": "Items",
+    "status": "Status",
+    "created": "Created",
+    "actions": "Actions"
+  },
+  "emptyFiltered": "No categories match your filters.",
+  "emptyNone": "No categories yet. Use “New Category” to add the first one.",
+  "confirmDelete": "Delete the category “{{name}}” permanently? This cannot be undone.",
+  "backToList": "Back to list",
+  "back": "Back",
+  "form": {
+    "name": "Name",
+    "parent": "Parent category (optional)",
+    "noParent": "None (top level)",
+    "description": "Description",
+    "status": "Status",
+    "saving": "Saving…"
+  },
+  "create": {
+    "title": "New category",
+    "subtitle": "Categories group your items. A category can sit under a parent category.",
+    "save": "Save category",
+    "done": "Category created."
+  },
+  "edit": {
+    "title": "Edit category",
+    "save": "Save changes",
+    "done": "Category updated."
+  },
+  "view": {
+    "fallbackTitle": "Category",
+    "parent": "Parent category",
+    "itemsIn": "Items in category",
+    "created": "Created",
+    "updated": "Last updated",
+    "deleted": "Category deleted."
+  }
+}

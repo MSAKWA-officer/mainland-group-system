@@ -1,0 +1,140 @@
+{
+  "title": "EFD reports",
+  "subtitle": "Only issued receipts count towards sales and VAT; voided receipts are shown separately. Days are trading days in the business time zone.",
+  "tabsAria": "EFD reports",
+  "tabs": {
+    "daily": "Daily summary",
+    "devices": "By device",
+    "monthly": "Month by month",
+    "receipts": "Receipt register",
+    "unreceipted": "Orders without receipt"
+  },
+  "toolbar": {
+    "thisMonth": "This month",
+    "last30": "Last 30 days",
+    "thisYear": "This year",
+    "filterDeviceAria": "Filter by device",
+    "allDevices": "All devices",
+    "yearAria": "Year",
+    "preparing": "Preparing…",
+    "download": "Download CSV"
+  },
+  "errors": {
+    "chooseBoth": "Choose both dates.",
+    "fromAfterTo": "“From” must not be after “To”.",
+    "maxDays": "Choose at most {{max}} days."
+  },
+  "w": {
+    "date": "Date",
+    "device": "Device",
+    "receipts": "Receipts",
+    "gross": "Gross",
+    "vat": "VAT",
+    "net": "Net",
+    "voided": "Voided receipts",
+    "tin": "TIN",
+    "order": "Order",
+    "customer": "Customer",
+    "total": "Total",
+    "zReport": "Z report",
+    "zVerified": "Z verified",
+    "zGross": "Z gross",
+    "zVat": "Z VAT",
+    "daysReconciled": "Days reconciled",
+    "customerTin": "Customer TIN",
+    "tinLine": "TIN {{tin}}"
+  },
+  "daily": {
+    "deviceDays": "Device days",
+    "daysWithDiff": "Days with a difference",
+    "onlyDiff": "Only days with a difference",
+    "note": "Difference = Z report minus system. Only issued receipts count towards the system figures; voided receipts are shown separately.",
+    "emptyOnly": "No days with a difference in this period.",
+    "emptyNone": "No receipts, Z reports or reconciliations in this period.",
+    "zLine": "Z {{z}} · {{status}}",
+    "noZ": "No Z report",
+    "difference": "Difference",
+    "ok": "OK",
+    "columns": {
+      "date": "Date",
+      "device": "Device",
+      "receipts": "Receipts",
+      "systemGross": "System gross",
+      "systemVat": "System VAT",
+      "voided": "Voided",
+      "zReport": "Z report",
+      "zGross": "Z gross",
+      "zVat": "Z VAT",
+      "grossDiff": "Gross diff",
+      "vatDiff": "VAT diff",
+      "countDiff": "Count diff",
+      "reconciliation": "Reconciliation",
+      "result": "Result"
+    }
+  },
+  "devices": {
+    "empty": "No EFD devices found.",
+    "inactive": "inactive",
+    "columns": {
+      "device": "Device",
+      "tin": "TIN",
+      "receipts": "Receipts",
+      "gross": "Gross",
+      "vat": "VAT",
+      "voided": "Voided",
+      "lastReceipt": "Last receipt",
+      "zReports": "Z reports",
+      "zVerified": "Z verified",
+      "daysReconciled": "Days reconciled"
+    }
+  },
+  "monthly": {
+    "verifiedZVat": "Verified Z VAT",
+    "total": "Total {{year}}",
+    "columns": {
+      "month": "Month",
+      "receipts": "Receipts",
+      "gross": "Gross",
+      "vat": "VAT",
+      "net": "Net",
+      "voided": "Voided",
+      "zVerified": "Z verified",
+      "zGross": "Z gross",
+      "zVat": "Z VAT",
+      "daysReconciled": "Days reconciled"
+    }
+  },
+  "receipts": {
+    "issued": "Issued receipts",
+    "search": "Search receipt no, code, order, customer",
+    "searchAria": "Search receipts",
+    "empty": "No receipts match.",
+    "columns": {
+      "issued": "Issued",
+      "device": "Device",
+      "receiptNo": "Receipt no",
+      "verification": "Verification",
+      "order": "Order",
+      "customer": "Customer",
+      "gross": "Gross",
+      "vat": "VAT",
+      "net": "Net",
+      "status": "Status"
+    }
+  },
+  "unreceipted": {
+    "orders": "Orders without a receipt",
+    "empty": "Every confirmed order in this period has an EFD receipt.",
+    "record": "Record EFD number",
+    "columns": {
+      "confirmedOn": "Confirmed on",
+      "order": "Order",
+      "customer": "Customer",
+      "customerTin": "Customer TIN",
+      "total": "Total",
+      "vat": "VAT",
+      "age": "Age (days)",
+      "goTo": "Go to"
+    }
+  }
+}

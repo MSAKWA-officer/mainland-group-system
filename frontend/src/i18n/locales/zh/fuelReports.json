@@ -1,0 +1,79 @@
+{
+  "title": "燃油报表",
+  "intro": "仅统计已批准的拨款和有效（未作废）的使用记录。",
+  "tabsLabel": "燃油报表",
+  "tabs": {
+    "consumption": "消耗",
+    "reconciliation": "拨款与花费对比",
+    "monthly": "按月"
+  },
+  "generate": "生成报表",
+  "openFull": "打开完整视图",
+  "back": "返回报表",
+  "print": "打印",
+  "changeParams": "修改参数",
+  "stats": {
+    "spent": "已花费",
+    "litres": "升数",
+    "fills": "加油次数",
+    "funded": "已拨款",
+    "avgPrice": "平均单价/升",
+    "unspent": "未花费",
+    "used": "已使用"
+  },
+  "params": {
+    "report": "报表",
+    "from": "从",
+    "to": "至",
+    "givenFrom": "拨款日期自",
+    "givenTo": "至",
+    "vehicle": "车辆",
+    "driver": "司机",
+    "groupBy": "分组方式",
+    "year": "年份",
+    "allVehicles": "全部车辆",
+    "allDrivers": "全部司机",
+    "byVehicle": "按车辆",
+    "byDriver": "按司机",
+    "filterVehicle": "按车辆筛选",
+    "filterDriver": "按司机筛选",
+    "none": "无筛选条件：包含全部数据。"
+  },
+  "heads": {
+    "vehicle": "车辆",
+    "driver": "司机",
+    "fills": "加油次数",
+    "litres": "升数",
+    "spent": "已花费",
+    "avgPrice": "平均单价/升",
+    "distance": "行驶距离",
+    "kmPerLitre": "公里/升",
+    "lPer100": "升/百公里",
+    "costPerKm": "每公里成本",
+    "fundings": "拨款次数",
+    "withMoneyLeft": "仍有余额",
+    "funded": "已拨款",
+    "unspent": "未花费",
+    "usedPct": "使用率 %",
+    "litresBought": "已购升数",
+    "month": "月份"
+  },
+  "empty": {
+    "consumption": "该期间没有燃油使用记录。",
+    "reconciliation": "该期间没有已批准的燃油拨款。"
+  },
+  "note": "行驶距离和每升公里数仅统计连续两次都加满油箱且有里程表读数的加油记录。其他加油记录仍计入升数和成本。",
+  "create": {
+    "title": "生成燃油报表",
+    "subtitle": "选择报表及筛选条件后运行。不会保存任何内容：报表为实时计算。",
+    "run": "运行报表"
+  },
+  "update": {
+    "title": "修改报表参数",
+    "subtitle": "{{report}}：调整筛选条件后重新运行。",
+    "run": "应用并运行"
+  },
+  "view": {
+    "running": "加载中…"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "list": {
+    "title": "EFD 设备",
+    "subtitle": "已注册 {{total}} 台",
+    "new": "新增设备",
+    "search": "搜索序列号、名称、TIN 或地点",
+    "searchAria": "搜索设备",
+    "filterStatusAria": "按状态筛选",
+    "allStatuses": "所有状态",
+    "emptyFiltered": "没有符合筛选条件的设备。",
+    "emptyNone": "尚无 EFD 设备。请使用“新增设备”注册第一台。",
+    "columns": {
+      "serialNo": "序列号",
+      "name": "名称",
+      "tin": "TIN",
+      "vrn": "VRN",
+      "location": "地点",
+      "receipts": "收据数",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "activate": "启用",
+    "deactivate": "停用",
+    "delete": "删除",
+    "deactivatePrompt": "停用“{{name}}”的原因：",
+    "deleteConfirm": "确定要永久删除设备“{{name}}”吗？此操作无法撤销。",
+    "deleted": "设备已删除。"
+  },
+  "form": {
+    "serialNo": "序列号",
+    "serialTitle": "仅限字母、数字和 -",
+    "serialLocked": "已锁定：此设备已记录收据。",
+    "name": "名称",
+    "namePlaceholder": "例如：主店收银台",
+    "tin": "TIN（税号）",
+    "vrn": "VRN（可选）",
+    "location": "地点（可选）",
+    "notes": "备注（可选）"
+  },
+  "create": {
+    "title": "新增 EFD 设备",
+    "sub": "注册税务设备，以便将其收据号记录到订单上。",
+    "submit": "保存设备",
+    "saved": "设备已注册。"
+  },
+  "update": {
+    "title": "编辑 EFD 设备",
+    "submit": "保存更改",
+    "saved": "设备已更新。"
+  },
+  "view": {
+    "fallbackTitle": "EFD 设备",
+    "serialNo": "序列号",
+    "name": "名称",
+    "tin": "TIN",
+    "vrn": "VRN",
+    "location": "地点",
+    "receipts": "已记录收据",
+    "status": "状态",
+    "notes": "备注",
+    "created": "创建时间",
+    "updated": "最后更新"
+  }
+}

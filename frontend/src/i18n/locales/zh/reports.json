@@ -1,0 +1,97 @@
+{
+  "title": "库存报表",
+  "subtitle": "库存实时概览及相关报表。",
+  "countWithin": "统计在以下天数内到期的批次",
+  "days": "天",
+  "tiles": {
+    "activeItems": "启用商品",
+    "totalUnits": "库存总数量",
+    "outOfStock": "缺货",
+    "lowStock": "库存偏低",
+    "expiredBatches": "已过期批次",
+    "expiringWithin": "{{days}} 天内到期",
+    "pendingApprovals": "待审批单据",
+    "stockValue": "库存价值（按成本）"
+  },
+  "list": {
+    "report": "报表",
+    "whatItShows": "内容说明",
+    "actions": "操作",
+    "viewReport": "查看报表"
+  },
+  "defs": {
+    "stock-on-hand": {
+      "title": "现有库存",
+      "desc": "按分类显示每个启用商品的当前数量。"
+    },
+    "low-stock": {
+      "title": "低库存",
+      "desc": "库存达到或低于补货点的商品及其缺口。"
+    },
+    "expiry": {
+      "title": "有效期",
+      "desc": "已过期或即将过期的批次。"
+    },
+    "movements": {
+      "title": "变动汇总",
+      "desc": "指定日期范围内的出入库，可按类型或商品汇总。"
+    },
+    "write-offs": {
+      "title": "报损与损耗",
+      "desc": "因过期、损坏、退还供应商及负向调整造成的库存损失。"
+    },
+    "valuation": {
+      "title": "库存估值",
+      "desc": "按成本价计算的各分类库存价值。"
+    }
+  },
+  "view": {
+    "backToReports": "← 返回报表",
+    "noData": "当前筛选条件下没有数据。",
+    "from": "从",
+    "to": "至",
+    "leaveEmpty": "留空则显示最近 30 天。",
+    "searchPlaceholder": "搜索名称或 SKU",
+    "allCategories": "所有分类",
+    "includeZero": "包含零库存商品",
+    "expiringWithin": "到期天数范围",
+    "daysSuffix": "天",
+    "includeExpired": "包含已过期",
+    "groupByType": "按类型分组",
+    "groupByItem": "按商品分组",
+    "byType": "按类型",
+    "topLost": "损耗数量前 20 的商品",
+    "totalValue": "库存总价值：{{value}}",
+    "emptyLow": "没有低于补货点的商品。",
+    "emptyExpiry": "此时间范围内没有已过期或即将过期的批次。"
+  },
+  "cols": {
+    "sku": "SKU",
+    "item": "商品",
+    "category": "分类",
+    "unit": "单位",
+    "quantity": "数量",
+    "reorderLevel": "补货点",
+    "sellingPrice": "销售价",
+    "costPrice": "成本价",
+    "stockValue": "库存价值",
+    "shortfall": "缺口",
+    "batch": "批次",
+    "expiryDate": "有效期至",
+    "daysLeft": "剩余天数",
+    "status": "状态",
+    "qtyIn": "入库数量",
+    "qtyOut": "出库数量",
+    "balance": "当前结余",
+    "type": "类型",
+    "direction": "方向",
+    "movements": "变动次数",
+    "value": "价值",
+    "items": "商品数",
+    "valueAtCost": "价值（按成本）"
+  },
+  "expiryStatus": {
+    "EXPIRED": "已过期",
+    "EXPIRING": "即将过期"
+  }
+}

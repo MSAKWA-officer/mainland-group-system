@@ -1,0 +1,119 @@
+{
+  "title": "Sales",
+  "registered": "{{total}} sales in the register",
+  "cashSales": "Cash sales",
+  "creditSales": "Credit sales",
+  "search": "Search sale number or customer",
+  "searchAria": "Search sales",
+  "filterTypeAria": "Filter by type",
+  "filterStatusAria": "Filter by status",
+  "filterPaymentAria": "Filter by payment",
+  "allTypes": "All types",
+  "allStatuses": "All statuses",
+  "allPayments": "All payments",
+  "overdueOnly": "Overdue only",
+  "from": "From",
+  "to": "To",
+  "columns": {
+    "saleNo": "Sale no",
+    "date": "Date",
+    "type": "Type",
+    "customer": "Customer",
+    "salesperson": "Salesperson",
+    "total": "Total",
+    "balance": "Balance",
+    "payment": "Payment",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "emptyFiltered": "No sales match your filters.",
+  "emptyNone": "No sales yet. Cash and credit sales appear here as soon as they are made.",
+  "overdue": "Overdue {{date}}",
+  "walkIn": "Walk-in customer",
+  "summary": {
+    "totalSales": "Total sales",
+    "cashSales": "Cash sales",
+    "creditSales": "Credit sales",
+    "creditOutstanding": "Credit outstanding",
+    "completed": "{{count}} completed",
+    "completedVoided": "{{count}} completed, {{voided}} voided",
+    "salesCount_one": "{{count}} sale",
+    "salesCount_other": "{{count}} sales",
+    "collected": "Collected {{amount}}"
+  },
+  "status": {
+    "DRAFT": "Draft",
+    "SUBMITTED": "Waiting for approval",
+    "COMPLETED": "Completed",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled",
+    "VOIDED": "Voided"
+  },
+  "pay": {
+    "UNPAID": "Unpaid",
+    "PARTIAL": "Part paid",
+    "PAID": "Paid"
+  },
+  "type": {
+    "CASH": "Cash",
+    "CREDIT": "Credit"
+  },
+  "method": {
+    "CASH": "Cash",
+    "MOBILE_MONEY": "Mobile money",
+    "BANK": "Bank",
+    "CARD": "Card",
+    "CHEQUE": "Cheque"
+  },
+  "view": {
+    "fallbackTitle": "Sale",
+    "backToList": "Back to list",
+    "overdueBanner": "Overdue: {{amount}} was due on {{date}}.",
+    "customer": "Customer",
+    "customerPhone": "Customer phone",
+    "salesperson": "Salesperson",
+    "saleDate": "Sale date",
+    "dueDate": "Due date",
+    "notes": "Notes",
+    "createdBy": "Created by",
+    "created": "Created",
+    "submitted": "Submitted",
+    "decisionNote": "Decision note",
+    "completed": "Completed",
+    "stockDocument": "Stock document",
+    "voided": "Voided",
+    "voidReason": "Void reason",
+    "items": "Items",
+    "payments": "Payments",
+    "noPayments": "No payments recorded.",
+    "paymentValid": "Valid",
+    "paymentVoided": "Voided",
+    "paid": "Paid",
+    "balance": "Balance",
+    "ownerHintCredit": "To approve, record payments or void this sale, open it in <l>Credit sales</l>.",
+    "ownerHintCash": "To void this sale, open it in <l>Cash sales</l>."
+  },
+  "lines": {
+    "sku": "SKU",
+    "item": "Item",
+    "quantity": "Quantity",
+    "unitPrice": "Unit price",
+    "discountPercent": "Discount %",
+    "lineTotal": "Line total"
+  },
+  "paymentCols": {
+    "receipt": "Receipt",
+    "date": "Date",
+    "method": "Method",
+    "reference": "Reference",
+    "receivedBy": "Received by",
+    "amount": "Amount",
+    "state": "State"
+  },
+  "totals": {
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "tax": "Tax ({{rate}}%)",
+    "total": "Total"
+  }
+}

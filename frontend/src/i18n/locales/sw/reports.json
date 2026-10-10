@@ -1,0 +1,97 @@
+{
+  "title": "Ripoti za stoo",
+  "subtitle": "Muhtasari wa moja kwa moja wa stoo yako na ripoti zinazoutegemea.",
+  "countWithin": "Hesabu bechi zinazoisha muda ndani ya",
+  "days": "siku",
+  "tiles": {
+    "activeItems": "Bidhaa hai",
+    "totalUnits": "Jumla ya vipimo vilivyo stoo",
+    "outOfStock": "Zilizoisha stoo",
+    "lowStock": "Stoo ndogo",
+    "expiredBatches": "Bechi zilizoisha muda",
+    "expiringWithin": "Zinazoisha muda ndani ya siku {{days}}",
+    "pendingApprovals": "Hati zinazosubiri idhini",
+    "stockValue": "Thamani ya stoo (kwa gharama)"
+  },
+  "list": {
+    "report": "Ripoti",
+    "whatItShows": "Inaonyesha nini",
+    "actions": "Vitendo",
+    "viewReport": "Angalia ripoti"
+  },
+  "defs": {
+    "stock-on-hand": {
+      "title": "Stoo iliyopo",
+      "desc": "Idadi ya sasa ya kila bidhaa hai, kwa kategoria."
+    },
+    "low-stock": {
+      "title": "Stoo ndogo",
+      "desc": "Bidhaa zilizofikia au zilizo chini ya kiwango cha kuagiza upya, pamoja na upungufu."
+    },
+    "expiry": {
+      "title": "Kuisha muda",
+      "desc": "Bechi zilizoisha muda au zinazokaribia kuisha muda."
+    },
+    "movements": {
+      "title": "Muhtasari wa mienendo",
+      "desc": "Stoo iliyoingia na kutoka katika kipindi fulani, kwa aina au kwa bidhaa."
+    },
+    "write-offs": {
+      "title": "Uondoaji na hasara",
+      "desc": "Stoo iliyopotea kwa kuisha muda, uharibifu, marejesho kwa wasambazaji na marekebisho hasi."
+    },
+    "valuation": {
+      "title": "Thamani ya stoo",
+      "desc": "Thamani ya stoo kwa kategoria kwa bei ya gharama."
+    }
+  },
+  "view": {
+    "backToReports": "← Rudi kwenye ripoti",
+    "noData": "Hakuna data kwa vichujio hivi.",
+    "from": "Kuanzia",
+    "to": "Hadi",
+    "leaveEmpty": "Acha wazi kuona siku 30 zilizopita.",
+    "searchPlaceholder": "Tafuta jina au SKU",
+    "allCategories": "Kategoria zote",
+    "includeZero": "Jumuisha bidhaa zisizo na stoo",
+    "expiringWithin": "Zinazoisha muda ndani ya",
+    "daysSuffix": "siku",
+    "includeExpired": "Jumuisha zilizokwisha muda tayari",
+    "groupByType": "Panga kwa aina",
+    "groupByItem": "Panga kwa bidhaa",
+    "byType": "Kwa aina",
+    "topLost": "Bidhaa 20 za juu kwa idadi iliyopotea",
+    "totalValue": "Jumla ya thamani ya stoo: {{value}}",
+    "emptyLow": "Hakuna bidhaa zilizo chini ya kiwango cha kuagiza upya.",
+    "emptyExpiry": "Hakuna bechi zilizoisha muda au zinazokaribia kuisha katika kipindi hiki."
+  },
+  "cols": {
+    "sku": "SKU",
+    "item": "Bidhaa",
+    "category": "Kategoria",
+    "unit": "Kipimo",
+    "quantity": "Idadi",
+    "reorderLevel": "Kiwango cha kuagiza upya",
+    "sellingPrice": "Bei ya kuuza",
+    "costPrice": "Bei ya kununua",
+    "stockValue": "Thamani ya stoo",
+    "shortfall": "Upungufu",
+    "batch": "Bechi",
+    "expiryDate": "Tarehe ya kuisha muda",
+    "daysLeft": "Siku zilizobaki",
+    "status": "Hali",
+    "qtyIn": "Idadi iliyoingia",
+    "qtyOut": "Idadi iliyotoka",
+    "balance": "Salio la sasa",
+    "type": "Aina",
+    "direction": "Mwelekeo",
+    "movements": "Mienendo",
+    "value": "Thamani",
+    "items": "Bidhaa",
+    "valueAtCost": "Thamani (kwa gharama)"
+  },
+  "expiryStatus": {
+    "EXPIRED": "Imeisha muda",
+    "EXPIRING": "Inakaribia kuisha"
+  }
+}

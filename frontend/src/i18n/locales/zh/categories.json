@@ -1,0 +1,50 @@
+{
+  "title": "分类",
+  "registered": "已登记 {{total}} 个",
+  "newButton": "新建分类",
+  "searchPlaceholder": "按名称搜索",
+  "searchAria": "搜索分类",
+  "filterStatusAria": "按状态筛选",
+  "allStatuses": "所有状态",
+  "columns": {
+    "name": "名称",
+    "parent": "上级分类",
+    "description": "描述",
+    "items": "商品",
+    "status": "状态",
+    "created": "创建时间",
+    "actions": "操作"
+  },
+  "emptyFiltered": "没有符合筛选条件的分类。",
+  "emptyNone": "暂无分类。请点击“新建分类”添加第一个。",
+  "confirmDelete": "确定要永久删除分类“{{name}}”吗？此操作无法撤销。",
+  "backToList": "返回列表",
+  "back": "返回",
+  "form": {
+    "name": "名称",
+    "parent": "上级分类（可选）",
+    "noParent": "无（顶级）",
+    "description": "描述",
+    "status": "状态",
+    "saving": "保存中…"
+  },
+  "create": {
+    "title": "新建分类",
+    "subtitle": "分类用于对商品进行分组。一个分类可以隶属于上级分类。",
+    "save": "保存分类",
+    "done": "分类已创建。"
+  },
+  "edit": {
+    "title": "编辑分类",
+    "save": "保存更改",
+    "done": "分类已更新。"
+  },
+  "view": {
+    "fallbackTitle": "分类",
+    "parent": "上级分类",
+    "itemsIn": "分类下的商品数",
+    "created": "创建时间",
+    "updated": "最后更新",
+    "deleted": "分类已删除。"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "status": {
+    "ACTIVE": "Active",
+    "VOIDED": "Voided",
+    "POSTED": "Posted",
+    "ALL": "All"
+  },
+  "txnType": {
+    "DEPOSIT": "Deposit",
+    "WITHDRAWAL": "Withdrawal",
+    "TRANSFER_IN": "Transfer in",
+    "TRANSFER_OUT": "Transfer out",
+    "CHARGE": "Charge",
+    "INTEREST": "Interest",
+    "CUSTOMER_PAYMENT": "Customer payment"
+  },
+  "list": {
+    "title": "Payments",
+    "subtitle": "Money paid out — to settle approved expenses or to pay someone directly.",
+    "new": "New Payment",
+    "stats": {
+      "paidOut": "Paid out (active, this filter)",
+      "records": "Records"
+    },
+    "search": "Search payment no, payee or reference",
+    "searchAria": "Search payments",
+    "filterStatusAria": "Filter by status",
+    "filterMethodAria": "Filter by method",
+    "allMethods": "All methods",
+    "allBankAccounts": "All bank accounts",
+    "clearExpense": "Showing one expense · clear",
+    "emptyFiltered": "No payments match your filters.",
+    "emptyNone": "No payments yet. Use “New Payment” to record the first one.",
+    "directPayment": "Direct payment",
+    "notFromBank": "Not from a bank account",
+    "columns": {
+      "paymentNo": "Payment no",
+      "date": "Date",
+      "paidTo": "Paid to",
+      "expense": "Expense",
+      "method": "Method",
+      "paidFrom": "Paid from",
+      "amount": "Amount",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "void": "Void",
+    "voidPrompt": "Reason for voiding {{no}} ({{amount}} to {{payee}})?\n(Any bank withdrawal it made is reversed too.)",
+    "voided": "Payment voided."
+  },
+  "create": {
+    "title": "New payment",
+    "sub": "Record money paid out — for an approved expense, or straight to a payee.",
+    "back": "Back to list",
+    "kindExpense": "Pay an approved expense",
+    "kindDirect": "Pay someone directly",
+    "expense": "Expense",
+    "expensePlaceholder": "Search by expense no, description or payee",
+    "left": "(left {{amount}})",
+    "expenseSummary": "{{category}} · dated {{date}} · total <b>{{total}}</b> · paid {{paid}} · <b>left to pay {{left}}</b>",
+    "payeeExpense": "Payee (optional, taken from the expense)",
+    "paidTo": "Paid to",
+    "amount": "Amount",
+    "fullBalance": "Full balance",
+    "method": "Method",
+    "paidFrom": "Paid from bank account",
+    "paidFromOptional": "Paid from bank account (optional)",
+    "selectAccount": "Select an account…",
+    "notFromBank": "Not from a bank account",
+    "noOverdraft": "The account cannot go below zero. ",
+    "onlyTzs": "Only TZS accounts can be used.",
+    "reference": "Reference",
+    "referenceOptional": "Reference (optional)",
+    "referencePlaceholder": "Transaction / receipt / cheque no",
+    "paymentDate": "Payment date",
+    "notes": "Notes (optional)",
+    "saving": "Saving…",
+    "submit": "Record payment",
+    "saved": "Payment recorded.",
+    "err": {
+      "chooseExpense": "Choose the expense to pay.",
+      "payeeRequired": "Enter who this payment is made to",
+      "amountPositive": "Amount must be greater than 0",
+      "atMost": "At most {{max}}",
+      "chooseBank": "Choose the bank account this payment is paid from",
+      "needRef": "A payment reference is required for this method"
+    }
+  },
+  "view": {
+    "fallbackTitle": "Payment",
+    "back": "Back to list",
+    "amountPaid": "Amount paid",
+    "paidTo": "Paid to",
+    "expense": "Expense",
+    "paymentDate": "Payment date",
+    "method": "Method",
+    "reference": "Reference",
+    "paidFrom": "Paid from",
+    "notFromBank": "Not from a bank account",
+    "recordedBy": "Recorded by",
+    "recorded": "Recorded",
+    "notes": "Notes",
+    "voidedBy": "Voided by",
+    "voidedOn": "Voided on",
+    "voidReason": "Void reason",
+    "ledgerTitle": "Bank ledger",
+    "reconciledSuffix": " · reconciled"
+  }
+}

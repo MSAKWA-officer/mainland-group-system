@@ -1,0 +1,80 @@
+{
+  "title": "燃油余额",
+  "intro": "发给司机但尚未花掉的燃油款。余额 = 拨款金额 − 已登记的燃油使用额。",
+  "views": {
+    "funding": "按拨款",
+    "vehicle": "按车辆",
+    "driver": "按司机"
+  },
+  "groupBy": "余额分组方式",
+  "stats": {
+    "funded": "已拨款",
+    "spent": "已花费",
+    "balance": "余额（未花费）"
+  },
+  "filters": {
+    "state": "按状态筛选",
+    "openOnly": "仍有未花费款项",
+    "settled": "已用完",
+    "all": "全部拨款",
+    "vehicle": "按车辆筛选",
+    "allVehicles": "全部车辆",
+    "driver": "按司机筛选",
+    "allDrivers": "全部司机",
+    "search": "搜索余额",
+    "searchPlaceholder": "搜索拨款编号、车牌、司机",
+    "givenFrom": "拨款日期自",
+    "to": "至"
+  },
+  "heads": {
+    "fundingNo": "拨款编号",
+    "givenOn": "拨款日期",
+    "vehicle": "车辆",
+    "driver": "司机",
+    "funded": "已拨款",
+    "spent": "已花费",
+    "balance": "余额",
+    "litresBought": "已购升数",
+    "state": "状态",
+    "daysUnspent": "未花费天数",
+    "actions": "操作",
+    "fundings": "拨款次数",
+    "withMoneyLeft": "仍有余额"
+  },
+  "empty": {
+    "filtered": "没有符合筛选条件的余额。",
+    "none": "没有未花费的燃油款。所有拨款均已用完。",
+    "groupFiltered": "没有符合筛选条件的记录。",
+    "groupNone": "暂无已批准的燃油拨款。"
+  },
+  "planned": "计划 {{litres}}",
+  "actions": {
+    "view": "查看",
+    "recordUsage": "登记使用"
+  },
+  "view": {
+    "fallbackTitle": "燃油余额",
+    "back": "返回列表",
+    "vehicle": "车辆",
+    "driver": "司机",
+    "purpose": "用途",
+    "paidBy": "支付方式",
+    "moneyGivenOn": "拨款日期",
+    "litres": "升数",
+    "litresBought": "已购 {{bought}}",
+    "litresBoughtOf": "计划 {{planned}}，已购 {{bought}}",
+    "lastUsage": "最近一次使用",
+    "daysUnspent": "未花费天数",
+    "daysUnspentValue": "自拨款起已过 {{count}} 天",
+    "usageTitle": "燃油使用（{{count}}）",
+    "usageNo": "使用编号",
+    "date": "日期",
+    "litresCol": "升数",
+    "amount": "金额",
+    "pricePerLitre": "单价/升",
+    "odometer": "里程表",
+    "station": "加油站",
+    "receipt": "收据",
+    "nothing": "暂无记录。"
+  }
+}

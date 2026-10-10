@@ -1,0 +1,65 @@
+{
+  "title": "Historia ya malipo",
+  "subtitle": "Risiti za mauzo ya fedha taslimu na ya mkopo, mpya kwanza.",
+  "summary": {
+    "totalReceived": "Jumla iliyopokelewa",
+    "receipts": "Risiti",
+    "voidedAmount": "Kiasi kilichobatilishwa",
+    "voidedReceipts": "Risiti zilizobatilishwa"
+  },
+  "byMethod": "Kwa njia ya malipo:",
+  "search": "Tafuta risiti, mauzo, mteja au kumbukumbu",
+  "searchAria": "Tafuta malipo",
+  "statusAria": "Chuja kwa hali",
+  "status": {
+    "ACTIVE": "Halali",
+    "VOIDED": "Zilizobatilishwa",
+    "ALL": "Zote"
+  },
+  "saleTypeAria": "Chuja kwa aina ya mauzo",
+  "saleType": {
+    "ALL": "Taslimu + mkopo",
+    "CASH": "Mauzo ya fedha taslimu",
+    "CREDIT": "Mauzo ya mkopo"
+  },
+  "methodAria": "Chuja kwa njia ya malipo",
+  "allMethods": "Njia zote",
+  "clearCustomer": "Inaonyesha mteja mmoja · futa kichujio",
+  "columns": {
+    "receipt": "Risiti",
+    "date": "Tarehe",
+    "customer": "Mteja",
+    "sale": "Mauzo",
+    "method": "Njia",
+    "amount": "Kiasi",
+    "receivedBy": "Alipokea",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "emptyFiltered": "Hakuna malipo yanayolingana na vichujio vyako.",
+  "emptyNone": "Bado hakuna malipo yaliyorekodiwa.",
+  "viewTitle": "Tazama",
+  "viewAria": "Tazama {{no}}",
+  "view": {
+    "fallbackTitle": "Malipo",
+    "activeReceipt": "Risiti halali",
+    "voided": "Imebatilishwa",
+    "back": "Rudi kwenye historia ya malipo",
+    "amount": "Kiasi",
+    "cashHanded": "Fedha taslimu zilizotolewa",
+    "cashHandedValue": "{{tendered}} (chenji {{change}})",
+    "paymentDate": "Tarehe ya malipo",
+    "method": "Njia",
+    "reference": "Kumbukumbu",
+    "customer": "Mteja",
+    "sale": "Mauzo",
+    "saleTotal": "Jumla ya mauzo",
+    "saleTotalPaid": "{{total}} · imelipwa {{paid}}",
+    "receivedBy": "Alipokea",
+    "recorded": "Ilirekodiwa",
+    "notes": "Maelezo",
+    "voidedOn": "Ilibatilishwa tarehe",
+    "voidedBy": "Ilibatilishwa na",
+    "voidReason": "Sababu ya kubatilisha"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Ripoti za mafuta",
+  "intro": "Ni fedha zilizoidhinishwa na matumizi halali (yasiyobatilishwa) pekee ndizo zinazohesabiwa.",
+  "tabsLabel": "Ripoti za mafuta",
+  "tabs": {
+    "consumption": "Matumizi",
+    "reconciliation": "Zilizotolewa dhidi ya zilizotumika",
+    "monthly": "Mwezi kwa mwezi"
+  },
+  "generate": "Tengeneza ripoti",
+  "openFull": "Fungua mwonekano kamili",
+  "back": "Rudi kwenye ripoti",
+  "print": "Chapisha",
+  "changeParams": "Badilisha vigezo",
+  "stats": {
+    "spent": "Zilizotumika",
+    "litres": "Lita",
+    "fills": "Mara za kujaza",
+    "funded": "Zilizotolewa",
+    "avgPrice": "Bei ya wastani / L",
+    "unspent": "Zisizotumika",
+    "used": "Zilizotumika"
+  },
+  "params": {
+    "report": "Ripoti",
+    "from": "Kuanzia",
+    "to": "Hadi",
+    "givenFrom": "Zilizotolewa kuanzia",
+    "givenTo": "hadi",
+    "vehicle": "Gari",
+    "driver": "Dereva",
+    "groupBy": "Panga kwa",
+    "year": "Mwaka",
+    "allVehicles": "Magari yote",
+    "allDrivers": "Madereva wote",
+    "byVehicle": "Kwa gari",
+    "byDriver": "Kwa dereva",
+    "filterVehicle": "Chuja kwa gari",
+    "filterDriver": "Chuja kwa dereva",
+    "none": "Hakuna vichujio: vyote vimejumuishwa."
+  },
+  "heads": {
+    "vehicle": "Gari",
+    "driver": "Dereva",
+    "fills": "Mara za kujaza",
+    "litres": "Lita",
+    "spent": "Zilizotumika",
+    "avgPrice": "Bei ya wastani / L",
+    "distance": "Umbali",
+    "kmPerLitre": "km / lita",
+    "lPer100": "L / 100 km",
+    "costPerKm": "Gharama / km",
+    "fundings": "Idadi ya utoaji",
+    "withMoneyLeft": "Zenye salio",
+    "funded": "Zilizotolewa",
+    "unspent": "Zisizotumika",
+    "usedPct": "Zilizotumika %",
+    "litresBought": "Lita zilizonunuliwa",
+    "month": "Mwezi"
+  },
+  "empty": {
+    "consumption": "Hakuna matumizi ya mafuta katika kipindi hiki.",
+    "reconciliation": "Hakuna fedha za mafuta zilizoidhinishwa katika kipindi hiki."
+  },
+  "note": "Umbali na km kwa lita huhesabu tu kujaza mara mbili mfululizo ambapo tanki lilijazwa na kuna usomaji wa odomita. Kujaza kwingine bado kunahesabiwa kwa lita na gharama.",
+  "create": {
+    "title": "Tengeneza ripoti ya mafuta",
+    "subtitle": "Chagua ripoti na vichujio vyake, kisha iendeshe. Hakuna kinachohifadhiwa: ripoti hukokotolewa moja kwa moja.",
+    "run": "Endesha ripoti"
+  },
+  "update": {
+    "title": "Badilisha vigezo vya ripoti",
+    "subtitle": "{{report}}: rekebisha vichujio kisha iendeshe tena.",
+    "run": "Tumia na uendeshe"
+  },
+  "view": {
+    "running": "Inapakia…"
+  }
+}

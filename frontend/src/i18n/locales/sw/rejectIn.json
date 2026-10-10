@@ -1,0 +1,79 @@
+{
+  "saving": "Inahifadhi…",
+  "registered": "{{count}} zimesajiliwa",
+  "newReturn": "+ Rejesho Jipya",
+  "allStatuses": "Hali zote",
+  "from": "Kuanzia",
+  "to": "Hadi",
+  "heads": {
+    "docNo": "Namba ya hati",
+    "date": "Tarehe",
+    "party": "Mteja",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu",
+    "lines": "Mistari",
+    "createdBy": "Imeundwa na",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "create": {
+    "title": "Rejesho jipya la mteja",
+    "subtitle": "Stoo haiongezeki hadi rejesho litakapowasilishwa na kuidhinishwa.",
+    "saveDraft": "Hifadhi kama rasimu",
+    "draftSaved": "Rasimu {{docNo}} imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari."
+  },
+  "edit": {
+    "title": "Hariri rejesho la mteja",
+    "subtitle": "{{doc}} — ni rasimu zako mwenyewe tu zinazoweza kuhaririwa.",
+    "back": "← Rudi",
+    "notEditable": "Rejesho hili liko katika hali ya {{status}} au ni la mtu mwingine, hivyo haliwezi kuhaririwa tena.",
+    "saveChanges": "Hifadhi mabadiliko",
+    "draftUpdated": "Rasimu imesasishwa."
+  },
+  "form": {
+    "dateReturned": "Tarehe ya kurejesha",
+    "party": "Mteja",
+    "reference": "Kumbukumbu (namba ya ankara ya mauzo au hati ya mkopo)",
+    "reason": "Sababu ya kurejesha (lazima)",
+    "itemsReturned": "Bidhaa zilizorejeshwa",
+    "qtyReturned": "Idadi iliyorejeshwa",
+    "item": "Bidhaa",
+    "selectItem": "Chagua bidhaa",
+    "itemOption": "{{sku}} — {{name}} (kwenye stoo: {{qty}} {{unit}})",
+    "qtyReturnedUnit": "Idadi iliyorejeshwa ({{unit}})",
+    "unitCost": "Gharama kwa kipimo",
+    "batchNo": "Namba ya bechi",
+    "expiryDate": "Tarehe ya kuisha muda",
+    "remarks": "Maelezo",
+    "removeLine": "Ondoa mstari",
+    "searchItems": "Tafuta bidhaa kwa jina, SKU au barcode",
+    "addItem": "Ongeza bidhaa nyingine"
+  },
+  "view": {
+    "fallbackTitle": "Rejesho la mteja",
+    "backToList": "← Rudi kwenye orodha",
+    "dateReturned": "Tarehe ya kurejesha",
+    "party": "Mteja",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu ya kurejesha",
+    "createdBy": "Imeundwa na",
+    "created": "Imeundwa",
+    "submitted": "Imewasilishwa",
+    "decision": "Uamuzi",
+    "decisionValue": "{{status}}, {{date}}",
+    "decisionNote": "Maelezo ya uamuzi",
+    "postedToStock": "Imewekwa kwenye stoo",
+    "item": "Bidhaa",
+    "quantity": "Idadi",
+    "batch": "Bechi",
+    "expiry": "Muda wa kuisha",
+    "unitCost": "Gharama kwa kipimo",
+    "remarks": "Maelezo",
+    "deleted": "Rejesho {{docNo}} limefutwa."
+  },
+  "list": {
+    "title": "Reject in (marejesho ya wateja)",
+    "search": "Tafuta namba ya hati, mteja au kumbukumbu",
+    "empty": "Hakuna marejesho ya wateja bado."
+  }
+}

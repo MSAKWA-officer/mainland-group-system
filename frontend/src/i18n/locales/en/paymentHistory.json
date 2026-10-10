@@ -1,0 +1,65 @@
+{
+  "title": "Payment history",
+  "subtitle": "Receipts for cash and credit sales, newest first.",
+  "summary": {
+    "totalReceived": "Total received",
+    "receipts": "Receipts",
+    "voidedAmount": "Voided amount",
+    "voidedReceipts": "Voided receipts"
+  },
+  "byMethod": "By method:",
+  "search": "Search receipt, sale, customer or reference",
+  "searchAria": "Search payments",
+  "statusAria": "Filter by status",
+  "status": {
+    "ACTIVE": "Active",
+    "VOIDED": "Voided",
+    "ALL": "All"
+  },
+  "saleTypeAria": "Filter by sale type",
+  "saleType": {
+    "ALL": "Cash + credit",
+    "CASH": "Cash sales",
+    "CREDIT": "Credit sales"
+  },
+  "methodAria": "Filter by method",
+  "allMethods": "All methods",
+  "clearCustomer": "Showing one customer · clear",
+  "columns": {
+    "receipt": "Receipt",
+    "date": "Date",
+    "customer": "Customer",
+    "sale": "Sale",
+    "method": "Method",
+    "amount": "Amount",
+    "receivedBy": "Received by",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "emptyFiltered": "No payments match your filters.",
+  "emptyNone": "No payments recorded yet.",
+  "viewTitle": "View",
+  "viewAria": "View {{no}}",
+  "view": {
+    "fallbackTitle": "Payment",
+    "activeReceipt": "Active receipt",
+    "voided": "Voided",
+    "back": "Back to payment history",
+    "amount": "Amount",
+    "cashHanded": "Cash handed over",
+    "cashHandedValue": "{{tendered}} (change {{change}})",
+    "paymentDate": "Payment date",
+    "method": "Method",
+    "reference": "Reference",
+    "customer": "Customer",
+    "sale": "Sale",
+    "saleTotal": "Sale total",
+    "saleTotalPaid": "{{total}} · paid {{paid}}",
+    "receivedBy": "Received by",
+    "recorded": "Recorded",
+    "notes": "Notes",
+    "voidedOn": "Voided on",
+    "voidedBy": "Voided by",
+    "voidReason": "Void reason"
+  }
+}

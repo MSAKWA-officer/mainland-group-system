@@ -1,0 +1,65 @@
+{
+  "title": "付款记录",
+  "subtitle": "现金销售和赊销的收款收据，最新的在前。",
+  "summary": {
+    "totalReceived": "收款总额",
+    "receipts": "收据数",
+    "voidedAmount": "作废金额",
+    "voidedReceipts": "作废收据数"
+  },
+  "byMethod": "按付款方式：",
+  "search": "搜索收据、销售单、客户或参考号",
+  "searchAria": "搜索付款",
+  "statusAria": "按状态筛选",
+  "status": {
+    "ACTIVE": "有效",
+    "VOIDED": "已作废",
+    "ALL": "全部"
+  },
+  "saleTypeAria": "按销售类型筛选",
+  "saleType": {
+    "ALL": "现金 + 赊销",
+    "CASH": "现金销售",
+    "CREDIT": "赊销"
+  },
+  "methodAria": "按付款方式筛选",
+  "allMethods": "所有付款方式",
+  "clearCustomer": "仅显示一位客户 · 清除",
+  "columns": {
+    "receipt": "收据",
+    "date": "日期",
+    "customer": "客户",
+    "sale": "销售单",
+    "method": "付款方式",
+    "amount": "金额",
+    "receivedBy": "收款人",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "emptyFiltered": "没有符合筛选条件的付款。",
+  "emptyNone": "尚未记录任何付款。",
+  "viewTitle": "查看",
+  "viewAria": "查看 {{no}}",
+  "view": {
+    "fallbackTitle": "付款",
+    "activeReceipt": "有效收据",
+    "voided": "已作废",
+    "back": "返回付款记录",
+    "amount": "金额",
+    "cashHanded": "客户付现金额",
+    "cashHandedValue": "{{tendered}}（找零 {{change}}）",
+    "paymentDate": "付款日期",
+    "method": "付款方式",
+    "reference": "参考号",
+    "customer": "客户",
+    "sale": "销售单",
+    "saleTotal": "销售总额",
+    "saleTotalPaid": "{{total}} · 已付 {{paid}}",
+    "receivedBy": "收款人",
+    "recorded": "记录时间",
+    "notes": "备注",
+    "voidedOn": "作废时间",
+    "voidedBy": "作废人",
+    "voidReason": "作废原因"
+  }
+}

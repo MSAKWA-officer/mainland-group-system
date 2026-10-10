@@ -1,0 +1,25 @@
+{
+  "state": {
+    "UNUSED": "Not used yet",
+    "PARTIAL": "Part used",
+    "SETTLED": "Fully used",
+    "ACTIVE": "Active",
+    "VOIDED": "Voided",
+    "INACTIVE": "Inactive",
+    "PENDING": "Waiting for approval",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected"
+  },
+  "fuelType": {
+    "DIESEL": "Diesel",
+    "PETROL": "Petrol",
+    "GAS": "Gas",
+    "OTHER": "Other"
+  },
+  "unit": {
+    "litres": "{{value}} L",
+    "km": "{{value}} km",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days"
+  }
+}

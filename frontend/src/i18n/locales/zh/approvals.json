@@ -1,0 +1,93 @@
+{
+  "title": "审批",
+  "registered": "共 {{total}} 条",
+  "newRequest": "+ 新建申请",
+  "empty": "暂无申请。点击“+ 新建申请”创建草稿，然后提交。",
+  "records": "{{total}} 条记录",
+  "previous": "上一页",
+  "next": "下一页",
+  "more": "更多",
+  "less": "收起",
+  "actionsCol": "操作",
+  "cols": {
+    "created": "创建时间",
+    "type": "类型",
+    "requestedBy": "申请人",
+    "submitted": "提交时间",
+    "status": "状态",
+    "decision": "决定",
+    "requestNote": "申请备注",
+    "decisionNote": "决定备注",
+    "executed": "执行时间",
+    "relatedRecord": "关联记录"
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "submit": "提交",
+    "cancel": "取消",
+    "approve": "批准",
+    "reject": "拒绝",
+    "delete": "删除"
+  },
+  "confirmDelete": "确定永久删除此申请？删除记录将保留在审计日志中。",
+  "rejectPrompt": "拒绝原因：",
+  "status": {
+    "DRAFT": "草稿",
+    "SUBMITTED": "已提交",
+    "APPROVED": "已批准",
+    "EXECUTED": "已执行",
+    "REJECTED": "已拒绝",
+    "CANCELLED": "已取消"
+  },
+  "types": {
+    "TEST_NOOP": "测试审批（无业务影响）",
+    "SALES_ORDER": "销售订单",
+    "CREDIT_SALE": "赊销",
+    "STOCK_RECEIVING": "库存入库",
+    "STOCK_ADJUSTMENT": "库存调整",
+    "STOCK_REJECT_IN": "退货入库（客户退货）",
+    "STOCK_REJECT_OUT": "退货出库（退给供应商）",
+    "STOCK_EXPIRED": "过期库存核销",
+    "STOCK_DAMAGED": "损坏库存核销"
+  },
+  "entities": {
+    "SalesOrder": "销售订单",
+    "Sale": "销售",
+    "StockDocument": "库存单据",
+    "ApprovalRequest": "审批申请"
+  },
+  "view": {
+    "defaultTitle": "审批申请",
+    "loading": "加载中…",
+    "back": "← 返回列表",
+    "requestedBy": "申请人",
+    "created": "创建时间",
+    "submitted": "提交时间",
+    "note": "备注",
+    "decision": "决定",
+    "decisionNote": "决定备注",
+    "executed": "执行时间",
+    "deleted": "申请已删除。"
+  },
+  "form": {
+    "requestType": "申请类型",
+    "note": "备注",
+    "saving": "保存中…"
+  },
+  "create": {
+    "title": "新建审批申请",
+    "subtitle": "在您提交草稿之前，不会发送审批。",
+    "back": "← 返回列表",
+    "saveDraft": "保存为草稿",
+    "saved": "草稿已保存。准备好后请提交。"
+  },
+  "edit": {
+    "title": "编辑审批申请",
+    "subtitle": "只有草稿可以编辑。",
+    "back": "← 返回",
+    "locked": "此申请状态为“{{status}}”，无法再编辑。",
+    "saveChanges": "保存更改",
+    "updated": "草稿已更新。"
+  }
+}

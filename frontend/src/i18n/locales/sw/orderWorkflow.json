@@ -1,0 +1,200 @@
+{
+  "title": "Idhini za oda",
+  "subtitle": "Muuzaji → Mtunza stoo → Meneja → Muuzaji. {{total}} kwenye mwonekano huu",
+  "tabsAria": "Hatua ya idhini",
+  "tabAll": "Zote",
+  "stages": {
+    "STOREKEEPER": "Mtunza stoo",
+    "MANAGER": "Meneja",
+    "SALESPERSON": "Muuzaji",
+    "CLOSED": "Zilizofungwa"
+  },
+  "search": "Tafuta namba ya oda au mteja",
+  "searchAria": "Tafuta oda",
+  "filterStatusAria": "Chuja kwa hali",
+  "allStatuses": "Hali zote",
+  "columns": {
+    "orderNo": "Namba ya oda",
+    "date": "Tarehe",
+    "customer": "Mteja",
+    "salesperson": "Muuzaji",
+    "total": "Jumla",
+    "attempt": "Jaribio",
+    "status": "Hali",
+    "with": "Iko kwa",
+    "lastUpdate": "Sasisho la mwisho"
+  },
+  "yourTurn": "Zamu yako",
+  "emptyFiltered": "Hakuna oda zinazolingana na mwonekano huu.",
+  "emptyNone": "Hakuna oda zilizowasilishwa kwa idhini bado.",
+  "viewAria": "Angalia {{orderNo}}",
+  "attempt": "Jaribio la {{n}}",
+  "waitingFor": "Inasubiri {{role}}.",
+  "yourTurnSentence": "Ni zamu yako.",
+  "roles": {
+    "storekeeper": "mtunza stoo",
+    "manager": "meneja",
+    "salesperson": "muuzaji"
+  },
+  "actorRoles": {
+    "OWNER": "Mmiliki",
+    "ADMIN": "Msimamizi",
+    "MANAGER": "Meneja",
+    "STOREKEEPER": "Mtunza stoo",
+    "SALESPERSON": "Muuzaji"
+  },
+  "status": {
+    "AWAITING_STOREKEEPER": {
+      "label": "Inasubiri mtunza stoo",
+      "hint": "Mtunza stoo lazima akague bidhaa, kisha athibitishe oda au airudishe."
+    },
+    "AWAITING_MANAGER": {
+      "label": "Inasubiri meneja",
+      "hint": "Bidhaa zimethibitishwa. Meneja lazima aidhinishe, akatae au airudishe oda."
+    },
+    "AWAITING_SALESPERSON": {
+      "label": "Imeidhinishwa - inasubiri uthibitisho",
+      "hint": "Oda imeidhinishwa na bidhaa zimetolewa. Muuzaji lazima athibitishe makabidhiano."
+    },
+    "RETURNED": {
+      "label": "Imerudishwa kwa marekebisho",
+      "hint": "Oda imerudishwa. Muuzaji lazima asahihishe rasimu na aiwasilishe tena."
+    },
+    "COMPLETED": {
+      "label": "Imekamilika",
+      "hint": "Muuzaji amethibitisha makabidhiano. Oda hii imefungwa."
+    },
+    "REJECTED": {
+      "label": "Imekataliwa",
+      "hint": "Meneja ameikataa oda hii. Imefungwa."
+    },
+    "CANCELLED": {
+      "label": "Imeghairiwa",
+      "hint": "Oda hii imeghairiwa. Imefungwa."
+    }
+  },
+  "tracker": {
+    "aria": "Maendeleo ya idhini",
+    "steps": {
+      "submit": "Muuzaji anawasilisha",
+      "verify": "Mtunza stoo anathibitisha",
+      "decide": "Meneja anaamua",
+      "confirm": "Muuzaji anathibitisha"
+    },
+    "captions": {
+      "done": "Imekamilika",
+      "waiting": "Inasubiri",
+      "returned": "Imerudishwa",
+      "rejected": "Imekataliwa"
+    }
+  },
+  "events": {
+    "SUBMITTED": "Imewasilishwa kwa idhini",
+    "RESUBMITTED": "Imesahihishwa na kuwasilishwa tena",
+    "STOREKEEPER_VERIFIED": "Bidhaa zimethibitishwa na mtunza stoo",
+    "STOREKEEPER_RETURNED": "Imerudishwa na mtunza stoo",
+    "MANAGER_APPROVED": "Imeidhinishwa na meneja - bidhaa zimetolewa",
+    "MANAGER_REJECTED": "Imekataliwa na meneja",
+    "MANAGER_RETURNED": "Imerudishwa na meneja",
+    "ACKNOWLEDGED": "Imethibitishwa na muuzaji",
+    "CANCELLED": "Oda imeghairiwa"
+  },
+  "timeline": {
+    "empty": "Hakuna historia bado.",
+    "unknownUser": "Mtumiaji asiyejulikana"
+  },
+  "panel": {
+    "title": "Maendeleo ya idhini",
+    "openDetails": "Fungua maelezo ya idhini",
+    "returned": "Imerudishwa na {{role}}:",
+    "rejected": "Imekataliwa:"
+  },
+  "view": {
+    "fallbackTitle": "Idhini ya oda",
+    "loading": "Inapakia…",
+    "backToList": "Rudi kwenye orodha",
+    "returnedBy": "Imerudishwa na {{role}}",
+    "rejected": "Imekataliwa",
+    "storekeeperNote": "Maelezo ya mtunza stoo",
+    "managerNote": "Maelezo ya meneja",
+    "salespersonNote": "Maelezo ya muuzaji",
+    "order": "Oda",
+    "orderNo": "Oda",
+    "customer": "Mteja",
+    "salesperson": "Muuzaji",
+    "orderDate": "Tarehe ya oda",
+    "deliveryDate": "Tarehe ya kuwasilisha",
+    "notes": "Maelezo",
+    "submitted": "Imewasilishwa",
+    "submittedBy": "{{when}} na {{who}}",
+    "items": "Bidhaa",
+    "history": "Historia",
+    "inStock": "Zilizopo stoo",
+    "short": "Hazitoshi"
+  },
+  "lines": {
+    "sku": "SKU",
+    "item": "Bidhaa",
+    "quantity": "Kiasi",
+    "unitPrice": "Bei ya kimoja",
+    "discountPercent": "Punguzo %",
+    "lineTotal": "Jumla ya mstari"
+  },
+  "totals": {
+    "subtotal": "Jumla ndogo",
+    "discount": "Punguzo",
+    "tax": "Kodi ({{rate}}%)",
+    "total": "Jumla"
+  },
+  "actions": {
+    "storekeeperVerify": {
+      "label": "Thibitisha bidhaa",
+      "go": "Thibitisha na tuma kwa meneja",
+      "text": "Thibitisha kuwa bidhaa za kila mstari zinapatikana. Oda itaendelea kwa meneja.",
+      "done": "Bidhaa zimethibitishwa. Oda sasa iko kwa meneja."
+    },
+    "storekeeperReturn": {
+      "label": "Rudisha kwa muuzaji",
+      "go": "Rudisha oda",
+      "text": "Tumia hii bidhaa zikikosekana au oda ikiwa na kosa. Muuzaji ataipokea kama rasimu ya kusahihisha.",
+      "done": "Oda imerudishwa kwa muuzaji."
+    },
+    "managerApprove": {
+      "label": "Idhinisha",
+      "go": "Idhinisha na toa bidhaa",
+      "text": "Kuidhinisha kunatoa bidhaa za kila mstari. Kisha muuzaji ataombwa kuthibitisha makabidhiano.",
+      "done": "Oda imeidhinishwa na bidhaa zimetolewa."
+    },
+    "managerReject": {
+      "label": "Kataa",
+      "go": "Kataa oda",
+      "text": "Kukataa ni uamuzi wa mwisho. Oda inafungwa na haiwezi kuwasilishwa tena.",
+      "done": "Oda imekataliwa."
+    },
+    "managerReturn": {
+      "label": "Rudisha kwa marekebisho",
+      "go": "Rudisha oda",
+      "text": "Muuzaji atapokea oda kama rasimu, ataisahihisha na kuiwasilisha tena tangu mwanzo.",
+      "done": "Oda imerudishwa kwa muuzaji."
+    },
+    "acknowledge": {
+      "label": "Thibitisha makabidhiano",
+      "go": "Thibitisha na funga",
+      "text": "Thibitisha kuwa bidhaa zilizoidhinishwa zimekabidhiwa. Hii inafunga oda.",
+      "done": "Oda imethibitishwa na kufungwa."
+    }
+  },
+  "dialog": {
+    "reasonRequired": "Sababu (lazima)",
+    "noteOptional": "Maelezo (si lazima)",
+    "reasonMin": "Sababu yenye angalau herufi 3 inahitajika.",
+    "working": "Inafanya kazi…",
+    "cancel": "Ghairi"
+  },
+  "resubmit": {
+    "editOrder": "Hariri oda",
+    "submitAgain": "Wasilisha tena",
+    "confirm": "Wasilisha {{orderNo}} kwa idhini tena? Itarudi kwa mtunza stoo.",
+    "done": "Oda imewasilishwa tena. Sasa iko kwa mtunza stoo."
+  }
+}

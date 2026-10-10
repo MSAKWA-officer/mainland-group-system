@@ -1,0 +1,90 @@
+{
+  "title": "客户",
+  "registered": "已登记 {{count}} 位",
+  "newButton": "新建客户",
+  "search": "搜索名称、编码、电话、邮箱或税号",
+  "searchAria": "搜索客户",
+  "filterTypeAria": "按类型筛选",
+  "filterStatusAria": "按状态筛选",
+  "filterSalespersonAria": "按销售员筛选",
+  "allTypes": "所有类型",
+  "allStatuses": "所有状态",
+  "allSalespersons": "所有销售员",
+  "types": {
+    "INDIVIDUAL": "个人",
+    "COMPANY": "公司"
+  },
+  "columns": {
+    "code": "编码",
+    "name": "名称",
+    "type": "类型",
+    "phone": "电话",
+    "city": "城市",
+    "salesperson": "销售员",
+    "orders": "订单",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "emptyFiltered": "没有符合筛选条件的客户。",
+  "emptyNone": "暂无客户。点击“新建客户”添加第一位客户。",
+  "actions": {
+    "deactivate": "停用",
+    "activate": "启用",
+    "deactivatePrompt": "停用“{{name}}”的原因：",
+    "confirmDelete": "永久删除客户“{{name}}”？此操作无法撤销。"
+  },
+  "backToList": "返回列表",
+  "back": "返回",
+  "saving": "保存中…",
+  "form": {
+    "name": "名称",
+    "type": "类型",
+    "contactPerson": "联系人",
+    "phone": "电话",
+    "phonePlaceholder": "+255 ...",
+    "email": "邮箱",
+    "tin": "税号 (TIN)",
+    "address": "地址",
+    "city": "城市",
+    "creditLimit": "信用额度",
+    "paymentTerms": "付款期限（天）",
+    "salesperson": "指派销售员（可选）",
+    "notAssigned": "未指派",
+    "autoAssigned": "该客户将自动指派给您。",
+    "notes": "备注"
+  },
+  "create": {
+    "title": "新建客户",
+    "subtitle": "登记客户后即可为其创建销售订单。",
+    "save": "保存客户",
+    "done": "客户已创建。"
+  },
+  "edit": {
+    "title": "编辑客户",
+    "save": "保存更改",
+    "done": "客户已更新。"
+  },
+  "view": {
+    "fallbackTitle": "客户",
+    "code": "编码",
+    "name": "名称",
+    "type": "类型",
+    "contactPerson": "联系人",
+    "phone": "电话",
+    "email": "邮箱",
+    "address": "地址",
+    "city": "城市",
+    "tin": "税号",
+    "creditLimit": "信用额度",
+    "paymentTerms": "付款期限",
+    "paymentDaysOne": "{{count}} 天",
+    "paymentDaysOther": "{{count}} 天",
+    "salesperson": "销售员",
+    "orders": "订单",
+    "status": "状态",
+    "notes": "备注",
+    "created": "创建时间",
+    "updated": "最后更新",
+    "deleted": "客户已删除。"
+  }
+}

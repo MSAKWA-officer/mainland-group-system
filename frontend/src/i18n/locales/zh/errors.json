@@ -1,0 +1,11 @@
+{
+  "VALIDATION_ERROR": "请检查标记的字段",
+  "DUPLICATE": "该记录已存在",
+  "NOT_FOUND": "未找到记录",
+  "UNAUTHORIZED": "登录已过期，请重新登录",
+  "FORBIDDEN": "您没有执行此操作的权限",
+  "CONFLICT": "此操作与记录的当前状态冲突",
+  "INTERNAL_ERROR": "服务器出错，请重试",
+  "NETWORK_ERROR": "无法连接服务器，请检查网络",
+  "UNKNOWN": "发生意外错误"
+}

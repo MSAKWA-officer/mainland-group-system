@@ -1,0 +1,119 @@
+{
+  "title": "Mauzo",
+  "registered": "Mauzo {{total}} kwenye rejista",
+  "cashSales": "Mauzo ya fedha taslimu",
+  "creditSales": "Mauzo ya mkopo",
+  "search": "Tafuta namba ya mauzo au mteja",
+  "searchAria": "Tafuta mauzo",
+  "filterTypeAria": "Chuja kwa aina",
+  "filterStatusAria": "Chuja kwa hali",
+  "filterPaymentAria": "Chuja kwa malipo",
+  "allTypes": "Aina zote",
+  "allStatuses": "Hali zote",
+  "allPayments": "Malipo yote",
+  "overdueOnly": "Yaliyochelewa tu",
+  "from": "Kuanzia",
+  "to": "Hadi",
+  "columns": {
+    "saleNo": "Namba ya mauzo",
+    "date": "Tarehe",
+    "type": "Aina",
+    "customer": "Mteja",
+    "salesperson": "Muuzaji",
+    "total": "Jumla",
+    "balance": "Salio",
+    "payment": "Malipo",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "emptyFiltered": "Hakuna mauzo yanayolingana na vichujio vyako.",
+  "emptyNone": "Hakuna mauzo bado. Mauzo ya fedha taslimu na ya mkopo yataonekana hapa mara tu yanapofanyika.",
+  "overdue": "Yamechelewa {{date}}",
+  "walkIn": "Mteja wa papo hapo",
+  "summary": {
+    "totalSales": "Jumla ya mauzo",
+    "cashSales": "Mauzo ya fedha taslimu",
+    "creditSales": "Mauzo ya mkopo",
+    "creditOutstanding": "Mkopo ambao haujalipwa",
+    "completed": "{{count}} yamekamilika",
+    "completedVoided": "{{count}} yamekamilika, {{voided}} yamebatilishwa",
+    "salesCount_one": "mauzo {{count}}",
+    "salesCount_other": "mauzo {{count}}",
+    "collected": "Yaliyokusanywa {{amount}}"
+  },
+  "status": {
+    "DRAFT": "Rasimu",
+    "SUBMITTED": "Inasubiri idhini",
+    "COMPLETED": "Yamekamilika",
+    "REJECTED": "Yamekataliwa",
+    "CANCELLED": "Yameghairiwa",
+    "VOIDED": "Yamebatilishwa"
+  },
+  "pay": {
+    "UNPAID": "Hayajalipwa",
+    "PARTIAL": "Yamelipwa sehemu",
+    "PAID": "Yamelipwa"
+  },
+  "type": {
+    "CASH": "Fedha taslimu",
+    "CREDIT": "Mkopo"
+  },
+  "method": {
+    "CASH": "Fedha taslimu",
+    "MOBILE_MONEY": "Pesa ya simu",
+    "BANK": "Benki",
+    "CARD": "Kadi",
+    "CHEQUE": "Hundi"
+  },
+  "view": {
+    "fallbackTitle": "Mauzo",
+    "backToList": "Rudi kwenye orodha",
+    "overdueBanner": "Yamechelewa: {{amount}} ilitakiwa kulipwa tarehe {{date}}.",
+    "customer": "Mteja",
+    "customerPhone": "Simu ya mteja",
+    "salesperson": "Muuzaji",
+    "saleDate": "Tarehe ya mauzo",
+    "dueDate": "Tarehe ya mwisho wa malipo",
+    "notes": "Maelezo",
+    "createdBy": "Imeundwa na",
+    "created": "Imeundwa",
+    "submitted": "Imewasilishwa",
+    "decisionNote": "Maelezo ya uamuzi",
+    "completed": "Yamekamilika",
+    "stockDocument": "Hati ya stoo",
+    "voided": "Yamebatilishwa",
+    "voidReason": "Sababu ya kubatilisha",
+    "items": "Bidhaa",
+    "payments": "Malipo",
+    "noPayments": "Hakuna malipo yaliyorekodiwa.",
+    "paymentValid": "Halali",
+    "paymentVoided": "Yamebatilishwa",
+    "paid": "Yaliyolipwa",
+    "balance": "Salio",
+    "ownerHintCredit": "Ili kuidhinisha, kurekodi malipo au kubatilisha mauzo haya, yafungue kwenye <l>Mauzo ya mkopo</l>.",
+    "ownerHintCash": "Ili kubatilisha mauzo haya, yafungue kwenye <l>Mauzo ya fedha taslimu</l>."
+  },
+  "lines": {
+    "sku": "SKU",
+    "item": "Bidhaa",
+    "quantity": "Kiasi",
+    "unitPrice": "Bei ya kimoja",
+    "discountPercent": "Punguzo %",
+    "lineTotal": "Jumla ya mstari"
+  },
+  "paymentCols": {
+    "receipt": "Risiti",
+    "date": "Tarehe",
+    "method": "Njia",
+    "reference": "Kumbukumbu",
+    "receivedBy": "Imepokelewa na",
+    "amount": "Kiasi",
+    "state": "Hali"
+  },
+  "totals": {
+    "subtotal": "Jumla ndogo",
+    "discount": "Punguzo",
+    "tax": "Kodi ({{rate}}%)",
+    "total": "Jumla"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "title": "Approvals",
+  "registered": "{{total}} registered",
+  "newRequest": "+ New Request",
+  "empty": "No requests yet. Use “+ New Request” to create a draft, then submit it.",
+  "records": "{{total}} records",
+  "previous": "Previous",
+  "next": "Next",
+  "more": "More",
+  "less": "Less",
+  "actionsCol": "Actions",
+  "cols": {
+    "created": "Created",
+    "type": "Type",
+    "requestedBy": "Requested by",
+    "submitted": "Submitted",
+    "status": "Status",
+    "decision": "Decision",
+    "requestNote": "Request note",
+    "decisionNote": "Decision note",
+    "executed": "Executed",
+    "relatedRecord": "Related record"
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "approve": "Approve",
+    "reject": "Reject",
+    "delete": "Delete"
+  },
+  "confirmDelete": "Delete this request permanently? The deletion is kept in the audit log.",
+  "rejectPrompt": "Reason for rejecting:",
+  "status": {
+    "DRAFT": "Draft",
+    "SUBMITTED": "Submitted",
+    "APPROVED": "Approved",
+    "EXECUTED": "Executed",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled"
+  },
+  "types": {
+    "TEST_NOOP": "Test approval (no business effect)",
+    "SALES_ORDER": "Sales order",
+    "CREDIT_SALE": "Credit sale",
+    "STOCK_RECEIVING": "Stock receiving",
+    "STOCK_ADJUSTMENT": "Stock adjustment",
+    "STOCK_REJECT_IN": "Reject in (customer return)",
+    "STOCK_REJECT_OUT": "Reject out (return to supplier)",
+    "STOCK_EXPIRED": "Expired stock write-off",
+    "STOCK_DAMAGED": "Damaged stock write-off"
+  },
+  "entities": {
+    "SalesOrder": "Sales order",
+    "Sale": "Sale",
+    "StockDocument": "Stock document",
+    "ApprovalRequest": "Approval request"
+  },
+  "view": {
+    "defaultTitle": "Approval request",
+    "loading": "Loading…",
+    "back": "← Back to list",
+    "requestedBy": "Requested by",
+    "created": "Created",
+    "submitted": "Submitted",
+    "note": "Note",
+    "decision": "Decision",
+    "decisionNote": "Decision note",
+    "executed": "Executed",
+    "deleted": "Request deleted."
+  },
+  "form": {
+    "requestType": "Request type",
+    "note": "Note",
+    "saving": "Saving…"
+  },
+  "create": {
+    "title": "New approval request",
+    "subtitle": "Nothing is sent for approval until you submit the draft.",
+    "back": "← Back to list",
+    "saveDraft": "Save as draft",
+    "saved": "Draft saved. Submit it when you are ready."
+  },
+  "edit": {
+    "title": "Edit approval request",
+    "subtitle": "Only drafts can be edited.",
+    "back": "← Back",
+    "locked": "This request is {{status}} and can no longer be edited.",
+    "saveChanges": "Save changes",
+    "updated": "Draft updated."
+  }
+}

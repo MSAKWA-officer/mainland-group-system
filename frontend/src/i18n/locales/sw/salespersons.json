@@ -1,0 +1,89 @@
+{
+  "title": "Wauzaji",
+  "registered": "{{count}} waliosajiliwa",
+  "newButton": "Muuzaji Mpya",
+  "search": "Tafuta jina, msimbo, simu au mkoa",
+  "searchAria": "Tafuta wauzaji",
+  "filterStatusAria": "Chuja kwa hali",
+  "allStatuses": "Hali zote",
+  "columns": {
+    "code": "Msimbo",
+    "name": "Jina",
+    "region": "Mkoa",
+    "phone": "Simu",
+    "loginAccount": "Akaunti ya kuingia",
+    "customers": "Wateja",
+    "orders": "Oda",
+    "commission": "Kamisheni",
+    "target": "Lengo",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "emptyFiltered": "Hakuna wauzaji wanaolingana na vichujio vyako.",
+  "emptyNone": "Bado hakuna wauzaji. Tumia “Muuzaji Mpya” kuongeza wa kwanza.",
+  "actions": {
+    "deactivate": "Zima",
+    "activate": "Washa",
+    "deactivatePrompt": "Sababu ya kumzima “{{name}}”:",
+    "confirmDelete": "Mfute muuzaji “{{name}}” kabisa? Kitendo hiki hakiwezi kutenguliwa."
+  },
+  "backToList": "Rudi kwenye orodha",
+  "back": "Rudi",
+  "saving": "Inahifadhi…",
+  "form": {
+    "loginAccount": "Akaunti ya kuingia (hiari)",
+    "notLinked": "Haijaunganishwa",
+    "alreadyLinked": "tayari imeunganishwa",
+    "linkHint": "Unganisha akaunti anayotumia mtu huyu kuingia. Ndiyo inayomwezesha kuona wateja na oda zake mwenyewe.",
+    "fullName": "Jina kamili",
+    "fullNameDefault": "Itatumia jina la akaunti",
+    "region": "Mkoa",
+    "phone": "Simu",
+    "phonePlaceholder": "+255 ...",
+    "email": "Barua pepe",
+    "commissionRate": "Kiwango cha kamisheni (%)",
+    "monthlyTarget": "Lengo la mwezi"
+  },
+  "create": {
+    "title": "Muuzaji mpya",
+    "subtitle": "Sajili muuzaji ili wateja na oda ziweze kupangiwa kwake.",
+    "save": "Hifadhi muuzaji",
+    "done": "Muuzaji ameundwa."
+  },
+  "edit": {
+    "title": "Hariri muuzaji",
+    "save": "Hifadhi mabadiliko",
+    "done": "Muuzaji amesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Muuzaji",
+    "code": "Msimbo",
+    "name": "Jina",
+    "region": "Mkoa",
+    "phone": "Simu",
+    "email": "Barua pepe",
+    "loginAccount": "Akaunti ya kuingia",
+    "commissionRate": "Kiwango cha kamisheni",
+    "monthlyTarget": "Lengo la mwezi",
+    "customers": "Wateja",
+    "orders": "Oda",
+    "status": "Hali",
+    "created": "Imeundwa",
+    "updated": "Ilisasishwa mwisho",
+    "deleted": "Muuzaji amefutwa."
+  },
+  "perf": {
+    "title": "Utendaji wa mwezi",
+    "subtitle": "Oda zilizothibitishwa pekee. Mauzo halisi ni baada ya punguzo na kabla ya kodi.",
+    "monthAria": "Mwezi",
+    "confirmedOrders": "Oda zilizothibitishwa",
+    "netSales": "Mauzo halisi",
+    "grossTotal": "Jumla kuu",
+    "pendingApproval": "Zinazosubiri idhini",
+    "activeCustomers": "Wateja hai",
+    "target": "Lengo",
+    "targetReached": "Lengo lililofikiwa",
+    "noTarget": "Hakuna lengo lililowekwa",
+    "commissionEarned": "Kamisheni iliyopatikana"
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "title": "订单审批",
+  "subtitle": "销售员 → 仓管员 → 经理 → 销售员。当前视图共 {{total}} 条",
+  "tabsAria": "审批阶段",
+  "tabAll": "全部",
+  "stages": {
+    "STOREKEEPER": "仓管员",
+    "MANAGER": "经理",
+    "SALESPERSON": "销售员",
+    "CLOSED": "已关闭"
+  },
+  "search": "搜索订单号或客户",
+  "searchAria": "搜索订单",
+  "filterStatusAria": "按状态筛选",
+  "allStatuses": "所有状态",
+  "columns": {
+    "orderNo": "订单号",
+    "date": "日期",
+    "customer": "客户",
+    "salesperson": "销售员",
+    "total": "合计",
+    "attempt": "第几次",
+    "status": "状态",
+    "with": "当前处理人",
+    "lastUpdate": "最后更新"
+  },
+  "yourTurn": "轮到您处理",
+  "emptyFiltered": "没有符合当前视图的订单。",
+  "emptyNone": "尚无订单提交审批。",
+  "viewAria": "查看 {{orderNo}}",
+  "attempt": "第 {{n}} 次",
+  "waitingFor": "等待{{role}}处理。",
+  "yourTurnSentence": "轮到您处理了。",
+  "roles": {
+    "storekeeper": "仓管员",
+    "manager": "经理",
+    "salesperson": "销售员"
+  },
+  "actorRoles": {
+    "OWNER": "所有者",
+    "ADMIN": "管理员",
+    "MANAGER": "经理",
+    "STOREKEEPER": "仓管员",
+    "SALESPERSON": "销售员"
+  },
+  "status": {
+    "AWAITING_STOREKEEPER": {
+      "label": "等待仓管员",
+      "hint": "仓管员必须检查库存，然后核实订单或将其退回。"
+    },
+    "AWAITING_MANAGER": {
+      "label": "等待经理",
+      "hint": "库存已核实。经理必须批准、拒绝或退回订单。"
+    },
+    "AWAITING_SALESPERSON": {
+      "label": "已批准 - 等待确认",
+      "hint": "订单已批准且库存已出库。销售员必须确认交接。"
+    },
+    "RETURNED": {
+      "label": "已退回待修改",
+      "hint": "订单已被退回。销售员必须修改草稿并重新提交。"
+    },
+    "COMPLETED": {
+      "label": "已完成",
+      "hint": "销售员已确认交接。此订单已关闭。"
+    },
+    "REJECTED": {
+      "label": "已拒绝",
+      "hint": "经理已拒绝此订单。订单已关闭。"
+    },
+    "CANCELLED": {
+      "label": "已取消",
+      "hint": "此订单已取消。订单已关闭。"
+    }
+  },
+  "tracker": {
+    "aria": "审批进度",
+    "steps": {
+      "submit": "销售员提交",
+      "verify": "仓管员核实",
+      "decide": "经理决定",
+      "confirm": "销售员确认"
+    },
+    "captions": {
+      "done": "已完成",
+      "waiting": "等待中",
+      "returned": "已退回",
+      "rejected": "已拒绝"
+    }
+  },
+  "events": {
+    "SUBMITTED": "已提交审批",
+    "RESUBMITTED": "已修改并重新提交",
+    "STOREKEEPER_VERIFIED": "仓管员已核实库存",
+    "STOREKEEPER_RETURNED": "仓管员已退回",
+    "MANAGER_APPROVED": "经理已批准 - 库存已出库",
+    "MANAGER_REJECTED": "经理已拒绝",
+    "MANAGER_RETURNED": "经理已退回",
+    "ACKNOWLEDGED": "销售员已确认",
+    "CANCELLED": "订单已取消"
+  },
+  "timeline": {
+    "empty": "暂无历史记录。",
+    "unknownUser": "未知用户"
+  },
+  "panel": {
+    "title": "审批进度",
+    "openDetails": "打开审批详情",
+    "returned": "{{role}}已退回：",
+    "rejected": "已拒绝："
+  },
+  "view": {
+    "fallbackTitle": "订单审批",
+    "loading": "加载中…",
+    "backToList": "返回列表",
+    "returnedBy": "{{role}}已退回",
+    "rejected": "已拒绝",
+    "storekeeperNote": "仓管员备注",
+    "managerNote": "经理备注",
+    "salespersonNote": "销售员备注",
+    "order": "订单",
+    "orderNo": "订单",
+    "customer": "客户",
+    "salesperson": "销售员",
+    "orderDate": "订单日期",
+    "deliveryDate": "交货日期",
+    "notes": "备注",
+    "submitted": "提交时间",
+    "submittedBy": "{{when}}，提交人：{{who}}",
+    "items": "商品",
+    "history": "历史记录",
+    "inStock": "库存",
+    "short": "库存不足"
+  },
+  "lines": {
+    "sku": "SKU",
+    "item": "商品",
+    "quantity": "数量",
+    "unitPrice": "单价",
+    "discountPercent": "折扣 %",
+    "lineTotal": "行合计"
+  },
+  "totals": {
+    "subtotal": "小计",
+    "discount": "折扣",
+    "tax": "税额（{{rate}}%）",
+    "total": "合计"
+  },
+  "actions": {
+    "storekeeperVerify": {
+      "label": "核实库存",
+      "go": "核实并发送给经理",
+      "text": "确认每一行商品的库存都充足。订单将转交经理处理。",
+      "done": "库存已核实。订单现在由经理处理。"
+    },
+    "storekeeperReturn": {
+      "label": "退回给销售员",
+      "go": "退回订单",
+      "text": "库存不足或订单有误时使用。销售员将收到退回的草稿并进行修改。",
+      "done": "订单已退回给销售员。"
+    },
+    "managerApprove": {
+      "label": "批准",
+      "go": "批准并出库",
+      "text": "批准后每一行商品都将出库。随后销售员需确认交接。",
+      "done": "订单已批准，库存已出库。"
+    },
+    "managerReject": {
+      "label": "拒绝",
+      "go": "拒绝订单",
+      "text": "拒绝是最终决定。订单将关闭，无法再次提交。",
+      "done": "订单已拒绝。"
+    },
+    "managerReturn": {
+      "label": "退回修改",
+      "go": "退回订单",
+      "text": "销售员将收到退回的草稿，修改后需从头重新提交。",
+      "done": "订单已退回给销售员。"
+    },
+    "acknowledge": {
+      "label": "确认交接",
+      "go": "确认并关闭",
+      "text": "确认已批准的货物已交接。这将关闭订单。",
+      "done": "订单已确认并关闭。"
+    }
+  },
+  "dialog": {
+    "reasonRequired": "原因（必填）",
+    "noteOptional": "备注（可选）",
+    "reasonMin": "原因至少需要 3 个字符。",
+    "working": "处理中…",
+    "cancel": "取消"
+  },
+  "resubmit": {
+    "editOrder": "编辑订单",
+    "submitAgain": "重新提交",
+    "confirm": "重新提交 {{orderNo}} 审批？订单将回到仓管员处。",
+    "done": "订单已重新提交，现在由仓管员处理。"
+  }
+}

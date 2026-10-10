@@ -1,0 +1,60 @@
+{
+  "title": "Stock movements",
+  "recorded": "{{count}} recorded — a permanent ledger that cannot be edited or deleted.",
+  "types": {
+    "RECEIVING": "Stock receiving",
+    "ADJUSTMENT": "Adjustment",
+    "REJECT_IN": "Reject in",
+    "REJECT_OUT": "Reject out",
+    "EXPIRED": "Expired write-off",
+    "DAMAGED": "Damaged write-off"
+  },
+  "direction": {
+    "IN": "In (+)",
+    "OUT": "Out (−)"
+  },
+  "filters": {
+    "allItems": "All items",
+    "allTypes": "All types",
+    "allDirections": "In and out",
+    "from": "From",
+    "to": "To"
+  },
+  "heads": {
+    "date": "Date",
+    "type": "Type",
+    "document": "Document",
+    "item": "Item",
+    "batch": "Batch",
+    "direction": "Direction",
+    "quantity": "Quantity",
+    "balanceAfter": "Balance after",
+    "unitCost": "Unit cost",
+    "by": "By",
+    "actions": "Actions"
+  },
+  "empty": "No movements found.",
+  "actions": {
+    "view": "View",
+    "openDocument": "Open source document"
+  },
+  "view": {
+    "fallbackTitle": "Stock movement",
+    "title": "Movement #{{id}}",
+    "backToList": "← Back to list",
+    "dateTime": "Date and time",
+    "type": "Type",
+    "document": "Document",
+    "reference": "Reference",
+    "party": "Supplier / party",
+    "item": "Item",
+    "batch": "Batch",
+    "expiryDate": "Expiry date",
+    "direction": "Direction",
+    "quantity": "Quantity",
+    "balanceAfter": "Balance after",
+    "unitCost": "Unit cost",
+    "performedBy": "Performed by",
+    "note": "Note"
+  }
+}

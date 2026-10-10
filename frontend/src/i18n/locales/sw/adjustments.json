@@ -1,0 +1,58 @@
+{
+  "title": "Marekebisho ya stoo",
+  "registered": "{{total}} yamesajiliwa",
+  "search": "Tafuta namba ya hati au kumbukumbu",
+  "allStatuses": "Hali zote",
+  "to": "Hadi",
+  "cols": {
+    "docNo": "Namba ya hati",
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu",
+    "lines": "Mistari",
+    "createdBy": "Imeundwa na",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "empty": "Hakuna marekebisho bado.",
+  "newTitle": "Marekebisho mapya ya stoo",
+  "newSubtitle": "Stoo haibadiliki hadi marekebisho yawasilishwe na kuidhinishwa.",
+  "saveDraft": "Hifadhi kama rasimu",
+  "saving": "Inahifadhi…",
+  "saveChanges": "Hifadhi mabadiliko",
+  "draftSaved": "Rasimu {{docNo}} imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari.",
+  "draftUpdated": "Rasimu imesasishwa.",
+  "editTitle": "Hariri marekebisho ya stoo",
+  "editSubtitle": "{{docNo}} — rasimu zako mwenyewe pekee ndizo zinaweza kuhaririwa.",
+  "back": "← Rudi",
+  "cannotEdit": "Marekebisho haya yako katika hali ya {{status}} au ni ya mtu mwingine, hivyo hayawezi kuhaririwa tena.",
+  "deleted": "Marekebisho {{docNo}} yamefutwa.",
+  "form": {
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu (inahitajika)"
+  },
+  "view": {
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu",
+    "createdBy": "Imeundwa na",
+    "created": "Imeundwa",
+    "submitted": "Imewasilishwa",
+    "decision": "Uamuzi",
+    "decisionNote": "Maelezo ya uamuzi",
+    "posted": "Imewekwa stoo",
+    "itemsAdjusted": "Bidhaa zilizorekebishwa"
+  },
+  "lineCols": {
+    "item": "Bidhaa",
+    "action": "Kitendo",
+    "quantity": "Kiasi",
+    "batch": "Bechi",
+    "expiry": "Kuisha muda",
+    "unitCost": "Gharama ya kipimo",
+    "remarks": "Maelezo"
+  },
+  "from": "Kuanzia",
+  "new": "+ Marekebisho Mapya"
+}

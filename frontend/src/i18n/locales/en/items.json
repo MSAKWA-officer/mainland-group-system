@@ -1,0 +1,63 @@
+{
+  "title": "Items",
+  "registered": "{{total}} registered",
+  "addButton": "+ Add Item",
+  "searchPlaceholder": "Search name, SKU or barcode",
+  "allCategories": "All categories",
+  "empty": "No items found.",
+  "more": "More",
+  "less": "Less",
+  "backToList": "← Back to list",
+  "back": "← Back",
+  "actions": {
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "deactivatePrompt": "Why is {{name}} being deactivated?",
+    "confirmDelete": "Delete item \"{{name}}\" ({{sku}})? Only items with no stock history can be deleted. The deletion is kept in the audit log."
+  },
+  "fields": {
+    "sku": "SKU",
+    "name": "Item",
+    "itemName": "Item name",
+    "category": "Category",
+    "stock": "In stock",
+    "sellingPrice": "Selling price",
+    "status": "Status",
+    "unit": "Unit",
+    "costPrice": "Cost price",
+    "reorder": "Reorder level",
+    "trackExpiry": "Track expiry",
+    "description": "Description",
+    "created": "Created",
+    "updated": "Last updated",
+    "barcode": "Barcode",
+    "skuAuto": "SKU (leave empty to auto-generate)",
+    "unitHint": "Unit (pcs, kg, box…)",
+    "actions": "Actions"
+  },
+  "yes": "Yes",
+  "no": "No",
+  "saving": "Saving…",
+  "create": {
+    "title": "Add item",
+    "subtitle": "New items start with zero stock.",
+    "selectCategory": "Select category",
+    "trackExpiryLabel": "Track batches and expiry dates for this item",
+    "save": "Create item",
+    "done": "Item {{name}} created. Add opening stock through Stock receiving."
+  },
+  "edit": {
+    "title": "Edit item",
+    "save": "Save changes",
+    "done": "Item updated."
+  },
+  "view": {
+    "fallbackTitle": "Item",
+    "batches": "Batches in stock",
+    "batchNo": "Batch no.",
+    "expiryDate": "Expiry date",
+    "quantity": "Quantity",
+    "noBatches": "No batches in stock.",
+    "deleted": "Item {{name}} deleted."
+  }
+}

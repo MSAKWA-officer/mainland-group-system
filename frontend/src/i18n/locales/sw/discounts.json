@@ -1,0 +1,102 @@
+{
+  "scope": {
+    "ALL": "Bidhaa zote",
+    "CATEGORY": "Kategoria",
+    "ITEM": "Bidhaa moja"
+  },
+  "state": {
+    "INACTIVE": "Haitumiki",
+    "EXPIRED": "Imeisha muda",
+    "SCHEDULED": "Imepangwa",
+    "ACTIVE": "Inatumika"
+  },
+  "fallback": {
+    "item": "Bidhaa",
+    "category": "Kategoria"
+  },
+  "anyCustomer": "Mteja yeyote",
+  "noEnd": "Haina mwisho",
+  "list": {
+    "title": "Punguzo",
+    "subtitle": "{{total}} zimeainishwa",
+    "new": "Punguzo Jipya",
+    "search": "Tafuta jina au msimbo",
+    "searchAria": "Tafuta punguzo",
+    "filterScopeAria": "Chuja kwa wigo",
+    "allScopes": "Wigo wote",
+    "filterStatusAria": "Chuja kwa hali",
+    "allStatuses": "Hali zote",
+    "usable": "Zinazotumika leo",
+    "active": "Zinazotumika",
+    "inactive": "Zisizotumika",
+    "emptyFiltered": "Hakuna punguzo linalolingana na vichujio vyako.",
+    "emptyNone": "Bado hakuna punguzo. Tumia “Punguzo Jipya” kuongeza la kwanza.",
+    "columns": {
+      "code": "Msimbo",
+      "name": "Jina",
+      "percent": "Asilimia",
+      "appliesTo": "Inatumika kwa",
+      "customer": "Mteja",
+      "minQty": "Kiasi cha chini",
+      "valid": "Muda halali",
+      "used": "Imetumika",
+      "status": "Hali",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Tazama",
+    "edit": "Hariri",
+    "deactivate": "Zima",
+    "activate": "Washa",
+    "delete": "Futa",
+    "deactivatePrompt": "Sababu ya kuzima “{{name}}”:",
+    "deleteConfirm": "Futa punguzo “{{name}}” moja kwa moja? Hatua hii haiwezi kutenduliwa.",
+    "deleted": "Punguzo limefutwa."
+  },
+  "form": {
+    "newTitle": "Punguzo jipya",
+    "editTitle": "Hariri punguzo",
+    "newSub": "Bainisha punguzo lililotayarishwa ambalo linaweza kutumika kwenye mistari ya oda za mauzo.",
+    "back": "Rudi",
+    "backToList": "Rudi kwenye orodha",
+    "name": "Jina",
+    "percent": "Asilimia (%)",
+    "description": "Maelezo (si lazima)",
+    "appliesTo": "Inatumika kwa",
+    "minQty": "Kiasi cha chini",
+    "category": "Kategoria",
+    "chooseCategory": "Chagua kategoria",
+    "item": "Bidhaa",
+    "chooseItem": "Chagua bidhaa",
+    "customer": "Kwa mteja mmoja tu (si lazima)",
+    "anyCustomerPlaceholder": "Mteja yeyote",
+    "validFrom": "Halali kuanzia",
+    "validTo": "Halali hadi (si lazima)",
+    "saveChanges": "Hifadhi mabadiliko",
+    "saveNew": "Hifadhi punguzo",
+    "updated": "Punguzo limesasishwa.",
+    "created": "Punguzo limeundwa.",
+    "saving": "Inahifadhi…"
+  },
+  "view": {
+    "fallbackTitle": "Punguzo",
+    "code": "Msimbo",
+    "name": "Jina",
+    "description": "Maelezo",
+    "percent": "Asilimia",
+    "scope": "Wigo",
+    "category": "Kategoria",
+    "item": "Bidhaa",
+    "customer": "Mteja",
+    "minQty": "Kiasi cha chini",
+    "none": "Hakuna",
+    "validFrom": "Halali kuanzia",
+    "validTo": "Halali hadi",
+    "noEndDate": "Haina tarehe ya mwisho",
+    "used": "Imetumika kwenye mistari ya oda",
+    "status": "Hali",
+    "created": "Iliundwa",
+    "updated": "Ilisasishwa mwisho"
+  }
+}

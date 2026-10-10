@@ -1,0 +1,89 @@
+{
+  "title": "销售员",
+  "registered": "已登记 {{count}} 位",
+  "newButton": "新建销售员",
+  "search": "搜索姓名、编码、电话或地区",
+  "searchAria": "搜索销售员",
+  "filterStatusAria": "按状态筛选",
+  "allStatuses": "所有状态",
+  "columns": {
+    "code": "编码",
+    "name": "姓名",
+    "region": "地区",
+    "phone": "电话",
+    "loginAccount": "登录账号",
+    "customers": "客户",
+    "orders": "订单",
+    "commission": "提成",
+    "target": "目标",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "emptyFiltered": "没有符合筛选条件的销售员。",
+  "emptyNone": "暂无销售员。点击“新建销售员”添加第一位销售员。",
+  "actions": {
+    "deactivate": "停用",
+    "activate": "启用",
+    "deactivatePrompt": "停用“{{name}}”的原因：",
+    "confirmDelete": "永久删除销售员“{{name}}”？此操作无法撤销。"
+  },
+  "backToList": "返回列表",
+  "back": "返回",
+  "saving": "保存中…",
+  "form": {
+    "loginAccount": "登录账号（可选）",
+    "notLinked": "未关联",
+    "alreadyLinked": "已被关联",
+    "linkHint": "关联此人用于登录的账号，这样他们就能查看自己的客户和订单。",
+    "fullName": "姓名",
+    "fullNameDefault": "默认使用账号名称",
+    "region": "地区",
+    "phone": "电话",
+    "phonePlaceholder": "+255 ...",
+    "email": "邮箱",
+    "commissionRate": "提成比例 (%)",
+    "monthlyTarget": "月度目标"
+  },
+  "create": {
+    "title": "新建销售员",
+    "subtitle": "登记销售员后，即可将客户和订单分配给他们。",
+    "save": "保存销售员",
+    "done": "销售员已创建。"
+  },
+  "edit": {
+    "title": "编辑销售员",
+    "save": "保存更改",
+    "done": "销售员已更新。"
+  },
+  "view": {
+    "fallbackTitle": "销售员",
+    "code": "编码",
+    "name": "姓名",
+    "region": "地区",
+    "phone": "电话",
+    "email": "邮箱",
+    "loginAccount": "登录账号",
+    "commissionRate": "提成比例",
+    "monthlyTarget": "月度目标",
+    "customers": "客户",
+    "orders": "订单",
+    "status": "状态",
+    "created": "创建时间",
+    "updated": "最后更新",
+    "deleted": "销售员已删除。"
+  },
+  "perf": {
+    "title": "月度业绩",
+    "subtitle": "仅统计已确认订单。净销售额为折扣后、税前金额。",
+    "monthAria": "月份",
+    "confirmedOrders": "已确认订单",
+    "netSales": "净销售额",
+    "grossTotal": "总金额",
+    "pendingApproval": "待审批",
+    "activeCustomers": "活跃客户",
+    "target": "目标",
+    "targetReached": "目标完成率",
+    "noTarget": "未设置目标",
+    "commissionEarned": "已得提成"
+  }
+}

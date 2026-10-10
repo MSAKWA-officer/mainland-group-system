@@ -1,0 +1,103 @@
+{
+  "severity": {
+    "HIGH": "Juu",
+    "MEDIUM": "Wastani",
+    "LOW": "Chini"
+  },
+  "cards": {
+    "ALL": "Matokeo yote",
+    "HIGH": "Ukali wa juu",
+    "MEDIUM": "Ukali wa wastani",
+    "LOW": "Ukali wa chini"
+  },
+  "messages": {
+    "Z_MISSING": "{{serial}} ina risiti tarehe {{date}} lakini hakuna ripoti ya Z iliyorekodiwa",
+    "Z_MISMATCH": "Ripoti ya Z {{report}} ({{serial}}, {{date}}) inatofautiana na risiti zilizorekodiwa kwenye mfumo",
+    "Z_NUMBER_GAP": "{{serial}}: Z {{prev}} inafuatiwa na Z {{z}}. Ripoti {{missing}} za Z hazipo",
+    "UNRECEIPTED_ORDER": "Oda {{order}} ({{customer}}) ilithibitishwa tarehe {{date}} na bado haina risiti ya EFD",
+    "UNRECEIPTED_ORDER_NO_CUSTOMER": "Oda {{order}} ilithibitishwa tarehe {{date}} na bado haina risiti ya EFD",
+    "RECEIPT_AMOUNT_MISMATCH": "Risiti {{receipt}} ({{serial}}) hailingani na oda {{order}}",
+    "RECEIPT_NUMBER_GAP": "{{serial}}: risiti {{prev}} inafuatiwa na {{receipt}}. Namba {{missing}} za risiti hazijarekodiwa",
+    "RECON_MISSING": "{{serial}} tarehe {{date}}: Ripoti ya Z {{report}} haijasuluhishwa",
+    "Z_PENDING_OLD": "Ripoti ya Z {{report}} ({{serial}}, {{date}}) imesubiri uthibitisho kwa siku {{days}}",
+    "RECON_DRIFT": "Usuluhishi {{recon}} ({{serial}}, {{date}}) haulingani tena na risiti zilizo kwenye mfumo"
+  },
+  "facts": {
+    "receiptsCount": "Risiti",
+    "grossAmount": "Jumla kuu",
+    "vatAmount": "VAT",
+    "zNumber": "Namba ya Z",
+    "receiptNo": "Namba ya risiti",
+    "missingCount": "Zinazokosekana"
+  },
+  "links": {
+    "zReport": "Ripoti ya Z {{no}}",
+    "receipt": "Risiti {{no}}",
+    "order": "Oda {{no}}",
+    "recordEfd": "Rekodi namba ya EFD",
+    "recordZ": "Rekodi ripoti ya Z",
+    "startRecon": "Anza usuluhishi"
+  },
+  "list": {
+    "title": "Ugunduzi wa tofauti",
+    "subtitle": "Ukaguzi wa kusoma tu wa rekodi za kodi unaotafuta mambo yasiyolingana: ripoti za Z zinazokosekana au zisizolingana, namba zilizorukwa, oda zisizo na risiti na siku ambazo hazijawahi kusuluhishwa. Ukaguzi huu hautabadilisha chochote.",
+    "scanAgain": "Kagua tena",
+    "scanning": "Inakagua…",
+    "lastDays": "Siku {{n}} zilizopita",
+    "filterDeviceAria": "Chuja kwa kifaa",
+    "filterTypeAria": "Chuja kwa aina",
+    "allDevices": "Vifaa vyote",
+    "allTypes": "Aina zote za matokeo",
+    "clearFilters": "Futa vichujio",
+    "chipTitle": "Onyesha aina hii ya matokeo pekee",
+    "fromAfterTo": "“Kuanzia” isiwe baada ya “Hadi”.",
+    "tooLong": "Kagua siku zisizozidi {{max}} kwa mara moja.",
+    "capped": "Aina moja ya matokeo imefikia kikomo cha {{cap}}, kwa hiyo hesabu hazijakamilika. Punguza tarehe au chagua kifaa.",
+    "deviceNote": "Oda hazihusiani na kifaa, kwa hiyo “{{type}}” haikaguliwi wakati kifaa kimoja kimechaguliwa.",
+    "scanned": "Imekagua {{from}} hadi {{to}} (saa za eneo {{tz}}) · {{at}}. Inayotarajiwa ni kile rekodi zinasema kinapaswa kuwa; Halisi ni kile kilichopatikana; Tofauti ni Halisi toa Inayotarajiwa.",
+    "scanningRecords": "Inakagua rekodi…",
+    "emptyClean": "Hakuna tofauti zilizopatikana kwa kipindi hiki. Kila kitu kinalingana.",
+    "emptyFiltered": "Hakuna matokeo yanayolingana na vichujio vyako.",
+    "ageDays": "Siku {{days}} zilizopita",
+    "columns": {
+      "severity": "Ukali",
+      "type": "Aina",
+      "date": "Tarehe",
+      "device": "Kifaa",
+      "found": "Kilichopatikana",
+      "expected": "Inayotarajiwa",
+      "actual": "Halisi",
+      "difference": "Tofauti",
+      "goTo": "Nenda kwa"
+    }
+  },
+  "view": {
+    "title": "Tofauti iliyogunduliwa",
+    "fallbackTitle": "Tofauti iliyogunduliwa",
+    "backToList": "Rudi kwenye orodha",
+    "severity": "Ukali",
+    "type": "Aina",
+    "date": "Tarehe",
+    "device": "Kifaa",
+    "found": "Kilichopatikana",
+    "age": "Umri",
+    "compareTitle": "Inayotarajiwa dhidi ya halisi",
+    "compareHelp": "Inayotarajiwa ni kile rekodi zinasema kinapaswa kuwa; Halisi ni kile kilichopatikana; Tofauti ni Halisi toa Inayotarajiwa.",
+    "item": "Kipengele",
+    "noFigures": "Tofauti hii haina namba za kulinganisha.",
+    "nextTitle": "Hatua inayofuata",
+    "notFound": "Tofauti hii haikupatikana. Huenda imerekebishwa tangu ukaguzi wa mwisho.",
+    "rescan": "Kagua tena"
+  },
+  "types": {
+    "Z_MISSING": "Hakuna ripoti ya Z kwa siku yenye risiti",
+    "Z_MISMATCH": "Ripoti ya Z inatofautiana na risiti za mfumo",
+    "Z_NUMBER_GAP": "Namba za ripoti ya Z zimerukwa",
+    "UNRECEIPTED_ORDER": "Oda iliyothibitishwa bila risiti ya EFD",
+    "RECEIPT_AMOUNT_MISMATCH": "Risiti inatofautiana na oda yake",
+    "RECEIPT_NUMBER_GAP": "Namba za risiti zimerukwa",
+    "RECON_MISSING": "Siku haijasuluhishwa",
+    "Z_PENDING_OLD": "Ripoti ya Z inasubiri uthibitisho",
+    "RECON_DRIFT": "Siku iliyosuluhishwa hailingani tena"
+  }
+}

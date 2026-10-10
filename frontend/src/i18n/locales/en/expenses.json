@@ -1,0 +1,131 @@
+{
+  "category": {
+    "RENT": "Rent",
+    "UTILITIES": "Utilities",
+    "SALARIES": "Salaries",
+    "TRANSPORT": "Transport",
+    "FUEL": "Fuel",
+    "MARKETING": "Marketing",
+    "MAINTENANCE": "Maintenance",
+    "OFFICE": "Office",
+    "TAXES": "Taxes",
+    "BANK_CHARGES": "Bank charges",
+    "OTHER": "Other"
+  },
+  "status": {
+    "PENDING": "Waiting for approval",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "VOIDED": "Voided",
+    "ALL": "All statuses"
+  },
+  "payStatus": {
+    "UNPAID": "Unpaid",
+    "PARTIAL": "Part paid",
+    "PAID": "Paid"
+  },
+  "list": {
+    "title": "Expenses",
+    "subtitle": "Costs the business has incurred. Money only leaves when a payment is made against an approved expense.",
+    "new": "New Expense",
+    "stats": {
+      "approvedFilter": "Approved (this filter)",
+      "approvedPeriod": "Approved in period",
+      "records": "Records"
+    },
+    "byCategory": "By category:",
+    "search": "Search expense no, description, payee",
+    "searchAria": "Search expenses",
+    "allCategories": "All categories",
+    "filterCategoryAria": "Filter by category",
+    "filterStatusAria": "Filter by status",
+    "filterPaymentAria": "Filter by payment",
+    "anyPayment": "Any payment state",
+    "emptyFiltered": "No expenses match your filters.",
+    "emptyNone": "No expenses yet. Use “New Expense” to submit the first one.",
+    "to": "To: {{payee}}",
+    "columns": {
+      "expenseNo": "Expense no",
+      "date": "Date",
+      "category": "Category",
+      "description": "Description",
+      "amount": "Amount",
+      "paid": "Paid",
+      "status": "Status",
+      "submittedBy": "Submitted by",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "approve": "Approve",
+    "reject": "Reject",
+    "pay": "Pay",
+    "void": "Void",
+    "approveConfirm": "Approve {{no}} for {{amount}}?",
+    "rejectPrompt": "Reason for rejecting {{no}}?",
+    "voidPrompt": "Reason for voiding {{no}}?",
+    "approved": "Expense approved.",
+    "rejected": "Expense rejected.",
+    "voided": "Expense voided."
+  },
+  "form": {
+    "category": "Category",
+    "amount": "Amount",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this expense for?",
+    "payee": "Payee (optional)",
+    "payeePlaceholder": "Who will be paid",
+    "reference": "Invoice / reference (optional)",
+    "expenseDate": "Expense date",
+    "notes": "Notes (optional)"
+  },
+  "create": {
+    "title": "New expense",
+    "sub": "Submit a cost for approval. Once it is approved it can be paid.",
+    "back": "Back to list",
+    "saving": "Saving…",
+    "submit": "Submit expense",
+    "saved": "Expense submitted for approval."
+  },
+  "update": {
+    "title": "Edit expense",
+    "back": "Back",
+    "locked": "This expense is {{status}} and can no longer be edited.",
+    "saving": "Saving…",
+    "submit": "Save changes",
+    "saved": "Expense updated."
+  },
+  "view": {
+    "fallbackTitle": "Expense",
+    "back": "Back to list",
+    "amount": "Amount",
+    "paid": "Paid",
+    "stillToPay": "Still to pay",
+    "category": "Category",
+    "description": "Description",
+    "payee": "Payee",
+    "reference": "Reference",
+    "expenseDate": "Expense date",
+    "notes": "Notes",
+    "submittedBy": "Submitted by",
+    "submitted": "Submitted",
+    "approvedBy": "Approved by",
+    "rejectedBy": "Rejected by",
+    "decidedOn": "Decided on",
+    "decisionNote": "Decision note",
+    "voidedBy": "Voided by",
+    "voidedOn": "Voided on",
+    "voidReason": "Void reason",
+    "paymentsTitle": "Payments",
+    "cols": {
+      "paymentNo": "Payment no",
+      "date": "Date",
+      "method": "Method",
+      "amount": "Amount",
+      "status": "Status"
+    },
+    "noPayments": "No payments made yet."
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "title": "Ripoti za EFD",
+  "subtitle": "Ni risiti zilizotolewa tu zinazohesabiwa kwenye mauzo na VAT; risiti zilizobatilishwa zinaonyeshwa kando. Siku ni siku za biashara kwa saa za eneo la biashara.",
+  "tabsAria": "Ripoti za EFD",
+  "tabs": {
+    "daily": "Muhtasari wa kila siku",
+    "devices": "Kwa kifaa",
+    "monthly": "Mwezi kwa mwezi",
+    "receipts": "Rejista ya risiti",
+    "unreceipted": "Oda zisizo na risiti"
+  },
+  "toolbar": {
+    "thisMonth": "Mwezi huu",
+    "last30": "Siku 30 zilizopita",
+    "thisYear": "Mwaka huu",
+    "filterDeviceAria": "Chuja kwa kifaa",
+    "allDevices": "Vifaa vyote",
+    "yearAria": "Mwaka",
+    "preparing": "Inaandaa…",
+    "download": "Pakua CSV"
+  },
+  "errors": {
+    "chooseBoth": "Chagua tarehe zote mbili.",
+    "fromAfterTo": "“Kuanzia” isiwe baada ya “Hadi”.",
+    "maxDays": "Chagua siku zisizozidi {{max}}."
+  },
+  "w": {
+    "date": "Tarehe",
+    "device": "Kifaa",
+    "receipts": "Risiti",
+    "gross": "Jumla kuu",
+    "vat": "VAT",
+    "net": "Halisi",
+    "voided": "Risiti zilizobatilishwa",
+    "tin": "TIN",
+    "order": "Oda",
+    "customer": "Mteja",
+    "total": "Jumla",
+    "zReport": "Ripoti ya Z",
+    "zVerified": "Z zilizothibitishwa",
+    "zGross": "Jumla kuu ya Z",
+    "zVat": "VAT ya Z",
+    "daysReconciled": "Siku zilizosuluhishwa",
+    "customerTin": "TIN ya mteja",
+    "tinLine": "TIN {{tin}}"
+  },
+  "daily": {
+    "deviceDays": "Siku za vifaa",
+    "daysWithDiff": "Siku zenye tofauti",
+    "onlyDiff": "Siku zenye tofauti tu",
+    "note": "Tofauti = Ripoti ya Z toa mfumo. Ni risiti zilizotolewa tu zinazohesabiwa kwenye namba za mfumo; risiti zilizobatilishwa zinaonyeshwa kando.",
+    "emptyOnly": "Hakuna siku zenye tofauti katika kipindi hiki.",
+    "emptyNone": "Hakuna risiti, ripoti za Z wala usuluhishi katika kipindi hiki.",
+    "zLine": "Z {{z}} · {{status}}",
+    "noZ": "Hakuna ripoti ya Z",
+    "difference": "Tofauti",
+    "ok": "Sawa",
+    "columns": {
+      "date": "Tarehe",
+      "device": "Kifaa",
+      "receipts": "Risiti",
+      "systemGross": "Jumla kuu ya mfumo",
+      "systemVat": "VAT ya mfumo",
+      "voided": "Zilizobatilishwa",
+      "zReport": "Ripoti ya Z",
+      "zGross": "Jumla kuu ya Z",
+      "zVat": "VAT ya Z",
+      "grossDiff": "Tofauti ya jumla kuu",
+      "vatDiff": "Tofauti ya VAT",
+      "countDiff": "Tofauti ya idadi",
+      "reconciliation": "Usuluhishi",
+      "result": "Matokeo"
+    }
+  },
+  "devices": {
+    "empty": "Hakuna vifaa vya EFD vilivyopatikana.",
+    "inactive": "haitumiki",
+    "columns": {
+      "device": "Kifaa",
+      "tin": "TIN",
+      "receipts": "Risiti",
+      "gross": "Jumla kuu",
+      "vat": "VAT",
+      "voided": "Zilizobatilishwa",
+      "lastReceipt": "Risiti ya mwisho",
+      "zReports": "Ripoti za Z",
+      "zVerified": "Z zilizothibitishwa",
+      "daysReconciled": "Siku zilizosuluhishwa"
+    }
+  },
+  "monthly": {
+    "verifiedZVat": "VAT ya Z iliyothibitishwa",
+    "total": "Jumla ya {{year}}",
+    "columns": {
+      "month": "Mwezi",
+      "receipts": "Risiti",
+      "gross": "Jumla kuu",
+      "vat": "VAT",
+      "net": "Halisi",
+      "voided": "Zilizobatilishwa",
+      "zVerified": "Z zilizothibitishwa",
+      "zGross": "Jumla kuu ya Z",
+      "zVat": "VAT ya Z",
+      "daysReconciled": "Siku zilizosuluhishwa"
+    }
+  },
+  "receipts": {
+    "issued": "Risiti zilizotolewa",
+    "search": "Tafuta namba ya risiti, msimbo, oda, mteja",
+    "searchAria": "Tafuta risiti",
+    "empty": "Hakuna risiti zinazolingana.",
+    "columns": {
+      "issued": "Ilitolewa",
+      "device": "Kifaa",
+      "receiptNo": "Namba ya risiti",
+      "verification": "Uthibitisho",
+      "order": "Oda",
+      "customer": "Mteja",
+      "gross": "Jumla kuu",
+      "vat": "VAT",
+      "net": "Halisi",
+      "status": "Hali"
+    }
+  },
+  "unreceipted": {
+    "orders": "Oda zisizo na risiti",
+    "empty": "Kila oda iliyothibitishwa katika kipindi hiki ina risiti ya EFD.",
+    "record": "Rekodi namba ya EFD",
+    "columns": {
+      "confirmedOn": "Ilithibitishwa",
+      "order": "Oda",
+      "customer": "Mteja",
+      "customerTin": "TIN ya mteja",
+      "total": "Jumla",
+      "vat": "VAT",
+      "age": "Umri (siku)",
+      "goTo": "Nenda kwa"
+    }
+  }
+}

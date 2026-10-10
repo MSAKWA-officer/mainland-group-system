@@ -1,0 +1,80 @@
+{
+  "title": "Salio la mafuta",
+  "intro": "Fedha za mafuta walizopewa madereva ambazo hazijatumika. Salio ni fedha zilizotolewa ukiondoa matumizi ya mafuta yaliyorekodiwa.",
+  "views": {
+    "funding": "Kwa fedha zilizotolewa",
+    "vehicle": "Kwa gari",
+    "driver": "Kwa dereva"
+  },
+  "groupBy": "Panga salio kwa",
+  "stats": {
+    "funded": "Zilizotolewa",
+    "spent": "Zilizotumika",
+    "balance": "Salio (halijatumika)"
+  },
+  "filters": {
+    "state": "Chuja kwa hali",
+    "openOnly": "Fedha ambazo hazijatumika",
+    "settled": "Zilizotumika zote",
+    "all": "Fedha zote zilizotolewa",
+    "vehicle": "Chuja kwa gari",
+    "allVehicles": "Magari yote",
+    "driver": "Chuja kwa dereva",
+    "allDrivers": "Madereva wote",
+    "search": "Tafuta salio",
+    "searchPlaceholder": "Tafuta namba, namba ya gari, dereva",
+    "givenFrom": "Zilizotolewa kuanzia",
+    "to": "hadi"
+  },
+  "heads": {
+    "fundingNo": "Namba ya fedha",
+    "givenOn": "Tarehe",
+    "vehicle": "Gari",
+    "driver": "Dereva",
+    "funded": "Zilizotolewa",
+    "spent": "Zilizotumika",
+    "balance": "Salio",
+    "litresBought": "Lita zilizonunuliwa",
+    "state": "Hali",
+    "daysUnspent": "Siku bila matumizi",
+    "actions": "Vitendo",
+    "fundings": "Idadi ya utoaji",
+    "withMoneyLeft": "Zenye salio"
+  },
+  "empty": {
+    "filtered": "Hakuna salio linalolingana na vichujio vyako.",
+    "none": "Hakuna fedha za mafuta zilizobaki. Zote zilizotolewa zimetumika.",
+    "groupFiltered": "Hakuna kinacholingana na vichujio vyako.",
+    "groupNone": "Bado hakuna fedha za mafuta zilizoidhinishwa."
+  },
+  "planned": "iliyopangwa {{litres}}",
+  "actions": {
+    "view": "Tazama",
+    "recordUsage": "Rekodi matumizi"
+  },
+  "view": {
+    "fallbackTitle": "Salio la mafuta",
+    "back": "Rudi kwenye orodha",
+    "vehicle": "Gari",
+    "driver": "Dereva",
+    "purpose": "Madhumuni",
+    "paidBy": "Imelipwa kwa",
+    "moneyGivenOn": "Fedha zilitolewa tarehe",
+    "litres": "Lita",
+    "litresBought": "Lita {{bought}} zimenunuliwa",
+    "litresBoughtOf": "Lita {{bought}} zimenunuliwa kati ya {{planned}} zilizopangwa",
+    "lastUsage": "Matumizi ya mwisho",
+    "daysUnspent": "Siku bila matumizi",
+    "daysUnspentValue": "Siku {{count}} tangu fedha zilipotolewa",
+    "usageTitle": "Matumizi ya mafuta ({{count}})",
+    "usageNo": "Namba ya matumizi",
+    "date": "Tarehe",
+    "litresCol": "Lita",
+    "amount": "Kiasi",
+    "pricePerLitre": "Bei / L",
+    "odometer": "Odomita",
+    "station": "Kituo",
+    "receipt": "Risiti",
+    "nothing": "Bado hakuna kilichorekodiwa."
+  }
+}

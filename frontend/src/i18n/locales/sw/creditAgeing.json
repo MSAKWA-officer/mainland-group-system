@@ -1,0 +1,66 @@
+{
+  "title": "Umri wa madeni",
+  "subtitle": "Mauzo ya mkopo ambayo hayajalipwa, yakipangwa kulingana na siku zilizopita baada ya tarehe ya kulipa.",
+  "subtitleAsOf": "Mauzo ya mkopo ambayo hayajalipwa, yakipangwa kulingana na siku zilizopita baada ya tarehe ya kulipa, hadi {{date}}.",
+  "outstanding": "Deni lililobaki",
+  "bucket": {
+    "CURRENT": "Bado hayajafika",
+    "DAYS_1_30": "Siku 1–30",
+    "DAYS_31_60": "Siku 31–60",
+    "DAYS_61_90": "Siku 61–90",
+    "OVER_90": "Zaidi ya siku 90"
+  },
+  "bucketFilter": {
+    "CURRENT": "Ana deni ambalo bado halijafika",
+    "DAYS_1_30": "Ana deni lililochelewa siku 1–30",
+    "DAYS_31_60": "Ana deni lililochelewa siku 31–60",
+    "DAYS_61_90": "Ana deni lililochelewa siku 61–90",
+    "OVER_90": "Ana deni lililochelewa zaidi ya siku 90"
+  },
+  "search": "Tafuta jina au msimbo wa mteja",
+  "searchAria": "Tafuta wateja",
+  "bucketAria": "Chuja kwa kundi la umri",
+  "allCustomers": "Wateja wote",
+  "sortAria": "Panga kwa",
+  "sort": {
+    "outstanding": "Deni kubwa zaidi",
+    "over90": "Zaidi ya siku 90 kubwa zaidi",
+    "oldest": "Ankara ya zamani zaidi",
+    "name": "Jina (A–Z)"
+  },
+  "asOf": "Hadi tarehe",
+  "backToToday": "Rudi leo",
+  "columns": {
+    "customer": "Mteja",
+    "openSales": "Mauzo yaliyo wazi",
+    "outstanding": "Deni lililobaki",
+    "oldest": "Kongwe zaidi",
+    "actions": "Vitendo"
+  },
+  "emptyFiltered": "Hakuna wateja wanaolingana na vichujio vyako.",
+  "emptyNone": "Hakuna deni lililobaki.",
+  "days": "siku {{n}}",
+  "notDue": "Bado halijafika",
+  "totalRow": "Jumla (wateja wote {{count}})",
+  "viewTitle": "Tazama",
+  "viewAria": "Tazama {{name}}",
+  "view": {
+    "fallbackTitle": "Umri wa madeni",
+    "subtitle": "{{code}} · umri wa madeni hadi {{date}}",
+    "today": "leo",
+    "customerBalance": "Salio la mteja",
+    "back": "Rudi kwenye umri wa madeni",
+    "columns": {
+      "saleNo": "Namba ya mauzo",
+      "saleDate": "Tarehe ya mauzo",
+      "dueDate": "Tarehe ya kulipa",
+      "total": "Jumla",
+      "paid": "Kilicholipwa",
+      "balance": "Salio",
+      "daysOverdue": "Siku za kuchelewa",
+      "bucket": "Kundi"
+    },
+    "noInvoices": "Hakuna ankara zilizo wazi",
+    "noInvoicesOnDate": "Hakuna ankara zilizo wazi kwa tarehe hii."
+  }
+}

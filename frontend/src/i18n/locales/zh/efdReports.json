@@ -1,0 +1,140 @@
+{
+  "title": "EFD 报表",
+  "subtitle": "只有已开具的收据才计入销售额和增值税；作废收据单独显示。日期按业务时区的营业日计算。",
+  "tabsAria": "EFD 报表",
+  "tabs": {
+    "daily": "每日汇总",
+    "devices": "按设备",
+    "monthly": "按月份",
+    "receipts": "收据登记册",
+    "unreceipted": "无收据订单"
+  },
+  "toolbar": {
+    "thisMonth": "本月",
+    "last30": "最近 30 天",
+    "thisYear": "今年",
+    "filterDeviceAria": "按设备筛选",
+    "allDevices": "所有设备",
+    "yearAria": "年份",
+    "preparing": "准备中…",
+    "download": "下载 CSV"
+  },
+  "errors": {
+    "chooseBoth": "请选择开始和结束日期。",
+    "fromAfterTo": "“从”日期不能晚于“至”日期。",
+    "maxDays": "最多选择 {{max}} 天。"
+  },
+  "w": {
+    "date": "日期",
+    "device": "设备",
+    "receipts": "收据数",
+    "gross": "总额",
+    "vat": "增值税",
+    "net": "净额",
+    "voided": "作废收据",
+    "tin": "TIN",
+    "order": "订单",
+    "customer": "客户",
+    "total": "合计",
+    "zReport": "Z 报告",
+    "zVerified": "已核实 Z",
+    "zGross": "Z 总额",
+    "zVat": "Z 增值税",
+    "daysReconciled": "已对账天数",
+    "customerTin": "客户 TIN",
+    "tinLine": "TIN {{tin}}"
+  },
+  "daily": {
+    "deviceDays": "设备日数",
+    "daysWithDiff": "有差异的天数",
+    "onlyDiff": "仅显示有差异的日期",
+    "note": "差异 = Z 报告减系统。系统数据只计入已开具的收据；作废收据单独显示。",
+    "emptyOnly": "此期间没有存在差异的日期。",
+    "emptyNone": "此期间没有收据、Z 报告或对账记录。",
+    "zLine": "Z {{z}} · {{status}}",
+    "noZ": "无 Z 报告",
+    "difference": "有差异",
+    "ok": "正常",
+    "columns": {
+      "date": "日期",
+      "device": "设备",
+      "receipts": "收据数",
+      "systemGross": "系统总额",
+      "systemVat": "系统增值税",
+      "voided": "作废",
+      "zReport": "Z 报告",
+      "zGross": "Z 总额",
+      "zVat": "Z 增值税",
+      "grossDiff": "总额差异",
+      "vatDiff": "增值税差异",
+      "countDiff": "数量差异",
+      "reconciliation": "对账",
+      "result": "结果"
+    }
+  },
+  "devices": {
+    "empty": "未找到 EFD 设备。",
+    "inactive": "已停用",
+    "columns": {
+      "device": "设备",
+      "tin": "TIN",
+      "receipts": "收据数",
+      "gross": "总额",
+      "vat": "增值税",
+      "voided": "作废",
+      "lastReceipt": "最近收据",
+      "zReports": "Z 报告",
+      "zVerified": "已核实 Z",
+      "daysReconciled": "已对账天数"
+    }
+  },
+  "monthly": {
+    "verifiedZVat": "已核实 Z 增值税",
+    "total": "{{year}} 年合计",
+    "columns": {
+      "month": "月份",
+      "receipts": "收据数",
+      "gross": "总额",
+      "vat": "增值税",
+      "net": "净额",
+      "voided": "作废",
+      "zVerified": "已核实 Z",
+      "zGross": "Z 总额",
+      "zVat": "Z 增值税",
+      "daysReconciled": "已对账天数"
+    }
+  },
+  "receipts": {
+    "issued": "已开具收据",
+    "search": "搜索收据号、验证码、订单、客户",
+    "searchAria": "搜索收据",
+    "empty": "没有符合条件的收据。",
+    "columns": {
+      "issued": "开具时间",
+      "device": "设备",
+      "receiptNo": "收据号",
+      "verification": "验证码",
+      "order": "订单",
+      "customer": "客户",
+      "gross": "总额",
+      "vat": "增值税",
+      "net": "净额",
+      "status": "状态"
+    }
+  },
+  "unreceipted": {
+    "orders": "无收据订单",
+    "empty": "此期间每个已确认订单都有 EFD 收据。",
+    "record": "记录 EFD 编号",
+    "columns": {
+      "confirmedOn": "确认日期",
+      "order": "订单",
+      "customer": "客户",
+      "customerTin": "客户 TIN",
+      "total": "合计",
+      "vat": "增值税",
+      "age": "账龄（天）",
+      "goTo": "前往"
+    }
+  }
+}

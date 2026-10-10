@@ -1,0 +1,200 @@
+{
+  "title": "Order approvals",
+  "subtitle": "Salesperson → Storekeeper → Manager → Salesperson. {{total}} in this view",
+  "tabsAria": "Approval stage",
+  "tabAll": "All",
+  "stages": {
+    "STOREKEEPER": "Storekeeper",
+    "MANAGER": "Manager",
+    "SALESPERSON": "Salesperson",
+    "CLOSED": "Closed"
+  },
+  "search": "Search order number or customer",
+  "searchAria": "Search orders",
+  "filterStatusAria": "Filter by status",
+  "allStatuses": "All statuses",
+  "columns": {
+    "orderNo": "Order no",
+    "date": "Date",
+    "customer": "Customer",
+    "salesperson": "Salesperson",
+    "total": "Total",
+    "attempt": "Attempt",
+    "status": "Status",
+    "with": "With",
+    "lastUpdate": "Last update"
+  },
+  "yourTurn": "Your turn",
+  "emptyFiltered": "No orders match this view.",
+  "emptyNone": "No orders have been submitted for approval yet.",
+  "viewAria": "View {{orderNo}}",
+  "attempt": "Attempt {{n}}",
+  "waitingFor": "Waiting for the {{role}}.",
+  "yourTurnSentence": "It is your turn.",
+  "roles": {
+    "storekeeper": "storekeeper",
+    "manager": "manager",
+    "salesperson": "salesperson"
+  },
+  "actorRoles": {
+    "OWNER": "Owner",
+    "ADMIN": "Admin",
+    "MANAGER": "Manager",
+    "STOREKEEPER": "Storekeeper",
+    "SALESPERSON": "Salesperson"
+  },
+  "status": {
+    "AWAITING_STOREKEEPER": {
+      "label": "Awaiting storekeeper",
+      "hint": "The storekeeper must check the stock, then verify the order or send it back."
+    },
+    "AWAITING_MANAGER": {
+      "label": "Awaiting manager",
+      "hint": "The stock is verified. The manager must approve, reject or return the order."
+    },
+    "AWAITING_SALESPERSON": {
+      "label": "Approved - awaiting confirmation",
+      "hint": "The order is approved and the stock is issued. The salesperson must confirm the handover."
+    },
+    "RETURNED": {
+      "label": "Returned for correction",
+      "hint": "The order was sent back. The salesperson must correct the draft and submit it again."
+    },
+    "COMPLETED": {
+      "label": "Completed",
+      "hint": "The salesperson confirmed the handover. This order is closed."
+    },
+    "REJECTED": {
+      "label": "Rejected",
+      "hint": "The manager rejected this order. It is closed."
+    },
+    "CANCELLED": {
+      "label": "Cancelled",
+      "hint": "This order was cancelled. It is closed."
+    }
+  },
+  "tracker": {
+    "aria": "Approval progress",
+    "steps": {
+      "submit": "Salesperson submits",
+      "verify": "Storekeeper verifies",
+      "decide": "Manager decides",
+      "confirm": "Salesperson confirms"
+    },
+    "captions": {
+      "done": "Done",
+      "waiting": "Waiting",
+      "returned": "Returned",
+      "rejected": "Rejected"
+    }
+  },
+  "events": {
+    "SUBMITTED": "Submitted for approval",
+    "RESUBMITTED": "Corrected and submitted again",
+    "STOREKEEPER_VERIFIED": "Stock verified by the storekeeper",
+    "STOREKEEPER_RETURNED": "Returned by the storekeeper",
+    "MANAGER_APPROVED": "Approved by the manager - stock issued",
+    "MANAGER_REJECTED": "Rejected by the manager",
+    "MANAGER_RETURNED": "Returned by the manager",
+    "ACKNOWLEDGED": "Confirmed by the salesperson",
+    "CANCELLED": "Order cancelled"
+  },
+  "timeline": {
+    "empty": "No history yet.",
+    "unknownUser": "Unknown user"
+  },
+  "panel": {
+    "title": "Approval progress",
+    "openDetails": "Open approval details",
+    "returned": "Returned by the {{role}}:",
+    "rejected": "Rejected:"
+  },
+  "view": {
+    "fallbackTitle": "Order approval",
+    "loading": "Loading…",
+    "backToList": "Back to list",
+    "returnedBy": "Returned by the {{role}}",
+    "rejected": "Rejected",
+    "storekeeperNote": "Storekeeper note",
+    "managerNote": "Manager note",
+    "salespersonNote": "Salesperson note",
+    "order": "Order",
+    "orderNo": "Order",
+    "customer": "Customer",
+    "salesperson": "Salesperson",
+    "orderDate": "Order date",
+    "deliveryDate": "Delivery date",
+    "notes": "Notes",
+    "submitted": "Submitted",
+    "submittedBy": "{{when}} by {{who}}",
+    "items": "Items",
+    "history": "History",
+    "inStock": "In stock",
+    "short": "Short"
+  },
+  "lines": {
+    "sku": "SKU",
+    "item": "Item",
+    "quantity": "Quantity",
+    "unitPrice": "Unit price",
+    "discountPercent": "Discount %",
+    "lineTotal": "Line total"
+  },
+  "totals": {
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "tax": "Tax ({{rate}}%)",
+    "total": "Total"
+  },
+  "actions": {
+    "storekeeperVerify": {
+      "label": "Verify stock",
+      "go": "Verify and send to manager",
+      "text": "Confirm that the stock for every line is available. The order moves on to the manager.",
+      "done": "Stock verified. The order is now with the manager."
+    },
+    "storekeeperReturn": {
+      "label": "Return to salesperson",
+      "go": "Return order",
+      "text": "Use this when stock is missing or the order is wrong. The salesperson gets it back as a draft to correct.",
+      "done": "Order returned to the salesperson."
+    },
+    "managerApprove": {
+      "label": "Approve",
+      "go": "Approve and issue stock",
+      "text": "Approving issues the stock for every line. The salesperson is then asked to confirm the handover.",
+      "done": "Order approved and stock issued."
+    },
+    "managerReject": {
+      "label": "Reject",
+      "go": "Reject order",
+      "text": "Rejecting is final. The order is closed and cannot be submitted again.",
+      "done": "Order rejected."
+    },
+    "managerReturn": {
+      "label": "Return for correction",
+      "go": "Return order",
+      "text": "The salesperson gets the order back as a draft, corrects it and submits it again from the start.",
+      "done": "Order returned to the salesperson."
+    },
+    "acknowledge": {
+      "label": "Confirm handover",
+      "go": "Confirm and close",
+      "text": "Confirm that the approved goods were handed over. This closes the order.",
+      "done": "Order confirmed and closed."
+    }
+  },
+  "dialog": {
+    "reasonRequired": "Reason (required)",
+    "noteOptional": "Note (optional)",
+    "reasonMin": "A reason of at least 3 characters is required.",
+    "working": "Working…",
+    "cancel": "Cancel"
+  },
+  "resubmit": {
+    "editOrder": "Edit order",
+    "submitAgain": "Submit again",
+    "confirm": "Submit {{orderNo}} for approval again? It goes back to the storekeeper.",
+    "done": "Order submitted again. It is now with the storekeeper."
+  }
+}

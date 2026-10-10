@@ -1,0 +1,68 @@
+{
+  "saving": "Saving…",
+  "registered": "{{count}} registered",
+  "newReturn": "+ New Return",
+  "allStatuses": "All statuses",
+  "from": "From",
+  "to": "To",
+  "heads": {
+    "docNo": "Document no.",
+    "date": "Date",
+    "party": "Supplier",
+    "reference": "Reference",
+    "reason": "Reason",
+    "lines": "Lines",
+    "createdBy": "Created by",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "create": {
+    "title": "New return to supplier",
+    "subtitle": "Stock does not decrease until the return is submitted and approved.",
+    "saveDraft": "Save as draft",
+    "draftSaved": "Draft {{docNo}} saved. Submit it for approval when you are ready."
+  },
+  "edit": {
+    "title": "Edit return to supplier",
+    "subtitle": "{{doc}} — only your own drafts can be edited.",
+    "back": "← Back",
+    "notEditable": "This return is {{status}} or belongs to someone else and can no longer be edited.",
+    "saveChanges": "Save changes",
+    "draftUpdated": "Draft updated."
+  },
+  "form": {
+    "dateReturned": "Date returned",
+    "party": "Supplier",
+    "reference": "Reference (purchase invoice or delivery note no.)",
+    "reason": "Reason for return (required)",
+    "itemsReturned": "Items returned",
+    "qtyReturned": "Quantity returned"
+  },
+  "view": {
+    "fallbackTitle": "Return to supplier",
+    "backToList": "← Back to list",
+    "dateReturned": "Date returned",
+    "party": "Supplier",
+    "reference": "Reference",
+    "reason": "Reason for return",
+    "createdBy": "Created by",
+    "created": "Created",
+    "submitted": "Submitted",
+    "decision": "Decision",
+    "decisionValue": "{{status}}, {{date}}",
+    "decisionNote": "Decision note",
+    "postedToStock": "Posted to stock",
+    "item": "Item",
+    "quantity": "Quantity",
+    "batch": "Batch",
+    "expiry": "Expiry",
+    "unitCost": "Unit cost",
+    "remarks": "Remarks",
+    "deleted": "Return {{docNo}} deleted."
+  },
+  "list": {
+    "title": "Reject out (returns to supplier)",
+    "search": "Search document no., supplier or reference",
+    "empty": "No returns to suppliers yet."
+  }
+}

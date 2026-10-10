@@ -1,0 +1,79 @@
+{
+  "title": "Fuel reports",
+  "intro": "Only approved fundings and active (not voided) usage are counted.",
+  "tabsLabel": "Fuel reports",
+  "tabs": {
+    "consumption": "Consumption",
+    "reconciliation": "Funded vs spent",
+    "monthly": "Month by month"
+  },
+  "generate": "Generate report",
+  "openFull": "Open full view",
+  "back": "Back to reports",
+  "print": "Print",
+  "changeParams": "Change parameters",
+  "stats": {
+    "spent": "Spent",
+    "litres": "Litres",
+    "fills": "Fills",
+    "funded": "Funded",
+    "avgPrice": "Avg price / L",
+    "unspent": "Unspent",
+    "used": "Used"
+  },
+  "params": {
+    "report": "Report",
+    "from": "From",
+    "to": "To",
+    "givenFrom": "Given from",
+    "givenTo": "to",
+    "vehicle": "Vehicle",
+    "driver": "Driver",
+    "groupBy": "Group by",
+    "year": "Year",
+    "allVehicles": "All vehicles",
+    "allDrivers": "All drivers",
+    "byVehicle": "By vehicle",
+    "byDriver": "By driver",
+    "filterVehicle": "Filter by vehicle",
+    "filterDriver": "Filter by driver",
+    "none": "No filters: everything is included."
+  },
+  "heads": {
+    "vehicle": "Vehicle",
+    "driver": "Driver",
+    "fills": "Fills",
+    "litres": "Litres",
+    "spent": "Spent",
+    "avgPrice": "Avg price / L",
+    "distance": "Distance",
+    "kmPerLitre": "km / litre",
+    "lPer100": "L / 100 km",
+    "costPerKm": "Cost / km",
+    "fundings": "Fundings",
+    "withMoneyLeft": "With money left",
+    "funded": "Funded",
+    "unspent": "Unspent",
+    "usedPct": "Used %",
+    "litresBought": "Litres bought",
+    "month": "Month"
+  },
+  "empty": {
+    "consumption": "No fuel usage in this period.",
+    "reconciliation": "No approved fuel funding in this period."
+  },
+  "note": "Distance and km per litre only count two fills in a row that both filled the tank and have odometer readings. Other fills still count for litres and cost.",
+  "create": {
+    "title": "Generate a fuel report",
+    "subtitle": "Choose the report and its filters, then run it. Nothing is saved: reports are calculated live.",
+    "run": "Run report"
+  },
+  "update": {
+    "title": "Change report parameters",
+    "subtitle": "{{report}}: adjust the filters and run it again.",
+    "run": "Apply and run"
+  },
+  "view": {
+    "running": "Loading…"
+  }
+}

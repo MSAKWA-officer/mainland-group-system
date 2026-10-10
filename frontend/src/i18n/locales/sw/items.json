@@ -1,0 +1,63 @@
+{
+  "title": "Bidhaa",
+  "registered": "{{total}} zimesajiliwa",
+  "addButton": "+ Ongeza Bidhaa",
+  "searchPlaceholder": "Tafuta jina, SKU au msimbopau",
+  "allCategories": "Kategoria zote",
+  "empty": "Hakuna bidhaa zilizopatikana.",
+  "more": "Zaidi",
+  "less": "Punguza",
+  "backToList": "← Rudi kwenye orodha",
+  "back": "← Rudi",
+  "actions": {
+    "deactivate": "Zima",
+    "activate": "Washa",
+    "deactivatePrompt": "Kwa nini {{name}} inazimwa?",
+    "confirmDelete": "Futa bidhaa \"{{name}}\" ({{sku}})? Ni bidhaa zisizo na historia ya stoo pekee zinazoweza kufutwa. Ufutaji huu utahifadhiwa kwenye kumbukumbu za ukaguzi."
+  },
+  "fields": {
+    "sku": "SKU",
+    "name": "Bidhaa",
+    "itemName": "Jina la bidhaa",
+    "category": "Kategoria",
+    "stock": "Stoo",
+    "sellingPrice": "Bei ya kuuza",
+    "status": "Hali",
+    "unit": "Kipimo",
+    "costPrice": "Bei ya kununua",
+    "reorder": "Kiwango cha kuagiza upya",
+    "trackExpiry": "Fuatilia tarehe ya kuisha muda",
+    "description": "Maelezo",
+    "created": "Tarehe ya kuundwa",
+    "updated": "Ilisasishwa mwisho",
+    "barcode": "Msimbopau (barcode)",
+    "skuAuto": "SKU (acha wazi ili itengenezwe yenyewe)",
+    "unitHint": "Kipimo (pcs, kg, boksi…)",
+    "actions": "Vitendo"
+  },
+  "yes": "Ndiyo",
+  "no": "Hapana",
+  "saving": "Inahifadhi…",
+  "create": {
+    "title": "Ongeza bidhaa",
+    "subtitle": "Bidhaa mpya huanza na stoo sifuri.",
+    "selectCategory": "Chagua kategoria",
+    "trackExpiryLabel": "Fuatilia bechi na tarehe za kuisha muda kwa bidhaa hii",
+    "save": "Unda bidhaa",
+    "done": "Bidhaa {{name}} imeundwa. Ongeza stoo ya kuanzia kupitia Upokeaji wa Bidhaa."
+  },
+  "edit": {
+    "title": "Hariri bidhaa",
+    "save": "Hifadhi mabadiliko",
+    "done": "Bidhaa imesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Bidhaa",
+    "batches": "Bechi zilizo stoo",
+    "batchNo": "Namba ya bechi",
+    "expiryDate": "Tarehe ya kuisha muda",
+    "quantity": "Kiasi",
+    "noBatches": "Hakuna bechi zilizo stoo.",
+    "deleted": "Bidhaa {{name}} imefutwa."
+  }
+}

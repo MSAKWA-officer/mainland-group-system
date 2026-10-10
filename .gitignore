@@ -1,0 +1,28 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Vite build output
+frontend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local and temporary files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Uploaded files and backups
+backend/storage/uploads/
+backend/storage/backups/
+
+# Test coverage
+coverage/

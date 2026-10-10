@@ -1,0 +1,60 @@
+{
+  "title": "Mienendo ya stoo",
+  "recorded": "{{count}} zimerekodiwa — daftari la kudumu lisiloweza kuhaririwa wala kufutwa.",
+  "types": {
+    "RECEIVING": "Mapokezi ya stoo",
+    "ADJUSTMENT": "Marekebisho",
+    "REJECT_IN": "Zilizokataliwa (Ndani)",
+    "REJECT_OUT": "Zilizokataliwa (Nje)",
+    "EXPIRED": "Uondoaji wa zilizoisha muda",
+    "DAMAGED": "Uondoaji wa zilizoharibika"
+  },
+  "direction": {
+    "IN": "Ndani (+)",
+    "OUT": "Nje (−)"
+  },
+  "filters": {
+    "allItems": "Bidhaa zote",
+    "allTypes": "Aina zote",
+    "allDirections": "Ndani na nje",
+    "from": "Kuanzia",
+    "to": "Hadi"
+  },
+  "heads": {
+    "date": "Tarehe",
+    "type": "Aina",
+    "document": "Hati",
+    "item": "Bidhaa",
+    "batch": "Bechi",
+    "direction": "Mwelekeo",
+    "quantity": "Idadi",
+    "balanceAfter": "Salio baada",
+    "unitCost": "Gharama kwa kipimo",
+    "by": "Na",
+    "actions": "Vitendo"
+  },
+  "empty": "Hakuna mienendo iliyopatikana.",
+  "actions": {
+    "view": "Angalia",
+    "openDocument": "Fungua hati chanzo"
+  },
+  "view": {
+    "fallbackTitle": "Mwenendo wa stoo",
+    "title": "Mwenendo #{{id}}",
+    "backToList": "← Rudi kwenye orodha",
+    "dateTime": "Tarehe na saa",
+    "type": "Aina",
+    "document": "Hati",
+    "reference": "Kumbukumbu",
+    "party": "Msambazaji / upande husika",
+    "item": "Bidhaa",
+    "batch": "Bechi",
+    "expiryDate": "Tarehe ya kuisha muda",
+    "direction": "Mwelekeo",
+    "quantity": "Idadi",
+    "balanceAfter": "Salio baada",
+    "unitCost": "Gharama kwa kipimo",
+    "performedBy": "Imefanywa na",
+    "note": "Maelezo"
+  }
+}

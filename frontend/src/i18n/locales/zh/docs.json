@@ -1,0 +1,25 @@
+{
+  "status": {
+    "DRAFT": "草稿",
+    "SUBMITTED": "已提交",
+    "POSTED": "已过账",
+    "REJECTED": "已驳回",
+    "CANCELLED": "已取消"
+  },
+  "direction": {
+    "IN": "增加 (+)",
+    "OUT": "减少 (−)"
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "submit": "提交审批",
+    "cancel": "取消",
+    "approve": "批准",
+    "reject": "驳回",
+    "delete": "删除"
+  },
+  "rejectPrompt": "驳回原因：",
+  "confirmDelete": "删除单据 {{docNo}}？删除记录将保留在审计日志中。",
+  "backToList": "← 返回列表"
+}

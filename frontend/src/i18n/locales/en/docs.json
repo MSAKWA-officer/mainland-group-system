@@ -1,0 +1,25 @@
+{
+  "status": {
+    "DRAFT": "Draft",
+    "SUBMITTED": "Submitted",
+    "POSTED": "Posted",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled"
+  },
+  "direction": {
+    "IN": "Add (+)",
+    "OUT": "Remove (−)"
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "submit": "Submit for approval",
+    "cancel": "Cancel",
+    "approve": "Approve",
+    "reject": "Reject",
+    "delete": "Delete"
+  },
+  "rejectPrompt": "Reason for rejecting:",
+  "confirmDelete": "Delete document {{docNo}}? The deletion is kept in the audit log.",
+  "backToList": "← Back to list"
+}

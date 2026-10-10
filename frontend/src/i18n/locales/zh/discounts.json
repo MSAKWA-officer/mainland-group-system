@@ -1,0 +1,102 @@
+{
+  "scope": {
+    "ALL": "所有商品",
+    "CATEGORY": "类别",
+    "ITEM": "单个商品"
+  },
+  "state": {
+    "INACTIVE": "已停用",
+    "EXPIRED": "已过期",
+    "SCHEDULED": "未生效",
+    "ACTIVE": "生效中"
+  },
+  "fallback": {
+    "item": "商品",
+    "category": "类别"
+  },
+  "anyCustomer": "任意客户",
+  "noEnd": "无截止",
+  "list": {
+    "title": "折扣",
+    "subtitle": "已设置 {{total}} 项",
+    "new": "新建折扣",
+    "search": "搜索名称或编码",
+    "searchAria": "搜索折扣",
+    "filterScopeAria": "按适用范围筛选",
+    "allScopes": "所有范围",
+    "filterStatusAria": "按状态筛选",
+    "allStatuses": "所有状态",
+    "usable": "今日可用",
+    "active": "已启用",
+    "inactive": "已停用",
+    "emptyFiltered": "没有符合筛选条件的折扣。",
+    "emptyNone": "暂无折扣。请使用“新建折扣”添加第一个。",
+    "columns": {
+      "code": "编码",
+      "name": "名称",
+      "percent": "百分比",
+      "appliesTo": "适用于",
+      "customer": "客户",
+      "minQty": "最小数量",
+      "valid": "有效期",
+      "used": "使用次数",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "deactivate": "停用",
+    "activate": "启用",
+    "delete": "删除",
+    "deactivatePrompt": "请输入停用“{{name}}”的原因：",
+    "deleteConfirm": "确定要永久删除折扣“{{name}}”吗？此操作无法撤销。",
+    "deleted": "折扣已删除。"
+  },
+  "form": {
+    "newTitle": "新建折扣",
+    "editTitle": "编辑折扣",
+    "newSub": "定义可用于销售订单行的预设折扣。",
+    "back": "返回",
+    "backToList": "返回列表",
+    "name": "名称",
+    "percent": "百分比 (%)",
+    "description": "描述（可选）",
+    "appliesTo": "适用于",
+    "minQty": "最小数量",
+    "category": "类别",
+    "chooseCategory": "选择类别",
+    "item": "商品",
+    "chooseItem": "选择商品",
+    "customer": "仅限某一客户（可选）",
+    "anyCustomerPlaceholder": "任意客户",
+    "validFrom": "生效日期",
+    "validTo": "截止日期（可选）",
+    "saveChanges": "保存更改",
+    "saveNew": "保存折扣",
+    "updated": "折扣已更新。",
+    "created": "折扣已创建。",
+    "saving": "保存中…"
+  },
+  "view": {
+    "fallbackTitle": "折扣",
+    "code": "编码",
+    "name": "名称",
+    "description": "描述",
+    "percent": "百分比",
+    "scope": "适用范围",
+    "category": "类别",
+    "item": "商品",
+    "customer": "客户",
+    "minQty": "最小数量",
+    "none": "无",
+    "validFrom": "生效日期",
+    "validTo": "截止日期",
+    "noEndDate": "无截止日期",
+    "used": "订单行使用次数",
+    "status": "状态",
+    "created": "创建时间",
+    "updated": "最后更新"
+  }
+}

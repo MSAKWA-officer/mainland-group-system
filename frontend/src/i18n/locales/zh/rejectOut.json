@@ -1,0 +1,68 @@
+{
+  "saving": "保存中…",
+  "registered": "已登记 {{count}} 条",
+  "newReturn": "+ 新建退货",
+  "allStatuses": "所有状态",
+  "from": "从",
+  "to": "至",
+  "heads": {
+    "docNo": "单据编号",
+    "date": "日期",
+    "party": "供应商",
+    "reference": "参考号",
+    "reason": "原因",
+    "lines": "行数",
+    "createdBy": "创建人",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "create": {
+    "title": "新建供应商退货",
+    "subtitle": "退货提交并获批准后库存才会减少。",
+    "saveDraft": "保存为草稿",
+    "draftSaved": "草稿 {{docNo}} 已保存。准备好后请提交审批。"
+  },
+  "edit": {
+    "title": "编辑供应商退货",
+    "subtitle": "{{doc}} — 只能编辑您自己的草稿。",
+    "back": "← 返回",
+    "notEditable": "此退货单状态为“{{status}}”或属于他人，无法再编辑。",
+    "saveChanges": "保存更改",
+    "draftUpdated": "草稿已更新。"
+  },
+  "form": {
+    "dateReturned": "退货日期",
+    "party": "供应商",
+    "reference": "参考号（采购发票或送货单编号）",
+    "reason": "退货原因（必填）",
+    "itemsReturned": "退回商品",
+    "qtyReturned": "退货数量"
+  },
+  "view": {
+    "fallbackTitle": "供应商退货",
+    "backToList": "← 返回列表",
+    "dateReturned": "退货日期",
+    "party": "供应商",
+    "reference": "参考号",
+    "reason": "退货原因",
+    "createdBy": "创建人",
+    "created": "创建时间",
+    "submitted": "提交时间",
+    "decision": "审批结果",
+    "decisionValue": "{{status}}，{{date}}",
+    "decisionNote": "审批备注",
+    "postedToStock": "入库过账时间",
+    "item": "商品",
+    "quantity": "数量",
+    "batch": "批次",
+    "expiry": "有效期",
+    "unitCost": "单位成本",
+    "remarks": "备注",
+    "deleted": "退货单 {{docNo}} 已删除。"
+  },
+  "list": {
+    "title": "退货出库（退给供应商）",
+    "search": "搜索单据编号、供应商或参考号",
+    "empty": "暂无供应商退货。"
+  }
+}

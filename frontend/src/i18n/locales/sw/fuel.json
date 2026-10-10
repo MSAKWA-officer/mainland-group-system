@@ -1,0 +1,25 @@
+{
+  "state": {
+    "UNUSED": "Haijatumika bado",
+    "PARTIAL": "Imetumika kiasi",
+    "SETTLED": "Imetumika yote",
+    "ACTIVE": "Inatumika",
+    "VOIDED": "Imebatilishwa",
+    "INACTIVE": "Haitumiki",
+    "PENDING": "Inasubiri idhini",
+    "APPROVED": "Imeidhinishwa",
+    "REJECTED": "Imekataliwa"
+  },
+  "fuelType": {
+    "DIESEL": "Dizeli",
+    "PETROL": "Petroli",
+    "GAS": "Gesi",
+    "OTHER": "Nyingine"
+  },
+  "unit": {
+    "litres": "{{value}} L",
+    "km": "{{value}} km",
+    "days_one": "siku {{count}}",
+    "days_other": "siku {{count}}"
+  }
+}

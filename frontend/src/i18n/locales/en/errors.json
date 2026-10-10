@@ -1,0 +1,11 @@
+{
+  "VALIDATION_ERROR": "Please check the highlighted fields",
+  "DUPLICATE": "This record already exists",
+  "NOT_FOUND": "Record not found",
+  "UNAUTHORIZED": "Your session has expired. Please log in again",
+  "FORBIDDEN": "You do not have permission to do this",
+  "CONFLICT": "This action conflicts with the current state of the record",
+  "INTERNAL_ERROR": "Something went wrong on the server. Please try again",
+  "NETWORK_ERROR": "Cannot reach the server. Check your connection",
+  "UNKNOWN": "An unexpected error occurred"
+}

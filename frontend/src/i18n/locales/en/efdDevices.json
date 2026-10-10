@@ -1,0 +1,68 @@
+{
+  "list": {
+    "title": "EFD devices",
+    "subtitle": "{{total}} registered",
+    "new": "New Device",
+    "search": "Search serial, name, TIN or location",
+    "searchAria": "Search devices",
+    "filterStatusAria": "Filter by status",
+    "allStatuses": "All statuses",
+    "emptyFiltered": "No devices match your filters.",
+    "emptyNone": "No EFD devices yet. Use “New Device” to register the first one.",
+    "columns": {
+      "serialNo": "Serial no",
+      "name": "Name",
+      "tin": "TIN",
+      "vrn": "VRN",
+      "location": "Location",
+      "receipts": "Receipts",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "delete": "Delete",
+    "deactivatePrompt": "Reason for deactivating “{{name}}”:",
+    "deleteConfirm": "Delete the device “{{name}}” permanently? This cannot be undone.",
+    "deleted": "Device deleted."
+  },
+  "form": {
+    "serialNo": "Serial number",
+    "serialTitle": "Letters, digits and - only",
+    "serialLocked": "Locked: receipts were already recorded on this device.",
+    "name": "Name",
+    "namePlaceholder": "e.g. Main shop till",
+    "tin": "TIN (tax number)",
+    "vrn": "VRN (optional)",
+    "location": "Location (optional)",
+    "notes": "Notes (optional)"
+  },
+  "create": {
+    "title": "New EFD device",
+    "sub": "Register a fiscal device so its receipt numbers can be recorded against orders.",
+    "submit": "Save device",
+    "saved": "Device registered."
+  },
+  "update": {
+    "title": "Edit EFD device",
+    "submit": "Save changes",
+    "saved": "Device updated."
+  },
+  "view": {
+    "fallbackTitle": "EFD device",
+    "serialNo": "Serial number",
+    "name": "Name",
+    "tin": "TIN",
+    "vrn": "VRN",
+    "location": "Location",
+    "receipts": "Receipts recorded",
+    "status": "Status",
+    "notes": "Notes",
+    "created": "Created",
+    "updated": "Last updated"
+  }
+}

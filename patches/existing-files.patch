@@ -1,0 +1,137 @@
+--- backend/src/config/rbac.js	2026-10-03 21:59:09.000000000 +0000
++++ backend/src/config/rbac.js	2026-10-04 11:39:48.903605261 +0000
+@@ -56,6 +56,11 @@
+   expenses: ['read', 'read_all', 'create', 'update', 'approve', 'void'],                     // read_all = every expense, not only own; update = edit own PENDING expense
+   payments: ['read', 'create', 'void'],                                                      // money paid OUT (settles expenses / pays a payee)
+   transfers: ['read', 'create', 'void'],                                                     // moves between our own bank accounts
++
++  // ---- Phase 6: Fuel ----
++  drivers: ['read', 'create', 'update', 'deactivate', 'delete'],                             // driver register (licence details)
++  vehicles: ['read', 'create', 'update', 'deactivate', 'delete', 'assign'],                  // assign = set or clear a vehicle's default driver
++  fuel_funding: ['read', 'read_all', 'create', 'update', 'approve', 'void'],                 // money given to a driver for a vehicle's fuel; read_all = every request, not only own; update = edit own PENDING request
+ };
+ const ALL = Object.entries(PERMISSIONS).flatMap(([m, a]) => a.map((x) => `${m}.${x}`));
+ 
+@@ -70,6 +75,7 @@
+ const SALES_EXTRA_MODULES = ['discounts', 'efd_devices', 'efd_receipts'];
+ const BANKING_MODULES = ['banks', 'bank_accounts', 'bank_transactions', 'customer_payments'];
+ const BANKING_EXTRA_MODULES = ['expenses', 'payments', 'transfers'];
++const FUEL_MODULES = ['drivers', 'vehicles', 'fuel_funding'];
+ const DOC_MODULES = ['receiving', 'adjustments', 'reject_in', 'reject_out', 'expired', 'damaged'];
+ 
+ const common = ['approvals.read', 'approvals.create', 'files.upload', 'files.read', 'notifications.read'];
+@@ -109,11 +115,17 @@
+   'expenses.read', 'expenses.read_all', 'expenses.create', 'expenses.update', 'expenses.approve', 'expenses.void',
+   'payments.read', 'payments.create', 'payments.void', 'transfers.read', 'transfers.create', 'transfers.void'];
+ 
++// Fuel: a storekeeper can look up vehicles / drivers and raise + track their own fuel funding requests; a manager runs the whole module (delete stays Owner-only).
++const fuelSelf = ['drivers.read', 'vehicles.read', 'fuel_funding.read', 'fuel_funding.create', 'fuel_funding.update'];
++const fuelManager = ['drivers.read', 'drivers.create', 'drivers.update', 'drivers.deactivate',
++  'vehicles.read', 'vehicles.create', 'vehicles.update', 'vehicles.deactivate', 'vehicles.assign',
++  'fuel_funding.read', 'fuel_funding.read_all', 'fuel_funding.create', 'fuel_funding.update', 'fuel_funding.approve', 'fuel_funding.void'];
++
+ const ROLES = {
+   OWNER: { name: 'Owner', level: 100, description: 'Full executive access', permissions: ALL },
+   MANAGER: { name: 'Manager', level: 70, description: 'Reviews and approves; limited admin',
+-    permissions: [...common, 'approvals.read_all', 'approvals.approve', 'users.read', 'roles.read', ...invManager, ...salesManager, ...salesV2Manager, ...salesExtraManager, ...workflowManager, ...bankingManager] },
+-  STOREKEEPER: { name: 'Storekeeper', level: 40, description: 'Warehouse and stock control', permissions: [...common, ...invStorekeeper, ...workflowStorekeeper, ...bankingSelf.filter((p) => p.startsWith('expenses.'))] },
++    permissions: [...common, 'approvals.read_all', 'approvals.approve', 'users.read', 'roles.read', ...invManager, ...salesManager, ...salesV2Manager, ...salesExtraManager, ...workflowManager, ...bankingManager, ...fuelManager] },
++  STOREKEEPER: { name: 'Storekeeper', level: 40, description: 'Warehouse and stock control', permissions: [...common, ...invStorekeeper, ...workflowStorekeeper, ...bankingSelf.filter((p) => p.startsWith('expenses.')), ...fuelSelf] },
+   SALESPERSON: { name: 'Sales Person', level: 30, description: 'Own customers, orders and sales', permissions: [...common, ...invView, ...salesSelf, ...salesV2Self, ...salesExtraSelf, ...workflowSelf, ...bankingSelf] },
+ };
+-module.exports = { PERMISSIONS, ALL, ROLES, INVENTORY_MODULES, SALES_MODULES, SALES_V2_MODULES, SALES_V3_MODULES, SALES_EXTRA_MODULES, STAFF_MODULES, DOC_MODULES, WORKFLOW_MODULES, BANKING_MODULES, BANKING_EXTRA_MODULES };
++module.exports = { PERMISSIONS, ALL, ROLES, INVENTORY_MODULES, SALES_MODULES, SALES_V2_MODULES, SALES_V3_MODULES, SALES_EXTRA_MODULES, STAFF_MODULES, DOC_MODULES, WORKFLOW_MODULES, BANKING_MODULES, BANKING_EXTRA_MODULES, FUEL_MODULES };
+--- backend/src/models/index.js	2026-10-03 22:00:07.000000000 +0000
++++ backend/src/models/index.js	2026-10-04 11:40:26.604959722 +0000
+@@ -42,6 +42,10 @@
+ const Payment = require('./Payment');
+ const CustomerPayment = require('./CustomerPayment');
+ const CustomerPaymentAllocation = require('./CustomerPaymentAllocation');
++// Phase 6 - Fuel
++const Driver = require('./Driver');
++const Vehicle = require('./Vehicle');
++const FuelFunding = require('./FuelFunding');
+ 
+ // Associations
+ Role.belongsToMany(Permission, { through: RolePermission, as: 'permissions', foreignKey: 'roleId', otherKey: 'permissionId' });
+@@ -168,6 +172,23 @@
+ Payment.hasMany(BankTransaction, { as: 'bankTransactions', foreignKey: 'paymentId' });
+ BankTransaction.belongsTo(Payment, { as: 'payment', foreignKey: 'paymentId' });
+ 
++// Phase 6 - Fuel associations
++Driver.belongsTo(Staff, { as: 'staff', foreignKey: 'staffId' });
++Driver.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
++Driver.hasMany(Vehicle, { as: 'vehicles', foreignKey: 'driverId' });
++Driver.hasMany(FuelFunding, { as: 'fundings', foreignKey: 'driverId' });
++Vehicle.belongsTo(Driver, { as: 'driver', foreignKey: 'driverId' });
++Vehicle.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
++Vehicle.hasMany(FuelFunding, { as: 'fundings', foreignKey: 'vehicleId' });
++FuelFunding.belongsTo(Vehicle, { as: 'vehicle', foreignKey: 'vehicleId' });
++FuelFunding.belongsTo(Driver, { as: 'driver', foreignKey: 'driverId' });
++FuelFunding.belongsTo(BankAccount, { as: 'bankAccount', foreignKey: 'bankAccountId' });
++FuelFunding.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
++FuelFunding.belongsTo(User, { as: 'decider', foreignKey: 'decidedBy' });
++FuelFunding.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
++FuelFunding.hasMany(BankTransaction, { as: 'bankTransactions', foreignKey: 'fuelFundingId' });
++BankTransaction.belongsTo(FuelFunding, { as: 'fuelFunding', foreignKey: 'fuelFundingId' });
++
+ module.exports = {
+   sequelize, Sequelize, Role, Permission, RolePermission, User, Session, AuditLog, ApprovalRequest, Notification, Attachment,
+   Category, Item, StockLevel, StockBatch, StockDocument, StockDocumentLine, StockMovement,
+@@ -176,4 +197,5 @@
+   OrderWorkflow, OrderWorkflowEvent,
+   Bank, BankAccount, BankTransaction, CustomerPayment, CustomerPaymentAllocation,
+   Expense, Payment,
++  Driver, Vehicle, FuelFunding,
+ };
+--- backend/src/routes/index.js	2026-10-03 22:00:39.000000000 +0000
++++ backend/src/routes/index.js	2026-10-04 11:40:26.605906249 +0000
+@@ -60,4 +60,9 @@
+ router.use('/payments', authenticate, require('./paymentRoutes'));
+ router.use('/transfers', authenticate, require('./transferRoutes'));
+ 
++// ---- Phase 6: Fuel ----
++router.use('/drivers', authenticate, require('./driverRoutes'));
++router.use('/vehicles', authenticate, require('./vehicleRoutes'));
++router.use('/fuel-funding', authenticate, require('./fuelFundingRoutes'));
++
+ module.exports = router;
+--- backend/src/models/BankTransaction.js	2026-10-03 22:00:07.000000000 +0000
++++ backend/src/models/BankTransaction.js	2026-10-04 11:40:26.604584205 +0000
+@@ -10,7 +10,7 @@
+   type: str(20, { allowNull: false }), direction: str(6, { allowNull: false }),
+   amount: { type: D.DECIMAL(20, 2), allowNull: false }, txnDate: { type: D.DATEONLY, allowNull: false },
+   reference: str(100), description: str(255), counterparty: str(150),
+-  transferGroupId: D.UUID, customerPaymentId: D.UUID, paymentId: D.UUID,
++  transferGroupId: D.UUID, customerPaymentId: D.UUID, paymentId: D.UUID, fuelFundingId: D.UUID,
+   status: str(8, { allowNull: false, defaultValue: 'POSTED' }),
+   isReconciled: { type: D.BOOLEAN, allowNull: false, defaultValue: false }, reconciledAt: D.DATE, reconciledBy: D.UUID,
+   voidedAt: D.DATE, voidedBy: D.UUID, voidReason: D.TEXT,
+--- backend/src/services/banking.js	2026-10-03 22:01:07.000000000 +0000
++++ backend/src/services/banking.js	2026-10-04 11:40:26.609796796 +0000
+@@ -45,7 +45,7 @@
+ 
+ /* ---------- post one ledger row (caller already holds the account lock inside transaction t) ---------- */
+ async function post(req, a, t) {
+-  const { account, type, amount, txnDate, reference, description, counterparty, transferGroupId, customerPaymentId, paymentId } = a;
++  const { account, type, amount, txnDate, reference, description, counterparty, transferGroupId, customerPaymentId, paymentId, fuelFundingId } = a;
+   if (!account.isActive) throw new AppError(409, 'ACCOUNT_INACTIVE', `Bank account ${label(account)} is inactive`);
+   const amt = cents(amount);
+   if (amt <= 0n) throw bad('amount', 'Amount must be greater than 0');
+@@ -61,7 +61,7 @@
+   const txn = await BankTransaction.create({
+     txnNo: `BTX-${core.year()}-${core.pad(await core.nextNo('bank_txn_seq', t))}`, bankAccountId: account.id, type, direction, amount: str(amt), txnDate: date,
+     reference: reference ?? null, description: description ?? null, counterparty: counterparty ?? null,
+-    transferGroupId: transferGroupId ?? null, customerPaymentId: customerPaymentId ?? null, paymentId: paymentId ?? null, status: 'POSTED', createdBy: req.user.id,
++    transferGroupId: transferGroupId ?? null, customerPaymentId: customerPaymentId ?? null, paymentId: paymentId ?? null, fuelFundingId: fuelFundingId ?? null, status: 'POSTED', createdBy: req.user.id,
+   }, { transaction: t });
+   await audit.log(req, { action: 'BANK_TRANSACTION_POSTED', entityType: 'BankTransaction', entityId: txn.id, newValues: snap(txn) }, t);
+   return txn;
+@@ -111,6 +111,7 @@
+   if (!peek) throw new AppError(404, 'NOT_FOUND', 'Bank transaction not found');
+   if (peek.customerPaymentId) throw new AppError(409, 'LINKED', 'This transaction came from a customer payment. Void the customer payment instead.');
+   if (peek.paymentId) throw new AppError(409, 'LINKED', 'This transaction came from a payment. Void the payment instead.');
++  if (peek.fuelFundingId) throw new AppError(409, 'LINKED', 'This transaction came from a fuel funding. Void the fuel funding instead.');
+   const legs = peek.transferGroupId
+     ? await BankTransaction.findAll({ where: { transferGroupId: peek.transferGroupId }, attributes: ['id', 'bankAccountId'], transaction: t })
+     : [peek];

@@ -1,0 +1,90 @@
+{
+  "title": "Wateja",
+  "registered": "{{count}} waliosajiliwa",
+  "newButton": "Mteja Mpya",
+  "search": "Tafuta jina, msimbo, simu, barua pepe au TIN",
+  "searchAria": "Tafuta wateja",
+  "filterTypeAria": "Chuja kwa aina",
+  "filterStatusAria": "Chuja kwa hali",
+  "filterSalespersonAria": "Chuja kwa muuzaji",
+  "allTypes": "Aina zote",
+  "allStatuses": "Hali zote",
+  "allSalespersons": "Wauzaji wote",
+  "types": {
+    "INDIVIDUAL": "Mtu binafsi",
+    "COMPANY": "Kampuni"
+  },
+  "columns": {
+    "code": "Msimbo",
+    "name": "Jina",
+    "type": "Aina",
+    "phone": "Simu",
+    "city": "Mji",
+    "salesperson": "Muuzaji",
+    "orders": "Oda",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "emptyFiltered": "Hakuna wateja wanaolingana na vichujio vyako.",
+  "emptyNone": "Bado hakuna wateja. Tumia “Mteja Mpya” kuongeza wa kwanza.",
+  "actions": {
+    "deactivate": "Zima",
+    "activate": "Washa",
+    "deactivatePrompt": "Sababu ya kumzima “{{name}}”:",
+    "confirmDelete": "Mfute mteja “{{name}}” kabisa? Kitendo hiki hakiwezi kutenguliwa."
+  },
+  "backToList": "Rudi kwenye orodha",
+  "back": "Rudi",
+  "saving": "Inahifadhi…",
+  "form": {
+    "name": "Jina",
+    "type": "Aina",
+    "contactPerson": "Mtu wa mawasiliano",
+    "phone": "Simu",
+    "phonePlaceholder": "+255 ...",
+    "email": "Barua pepe",
+    "tin": "TIN (namba ya mlipakodi)",
+    "address": "Anwani",
+    "city": "Mji",
+    "creditLimit": "Kikomo cha mkopo",
+    "paymentTerms": "Masharti ya malipo (siku)",
+    "salesperson": "Muuzaji aliyepangiwa (hiari)",
+    "notAssigned": "Hajapangiwa",
+    "autoAssigned": "Mteja huyu amepangiwa wewe moja kwa moja.",
+    "notes": "Maelezo"
+  },
+  "create": {
+    "title": "Mteja mpya",
+    "subtitle": "Sajili mteja ili uweze kutengeneza oda za mauzo kwa ajili yake.",
+    "save": "Hifadhi mteja",
+    "done": "Mteja ameundwa."
+  },
+  "edit": {
+    "title": "Hariri mteja",
+    "save": "Hifadhi mabadiliko",
+    "done": "Mteja amesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Mteja",
+    "code": "Msimbo",
+    "name": "Jina",
+    "type": "Aina",
+    "contactPerson": "Mtu wa mawasiliano",
+    "phone": "Simu",
+    "email": "Barua pepe",
+    "address": "Anwani",
+    "city": "Mji",
+    "tin": "TIN",
+    "creditLimit": "Kikomo cha mkopo",
+    "paymentTerms": "Masharti ya malipo",
+    "paymentDaysOne": "Siku {{count}}",
+    "paymentDaysOther": "Siku {{count}}",
+    "salesperson": "Muuzaji",
+    "orders": "Oda",
+    "status": "Hali",
+    "notes": "Maelezo",
+    "created": "Imeundwa",
+    "updated": "Ilisasishwa mwisho",
+    "deleted": "Mteja amefutwa."
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "title": "员工",
+  "registered": "已登记 {{count}} 人。请先在此添加人员，再到“用户管理”为其创建账户。",
+  "add": "添加员工",
+  "search": "搜索员工",
+  "searchPlaceholder": "搜索姓名、编号、电话或职位",
+  "filterAccount": "按账户筛选",
+  "allPeople": "所有人员",
+  "noAccountYet": "尚无账户",
+  "hasAccount": "已有账户",
+  "filterStatus": "按状态筛选",
+  "allStatuses": "全部状态",
+  "active": "在职",
+  "inactive": "停用",
+  "noAccount": "无账户",
+  "heads": {
+    "code": "编号",
+    "name": "姓名",
+    "position": "职位",
+    "phone": "电话",
+    "account": "登录账户",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "empty": {
+    "filtered": "没有符合筛选条件的员工。",
+    "none": "暂无员工。请使用“添加员工”登记第一个人。"
+  },
+  "actions": {
+    "view": "查看",
+    "createAccount": "创建账户",
+    "edit": "编辑",
+    "deactivate": "停用",
+    "activate": "启用",
+    "delete": "删除"
+  },
+  "prompts": {
+    "deactivate": "停用“{{name}}”的原因：",
+    "delete": "确定永久删除“{{name}}”吗？此操作无法撤销。"
+  },
+  "msg": {
+    "deleted": "员工已删除。",
+    "added": "员工已添加。现在可以在“用户管理”中为其创建账户。",
+    "updated": "员工信息已更新。"
+  },
+  "form": {
+    "addTitle": "添加员工",
+    "editTitle": "编辑员工",
+    "addSub": "请先登记人员。在所有者为其创建账户之前，他们没有登录权限。",
+    "back": "返回列表",
+    "accountNote": "此人已有账户。姓名、电话和邮箱的修改也会同步到账户。",
+    "fullName": "姓名",
+    "positionOpt": "职位（选填）",
+    "positionPh": "例如：收银员、司机",
+    "phone": "电话",
+    "phonePh": "+255 ...",
+    "emailOpt": "邮箱（选填）",
+    "addressOpt": "地址（选填）",
+    "save": "保存员工",
+    "saveChanges": "保存修改",
+    "saving": "保存中…"
+  },
+  "view": {
+    "fallbackTitle": "员工",
+    "back": "返回列表",
+    "details": "个人信息",
+    "loginAccount": "登录账户",
+    "code": "编号",
+    "fullName": "姓名",
+    "position": "职位",
+    "phone": "电话",
+    "email": "邮箱",
+    "address": "地址",
+    "status": "状态",
+    "username": "用户名",
+    "role": "角色",
+    "accountStatus": "账户状态",
+    "noAccountNote": "此人尚无登录账户。",
+    "created": "登记时间",
+    "updated": "最近更新",
+    "accountStates": {
+      "ACTIVE": "正常",
+      "INACTIVE": "停用",
+      "LOCKED": "已锁定",
+      "DISABLED": "已禁用"
+    }
+  }
+}

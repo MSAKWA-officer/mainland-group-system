@@ -1,0 +1,103 @@
+{
+  "list": {
+    "title": "司机",
+    "subtitle": "驾驶公司车辆并领取燃油款的人员。驾照状态根据到期日期自动计算。",
+    "new": "新建司机",
+    "search": "搜索姓名、编码、电话、驾照号",
+    "searchAria": "搜索司机",
+    "filterStatusAria": "按状态筛选",
+    "allStatuses": "所有状态",
+    "filterLicenceAria": "按驾照筛选",
+    "anyLicence": "任意驾照",
+    "licenceValid": "有效",
+    "licenceExpiringSoon": "30 天内到期",
+    "licenceExpired": "已过期",
+    "sortAria": "司机排序",
+    "sort": {
+      "nameAsc": "姓名 A–Z",
+      "nameDesc": "姓名 Z–A",
+      "code": "编码",
+      "expiryAsc": "驾照最先到期",
+      "expiryDesc": "驾照最后到期"
+    },
+    "emptyFiltered": "没有符合筛选条件的司机。",
+    "emptyNone": "暂无司机。请使用“新建司机”登记第一位。",
+    "staff": "员工：{{code}}",
+    "columns": {
+      "code": "编码",
+      "name": "姓名",
+      "phone": "电话",
+      "licenceNo": "驾照号",
+      "class": "准驾类型",
+      "licenceExpiry": "驾照到期",
+      "vehicles": "车辆数",
+      "fuelFundings": "燃油拨款数",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "deactivate": "停用",
+    "activate": "启用",
+    "delete": "删除",
+    "deactivatePrompt": "请输入停用“{{name}}”的原因：",
+    "deleteConfirm": "确定要永久删除司机“{{name}}”吗？此操作无法撤销。",
+    "deactivated": "司机已停用。",
+    "activated": "司机已启用。",
+    "deleted": "司机已删除。"
+  },
+  "form": {
+    "fullName": "姓名",
+    "phone": "电话（可选）",
+    "phonePlaceholder": "+255…",
+    "licenseNo": "驾照号",
+    "licenseClass": "准驾类型（可选）",
+    "licenseClassPlaceholder": "例如 C",
+    "licenseExpiry": "驾照到期日期",
+    "address": "地址（可选）",
+    "staff": "关联员工（可选）",
+    "staffPlaceholder": "未关联员工",
+    "staffHint": "司机同时也是员工时使用。一名员工只能关联一位司机。",
+    "notes": "备注（可选）"
+  },
+  "create": {
+    "title": "新建司机",
+    "sub": "登记驾驶公司车辆的人员。司机编码由系统自动生成。",
+    "back": "返回列表",
+    "saving": "保存中…",
+    "submit": "登记司机",
+    "saved": "司机已登记。"
+  },
+  "update": {
+    "title": "编辑司机",
+    "back": "返回",
+    "saving": "保存中…",
+    "submit": "保存更改",
+    "saved": "司机已更新。"
+  },
+  "view": {
+    "fallbackTitle": "司机",
+    "back": "返回列表",
+    "licenceExpires": "驾照到期",
+    "vehicles": "车辆数",
+    "fuelFundings": "燃油拨款数",
+    "code": "编码",
+    "fullName": "姓名",
+    "phone": "电话",
+    "licenseNo": "驾照号",
+    "licenseClass": "准驾类型",
+    "licenseExpiry": "驾照到期日",
+    "address": "地址",
+    "linkedStaff": "关联员工",
+    "status": "状态",
+    "notes": "备注",
+    "created": "创建时间",
+    "updated": "最后更新",
+    "inactive": "已停用",
+    "defaultDriverOf": "默认司机的车辆（{{n}}）",
+    "noVehicles": "没有车辆将该司机设为默认司机。",
+    "seeFunding": "查看该司机的燃油拨款申请"
+  }
+}

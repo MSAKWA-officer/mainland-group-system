@@ -1,0 +1,112 @@
+{
+  "status": {
+    "ACTIVE": "有效",
+    "VOIDED": "已作废",
+    "POSTED": "已入账",
+    "ALL": "全部"
+  },
+  "txnType": {
+    "DEPOSIT": "存款",
+    "WITHDRAWAL": "取款",
+    "TRANSFER_IN": "转入",
+    "TRANSFER_OUT": "转出",
+    "CHARGE": "手续费",
+    "INTEREST": "利息",
+    "CUSTOMER_PAYMENT": "客户付款"
+  },
+  "list": {
+    "title": "付款",
+    "subtitle": "支出的款项——用于结清已批准的费用，或直接付款给某人。",
+    "new": "新建付款",
+    "stats": {
+      "paidOut": "已支出（有效，当前筛选）",
+      "records": "记录数"
+    },
+    "search": "搜索付款号、收款方或参考号",
+    "searchAria": "搜索付款",
+    "filterStatusAria": "按状态筛选",
+    "filterMethodAria": "按付款方式筛选",
+    "allMethods": "所有付款方式",
+    "allBankAccounts": "所有银行账户",
+    "clearExpense": "仅显示一笔费用 · 清除",
+    "emptyFiltered": "没有符合筛选条件的付款。",
+    "emptyNone": "暂无付款。请使用“新建付款”录入第一笔。",
+    "directPayment": "直接付款",
+    "notFromBank": "非银行账户支付",
+    "columns": {
+      "paymentNo": "付款号",
+      "date": "日期",
+      "paidTo": "收款方",
+      "expense": "费用",
+      "method": "付款方式",
+      "paidFrom": "付款账户",
+      "amount": "金额",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "void": "作废",
+    "voidPrompt": "请输入作废 {{no}}（{{amount}}，付给 {{payee}}）的原因。\n（由此产生的银行取款也会一并冲回。）",
+    "voided": "付款已作废。"
+  },
+  "create": {
+    "title": "新建付款",
+    "sub": "记录支出的款项——针对已批准的费用，或直接付给收款方。",
+    "back": "返回列表",
+    "kindExpense": "支付已批准的费用",
+    "kindDirect": "直接付款给某人",
+    "expense": "费用",
+    "expensePlaceholder": "按费用号、描述或收款方搜索",
+    "left": "（剩余 {{amount}}）",
+    "expenseSummary": "{{category}} · 日期 {{date}} · 总额 <b>{{total}}</b> · 已付 {{paid}} · <b>待付 {{left}}</b>",
+    "payeeExpense": "收款方（可选，取自费用）",
+    "paidTo": "收款方",
+    "amount": "金额",
+    "fullBalance": "全部余额",
+    "method": "付款方式",
+    "paidFrom": "付款银行账户",
+    "paidFromOptional": "付款银行账户（可选）",
+    "selectAccount": "选择账户…",
+    "notFromBank": "非银行账户支付",
+    "noOverdraft": "该账户余额不能低于零。",
+    "onlyTzs": "只能使用 TZS 账户。",
+    "reference": "参考号",
+    "referenceOptional": "参考号（可选）",
+    "referencePlaceholder": "交易号 / 收据号 / 支票号",
+    "paymentDate": "付款日期",
+    "notes": "备注（可选）",
+    "saving": "保存中…",
+    "submit": "记录付款",
+    "saved": "付款已记录。",
+    "err": {
+      "chooseExpense": "请选择要支付的费用。",
+      "payeeRequired": "请输入付款对象",
+      "amountPositive": "金额必须大于 0",
+      "atMost": "最多 {{max}}",
+      "chooseBank": "请选择付款的银行账户",
+      "needRef": "此付款方式必须填写付款参考号"
+    }
+  },
+  "view": {
+    "fallbackTitle": "付款",
+    "back": "返回列表",
+    "amountPaid": "付款金额",
+    "paidTo": "收款方",
+    "expense": "费用",
+    "paymentDate": "付款日期",
+    "method": "付款方式",
+    "reference": "参考号",
+    "paidFrom": "付款账户",
+    "notFromBank": "非银行账户支付",
+    "recordedBy": "记录人",
+    "recorded": "记录时间",
+    "notes": "备注",
+    "voidedBy": "作废人",
+    "voidedOn": "作废时间",
+    "voidReason": "作废原因",
+    "ledgerTitle": "银行流水",
+    "reconciledSuffix": " · 已核对"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "category": {
+    "RENT": "租金",
+    "UTILITIES": "水电费",
+    "SALARIES": "工资",
+    "TRANSPORT": "交通",
+    "FUEL": "燃油",
+    "MARKETING": "营销",
+    "MAINTENANCE": "维修保养",
+    "OFFICE": "办公",
+    "TAXES": "税费",
+    "BANK_CHARGES": "银行手续费",
+    "OTHER": "其他"
+  },
+  "status": {
+    "PENDING": "等待审批",
+    "APPROVED": "已批准",
+    "REJECTED": "已驳回",
+    "VOIDED": "已作废",
+    "ALL": "所有状态"
+  },
+  "payStatus": {
+    "UNPAID": "未付",
+    "PARTIAL": "部分已付",
+    "PAID": "已付清"
+  },
+  "list": {
+    "title": "费用",
+    "subtitle": "企业已发生的成本。只有针对已批准的费用付款时，资金才会流出。",
+    "new": "新建费用",
+    "stats": {
+      "approvedFilter": "已批准（当前筛选）",
+      "approvedPeriod": "期间内已批准",
+      "records": "记录数"
+    },
+    "byCategory": "按类别：",
+    "search": "搜索费用号、描述、收款方",
+    "searchAria": "搜索费用",
+    "allCategories": "所有类别",
+    "filterCategoryAria": "按类别筛选",
+    "filterStatusAria": "按状态筛选",
+    "filterPaymentAria": "按付款状态筛选",
+    "anyPayment": "任意付款状态",
+    "emptyFiltered": "没有符合筛选条件的费用。",
+    "emptyNone": "暂无费用。请使用“新建费用”提交第一笔。",
+    "to": "收款方：{{payee}}",
+    "columns": {
+      "expenseNo": "费用号",
+      "date": "日期",
+      "category": "类别",
+      "description": "描述",
+      "amount": "金额",
+      "paid": "已付",
+      "status": "状态",
+      "submittedBy": "提交人",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "approve": "批准",
+    "reject": "驳回",
+    "pay": "付款",
+    "void": "作废",
+    "approveConfirm": "批准 {{no}}，金额 {{amount}}？",
+    "rejectPrompt": "请输入驳回 {{no}} 的原因。",
+    "voidPrompt": "请输入作废 {{no}} 的原因。",
+    "approved": "费用已批准。",
+    "rejected": "费用已驳回。",
+    "voided": "费用已作废。"
+  },
+  "form": {
+    "category": "类别",
+    "amount": "金额",
+    "description": "描述",
+    "descriptionPlaceholder": "这笔费用用于什么？",
+    "payee": "收款方（可选）",
+    "payeePlaceholder": "将付款给谁",
+    "reference": "发票 / 参考号（可选）",
+    "expenseDate": "费用日期",
+    "notes": "备注（可选）"
+  },
+  "create": {
+    "title": "新建费用",
+    "sub": "提交费用申请待审批。批准后即可付款。",
+    "back": "返回列表",
+    "saving": "保存中…",
+    "submit": "提交费用",
+    "saved": "费用已提交审批。"
+  },
+  "update": {
+    "title": "编辑费用",
+    "back": "返回",
+    "locked": "该费用{{status}}，无法再编辑。",
+    "saving": "保存中…",
+    "submit": "保存更改",
+    "saved": "费用已更新。"
+  },
+  "view": {
+    "fallbackTitle": "费用",
+    "back": "返回列表",
+    "amount": "金额",
+    "paid": "已付",
+    "stillToPay": "待付",
+    "category": "类别",
+    "description": "描述",
+    "payee": "收款方",
+    "reference": "参考号",
+    "expenseDate": "费用日期",
+    "notes": "备注",
+    "submittedBy": "提交人",
+    "submitted": "提交时间",
+    "approvedBy": "批准人",
+    "rejectedBy": "驳回人",
+    "decidedOn": "决定时间",
+    "decisionNote": "决定说明",
+    "voidedBy": "作废人",
+    "voidedOn": "作废时间",
+    "voidReason": "作废原因",
+    "paymentsTitle": "付款",
+    "cols": {
+      "paymentNo": "付款号",
+      "date": "日期",
+      "method": "付款方式",
+      "amount": "金额",
+      "status": "状态"
+    },
+    "noPayments": "尚未付款。"
+  }
+}

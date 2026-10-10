@@ -1,0 +1,113 @@
+{
+  "title": "Bidhaa Stoo",
+  "subtitle": "Stoo hubadilika tu kupitia marekebisho yaliyoidhinishwa.",
+  "newAdjustment": "+ Marekebisho Mapya",
+  "tabs": {
+    "levels": "Viwango vya stoo",
+    "adjustments": "Marekebisho"
+  },
+  "level": {
+    "in": "Ipo stoo",
+    "low": "Stoo ndogo",
+    "out": "Imeisha"
+  },
+  "filters": {
+    "searchLevels": "Tafuta jina, SKU au barcode",
+    "allCategories": "Kategoria zote",
+    "allLevels": "Viwango vyote",
+    "searchAdj": "Tafuta namba ya hati au kumbukumbu",
+    "allStatuses": "Hali zote"
+  },
+  "levelsCols": {
+    "sku": "SKU",
+    "item": "Bidhaa",
+    "category": "Kategoria",
+    "unit": "Kipimo",
+    "inStock": "Ipo stoo",
+    "reorder": "Kiwango cha kuagiza upya",
+    "level": "Kiwango",
+    "actions": "Vitendo"
+  },
+  "adjCols": {
+    "docNo": "Namba ya hati",
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu",
+    "lines": "Mistari",
+    "createdBy": "Imeundwa na",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "empty": {
+    "levels": "Hakuna rekodi za stoo.",
+    "adjustments": "Bado hakuna marekebisho."
+  },
+  "rowActions": {
+    "viewItem": "Angalia bidhaa na bechi",
+    "adjustStock": "Rekebisha stoo"
+  },
+  "lines": {
+    "itemsToAdjust": "Bidhaa za kurekebisha",
+    "searchItems": "Tafuta bidhaa kwa jina, SKU au barcode",
+    "item": "Bidhaa",
+    "selectItem": "Chagua bidhaa",
+    "optionAdjust": "{{sku}} — {{name}} ({{qty}} {{unit}})",
+    "optionOut": "{{sku}} — {{name}} ({{qty}} {{unit}} zipo stoo)",
+    "action": "Kitendo",
+    "addStock": "Ongeza stoo (+)",
+    "removeStock": "Punguza stoo (−)",
+    "quantity": "Kiasi",
+    "quantityUnit": "{{label}} ({{unit}})",
+    "batchNumber": "Namba ya bechi",
+    "expiryDate": "Tarehe ya kuisha muda",
+    "batch": "Bechi",
+    "selectBatch": "Chagua bechi",
+    "batchOption": "{{batchNo}} — inaisha {{date}} — zimebaki {{qty}}",
+    "batchOptionExpired": "{{batchNo}} — inaisha {{date}} (imeisha muda) — zimebaki {{qty}}",
+    "unitCost": "Gharama ya kipimo",
+    "remarks": "Maelezo",
+    "removeLine": "Ondoa mstari",
+    "addAnother": "Ongeza bidhaa nyingine"
+  },
+  "create": {
+    "title": "Marekebisho mapya ya stoo",
+    "subtitle": "Stoo haibadiliki hadi marekebisho yawasilishwe na kuidhinishwa.",
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu (lazima)",
+    "saveDraft": "Hifadhi kama rasimu",
+    "saving": "Inahifadhi…",
+    "saved": "Rasimu {{docNo}} imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari."
+  },
+  "update": {
+    "title": "Hariri marekebisho ya stoo",
+    "subtitle": "{{docNo}} — ni rasimu zako mwenyewe tu zinazoweza kuhaririwa.",
+    "back": "← Rudi",
+    "notEditable": "Marekebisho haya yako katika hali ya {{status}} au ni ya mtu mwingine, hivyo hayawezi tena kuhaririwa.",
+    "saveChanges": "Hifadhi mabadiliko",
+    "updated": "Rasimu imesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Marekebisho ya stoo",
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "reason": "Sababu",
+    "createdBy": "Imeundwa na",
+    "created": "Imeundwa",
+    "submitted": "Imewasilishwa",
+    "decision": "Uamuzi",
+    "decisionNote": "Maelezo ya uamuzi",
+    "posted": "Imeingizwa stoo",
+    "items": "Bidhaa",
+    "cols": {
+      "item": "Bidhaa",
+      "action": "Kitendo",
+      "quantity": "Kiasi",
+      "batch": "Bechi",
+      "expiry": "Kuisha muda",
+      "unitCost": "Gharama ya kipimo",
+      "remarks": "Maelezo"
+    },
+    "deleted": "Marekebisho {{docNo}} yamefutwa."
+  }
+}

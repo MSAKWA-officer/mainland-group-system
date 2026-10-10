@@ -1,0 +1,64 @@
+{
+  "saving": "Saving…",
+  "registered": "{{count}} registered",
+  "newWriteOff": "+ New Write-off",
+  "allStatuses": "All statuses",
+  "from": "From",
+  "to": "To",
+  "heads": {
+    "docNo": "Document no.",
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason",
+    "lines": "Lines",
+    "createdBy": "Created by",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "list": {
+    "title": "Damaged stock write-off",
+    "search": "Search document no. or reference",
+    "empty": "No damaged stock write-offs yet."
+  },
+  "create": {
+    "title": "New damaged stock write-off",
+    "subtitle": "Stock does not decrease until the write-off is submitted and approved.",
+    "saveDraft": "Save as draft",
+    "draftSaved": "Draft {{docNo}} saved. Submit it for approval when you are ready."
+  },
+  "edit": {
+    "title": "Edit damaged stock write-off",
+    "subtitle": "{{doc}} — only your own drafts can be edited.",
+    "back": "← Back",
+    "notEditable": "This write-off is {{status}} or belongs to someone else and can no longer be edited.",
+    "saveChanges": "Save changes",
+    "draftUpdated": "Draft updated."
+  },
+  "form": {
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason / description of damage (required)",
+    "items": "Damaged items",
+    "qty": "Quantity damaged"
+  },
+  "view": {
+    "fallbackTitle": "Damaged stock write-off",
+    "backToList": "← Back to list",
+    "date": "Date",
+    "reference": "Reference",
+    "reason": "Reason",
+    "createdBy": "Created by",
+    "created": "Created",
+    "submitted": "Submitted",
+    "decision": "Decision",
+    "decisionValue": "{{status}}, {{date}}",
+    "decisionNote": "Decision note",
+    "postedToStock": "Posted to stock",
+    "item": "Item",
+    "quantity": "Quantity",
+    "batch": "Batch",
+    "expiry": "Expiry",
+    "remarks": "Remarks",
+    "deleted": "Write-off {{docNo}} deleted."
+  }
+}

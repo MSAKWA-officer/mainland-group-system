@@ -1,0 +1,79 @@
+{
+  "status": {
+    "POSTED": "已入账",
+    "VOIDED": "已作废",
+    "ALL": "全部"
+  },
+  "list": {
+    "title": "转账",
+    "subtitle": "在您自己的银行账户之间划转的资金。",
+    "new": "新建转账",
+    "search": "搜索参考号或详情",
+    "searchAria": "搜索转账",
+    "fromAny": "转出：任意账户",
+    "toAny": "转入：任意账户",
+    "filterStatusAria": "按状态筛选",
+    "emptyFiltered": "没有符合筛选条件的转账。",
+    "emptyNone": "暂无转账。",
+    "columns": {
+      "date": "日期",
+      "fromAccount": "转出账户",
+      "toAccount": "转入账户",
+      "details": "详情",
+      "amount": "金额",
+      "doneBy": "经办人",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "void": "作废",
+    "voidPrompt": "请输入作废这笔 {{amount}} 转账的原因。\n（转账的两边都将被作废。）",
+    "voided": "转账已作废。"
+  },
+  "create": {
+    "title": "新建转账",
+    "sub": "转出账户的余额不能低于零，除非该账户允许透支。",
+    "back": "返回列表",
+    "fromAccount": "转出账户",
+    "toAccount": "转入账户",
+    "selectAccount": "选择账户…",
+    "amount": "金额",
+    "amountCur": "金额（{{currency}}）",
+    "date": "转账日期",
+    "reference": "参考号",
+    "description": "描述",
+    "hint": "请填写参考号或描述（至少一项）。",
+    "posting": "正在入账…",
+    "submit": "提交转账",
+    "saved": "转账已入账。",
+    "err": {
+      "sameAccount": "请选择两个不同的账户",
+      "currencyMismatch": "无法在 {{from}} 与 {{to}} 账户之间转账。",
+      "amountPositive": "金额必须大于 0",
+      "needRefOrDesc": "请填写参考号或描述"
+    }
+  },
+  "between": {
+    "title": "账户间转账",
+    "sub": "两个账户必须使用相同币种。作废转账的任一方将同时作废两方。",
+    "back": "返回列表"
+  },
+  "view": {
+    "fallbackTitle": "转账",
+    "back": "返回列表",
+    "amount": "金额",
+    "from": "转出（资金流出）",
+    "to": "转入（资金流入）",
+    "date": "日期",
+    "reference": "参考号",
+    "description": "描述",
+    "doneBy": "经办人",
+    "recorded": "记录时间",
+    "voidedBy": "作废人",
+    "voidedOn": "作废时间",
+    "voidReason": "作废原因",
+    "reconciledSuffix": " · 已核对"
+  }
+}

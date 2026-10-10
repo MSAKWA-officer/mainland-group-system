@@ -1,0 +1,90 @@
+{
+  "title": "Customers",
+  "registered": "{{count}} registered",
+  "newButton": "New Customer",
+  "search": "Search name, code, phone, email or TIN",
+  "searchAria": "Search customers",
+  "filterTypeAria": "Filter by type",
+  "filterStatusAria": "Filter by status",
+  "filterSalespersonAria": "Filter by salesperson",
+  "allTypes": "All types",
+  "allStatuses": "All statuses",
+  "allSalespersons": "All salespersons",
+  "types": {
+    "INDIVIDUAL": "Individual",
+    "COMPANY": "Company"
+  },
+  "columns": {
+    "code": "Code",
+    "name": "Name",
+    "type": "Type",
+    "phone": "Phone",
+    "city": "City",
+    "salesperson": "Salesperson",
+    "orders": "Orders",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "emptyFiltered": "No customers match your filters.",
+  "emptyNone": "No customers yet. Use “New Customer” to add the first one.",
+  "actions": {
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "deactivatePrompt": "Reason for deactivating “{{name}}”:",
+    "confirmDelete": "Delete the customer “{{name}}” permanently? This cannot be undone."
+  },
+  "backToList": "Back to list",
+  "back": "Back",
+  "saving": "Saving…",
+  "form": {
+    "name": "Name",
+    "type": "Type",
+    "contactPerson": "Contact person",
+    "phone": "Phone",
+    "phonePlaceholder": "+255 ...",
+    "email": "Email",
+    "tin": "TIN (tax number)",
+    "address": "Address",
+    "city": "City",
+    "creditLimit": "Credit limit",
+    "paymentTerms": "Payment terms (days)",
+    "salesperson": "Assigned salesperson (optional)",
+    "notAssigned": "Not assigned",
+    "autoAssigned": "This customer is assigned to you automatically.",
+    "notes": "Notes"
+  },
+  "create": {
+    "title": "New customer",
+    "subtitle": "Register a customer so you can create sales orders for them.",
+    "save": "Save customer",
+    "done": "Customer created."
+  },
+  "edit": {
+    "title": "Edit customer",
+    "save": "Save changes",
+    "done": "Customer updated."
+  },
+  "view": {
+    "fallbackTitle": "Customer",
+    "code": "Code",
+    "name": "Name",
+    "type": "Type",
+    "contactPerson": "Contact person",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "city": "City",
+    "tin": "TIN",
+    "creditLimit": "Credit limit",
+    "paymentTerms": "Payment terms",
+    "paymentDaysOne": "{{count}} day",
+    "paymentDaysOther": "{{count}} days",
+    "salesperson": "Salesperson",
+    "orders": "Orders",
+    "status": "Status",
+    "notes": "Notes",
+    "created": "Created",
+    "updated": "Last updated",
+    "deleted": "Customer deleted."
+  }
+}

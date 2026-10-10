@@ -1,0 +1,25 @@
+{
+  "status": {
+    "DRAFT": "Rasimu",
+    "SUBMITTED": "Imewasilishwa",
+    "POSTED": "Imewekwa",
+    "REJECTED": "Imekataliwa",
+    "CANCELLED": "Imeghairiwa"
+  },
+  "direction": {
+    "IN": "Ongeza (+)",
+    "OUT": "Punguza (−)"
+  },
+  "actions": {
+    "view": "Angalia",
+    "edit": "Hariri",
+    "submit": "Wasilisha kwa idhini",
+    "cancel": "Ghairi",
+    "approve": "Idhinisha",
+    "reject": "Kataa",
+    "delete": "Futa"
+  },
+  "rejectPrompt": "Sababu ya kukataa:",
+  "confirmDelete": "Futa hati {{docNo}}? Ufutaji unabaki kwenye kumbukumbu za ukaguzi.",
+  "backToList": "← Rudi kwenye orodha"
+}

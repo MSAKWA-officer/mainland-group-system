@@ -1,0 +1,107 @@
+{
+  "status": {
+    "ACTIVE": "Active",
+    "VOIDED": "Voided",
+    "ALL": "All statuses"
+  },
+  "fuelType": {
+    "DIESEL": "Diesel",
+    "PETROL": "Petrol",
+    "GAS": "Gas",
+    "OTHER": "Other"
+  },
+  "fundingLeft": "{{no}} · {{plate}} · {{driver}} · {{amount}} left",
+  "list": {
+    "title": "Fuel usage",
+    "subtitle": "Fuel the driver actually bought with the money from an approved fuel funding.",
+    "new": "Record Usage",
+    "stats": {
+      "spent": "Spent (active, this filter)",
+      "litres": "Litres (active, this filter)",
+      "records": "Records"
+    },
+    "search": "Search usage no, plate, driver, station, receipt",
+    "searchAria": "Search fuel usage",
+    "filterStatusAria": "Filter by status",
+    "emptyFiltered": "No fuel usage matches your filters.",
+    "emptyNone": "No fuel usage yet. Use “Record Usage” to add the first one.",
+    "columns": {
+      "usageNo": "Usage no",
+      "date": "Date",
+      "vehicle": "Vehicle",
+      "driver": "Driver",
+      "litres": "Litres",
+      "amount": "Amount",
+      "pricePerLitre": "Price / L",
+      "odometer": "Odometer",
+      "funding": "Funding",
+      "status": "Status",
+      "recordedBy": "Recorded by",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "void": "Void",
+    "voidPrompt": "Reason for voiding {{no}}?",
+    "voided": "Fuel usage voided."
+  },
+  "form": {
+    "left": "Money left on this funding: {{amount}}",
+    "over": " — this amount is more than what is left.",
+    "date": "Date",
+    "litres": "Litres",
+    "amount": "Amount paid",
+    "price": "Price per litre: {{price}}",
+    "priceHint": "Price per litre is worked out from amount ÷ litres.",
+    "odometer": "Odometer reading, km (optional)",
+    "fullTank": "Tank was filled up (needed for km per litre)",
+    "station": "Fuel station (optional)",
+    "receiptNo": "Receipt number (optional)",
+    "notes": "Notes (optional)"
+  },
+  "create": {
+    "title": "Record fuel usage",
+    "sub": "Enter what the driver bought with the money from a fuel funding.",
+    "back": "Back to list",
+    "funding": "Fuel funding",
+    "selectFunding": "Select a funding…",
+    "hint": "Only approved fundings that still have money left are listed.",
+    "chooseFunding": "Choose the funding this fuel was bought with",
+    "saving": "Saving…",
+    "submit": "Record usage",
+    "saved": "Fuel usage recorded."
+  },
+  "update": {
+    "title": "Edit fuel usage",
+    "back": "Back",
+    "locked": "This usage is {{status}} and can no longer be edited.",
+    "saving": "Saving…",
+    "submit": "Save changes",
+    "saved": "Fuel usage updated."
+  },
+  "view": {
+    "fallbackTitle": "Fuel usage",
+    "back": "Back to list",
+    "amountPaid": "Amount paid",
+    "litres": "Litres",
+    "pricePerLitre": "Price per litre",
+    "funding": "Fuel funding",
+    "vehicle": "Vehicle",
+    "driver": "Driver",
+    "date": "Date",
+    "odometer": "Odometer",
+    "tankFilled": "Tank filled up",
+    "yes": "Yes",
+    "partFill": "No (part fill)",
+    "station": "Fuel station",
+    "receiptNo": "Receipt number",
+    "notes": "Notes",
+    "recordedBy": "Recorded by",
+    "recorded": "Recorded",
+    "voidedBy": "Voided by",
+    "voidedOn": "Voided on",
+    "voidReason": "Void reason"
+  }
+}

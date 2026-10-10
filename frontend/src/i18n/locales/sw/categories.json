@@ -1,0 +1,50 @@
+{
+  "title": "Kategoria",
+  "registered": "{{total}} zimesajiliwa",
+  "newButton": "Kategoria Mpya",
+  "searchPlaceholder": "Tafuta kwa jina",
+  "searchAria": "Tafuta kategoria",
+  "filterStatusAria": "Chuja kwa hali",
+  "allStatuses": "Hali zote",
+  "columns": {
+    "name": "Jina",
+    "parent": "Kategoria mama",
+    "description": "Maelezo",
+    "items": "Bidhaa",
+    "status": "Hali",
+    "created": "Tarehe ya kuundwa",
+    "actions": "Vitendo"
+  },
+  "emptyFiltered": "Hakuna kategoria zinazolingana na vichujio vyako.",
+  "emptyNone": "Bado hakuna kategoria. Tumia “Kategoria Mpya” kuongeza ya kwanza.",
+  "confirmDelete": "Futa kategoria “{{name}}” kabisa? Kitendo hiki hakiwezi kutenduliwa.",
+  "backToList": "Rudi kwenye orodha",
+  "back": "Rudi",
+  "form": {
+    "name": "Jina",
+    "parent": "Kategoria mama (hiari)",
+    "noParent": "Hakuna (ngazi ya juu)",
+    "description": "Maelezo",
+    "status": "Hali",
+    "saving": "Inahifadhi…"
+  },
+  "create": {
+    "title": "Kategoria mpya",
+    "subtitle": "Kategoria hupanga bidhaa zako katika makundi. Kategoria inaweza kuwa chini ya kategoria mama.",
+    "save": "Hifadhi kategoria",
+    "done": "Kategoria imeundwa."
+  },
+  "edit": {
+    "title": "Hariri kategoria",
+    "save": "Hifadhi mabadiliko",
+    "done": "Kategoria imesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Kategoria",
+    "parent": "Kategoria mama",
+    "itemsIn": "Bidhaa zilizo kwenye kategoria",
+    "created": "Tarehe ya kuundwa",
+    "updated": "Ilisasishwa mwisho",
+    "deleted": "Kategoria imefutwa."
+  }
+}

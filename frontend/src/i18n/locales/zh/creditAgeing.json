@@ -1,0 +1,66 @@
+{
+  "title": "赊账账龄",
+  "subtitle": "未付赊销单，按超过到期日的天数分组。",
+  "subtitleAsOf": "未付赊销单，按超过到期日的天数分组，截至 {{date}}。",
+  "outstanding": "未结金额",
+  "bucket": {
+    "CURRENT": "未到期",
+    "DAYS_1_30": "1–30 天",
+    "DAYS_31_60": "31–60 天",
+    "DAYS_61_90": "61–90 天",
+    "OVER_90": "90 天以上"
+  },
+  "bucketFilter": {
+    "CURRENT": "有未到期款项",
+    "DAYS_1_30": "有逾期 1–30 天的款项",
+    "DAYS_31_60": "有逾期 31–60 天的款项",
+    "DAYS_61_90": "有逾期 61–90 天的款项",
+    "OVER_90": "有逾期 90 天以上的款项"
+  },
+  "search": "搜索客户名称或编码",
+  "searchAria": "搜索客户",
+  "bucketAria": "按账龄区间筛选",
+  "allCustomers": "所有客户",
+  "sortAria": "排序方式",
+  "sort": {
+    "outstanding": "未结金额最高",
+    "over90": "90 天以上最高",
+    "oldest": "最早的发票",
+    "name": "名称（A–Z）"
+  },
+  "asOf": "截至",
+  "backToToday": "返回今天",
+  "columns": {
+    "customer": "客户",
+    "openSales": "未结销售单",
+    "outstanding": "未结金额",
+    "oldest": "最久",
+    "actions": "操作"
+  },
+  "emptyFiltered": "没有符合筛选条件的客户。",
+  "emptyNone": "没有未结款项。",
+  "days": "{{n}} 天",
+  "notDue": "未到期",
+  "totalRow": "合计（全部 {{count}} 位客户）",
+  "viewTitle": "查看",
+  "viewAria": "查看 {{name}}",
+  "view": {
+    "fallbackTitle": "赊账账龄",
+    "subtitle": "{{code}} · 账龄截至{{date}}",
+    "today": "今天",
+    "customerBalance": "客户余额",
+    "back": "返回赊账账龄",
+    "columns": {
+      "saleNo": "销售单号",
+      "saleDate": "销售日期",
+      "dueDate": "到期日",
+      "total": "总额",
+      "paid": "已付",
+      "balance": "余额",
+      "daysOverdue": "逾期天数",
+      "bucket": "账龄区间"
+    },
+    "noInvoices": "没有未结发票",
+    "noInvoicesOnDate": "该日期没有未结发票。"
+  }
+}

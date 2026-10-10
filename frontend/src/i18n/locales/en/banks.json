@@ -1,0 +1,87 @@
+{
+  "status": {
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive"
+  },
+  "list": {
+    "title": "Banks",
+    "subtitle": "{{total}} registered",
+    "new": "New Bank",
+    "search": "Search name, code or SWIFT",
+    "searchAria": "Search banks",
+    "filterStatusAria": "Filter by status",
+    "allStatuses": "All statuses",
+    "emptyFiltered": "No banks match your filters.",
+    "emptyNone": "No banks yet. Use “New Bank” to register the first one.",
+    "columns": {
+      "code": "Code",
+      "name": "Name",
+      "shortName": "Short name",
+      "swift": "SWIFT",
+      "country": "Country",
+      "accounts": "Accounts",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "delete": "Delete",
+    "deactivatePrompt": "Reason for deactivating “{{name}}”:",
+    "deleteConfirm": "Delete the bank “{{name}}” permanently? This cannot be undone.",
+    "deleted": "Bank deleted."
+  },
+  "form": {
+    "newTitle": "New bank",
+    "editTitle": "Edit bank",
+    "newSub": "Register a bank so accounts can be opened under it. The bank code is generated for you.",
+    "back": "Back",
+    "backToList": "Back to list",
+    "name": "Bank name",
+    "namePlaceholder": "e.g. CRDB Bank PLC",
+    "shortName": "Short name (optional)",
+    "shortNamePlaceholder": "e.g. CRDB",
+    "swift": "SWIFT / BIC (optional)",
+    "swiftTitle": "8 or 11 characters",
+    "country": "Country (2-letter code)",
+    "countryTitle": "e.g. TZ",
+    "phone": "Phone (optional)",
+    "phoneTitle": "Digits, spaces, + ( ) -",
+    "website": "Website (optional)",
+    "notes": "Notes (optional)",
+    "saving": "Saving…",
+    "saveChanges": "Save changes",
+    "saveNew": "Save bank",
+    "updated": "Bank updated.",
+    "created": "Bank registered."
+  },
+  "view": {
+    "fallbackTitle": "Bank",
+    "back": "Back to list",
+    "code": "Bank code",
+    "name": "Name",
+    "shortName": "Short name",
+    "swift": "SWIFT / BIC",
+    "country": "Country",
+    "phone": "Phone",
+    "website": "Website",
+    "accounts": "Accounts",
+    "status": "Status",
+    "notes": "Notes",
+    "created": "Created",
+    "updated": "Last updated",
+    "accountsTitle": "Accounts at this bank",
+    "newAccount": "New account",
+    "noAccounts": "No accounts under this bank yet.",
+    "cols": {
+      "accountNo": "Account no",
+      "accountName": "Account name",
+      "type": "Type",
+      "currency": "Currency",
+      "status": "Status"
+    }
+  }
+}

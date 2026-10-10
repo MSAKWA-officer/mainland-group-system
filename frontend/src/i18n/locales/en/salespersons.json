@@ -1,0 +1,89 @@
+{
+  "title": "Salespersons",
+  "registered": "{{count}} registered",
+  "newButton": "New Salesperson",
+  "search": "Search name, code, phone or region",
+  "searchAria": "Search salespersons",
+  "filterStatusAria": "Filter by status",
+  "allStatuses": "All statuses",
+  "columns": {
+    "code": "Code",
+    "name": "Name",
+    "region": "Region",
+    "phone": "Phone",
+    "loginAccount": "Login account",
+    "customers": "Customers",
+    "orders": "Orders",
+    "commission": "Commission",
+    "target": "Target",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "emptyFiltered": "No salespersons match your filters.",
+  "emptyNone": "No salespersons yet. Use “New Salesperson” to add the first one.",
+  "actions": {
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "deactivatePrompt": "Reason for deactivating “{{name}}”:",
+    "confirmDelete": "Delete the salesperson “{{name}}” permanently? This cannot be undone."
+  },
+  "backToList": "Back to list",
+  "back": "Back",
+  "saving": "Saving…",
+  "form": {
+    "loginAccount": "Login account (optional)",
+    "notLinked": "Not linked",
+    "alreadyLinked": "already linked",
+    "linkHint": "Link the account this person signs in with. It is what lets them see their own customers and orders.",
+    "fullName": "Full name",
+    "fullNameDefault": "Defaults to the account name",
+    "region": "Region",
+    "phone": "Phone",
+    "phonePlaceholder": "+255 ...",
+    "email": "Email",
+    "commissionRate": "Commission rate (%)",
+    "monthlyTarget": "Monthly target"
+  },
+  "create": {
+    "title": "New salesperson",
+    "subtitle": "Register a salesperson so customers and orders can be assigned to them.",
+    "save": "Save salesperson",
+    "done": "Salesperson created."
+  },
+  "edit": {
+    "title": "Edit salesperson",
+    "save": "Save changes",
+    "done": "Salesperson updated."
+  },
+  "view": {
+    "fallbackTitle": "Salesperson",
+    "code": "Code",
+    "name": "Name",
+    "region": "Region",
+    "phone": "Phone",
+    "email": "Email",
+    "loginAccount": "Login account",
+    "commissionRate": "Commission rate",
+    "monthlyTarget": "Monthly target",
+    "customers": "Customers",
+    "orders": "Orders",
+    "status": "Status",
+    "created": "Created",
+    "updated": "Last updated",
+    "deleted": "Salesperson deleted."
+  },
+  "perf": {
+    "title": "Monthly performance",
+    "subtitle": "Confirmed orders only. Net sales are after discount and before tax.",
+    "monthAria": "Month",
+    "confirmedOrders": "Confirmed orders",
+    "netSales": "Net sales",
+    "grossTotal": "Gross total",
+    "pendingApproval": "Pending approval",
+    "activeCustomers": "Active customers",
+    "target": "Target",
+    "targetReached": "Target reached",
+    "noTarget": "No target set",
+    "commissionEarned": "Commission earned"
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "status": {
+    "POSTED": "Imerekodiwa",
+    "VOIDED": "Imebatilishwa",
+    "ALL": "Zote"
+  },
+  "list": {
+    "title": "Uhamisho",
+    "subtitle": "Pesa zilizohamishwa kati ya akaunti zako za benki.",
+    "new": "Uhamisho Mpya",
+    "search": "Tafuta kumbukumbu au maelezo",
+    "searchAria": "Tafuta uhamisho",
+    "fromAny": "Kutoka: akaunti yoyote",
+    "toAny": "Kwenda: akaunti yoyote",
+    "filterStatusAria": "Chuja kwa hali",
+    "emptyFiltered": "Hakuna uhamisho unaolingana na vichujio vyako.",
+    "emptyNone": "Bado hakuna uhamisho.",
+    "columns": {
+      "date": "Tarehe",
+      "fromAccount": "Kutoka akaunti",
+      "toAccount": "Kwenda akaunti",
+      "details": "Maelezo",
+      "amount": "Kiasi",
+      "doneBy": "Aliyefanya",
+      "status": "Hali",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Tazama",
+    "void": "Batilisha",
+    "voidPrompt": "Sababu ya kubatilisha uhamisho huu wa {{amount}}?\n(Pande zote mbili zitabatilishwa.)",
+    "voided": "Uhamisho umebatilishwa."
+  },
+  "create": {
+    "title": "Uhamisho mpya",
+    "sub": "Akaunti inayotuma haiwezi kushuka chini ya sifuri isipokuwa inaruhusu kutoa zaidi ya salio.",
+    "back": "Rudi kwenye orodha",
+    "fromAccount": "Kutoka akaunti",
+    "toAccount": "Kwenda akaunti",
+    "selectAccount": "Chagua akaunti…",
+    "amount": "Kiasi",
+    "amountCur": "Kiasi ({{currency}})",
+    "date": "Tarehe ya uhamisho",
+    "reference": "Kumbukumbu",
+    "description": "Maelezo",
+    "hint": "Weka kumbukumbu au maelezo (angalau kimoja).",
+    "posting": "Inarekodi…",
+    "submit": "Rekodi uhamisho",
+    "saved": "Uhamisho umerekodiwa.",
+    "err": {
+      "sameAccount": "Chagua akaunti mbili tofauti",
+      "currencyMismatch": "Haiwezekani kuhamisha kati ya akaunti za {{from}} na {{to}}.",
+      "amountPositive": "Kiasi lazima kiwe kikubwa kuliko 0",
+      "needRefOrDesc": "Weka kumbukumbu au maelezo"
+    }
+  },
+  "between": {
+    "title": "Uhamisho kati ya akaunti",
+    "sub": "Akaunti zote mbili lazima zitumie sarafu moja. Kubatilisha upande wowote wa uhamisho kunabatilisha pande zote mbili.",
+    "back": "Rudi kwenye orodha"
+  },
+  "view": {
+    "fallbackTitle": "Uhamisho",
+    "back": "Rudi kwenye orodha",
+    "amount": "Kiasi",
+    "from": "Kutoka (pesa zinatoka)",
+    "to": "Kwenda (pesa zinaingia)",
+    "date": "Tarehe",
+    "reference": "Kumbukumbu",
+    "description": "Maelezo",
+    "doneBy": "Aliyefanya",
+    "recorded": "Ilirekodiwa",
+    "voidedBy": "Ilibatilishwa na",
+    "voidedOn": "Ilibatilishwa tarehe",
+    "voidReason": "Sababu ya kubatilisha",
+    "reconciledSuffix": " · imesuluhishwa"
+  }
+}

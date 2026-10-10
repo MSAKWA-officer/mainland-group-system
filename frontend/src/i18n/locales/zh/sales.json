@@ -1,0 +1,119 @@
+{
+  "title": "销售",
+  "registered": "登记簿中共有 {{total}} 笔销售",
+  "cashSales": "现金销售",
+  "creditSales": "赊销",
+  "search": "搜索销售单号或客户",
+  "searchAria": "搜索销售",
+  "filterTypeAria": "按类型筛选",
+  "filterStatusAria": "按状态筛选",
+  "filterPaymentAria": "按付款情况筛选",
+  "allTypes": "所有类型",
+  "allStatuses": "所有状态",
+  "allPayments": "所有付款情况",
+  "overdueOnly": "仅显示逾期",
+  "from": "从",
+  "to": "至",
+  "columns": {
+    "saleNo": "销售单号",
+    "date": "日期",
+    "type": "类型",
+    "customer": "客户",
+    "salesperson": "销售员",
+    "total": "合计",
+    "balance": "余额",
+    "payment": "付款",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "emptyFiltered": "没有符合筛选条件的销售。",
+  "emptyNone": "暂无销售。现金销售和赊销一经发生就会显示在这里。",
+  "overdue": "逾期 {{date}}",
+  "walkIn": "散客",
+  "summary": {
+    "totalSales": "销售总额",
+    "cashSales": "现金销售",
+    "creditSales": "赊销",
+    "creditOutstanding": "赊销未收款",
+    "completed": "已完成 {{count}} 笔",
+    "completedVoided": "已完成 {{count}} 笔，已作废 {{voided}} 笔",
+    "salesCount_one": "{{count}} 笔销售",
+    "salesCount_other": "{{count}} 笔销售",
+    "collected": "已收款 {{amount}}"
+  },
+  "status": {
+    "DRAFT": "草稿",
+    "SUBMITTED": "等待审批",
+    "COMPLETED": "已完成",
+    "REJECTED": "已拒绝",
+    "CANCELLED": "已取消",
+    "VOIDED": "已作废"
+  },
+  "pay": {
+    "UNPAID": "未付款",
+    "PARTIAL": "部分付款",
+    "PAID": "已付款"
+  },
+  "type": {
+    "CASH": "现金",
+    "CREDIT": "赊销"
+  },
+  "method": {
+    "CASH": "现金",
+    "MOBILE_MONEY": "移动支付",
+    "BANK": "银行",
+    "CARD": "刷卡",
+    "CHEQUE": "支票"
+  },
+  "view": {
+    "fallbackTitle": "销售",
+    "backToList": "返回列表",
+    "overdueBanner": "已逾期：{{amount}} 应于 {{date}} 付清。",
+    "customer": "客户",
+    "customerPhone": "客户电话",
+    "salesperson": "销售员",
+    "saleDate": "销售日期",
+    "dueDate": "到期日",
+    "notes": "备注",
+    "createdBy": "创建人",
+    "created": "创建时间",
+    "submitted": "提交时间",
+    "decisionNote": "审批意见",
+    "completed": "完成时间",
+    "stockDocument": "出库单",
+    "voided": "作废时间",
+    "voidReason": "作废原因",
+    "items": "商品",
+    "payments": "付款记录",
+    "noPayments": "暂无付款记录。",
+    "paymentValid": "有效",
+    "paymentVoided": "已作废",
+    "paid": "已付",
+    "balance": "余额",
+    "ownerHintCredit": "如需批准、登记付款或作废此销售，请在<l>赊销</l>中打开。",
+    "ownerHintCash": "如需作废此销售，请在<l>现金销售</l>中打开。"
+  },
+  "lines": {
+    "sku": "SKU",
+    "item": "商品",
+    "quantity": "数量",
+    "unitPrice": "单价",
+    "discountPercent": "折扣 %",
+    "lineTotal": "行合计"
+  },
+  "paymentCols": {
+    "receipt": "收据",
+    "date": "日期",
+    "method": "方式",
+    "reference": "参考号",
+    "receivedBy": "收款人",
+    "amount": "金额",
+    "state": "状态"
+  },
+  "totals": {
+    "subtotal": "小计",
+    "discount": "折扣",
+    "tax": "税额（{{rate}}%）",
+    "total": "合计"
+  }
+}

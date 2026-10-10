@@ -1,0 +1,107 @@
+{
+  "status": {
+    "ACTIVE": "Halali",
+    "VOIDED": "Imebatilishwa",
+    "ALL": "Hali zote"
+  },
+  "fuelType": {
+    "DIESEL": "Dizeli",
+    "PETROL": "Petroli",
+    "GAS": "Gesi",
+    "OTHER": "Nyingine"
+  },
+  "fundingLeft": "{{no}} · {{plate}} · {{driver}} · yamebaki {{amount}}",
+  "list": {
+    "title": "Matumizi ya mafuta",
+    "subtitle": "Mafuta ambayo dereva alinunua kweli kwa pesa kutoka kwenye fedha za mafuta zilizoidhinishwa.",
+    "new": "Rekodi Matumizi",
+    "stats": {
+      "spent": "Zilizotumika (halali, kichujio hiki)",
+      "litres": "Lita (halali, kichujio hiki)",
+      "records": "Rekodi"
+    },
+    "search": "Tafuta namba ya matumizi, namba ya gari, dereva, kituo, risiti",
+    "searchAria": "Tafuta matumizi ya mafuta",
+    "filterStatusAria": "Chuja kwa hali",
+    "emptyFiltered": "Hakuna matumizi ya mafuta yanayolingana na vichujio vyako.",
+    "emptyNone": "Bado hakuna matumizi ya mafuta. Tumia “Rekodi Matumizi” kuongeza la kwanza.",
+    "columns": {
+      "usageNo": "Namba ya matumizi",
+      "date": "Tarehe",
+      "vehicle": "Gari",
+      "driver": "Dereva",
+      "litres": "Lita",
+      "amount": "Kiasi",
+      "pricePerLitre": "Bei / L",
+      "odometer": "Odomita",
+      "funding": "Fedha",
+      "status": "Hali",
+      "recordedBy": "Alirekodi",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Tazama",
+    "edit": "Hariri",
+    "void": "Batilisha",
+    "voidPrompt": "Sababu ya kubatilisha {{no}}?",
+    "voided": "Matumizi ya mafuta yamebatilishwa."
+  },
+  "form": {
+    "left": "Pesa zilizobaki kwenye fedha hizi: {{amount}}",
+    "over": " — kiasi hiki ni kikubwa kuliko kilichobaki.",
+    "date": "Tarehe",
+    "litres": "Lita",
+    "amount": "Kiasi kilicholipwa",
+    "price": "Bei kwa lita: {{price}}",
+    "priceHint": "Bei kwa lita hukokotolewa kutoka kiasi ÷ lita.",
+    "odometer": "Usomaji wa odomita, km (si lazima)",
+    "fullTank": "Tanki ilijazwa (inahitajika kwa km kwa lita)",
+    "station": "Kituo cha mafuta (si lazima)",
+    "receiptNo": "Namba ya risiti (si lazima)",
+    "notes": "Maelezo (si lazima)"
+  },
+  "create": {
+    "title": "Rekodi matumizi ya mafuta",
+    "sub": "Weka kile dereva alichonunua kwa pesa kutoka kwenye fedha za mafuta.",
+    "back": "Rudi kwenye orodha",
+    "funding": "Fedha za mafuta",
+    "selectFunding": "Chagua fedha…",
+    "hint": "Ni fedha zilizoidhinishwa zenye pesa zilizobaki pekee ndizo zinazoorodheshwa.",
+    "chooseFunding": "Chagua fedha zilizotumika kununua mafuta haya",
+    "saving": "Inahifadhi…",
+    "submit": "Rekodi matumizi",
+    "saved": "Matumizi ya mafuta yamerekodiwa."
+  },
+  "update": {
+    "title": "Hariri matumizi ya mafuta",
+    "back": "Rudi",
+    "locked": "Hali ya matumizi haya ni {{status}} na hayawezi kuhaririwa tena.",
+    "saving": "Inahifadhi…",
+    "submit": "Hifadhi mabadiliko",
+    "saved": "Matumizi ya mafuta yamesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Matumizi ya mafuta",
+    "back": "Rudi kwenye orodha",
+    "amountPaid": "Kiasi kilicholipwa",
+    "litres": "Lita",
+    "pricePerLitre": "Bei kwa lita",
+    "funding": "Fedha za mafuta",
+    "vehicle": "Gari",
+    "driver": "Dereva",
+    "date": "Tarehe",
+    "odometer": "Odomita",
+    "tankFilled": "Tanki ilijazwa",
+    "yes": "Ndiyo",
+    "partFill": "Hapana (kujaza sehemu)",
+    "station": "Kituo cha mafuta",
+    "receiptNo": "Namba ya risiti",
+    "notes": "Maelezo",
+    "recordedBy": "Alirekodi",
+    "recorded": "Yalirekodiwa",
+    "voidedBy": "Yalibatilishwa na",
+    "voidedOn": "Yalibatilishwa tarehe",
+    "voidReason": "Sababu ya kubatilisha"
+  }
+}

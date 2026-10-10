@@ -1,0 +1,88 @@
+{
+  "title": "Staff",
+  "registered": "{{count}} registered. Add a person here first, then give them an account in User management.",
+  "add": "Add staff",
+  "search": "Search staff",
+  "searchPlaceholder": "Search name, code, phone or position",
+  "filterAccount": "Filter by account",
+  "allPeople": "All people",
+  "noAccountYet": "No account yet",
+  "hasAccount": "Has account",
+  "filterStatus": "Filter by status",
+  "allStatuses": "All statuses",
+  "active": "Active",
+  "inactive": "Inactive",
+  "noAccount": "No account",
+  "heads": {
+    "code": "Code",
+    "name": "Name",
+    "position": "Position",
+    "phone": "Phone",
+    "account": "Login account",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "empty": {
+    "filtered": "No staff match your filters.",
+    "none": "No staff yet. Use “Add staff” to register the first person."
+  },
+  "actions": {
+    "view": "View",
+    "createAccount": "Create account",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "delete": "Delete"
+  },
+  "prompts": {
+    "deactivate": "Reason for deactivating “{{name}}”:",
+    "delete": "Delete “{{name}}” permanently? This cannot be undone."
+  },
+  "msg": {
+    "deleted": "Staff member deleted.",
+    "added": "Staff member added. You can now give them an account in User management.",
+    "updated": "Staff member updated."
+  },
+  "form": {
+    "addTitle": "Add staff",
+    "editTitle": "Edit staff",
+    "addSub": "Register the person first. They get no login until the Owner creates an account for them.",
+    "back": "Back to list",
+    "accountNote": "This person has an account. Name, phone and email changes are applied to the account too.",
+    "fullName": "Full name",
+    "positionOpt": "Position (optional)",
+    "positionPh": "e.g. Cashier, Driver",
+    "phone": "Phone",
+    "phonePh": "+255 ...",
+    "emailOpt": "Email (optional)",
+    "addressOpt": "Address (optional)",
+    "save": "Save staff",
+    "saveChanges": "Save changes",
+    "saving": "Saving…"
+  },
+  "view": {
+    "fallbackTitle": "Staff member",
+    "back": "Back to list",
+    "details": "Personal details",
+    "loginAccount": "Login account",
+    "code": "Code",
+    "fullName": "Full name",
+    "position": "Position",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "status": "Status",
+    "username": "Username",
+    "role": "Role",
+    "accountStatus": "Account status",
+    "noAccountNote": "This person has no login account yet.",
+    "created": "Registered on",
+    "updated": "Last updated",
+    "accountStates": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "LOCKED": "Locked",
+      "DISABLED": "Disabled"
+    }
+  }
+}

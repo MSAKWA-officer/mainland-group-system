@@ -1,0 +1,60 @@
+{
+  "title": "库存变动",
+  "recorded": "共记录 {{count}} 条 — 永久台账，不可编辑或删除。",
+  "types": {
+    "RECEIVING": "收货入库",
+    "ADJUSTMENT": "库存调整",
+    "REJECT_IN": "拒收入库",
+    "REJECT_OUT": "拒收出库",
+    "EXPIRED": "过期报损",
+    "DAMAGED": "损坏报损"
+  },
+  "direction": {
+    "IN": "入库 (+)",
+    "OUT": "出库 (−)"
+  },
+  "filters": {
+    "allItems": "所有商品",
+    "allTypes": "所有类型",
+    "allDirections": "入库和出库",
+    "from": "从",
+    "to": "至"
+  },
+  "heads": {
+    "date": "日期",
+    "type": "类型",
+    "document": "单据",
+    "item": "商品",
+    "batch": "批次",
+    "direction": "方向",
+    "quantity": "数量",
+    "balanceAfter": "变动后结余",
+    "unitCost": "单位成本",
+    "by": "操作人",
+    "actions": "操作"
+  },
+  "empty": "未找到库存变动记录。",
+  "actions": {
+    "view": "查看",
+    "openDocument": "打开来源单据"
+  },
+  "view": {
+    "fallbackTitle": "库存变动",
+    "title": "变动 #{{id}}",
+    "backToList": "← 返回列表",
+    "dateTime": "日期和时间",
+    "type": "类型",
+    "document": "单据",
+    "reference": "参考号",
+    "party": "供应商 / 往来方",
+    "item": "商品",
+    "batch": "批次",
+    "expiryDate": "有效期至",
+    "direction": "方向",
+    "quantity": "数量",
+    "balanceAfter": "变动后结余",
+    "unitCost": "单位成本",
+    "performedBy": "操作人",
+    "note": "备注"
+  }
+}

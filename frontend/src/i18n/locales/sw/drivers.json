@@ -1,0 +1,103 @@
+{
+  "list": {
+    "title": "Madereva",
+    "subtitle": "Watu wanaoendesha magari ya kampuni na kupokea fedha za mafuta. Hali ya leseni hubainishwa kutoka tarehe ya kuisha muda.",
+    "new": "Dereva Mpya",
+    "search": "Tafuta jina, msimbo, simu, namba ya leseni",
+    "searchAria": "Tafuta madereva",
+    "filterStatusAria": "Chuja kwa hali",
+    "allStatuses": "Hali zote",
+    "filterLicenceAria": "Chuja kwa leseni",
+    "anyLicence": "Leseni yoyote",
+    "licenceValid": "Halali",
+    "licenceExpiringSoon": "Inaisha ndani ya siku 30",
+    "licenceExpired": "Imeisha muda",
+    "sortAria": "Panga madereva",
+    "sort": {
+      "nameAsc": "Jina A–Z",
+      "nameDesc": "Jina Z–A",
+      "code": "Msimbo",
+      "expiryAsc": "Leseni inayoisha mapema zaidi",
+      "expiryDesc": "Leseni inayoisha mwisho"
+    },
+    "emptyFiltered": "Hakuna madereva wanaolingana na vichujio vyako.",
+    "emptyNone": "Bado hakuna madereva. Tumia “Dereva Mpya” kusajili wa kwanza.",
+    "staff": "Mfanyakazi: {{code}}",
+    "columns": {
+      "code": "Msimbo",
+      "name": "Jina",
+      "phone": "Simu",
+      "licenceNo": "Namba ya leseni",
+      "class": "Daraja",
+      "licenceExpiry": "Leseni inaisha",
+      "vehicles": "Magari",
+      "fuelFundings": "Fedha za mafuta",
+      "status": "Hali",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Tazama",
+    "edit": "Hariri",
+    "deactivate": "Zima",
+    "activate": "Washa",
+    "delete": "Futa",
+    "deactivatePrompt": "Sababu ya kumzima “{{name}}”:",
+    "deleteConfirm": "Futa dereva “{{name}}” moja kwa moja? Hatua hii haiwezi kutenduliwa.",
+    "deactivated": "Dereva amezimwa.",
+    "activated": "Dereva amewashwa.",
+    "deleted": "Dereva amefutwa."
+  },
+  "form": {
+    "fullName": "Jina kamili",
+    "phone": "Simu (si lazima)",
+    "phonePlaceholder": "+255…",
+    "licenseNo": "Namba ya leseni",
+    "licenseClass": "Daraja la leseni (si lazima)",
+    "licenseClassPlaceholder": "mf. C",
+    "licenseExpiry": "Tarehe ya leseni kuisha",
+    "address": "Anwani (si lazima)",
+    "staff": "Mfanyakazi aliyeunganishwa (si lazima)",
+    "staffPlaceholder": "Hajaunganishwa na mfanyakazi",
+    "staffHint": "Tumia hii pale dereva pia ni mfanyakazi. Mfanyakazi mmoja anaweza kuunganishwa na dereva mmoja tu.",
+    "notes": "Maelezo ya ziada (si lazima)"
+  },
+  "create": {
+    "title": "Dereva mpya",
+    "sub": "Sajili mtu anayeendesha magari ya kampuni. Msimbo wa dereva huundwa kiotomatiki.",
+    "back": "Rudi kwenye orodha",
+    "saving": "Inahifadhi…",
+    "submit": "Sajili dereva",
+    "saved": "Dereva amesajiliwa."
+  },
+  "update": {
+    "title": "Hariri dereva",
+    "back": "Rudi",
+    "saving": "Inahifadhi…",
+    "submit": "Hifadhi mabadiliko",
+    "saved": "Dereva amesasishwa."
+  },
+  "view": {
+    "fallbackTitle": "Dereva",
+    "back": "Rudi kwenye orodha",
+    "licenceExpires": "Leseni inaisha",
+    "vehicles": "Magari",
+    "fuelFundings": "Fedha za mafuta",
+    "code": "Msimbo",
+    "fullName": "Jina kamili",
+    "phone": "Simu",
+    "licenseNo": "Namba ya leseni",
+    "licenseClass": "Daraja la leseni",
+    "licenseExpiry": "Leseni inaisha",
+    "address": "Anwani",
+    "linkedStaff": "Mfanyakazi aliyeunganishwa",
+    "status": "Hali",
+    "notes": "Maelezo ya ziada",
+    "created": "Alisajiliwa",
+    "updated": "Alisasishwa mwisho",
+    "inactive": "hatumiki",
+    "defaultDriverOf": "Dereva wa kawaida wa ({{n}})",
+    "noVehicles": "Hakuna gari lenye dereva huyu kama dereva wake wa kawaida.",
+    "seeFunding": "Tazama maombi ya fedha za mafuta ya dereva huyu"
+  }
+}

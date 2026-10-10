@@ -1,0 +1,103 @@
+{
+  "severity": {
+    "HIGH": "High",
+    "MEDIUM": "Medium",
+    "LOW": "Low"
+  },
+  "cards": {
+    "ALL": "All findings",
+    "HIGH": "High severity",
+    "MEDIUM": "Medium severity",
+    "LOW": "Low severity"
+  },
+  "messages": {
+    "Z_MISSING": "{{serial}} has receipts on {{date}} but no Z report was recorded",
+    "Z_MISMATCH": "Z report {{report}} ({{serial}}, {{date}}) differs from the receipts recorded in the system",
+    "Z_NUMBER_GAP": "{{serial}}: Z {{prev}} is followed by Z {{z}}. {{missing}} Z report(s) are missing",
+    "UNRECEIPTED_ORDER": "Order {{order}} ({{customer}}) was confirmed on {{date}} and still has no EFD receipt",
+    "UNRECEIPTED_ORDER_NO_CUSTOMER": "Order {{order}} was confirmed on {{date}} and still has no EFD receipt",
+    "RECEIPT_AMOUNT_MISMATCH": "Receipt {{receipt}} ({{serial}}) does not match order {{order}}",
+    "RECEIPT_NUMBER_GAP": "{{serial}}: receipt {{prev}} is followed by {{receipt}}. {{missing}} receipt number(s) are not recorded",
+    "RECON_MISSING": "{{serial}} on {{date}}: Z report {{report}} has not been reconciled",
+    "Z_PENDING_OLD": "Z report {{report}} ({{serial}}, {{date}}) has been waiting for verification for {{days}} days",
+    "RECON_DRIFT": "Reconciliation {{recon}} ({{serial}}, {{date}}) no longer matches the receipts in the system"
+  },
+  "facts": {
+    "receiptsCount": "Receipts",
+    "grossAmount": "Gross",
+    "vatAmount": "VAT",
+    "zNumber": "Z no",
+    "receiptNo": "Receipt no",
+    "missingCount": "Missing"
+  },
+  "links": {
+    "zReport": "Z report {{no}}",
+    "receipt": "Receipt {{no}}",
+    "order": "Order {{no}}",
+    "recordEfd": "Record EFD number",
+    "recordZ": "Record Z report",
+    "startRecon": "Start reconciliation"
+  },
+  "list": {
+    "title": "Difference detection",
+    "subtitle": "A read-only scan of the fiscal records for things that do not add up: missing or mismatched Z reports, skipped numbers, orders without receipts and days that were never reconciled. Nothing is changed by the scan.",
+    "scanAgain": "Scan again",
+    "scanning": "Scanning…",
+    "lastDays": "Last {{n}} days",
+    "filterDeviceAria": "Filter by device",
+    "filterTypeAria": "Filter by type",
+    "allDevices": "All devices",
+    "allTypes": "All kinds of finding",
+    "clearFilters": "Clear filters",
+    "chipTitle": "Show only this kind of finding",
+    "fromAfterTo": "“From” must not be after “To”.",
+    "tooLong": "Scan at most {{max}} days at a time.",
+    "capped": "One kind of finding hit the limit of {{cap}}, so the counts are not complete. Narrow the dates or pick a device.",
+    "deviceNote": "Orders do not belong to a device, so “{{type}}” is not checked while one device is selected.",
+    "scanned": "Scanned {{from}} to {{to}} (time zone {{tz}}) · {{at}}. Expected is what the records say it should be; Actual is what was found; Difference is Actual minus Expected.",
+    "scanningRecords": "Scanning the records…",
+    "emptyClean": "No differences found for this period. Everything adds up.",
+    "emptyFiltered": "No findings match your filters.",
+    "ageDays": "{{days}} day(s) old",
+    "columns": {
+      "severity": "Severity",
+      "type": "Type",
+      "date": "Date",
+      "device": "Device",
+      "found": "What was found",
+      "expected": "Expected",
+      "actual": "Actual",
+      "difference": "Difference",
+      "goTo": "Go to"
+    }
+  },
+  "view": {
+    "title": "Difference finding",
+    "fallbackTitle": "Difference finding",
+    "backToList": "Back to list",
+    "severity": "Severity",
+    "type": "Type",
+    "date": "Date",
+    "device": "Device",
+    "found": "What was found",
+    "age": "Age",
+    "compareTitle": "Expected vs actual",
+    "compareHelp": "Expected is what the records say it should be; Actual is what was found; Difference is Actual minus Expected.",
+    "item": "Item",
+    "noFigures": "This finding has no figures to compare.",
+    "nextTitle": "What to do next",
+    "notFound": "This finding could not be found. It may have been fixed since the last scan.",
+    "rescan": "Scan again"
+  },
+  "types": {
+    "Z_MISSING": "No Z report for a day with receipts",
+    "Z_MISMATCH": "Z report differs from the system receipts",
+    "Z_NUMBER_GAP": "Z report numbers skipped",
+    "UNRECEIPTED_ORDER": "Confirmed order without an EFD receipt",
+    "RECEIPT_AMOUNT_MISMATCH": "Receipt differs from its order",
+    "RECEIPT_NUMBER_GAP": "Receipt numbers skipped",
+    "RECON_MISSING": "Day not reconciled",
+    "Z_PENDING_OLD": "Z report waiting for verification",
+    "RECON_DRIFT": "Reconciled day no longer matches"
+  }
+}

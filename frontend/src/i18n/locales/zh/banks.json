@@ -1,0 +1,87 @@
+{
+  "status": {
+    "ACTIVE": "启用",
+    "INACTIVE": "停用"
+  },
+  "list": {
+    "title": "银行",
+    "subtitle": "已登记 {{total}} 家",
+    "new": "新建银行",
+    "search": "搜索名称、编码或 SWIFT",
+    "searchAria": "搜索银行",
+    "filterStatusAria": "按状态筛选",
+    "allStatuses": "所有状态",
+    "emptyFiltered": "没有符合筛选条件的银行。",
+    "emptyNone": "暂无银行。请使用“新建银行”登记第一家。",
+    "columns": {
+      "code": "编码",
+      "name": "名称",
+      "shortName": "简称",
+      "swift": "SWIFT",
+      "country": "国家",
+      "accounts": "账户数",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "deactivate": "停用",
+    "activate": "启用",
+    "delete": "删除",
+    "deactivatePrompt": "请输入停用“{{name}}”的原因：",
+    "deleteConfirm": "确定要永久删除银行“{{name}}”吗？此操作无法撤销。",
+    "deleted": "银行已删除。"
+  },
+  "form": {
+    "newTitle": "新建银行",
+    "editTitle": "编辑银行",
+    "newSub": "登记银行后才能在其名下开立账户。银行编码由系统自动生成。",
+    "back": "返回",
+    "backToList": "返回列表",
+    "name": "银行名称",
+    "namePlaceholder": "例如 CRDB Bank PLC",
+    "shortName": "简称（可选）",
+    "shortNamePlaceholder": "例如 CRDB",
+    "swift": "SWIFT / BIC（可选）",
+    "swiftTitle": "8 位或 11 位字符",
+    "country": "国家（2 位代码）",
+    "countryTitle": "例如 TZ",
+    "phone": "电话（可选）",
+    "phoneTitle": "数字、空格、+ ( ) -",
+    "website": "网站（可选）",
+    "notes": "备注（可选）",
+    "saving": "保存中…",
+    "saveChanges": "保存更改",
+    "saveNew": "保存银行",
+    "updated": "银行已更新。",
+    "created": "银行已登记。"
+  },
+  "view": {
+    "fallbackTitle": "银行",
+    "back": "返回列表",
+    "code": "银行编码",
+    "name": "名称",
+    "shortName": "简称",
+    "swift": "SWIFT / BIC",
+    "country": "国家",
+    "phone": "电话",
+    "website": "网站",
+    "accounts": "账户数",
+    "status": "状态",
+    "notes": "备注",
+    "created": "创建时间",
+    "updated": "最后更新",
+    "accountsTitle": "该银行的账户",
+    "newAccount": "新建账户",
+    "noAccounts": "该银行名下暂无账户。",
+    "cols": {
+      "accountNo": "账号",
+      "accountName": "账户名称",
+      "type": "类型",
+      "currency": "币种",
+      "status": "状态"
+    }
+  }
+}

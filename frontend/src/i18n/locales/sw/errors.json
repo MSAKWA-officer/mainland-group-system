@@ -1,0 +1,11 @@
+{
+  "VALIDATION_ERROR": "Tafadhali angalia sehemu zilizoangaziwa",
+  "DUPLICATE": "Rekodi hii tayari ipo",
+  "NOT_FOUND": "Rekodi haijapatikana",
+  "UNAUTHORIZED": "Kikao chako kimeisha. Tafadhali ingia tena",
+  "FORBIDDEN": "Huna ruhusa ya kufanya kitendo hiki",
+  "CONFLICT": "Kitendo hiki kinakinzana na hali ya sasa ya rekodi",
+  "INTERNAL_ERROR": "Hitilafu imetokea kwenye seva. Tafadhali jaribu tena",
+  "NETWORK_ERROR": "Seva haipatikani. Angalia muunganisho wako",
+  "UNKNOWN": "Hitilafu isiyotarajiwa imetokea"
+}
