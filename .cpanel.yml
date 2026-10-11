@@ -1,0 +1,4 @@
+
+deployment:
+  tasks:
+    - /bin/echo "Mainland deployment started"
