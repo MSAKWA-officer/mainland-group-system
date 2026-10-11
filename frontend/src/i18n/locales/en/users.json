@@ -1,0 +1,92 @@
+{
+  "list": {
+    "title": "Users",
+    "registered": "{{count}} registered",
+    "add": "+ Add User",
+    "searchPlaceholder": "Search name, username or email",
+    "empty": "No users found.",
+    "columns": {
+      "name": "Name",
+      "username": "Username",
+      "role": "Role",
+      "status": "Status",
+      "lastLogin": "Last sign-in",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "deactivate": "Deactivate",
+    "activate": "Activate",
+    "resetPassword": "Reset password",
+    "delete": "Delete"
+  },
+  "prompts": {
+    "deactivateReason": "Why is {{username}} being deactivated?",
+    "newPassword": "New temporary password for {{username}} (10+ chars, upper, lower, digit, symbol):",
+    "passwordReset": "Password reset. The user must choose a new one at next sign-in.",
+    "deleteConfirm": "Delete {{name}} ({{username}})? They will no longer be able to sign in. The deletion is kept in the audit log."
+  },
+  "create": {
+    "title": "Create user account",
+    "subtitle": "Search a registered staff member, choose their role and set a temporary password.",
+    "back": "← Back to list",
+    "staffMember": "Staff member",
+    "change": "Change",
+    "searchPlaceholder": "Type a name, code or phone…",
+    "noPermission": "You are not allowed to view staff",
+    "searchAria": "Search staff",
+    "noMatch": "No one without an account matches.",
+    "addOnStaff": "Add them on the Staff page",
+    "onlyWithout": "Only registered staff without an account are shown.",
+    "unavailable": "That person already has an account or is inactive.",
+    "role": "Role",
+    "chooseRole": "Choose a role",
+    "username": "Username",
+    "tempPassword": "Temporary password",
+    "show": "Show",
+    "hide": "Hide",
+    "generate": "Generate",
+    "passwordRules": "At least 10 characters with upper and lower case, a digit and a symbol. The user must change it at first sign-in.",
+    "region": "Region (optional)",
+    "commission": "Commission rate (%)",
+    "target": "Monthly target",
+    "salesNote": "A salesperson profile is created automatically so this person sees their own customers and orders.",
+    "saving": "Saving…",
+    "submit": "Create account",
+    "created": "Account “{{username}}” created for {{name}} as {{role}}. They must change the password at first sign-in."
+  },
+  "update": {
+    "title": "Edit User",
+    "loading": "Loading…",
+    "back": "← Back",
+    "username": "Username",
+    "fullName": "Full name",
+    "email": "Email (optional)",
+    "phone": "Phone (optional)",
+    "role": "Role",
+    "chooseRole": "Choose a role",
+    "ownRole": "You cannot change your own role.",
+    "saving": "Saving…",
+    "save": "Save changes",
+    "updated": "User updated."
+  },
+  "view": {
+    "title": "User",
+    "loading": "Loading…",
+    "back": "← Back to list",
+    "fullName": "Full name",
+    "username": "Username",
+    "email": "Email",
+    "phone": "Phone",
+    "role": "Role",
+    "status": "Status",
+    "lastLogin": "Last sign-in",
+    "created": "Created",
+    "mustChange": "Password change required",
+    "yes": "Yes",
+    "no": "No",
+    "deleted": "User {{username}} deleted."
+  }
+}

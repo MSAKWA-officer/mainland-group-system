@@ -84,10 +84,12 @@ import EfdZReportsView from './features/efdZReports/EfdZReportsView.jsx';
 import EfdReconciliationsList from './features/efdReconciliations/EfdReconciliationsList.jsx';
 import EfdReconciliationsCreate from './features/efdReconciliations/EfdReconciliationsCreate.jsx';
 import EfdReconciliationsView from './features/efdReconciliations/EfdReconciliationsView.jsx';
-import EfdDifferencesPage from './features/efdDifferences/EfdDifferencesPage.jsx';
-import EfdReportsPage from './features/efdReports/EfdReportsPage.jsx';
+import EfdDifferencesList from './features/efdDifferences/EfdDifferencesList.jsx';
+import EfdDifferencesView from './features/efdDifferences/EfdDifferencesView.jsx';
+import EfdReportsList from './features/efdReports/EfdReportsList.jsx';
 import EfdDevicesList from './features/efdDevices/EfdDevicesList.jsx';
 import EfdDevicesView from './features/efdDevices/EfdDevicesView.jsx';
+import EfdDevicesUpdate from './features/efdDevices/EfdDevicesUpdate.jsx';
 import EfdDeviceForm from './features/efdDevices/EfdDeviceForm.jsx';
 import BanksList from './features/banks/BanksList.jsx';
 import BanksView from './features/banks/BanksView.jsx';
@@ -130,12 +132,10 @@ import FuelUsageUpdate from './features/fuelUsage/FuelUsageUpdate.jsx';
 import FuelUsageView from './features/fuelUsage/FuelUsageView.jsx';
 import FuelBalancesList from './features/fuelBalances/FuelBalancesList.jsx';
 import FuelBalancesView from './features/fuelBalances/FuelBalancesView.jsx';
-import FuelBalancesCreate from './features/fuelBalances/FuelBalancesCreate.jsx';
-import FuelBalancesUpdate from './features/fuelBalances/FuelBalancesUpdate.jsx';
 import FuelReportsList from './features/fuelReports/FuelReportsList.jsx';
-import FuelReportsView from './features/fuelReports/FuelReportsView.jsx';
 import FuelReportsCreate from './features/fuelReports/FuelReportsCreate.jsx';
 import FuelReportsUpdate from './features/fuelReports/FuelReportsUpdate.jsx';
+import FuelReportsView from './features/fuelReports/FuelReportsView.jsx';
 import ReconciliationPage from './features/reconciliation/ReconciliationPage.jsx';
 import OrderWorkflowList from './features/orderWorkflow/OrderWorkflowList.jsx';
 import OrderWorkflowView from './features/orderWorkflow/OrderWorkflowView.jsx';
@@ -146,9 +146,7 @@ import SalespersonsCreate from './features/salespersons/SalespersonsCreate.jsx';
 import SalespersonsUpdate from './features/salespersons/SalespersonsUpdate.jsx';
 import SalespersonsView from './features/salespersons/SalespersonsView.jsx';
 import StaffList from './features/staff/StaffList.jsx';
-import StaffCreate from './features/staff/StaffCreate.jsx';
-import StaffUpdate from './features/staff/StaffUpdate.jsx';
-import StaffView from './features/staff/StaffView.jsx';
+import StaffForm from './features/staff/StaffForm.jsx';
 import UserList from './features/users/UserList.jsx';
 import UserCreate from './features/users/UserCreate.jsx';
 import UserUpdate from './features/users/UserUpdate.jsx';
@@ -245,8 +243,9 @@ export default function App() {
         <Route path="/efd-reconciliations" element={<Guard perm="efd_reconciliations.read"><EfdReconciliationsList /></Guard>} />
         <Route path="/efd-reconciliations/new" element={<Guard perm="efd_reconciliations.create"><EfdReconciliationsCreate /></Guard>} />
         <Route path="/efd-reconciliations/:id" element={<Guard perm="efd_reconciliations.read"><EfdReconciliationsView /></Guard>} />
-        <Route path="/efd-differences" element={<Guard perm="efd_differences.read"><EfdDifferencesPage /></Guard>} />
-        <Route path="/efd-reports" element={<Guard perm="efd_reports.read"><EfdReportsPage /></Guard>} />
+        <Route path="/efd-differences" element={<Guard perm="efd_differences.read"><EfdDifferencesList /></Guard>} />
+        <Route path="/efd-differences/view" element={<Guard perm="efd_differences.read"><EfdDifferencesView /></Guard>} />
+        <Route path="/efd-reports" element={<Guard perm="efd_reports.read"><EfdReportsList /></Guard>} />
         <Route path="/efd-devices" element={<Guard perm="efd_devices.read"><EfdDevicesList /></Guard>} />
         <Route path="/efd-devices/new" element={<Guard perm="efd_devices.create"><EfdDeviceForm /></Guard>} />
         <Route path="/efd-devices/:id" element={<Guard perm="efd_devices.read"><EfdDevicesView /></Guard>} />
@@ -293,9 +292,7 @@ export default function App() {
         <Route path="/fuel-usage/:id" element={<Guard perm="fuel_usage.read"><FuelUsageView /></Guard>} />
         <Route path="/fuel-usage/:id/edit" element={<Guard perm="fuel_usage.update"><FuelUsageUpdate /></Guard>} />
         <Route path="/fuel-balances" element={<Guard perm="fuel_balances.read"><FuelBalancesList /></Guard>} />
-        <Route path="/fuel-balances/new" element={<Guard perm="fuel_usage.create"><FuelBalancesCreate /></Guard>} />
         <Route path="/fuel-balances/:id" element={<Guard perm="fuel_balances.read"><FuelBalancesView /></Guard>} />
-        <Route path="/fuel-balances/:id/edit" element={<Guard perm="fuel_funding.update"><FuelBalancesUpdate /></Guard>} />
         <Route path="/fuel-reports" element={<Guard perm="fuel_reports.read"><FuelReportsList /></Guard>} />
         <Route path="/fuel-reports/new" element={<Guard perm="fuel_reports.read"><FuelReportsCreate /></Guard>} />
         <Route path="/fuel-reports/:type" element={<Guard perm="fuel_reports.read"><FuelReportsView /></Guard>} />
@@ -310,9 +307,8 @@ export default function App() {
         <Route path="/reports" element={<Guard perm="stock_reports.read"><ReportsList /></Guard>} />
         <Route path="/reports/:type" element={<Guard perm="stock_reports.read"><ReportsView /></Guard>} />
         <Route path="/staff" element={<Guard perm="staff.read"><StaffList /></Guard>} />
-        <Route path="/staff/new" element={<Guard perm="staff.create"><StaffCreate /></Guard>} />
-        <Route path="/staff/:id" element={<Guard perm="staff.read"><StaffView /></Guard>} />
-        <Route path="/staff/:id/edit" element={<Guard perm="staff.update"><StaffUpdate /></Guard>} />
+        <Route path="/staff/new" element={<Guard perm="staff.create"><StaffForm /></Guard>} />
+        <Route path="/staff/:id/edit" element={<Guard perm="staff.update"><StaffForm /></Guard>} />
         <Route path="/users" element={<Guard perm="users.read"><UserList /></Guard>} />
         <Route path="/users/new" element={<Guard perm="users.create"><UserCreate /></Guard>} />
         <Route path="/users/:id" element={<Guard perm="users.read"><UserView /></Guard>} />

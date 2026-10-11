@@ -1,0 +1,92 @@
+{
+  "list": {
+    "title": "用户",
+    "registered": "已注册 {{count}} 人",
+    "add": "+ 添加用户",
+    "searchPlaceholder": "搜索姓名、用户名或邮箱",
+    "empty": "未找到用户。",
+    "columns": {
+      "name": "姓名",
+      "username": "用户名",
+      "role": "角色",
+      "status": "状态",
+      "lastLogin": "上次登录",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "deactivate": "停用",
+    "activate": "启用",
+    "resetPassword": "重置密码",
+    "delete": "删除"
+  },
+  "prompts": {
+    "deactivateReason": "为什么要停用 {{username}}？",
+    "newPassword": "请输入 {{username}} 的新临时密码（至少10位，含大写字母、小写字母、数字和符号）：",
+    "passwordReset": "密码已重置。用户下次登录时必须设置新密码。",
+    "deleteConfirm": "确定删除 {{name}}（{{username}}）？该用户将无法再登录。删除操作会记录在审计日志中。"
+  },
+  "create": {
+    "title": "创建用户账户",
+    "subtitle": "搜索已登记的员工，选择其角色并设置临时密码。",
+    "back": "← 返回列表",
+    "staffMember": "员工",
+    "change": "更换",
+    "searchPlaceholder": "输入姓名、编号或电话…",
+    "noPermission": "您无权查看员工",
+    "searchAria": "搜索员工",
+    "noMatch": "没有匹配的未开通账户人员。",
+    "addOnStaff": "在员工页面添加",
+    "onlyWithout": "仅显示尚未开通账户的已登记员工。",
+    "unavailable": "该员工已有账户或已停用。",
+    "role": "角色",
+    "chooseRole": "请选择角色",
+    "username": "用户名",
+    "tempPassword": "临时密码",
+    "show": "显示",
+    "hide": "隐藏",
+    "generate": "生成",
+    "passwordRules": "至少10个字符，包含大小写字母、数字和符号。用户首次登录时必须修改密码。",
+    "region": "地区（选填）",
+    "commission": "佣金比例（%）",
+    "target": "月度目标",
+    "salesNote": "系统会自动创建销售员档案，使其能看到自己的客户和订单。",
+    "saving": "保存中…",
+    "submit": "创建账户",
+    "created": "已为 {{name}} 创建账户“{{username}}”，角色为 {{role}}。首次登录时必须修改密码。"
+  },
+  "update": {
+    "title": "编辑用户",
+    "loading": "加载中…",
+    "back": "← 返回",
+    "username": "用户名",
+    "fullName": "全名",
+    "email": "邮箱（选填）",
+    "phone": "电话（选填）",
+    "role": "角色",
+    "chooseRole": "请选择角色",
+    "ownRole": "您不能更改自己的角色。",
+    "saving": "保存中…",
+    "save": "保存更改",
+    "updated": "用户已更新。"
+  },
+  "view": {
+    "title": "用户",
+    "loading": "加载中…",
+    "back": "← 返回列表",
+    "fullName": "全名",
+    "username": "用户名",
+    "email": "邮箱",
+    "phone": "电话",
+    "role": "角色",
+    "status": "状态",
+    "lastLogin": "上次登录",
+    "created": "创建时间",
+    "mustChange": "需要修改密码",
+    "yes": "是",
+    "no": "否",
+    "deleted": "用户 {{username}} 已删除。"
+  }
+}

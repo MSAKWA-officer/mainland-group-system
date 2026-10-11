@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { userApi } from '../../api/index.js';
 import Banner from '../../components/Banner.jsx';
@@ -13,6 +14,8 @@ const Row = ({ label, children }) => (
 );
 
 export default function UserView() {
+  const { t } = useTranslation('users');
+  const { t: tc } = useTranslation('common');
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,28 +26,28 @@ export default function UserView() {
     <div className="panel overflow-hidden text-black shadow-sm">
       <div className="flex items-center justify-between gap-3 p-6">
         <div>
-          <h1 className="text-2xl font-semibold">{u ? u.fullName : 'User'}</h1>
-          <p className="mt-1 text-sm">{u ? u.username : 'Loading…'}</p>
+          <h1 className="text-2xl font-semibold">{u ? u.fullName : t('view.title')}</h1>
+          <p className="mt-1 text-sm">{u ? u.username : tc('loading')}</p>
         </div>
-        <Link to="/users" className="text-sm hover:underline">← Back to list</Link>
+        <Link to="/users" className="text-sm hover:underline">{t('view.back')}</Link>
       </div>
       {(err || q.error || msg) && <div className="px-6"><Banner>{err || q.error}</Banner><Banner kind="ok">{msg}</Banner></div>}
       {u && (
         <div className="border-t border-line px-6 py-4">
           <dl className="max-w-3xl">
-            <Row label="Full name">{u.fullName}</Row>
-            <Row label="Username">{u.username}</Row>
-            <Row label="Email">{u.email}</Row>
-            <Row label="Phone">{u.phone}</Row>
-            <Row label="Role">{u.role?.name}</Row>
-            <Row label="Status">{u.status === 'ACTIVE' ? 'Active' : 'Inactive'}</Row>
-            <Row label="Last sign-in">{u.lastLoginAt && fmt(u.lastLoginAt)}</Row>
-            <Row label="Created">{fmt(u.createdAt)}</Row>
-            <Row label="Password change required">{u.mustChangePassword ? 'Yes' : 'No'}</Row>
+            <Row label={t('view.fullName')}>{u.fullName}</Row>
+            <Row label={t('view.username')}>{u.username}</Row>
+            <Row label={t('view.email')}>{u.email}</Row>
+            <Row label={t('view.phone')}>{u.phone}</Row>
+            <Row label={t('view.role')}>{u.role?.name}</Row>
+            <Row label={t('view.status')}>{u.status === 'ACTIVE' ? tc('active') : tc('inactive')}</Row>
+            <Row label={t('view.lastLogin')}>{u.lastLoginAt && fmt(u.lastLoginAt)}</Row>
+            <Row label={t('view.created')}>{fmt(u.createdAt)}</Row>
+            <Row label={t('view.mustChange')}>{u.mustChangePassword ? t('view.yes') : t('view.no')}</Row>
           </dl>
           <div className="mt-4 pb-2">
             <RowActions u={u} onChanged={q.reload} onError={setErr} onMsg={setMsg}
-              afterDelete={() => navigate('/users', { state: { msg: `User ${u.username} deleted.` } })} />
+              afterDelete={() => navigate('/users', { state: { msg: t('view.deleted', { username: u.username }) } })} />
           </div>
         </div>
       )}

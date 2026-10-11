@@ -1,0 +1,92 @@
+{
+  "list": {
+    "title": "Watumiaji",
+    "registered": "Waliosajiliwa: {{count}}",
+    "add": "+ Ongeza Mtumiaji",
+    "searchPlaceholder": "Tafuta jina, jina la mtumiaji au barua pepe",
+    "empty": "Hakuna watumiaji waliopatikana.",
+    "columns": {
+      "name": "Jina",
+      "username": "Jina la mtumiaji",
+      "role": "Jukumu",
+      "status": "Hali",
+      "lastLogin": "Kuingia mara ya mwisho",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "view": "Angalia",
+    "edit": "Hariri",
+    "deactivate": "Zima akaunti",
+    "activate": "Washa akaunti",
+    "resetPassword": "Weka upya nenosiri",
+    "delete": "Futa"
+  },
+  "prompts": {
+    "deactivateReason": "Kwa nini {{username}} anazimwa akaunti?",
+    "newPassword": "Nenosiri jipya la muda kwa {{username}} (herufi 10+, herufi kubwa, ndogo, tarakimu, alama):",
+    "passwordReset": "Nenosiri limewekwa upya. Mtumiaji lazima achague jipya atakapoingia tena.",
+    "deleteConfirm": "Futa {{name}} ({{username}})? Hataweza tena kuingia kwenye mfumo. Ufutaji utahifadhiwa kwenye kumbukumbu ya ukaguzi."
+  },
+  "create": {
+    "title": "Fungua akaunti ya mtumiaji",
+    "subtitle": "Tafuta mfanyakazi aliyesajiliwa, chagua jukumu lake na uweke nenosiri la muda.",
+    "back": "← Rudi kwenye orodha",
+    "staffMember": "Mfanyakazi",
+    "change": "Badilisha",
+    "searchPlaceholder": "Andika jina, msimbo au simu…",
+    "noPermission": "Huruhusiwi kuona wafanyakazi",
+    "searchAria": "Tafuta mfanyakazi",
+    "noMatch": "Hakuna mtu asiye na akaunti anayelingana.",
+    "addOnStaff": "Mwongeze kwenye ukurasa wa Wafanyakazi",
+    "onlyWithout": "Wanaoonyeshwa ni wafanyakazi waliosajiliwa wasio na akaunti tu.",
+    "unavailable": "Mtu huyo tayari ana akaunti au hafanyi kazi tena.",
+    "role": "Jukumu",
+    "chooseRole": "Chagua jukumu",
+    "username": "Jina la mtumiaji",
+    "tempPassword": "Nenosiri la muda",
+    "show": "Onyesha",
+    "hide": "Ficha",
+    "generate": "Tengeneza",
+    "passwordRules": "Angalau herufi 10 zenye herufi kubwa na ndogo, tarakimu na alama. Mtumiaji lazima abadilishe anapoingia mara ya kwanza.",
+    "region": "Mkoa (si lazima)",
+    "commission": "Kiwango cha kamisheni (%)",
+    "target": "Lengo la mwezi",
+    "salesNote": "Wasifu wa muuzaji unaundwa kiotomatiki ili mtu huyu aone wateja na oda zake mwenyewe.",
+    "saving": "Inahifadhi…",
+    "submit": "Fungua akaunti",
+    "created": "Akaunti “{{username}}” imefunguliwa kwa {{name}} kama {{role}}. Lazima abadilishe nenosiri anapoingia mara ya kwanza."
+  },
+  "update": {
+    "title": "Hariri Mtumiaji",
+    "loading": "Inapakia…",
+    "back": "← Rudi",
+    "username": "Jina la mtumiaji",
+    "fullName": "Jina kamili",
+    "email": "Barua pepe (si lazima)",
+    "phone": "Simu (si lazima)",
+    "role": "Jukumu",
+    "chooseRole": "Chagua jukumu",
+    "ownRole": "Huwezi kubadilisha jukumu lako mwenyewe.",
+    "saving": "Inahifadhi…",
+    "save": "Hifadhi mabadiliko",
+    "updated": "Mtumiaji amesasishwa."
+  },
+  "view": {
+    "title": "Mtumiaji",
+    "loading": "Inapakia…",
+    "back": "← Rudi kwenye orodha",
+    "fullName": "Jina kamili",
+    "username": "Jina la mtumiaji",
+    "email": "Barua pepe",
+    "phone": "Simu",
+    "role": "Jukumu",
+    "status": "Hali",
+    "lastLogin": "Kuingia mara ya mwisho",
+    "created": "Aliundwa",
+    "mustChange": "Anatakiwa kubadilisha nenosiri",
+    "yes": "Ndiyo",
+    "no": "Hapana",
+    "deleted": "Mtumiaji {{username}} amefutwa."
+  }
+}
