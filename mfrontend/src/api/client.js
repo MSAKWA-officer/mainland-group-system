@@ -3,7 +3,12 @@ import i18n from '../i18n';
 
 let token = null;
 export const setToken = (t) => { token = t; };
-export const api = axios.create({ baseURL: '/api', withCredentials: true });
+
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || '/api',
+  withCredentials: true,
+});
+
 api.interceptors.request.use((c) => { if (token) c.headers.Authorization = `Bearer ${token}`; return c; });
 
 // One refresh at a time: refresh tokens rotate, so parallel refreshes would look like token theft.
