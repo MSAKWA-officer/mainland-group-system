@@ -15,8 +15,7 @@
     "actions": "操作",
     "items": "商品",
     "unit": "单位",
-    "batchNo": "批次号",
-    "unitQty": "数量（单位）"
+    "batchNo": "批次号"
   },
   "empty": "暂无收货单据。",
   "newTitle": "新建库存收货",

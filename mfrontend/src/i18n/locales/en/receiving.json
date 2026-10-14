@@ -15,8 +15,7 @@
     "actions": "Actions",
     "items": "Items",
     "unit": "Unit",
-    "batchNo": "Batch no.",
-    "unitQty": "Unit quantity"
+    "batchNo": "Batch no."
   },
   "empty": "No receiving documents yet.",
   "newTitle": "New stock receiving",

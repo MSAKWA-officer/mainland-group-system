@@ -7,7 +7,7 @@ import Banner from '../../components/Banner.jsx';
 import useLoad from '../../utils/useLoad';
 import { CELL, HEAD, al } from '../../components/TableUi.js';
 import { fmt } from '../../utils/format';
-import { Tag, qty } from '../stock/StockList.jsx';
+import { qty } from '../stock/StockList.jsx';
 import { currentLocale } from '../../utils/locale';
 import { useDocText } from '../../utils/docText';
 import { RowActions } from './ReceivingList.jsx';
@@ -28,25 +28,22 @@ export default function ReceivingView() {
   const location = useLocation();
   const { can } = useAuth();
   const [err, setErr] = useState('');
-  const [term, setTerm] = useState('');
   const q = useLoad(() => receivingApi.get(id), [id]);
   const d = q.data;
   const showCost = can('items.view_cost');
-  // The list already shows Date, Items, Unit, Batch No, Created by and Status. This page adds the rest.
-  const heads = ['item', 'batch', 'expiry', 'quantity', ...(showCost ? ['unitCost', 'lineTotal'] : []), 'remarks'];
+  // The list already shows Date, Items, Unit, Batch No, Created by and Status. This page only adds the remaining columns
+  // (Item is kept as the row label so each quantity / cost can be matched to its item).
+  const heads = ['item', 'quantity', 'expiry', ...(showCost ? ['unitCost', 'lineTotal'] : []), 'remarks'];
   const total = (d?.lines || []).reduce((s, l) => s + Number(l.quantity) * Number(l.unitCost || 0), 0);
 
-  // Search bar: matches the date (date received or expiry date), the batch number, or the item (name or SKU).
-  const needle = term.trim().toLowerCase();
-  const lines = (d?.lines || []).filter((l) => !needle || [d.docDate, l.batch?.expiryDate || l.expiryDate, l.batch?.batchNo || l.batchNo, l.item?.name, l.item?.sku]
-    .some((v) => String(v || '').toLowerCase().includes(needle)));
+  const lines = d?.lines || [];
 
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
       <div className="flex items-center justify-between gap-3 p-6">
         <div>
           <h1 className="text-[18px] font-bold">{d ? d.docNo : t('title')}</h1>
-          <p className="mt-1 text-[14px]">{d ? <Tag>{docs.status(d.status)}</Tag> : tc('loading')}</p>
+          {!d && <p className="mt-1 text-[14px]">{tc('loading')}</p>}
         </div>
         <Link to="/receiving" className="text-[14px] hover:underline">{docs.t('backToList')}</Link>
       </div>
@@ -55,11 +52,9 @@ export default function ReceivingView() {
         <div className="border-t border-line px-6 py-4">
           <dl className="max-w-3xl">
             <Row label={t('view.docNo')}>{d.docNo}</Row>
-            <Row label={t('view.date')}>{d.docDate}</Row>
             <Row label={t('view.supplier')}>{d.partyName}</Row>
             <Row label={t('view.reference')}>{d.reference}</Row>
             <Row label={t('view.notes')}>{d.reason}</Row>
-            <Row label={t('view.createdBy')}>{d.creator?.fullName}</Row>
             <Row label={t('view.created')}>{fmt(d.createdAt)}</Row>
             {d.submittedAt && <Row label={t('view.submitted')}>{fmt(d.submittedAt)}</Row>}
             {d.approval?.decidedAt && <Row label={t('view.decision')}>{`${docs.status(d.status)}, ${fmt(d.approval.decidedAt)}`}</Row>}
@@ -69,19 +64,17 @@ export default function ReceivingView() {
           <div className="mt-6">
             <div className="mb-2 flex flex-wrap items-end justify-between gap-3">
               <h2 className="text-[14px] font-bold">{t('view.itemsReceived')}</h2>
-              <input className="input max-w-xs !text-[14px] !text-[#212121]" placeholder={t('view.searchLines')} value={term} onChange={(e) => setTerm(e.target.value)} />
             </div>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse bg-white">
                 <thead><tr>{heads.map((h, n) => <th key={h} className={`${HEAD} ${al(n)}`}>{t(`lineCols.${h}`)}</th>)}</tr></thead>
                 <tbody>
-                  {lines.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={heads.length}>{t('view.noMatch')}</td></tr>}
+                  {lines.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={heads.length}>{t('view.noLines')}</td></tr>}
                   {lines.map((l) => (
                     <tr key={l.id} className="bg-white">
                       <td className={`${CELL} text-left`}><div>{l.item?.name}</div><div className="text-xs">{l.item?.sku}</div></td>
-                      <td className={`${CELL} text-center`}>{l.batch?.batchNo || l.batchNo || '—'}</td>
-                      <td className={`${CELL} text-center`}>{l.batch?.expiryDate || l.expiryDate || '—'}</td>
                       <td className={`${CELL} text-center`}>{qty(l.quantity)} {l.item?.unit}</td>
+                      <td className={`${CELL} text-center`}>{l.batch?.expiryDate || l.expiryDate || '—'}</td>
                       {showCost && <td className={`${CELL} text-center`}>{l.unitCost != null ? money(l.unitCost) : '—'}</td>}
                       {showCost && <td className={`${CELL} text-center`}>{l.unitCost != null ? money(Number(l.quantity) * Number(l.unitCost)) : '—'}</td>}
                       <td className={`${CELL} text-center`}>{l.remarks || '—'}</td>
