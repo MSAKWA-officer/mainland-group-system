@@ -10,7 +10,7 @@ import useLoad from '../../utils/useLoad';
 import { IconBtn, STATUS, Tag } from '../stock/StockList.jsx';
 import { useDocText } from '../../utils/docText';
 
-// Icon actions for one receiving document. Used by this list and by ReceivingView.
+// Full set of workflow icons for one receiving document. Used by ReceivingView.
 // Rules mirror the API: only the creator edits / submits / cancels, approvers never act on their own document,
 // and only draft, cancelled or rejected documents can be deleted (by the creator or the Owner).
 export function RowActions({ d, showView, onChanged, onError, afterDelete }) {
@@ -41,6 +41,41 @@ export function RowActions({ d, showView, onChanged, onError, afterDelete }) {
   );
 }
 
+// Icon button that can be greyed out. A disabled icon keeps its place in the row and explains why in its tooltip.
+function ActionBtn({ label, onClick, disabled, why, danger, children }) {
+  const tone = disabled ? 'cursor-not-allowed text-slate-300' : `${danger ? 'text-red-600' : 'text-blue-600'} hover:bg-slate-100`;
+  return (
+    <button type="button" title={disabled ? why : label} aria-label={label} disabled={disabled} onClick={onClick}
+      className={`inline-flex h-8 w-8 items-center justify-center rounded-md transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${tone}`}>
+      {children}
+    </button>
+  );
+}
+
+// The three row icons of the list: View, Edit, Delete. Edit / Delete follow the same API rules as RowActions.
+// A saved receiving is posted to stock straight away, so it is locked: only a legacy draft can still be edited or deleted.
+function ListActions({ d, onChanged, onError }) {
+  const { t } = useDocText();
+  const { t: tr } = useTranslation('receiving');
+  const { user, can } = useAuth();
+  const navigate = useNavigate();
+  const mine = d.createdBy === user.id;
+  const canEdit = mine && d.status === 'DRAFT';
+  const canDelete = can('receiving.create') && (mine || user.role === 'OWNER') && ['DRAFT', 'CANCELLED', 'REJECTED'].includes(d.status);
+  const remove = async () => {
+    if (!window.confirm(t('confirmDelete', { docNo: d.docNo }))) return;
+    onError('');
+    try { await receivingApi.remove(d.id); onChanged?.(); } catch (x) { onError(errMsg(x)); }
+  };
+  return (
+    <div className="flex items-center justify-center gap-1">
+      <ActionBtn label={t('actions.view')} onClick={() => navigate(`/receiving/${d.id}`)}><EyeIcon /></ActionBtn>
+      <ActionBtn label={t('actions.edit')} disabled={!canEdit} why={tr('editLocked')} onClick={() => navigate(`/receiving/${d.id}/edit`)}><PencilIcon /></ActionBtn>
+      <ActionBtn label={t('actions.delete')} danger disabled={!canDelete} why={tr('deleteLocked')} onClick={remove}><TrashIcon /></ActionBtn>
+    </div>
+  );
+}
+
 // Table look: Arial 14px, near-black text, 1px light-grey grid on every cell, ~39px rows,
 // first column left-aligned and the rest centred, capital column titles.
 const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
@@ -57,7 +92,7 @@ export default function ReceivingList() {
   const [err, setErr] = useState('');
   const list = useLoad(() => receivingApi.list({ page, search: search || undefined, status: status || undefined, from: from || undefined, to: to || undefined }), [page, search, status, from, to]);
   const rows = list.data?.data || [];
-  const heads = ['docNo', 'date', 'supplier', 'reference', 'lines', 'createdBy', 'status', 'actions'];
+  const heads = ['date', 'items', 'unit', 'batchNo', 'createdBy', 'status', 'actions'];
   const reset = (set) => (e) => { setPage(1); set(e.target.value); };
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
@@ -85,18 +120,25 @@ export default function ReceivingList() {
           <thead><tr>{heads.map((h, i) => <th key={h} className={`${HEAD} ${al(i)}`}>{t(`cols.${h}`)}</th>)}</tr></thead>
           <tbody>
             {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={heads.length}>{t('empty')}</td></tr>}
-            {rows.map((d) => (
-              <tr key={d.id} className="bg-white">
-                <td className={`${CELL} whitespace-nowrap text-left`}>{d.docNo}</td>
-                <td className={`${CELL} whitespace-nowrap text-center`}>{d.docDate}</td>
-                <td className={`${CELL} text-center`}>{d.partyName || '—'}</td>
-                <td className={`${CELL} text-center`}>{d.reference || '—'}</td>
-                <td className={`${CELL} text-center`}>{d.lineCount ?? 0}</td>
-                <td className={`${CELL} text-center`}>{d.creator?.fullName}</td>
-                <td className={`${CELL} text-center`}><Tag>{docs.status(d.status)}</Tag></td>
-                <td className={`${CELL} text-center`}><div className="flex justify-center"><RowActions d={d} showView onChanged={list.reload} onError={setErr} /></div></td>
-              </tr>
-            ))}
+            {/* One table row per item line. Date, Created by, Status and Action span all the lines of their receiving. */}
+            {rows.flatMap((d) => {
+              const lines = d.lines?.length ? d.lines : [null];
+              return lines.map((l, n) => (
+                <tr key={`${d.id}-${l?.id ?? n}`} className="bg-white">
+                  {n === 0 && <td rowSpan={lines.length} className={`${CELL} whitespace-nowrap text-left`}>{d.docDate}</td>}
+                  <td className={`${CELL} text-center`}>{l?.item?.name || '—'}</td>
+                  <td className={`${CELL} text-center`}>{l?.item?.unit || '—'}</td>
+                  <td className={`${CELL} text-center`}>{l?.batch?.batchNo || l?.batchNo || '—'}</td>
+                  {n === 0 && (
+                    <>
+                      <td rowSpan={lines.length} className={`${CELL} text-center`}>{d.creator?.fullName}</td>
+                      <td rowSpan={lines.length} className={`${CELL} text-center`}><Tag>{docs.status(d.status)}</Tag></td>
+                      <td rowSpan={lines.length} className={`${CELL} text-center`}><ListActions d={d} onChanged={list.reload} onError={setErr} /></td>
+                    </>
+                  )}
+                </tr>
+              ));
+            })}
           </tbody>
         </table>
       </div>

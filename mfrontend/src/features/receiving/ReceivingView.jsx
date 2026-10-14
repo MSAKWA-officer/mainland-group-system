@@ -28,11 +28,19 @@ export default function ReceivingView() {
   const location = useLocation();
   const { can } = useAuth();
   const [err, setErr] = useState('');
+  const [term, setTerm] = useState('');
   const q = useLoad(() => receivingApi.get(id), [id]);
   const d = q.data;
   const showCost = can('items.view_cost');
-  const heads = ['item', 'quantity', 'batch', 'expiry', ...(showCost ? ['unitCost', 'lineTotal'] : []), 'remarks'];
+  // The list already shows Date, Items, Unit, Batch No, Created by and Status. This page adds the rest.
+  const heads = ['item', 'batch', 'expiry', 'quantity', ...(showCost ? ['unitCost', 'lineTotal'] : []), 'remarks'];
   const total = (d?.lines || []).reduce((s, l) => s + Number(l.quantity) * Number(l.unitCost || 0), 0);
+
+  // Search bar: matches the date (date received or expiry date), the batch number, or the item (name or SKU).
+  const needle = term.trim().toLowerCase();
+  const lines = (d?.lines || []).filter((l) => !needle || [d.docDate, l.batch?.expiryDate || l.expiryDate, l.batch?.batchNo || l.batchNo, l.item?.name, l.item?.sku]
+    .some((v) => String(v || '').toLowerCase().includes(needle)));
+
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
       <div className="flex items-center justify-between gap-3 p-6">
@@ -46,6 +54,7 @@ export default function ReceivingView() {
       {d && (
         <div className="border-t border-line px-6 py-4">
           <dl className="max-w-3xl">
+            <Row label={t('view.docNo')}>{d.docNo}</Row>
             <Row label={t('view.date')}>{d.docDate}</Row>
             <Row label={t('view.supplier')}>{d.partyName}</Row>
             <Row label={t('view.reference')}>{d.reference}</Row>
@@ -58,17 +67,21 @@ export default function ReceivingView() {
             <Row label={t('view.posted')}>{d.postedAt && fmt(d.postedAt)}</Row>
           </dl>
           <div className="mt-6">
-            <h2 className="mb-2 text-[14px] font-bold">{t('view.itemsReceived')}</h2>
+            <div className="mb-2 flex flex-wrap items-end justify-between gap-3">
+              <h2 className="text-[14px] font-bold">{t('view.itemsReceived')}</h2>
+              <input className="input max-w-xs !text-[14px] !text-[#212121]" placeholder={t('view.searchLines')} value={term} onChange={(e) => setTerm(e.target.value)} />
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse bg-white">
                 <thead><tr>{heads.map((h, n) => <th key={h} className={`${HEAD} ${al(n)}`}>{t(`lineCols.${h}`)}</th>)}</tr></thead>
                 <tbody>
-                  {(d.lines || []).map((l) => (
+                  {lines.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={heads.length}>{t('view.noMatch')}</td></tr>}
+                  {lines.map((l) => (
                     <tr key={l.id} className="bg-white">
                       <td className={`${CELL} text-left`}><div>{l.item?.name}</div><div className="text-xs">{l.item?.sku}</div></td>
-                      <td className={`${CELL} text-center`}>{qty(l.quantity)} {l.item?.unit}</td>
                       <td className={`${CELL} text-center`}>{l.batch?.batchNo || l.batchNo || '—'}</td>
                       <td className={`${CELL} text-center`}>{l.batch?.expiryDate || l.expiryDate || '—'}</td>
+                      <td className={`${CELL} text-center`}>{qty(l.quantity)} {l.item?.unit}</td>
                       {showCost && <td className={`${CELL} text-center`}>{l.unitCost != null ? money(l.unitCost) : '—'}</td>}
                       {showCost && <td className={`${CELL} text-center`}>{l.unitCost != null ? money(Number(l.quantity) * Number(l.unitCost)) : '—'}</td>}
                       <td className={`${CELL} text-center`}>{l.remarks || '—'}</td>
