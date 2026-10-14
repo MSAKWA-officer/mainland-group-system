@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext.jsx';
 import Card from '../features/dashboard/Card.jsx';
 import SecurityActivity, { SecurityStats } from '../features/dashboard/SecurityActivity.jsx';
 import NotificationsPanel from '../features/dashboard/NotificationsPanel.jsx';
-import ModuleSummary from '../features/dashboard/ModuleSummary.jsx';
+import ModuleSummary, { Tiles } from '../features/dashboard/ModuleSummary.jsx';
 import useLoad from '../utils/useLoad';
 
 // Status strip at the top, like the registration-status box on the SIMS dashboard.
@@ -34,6 +34,10 @@ function Banner({ mon, notes }) {
   );
 }
 
+// The figures people look at first, picked out of the module summaries (only those the user is allowed to see).
+const HEADLINE = ['totalUnits', 'itemsInStock', 'outOfStock', 'lowStock', 'stockValue', 'retailValue', 'cashSalesToday', 'creditSalesToday',
+  'cashSalesMonth', 'creditSalesMonth', 'receivables', 'overdueReceivables', 'bankBalance', 'expensesPending', 'approvalsToDecide'];
+
 export default function DashboardPage() {
   const { t } = useTranslation('dashboard');
   const { user, can } = useAuth();
@@ -42,6 +46,8 @@ export default function DashboardPage() {
   const sum = useLoad(() => dashboardApi.summary(), []);
   const modules = sum.data?.modules || [];
   const nothing = !mon.data && !notes.data && !modules.length;
+  const all = modules.flatMap((mod) => mod.metrics || []);
+  const headline = HEADLINE.flatMap((k) => all.filter((x) => x.key === k));
   return (
     <div>
       <Banner mon={mon.data} notes={notes.data} />
@@ -51,6 +57,10 @@ export default function DashboardPage() {
         {mon.data && <div className="mt-4"><SecurityStats m={mon.data} /></div>}
         {nothing && !mon.loading && !notes.loading && !sum.loading && <p className="mt-4 text-sm text-mn-text">{t('useMenu')}</p>}
       </Card>
+
+      {headline.length > 0 && (
+        <Card title={t('glanceTitle')} className="mb-5"><Tiles metrics={headline} /></Card>
+      )}
 
       {(sum.loading || sum.error || modules.length > 0) && (
         <section aria-labelledby="modules-heading" className="mb-5">

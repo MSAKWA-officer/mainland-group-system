@@ -9,7 +9,8 @@ const customerReports = require('./customerReports');
    - Visibility follows the same rules as the module itself: without `*.read_all` a user only sees their own records.
    - Nothing is stored; every figure is calculated live by the database.
    - A module that fails returns { error: true } so one broken query never blanks the whole dashboard.
-   Metric: { key, value, kind: 'count' | 'money' | 'qty', tone?: 'warn' | 'bad', to?: route, currency? } */
+   Metric: { key, value, kind: 'count' | 'money' | 'qty', tone?: 'warn' | 'bad', to?: route, currency? }
+   List (small table under a module's figures): { key, to?, columns: [{ key, kind?: 'qty' | 'money' | 'date' | 'datetime' | 'text' | 'type' | 'direction' }], rows: [...] } */
 const NONE = '00000000-0000-0000-0000-000000000000';
 const MONTH = "date_trunc('month', CURRENT_DATE)";
 
@@ -50,35 +51,106 @@ async function approvals(req) {
 const STOCK_DOC_PERM = { RECEIVING: 'receiving', ADJUSTMENT: 'adjustments', REJECT_IN: 'reject_in', REJECT_OUT: 'reject_out', EXPIRED: 'expired', DAMAGED: 'damaged' };
 const LEVELS = 'FROM items i LEFT JOIN stock_levels sl ON sl.item_id = i.id WHERE i.is_active';
 
+const qtyText = (v) => String(v ?? 0);
+
 async function inventory(req) {
-  const out = [];
-  await when(req, 'items.read', out, async () => m('activeItems', (await one('SELECT COUNT(*)::int AS c FROM items WHERE is_active')).c, 'count', '/items'));
+  const out = []; const lists = [];
+  // Items: how many exist, how many are sold / tracked
+  await when(req, 'items.read', out, async () => {
+    const r = await one(`SELECT COUNT(*) FILTER (WHERE is_active)::int AS active, COUNT(*) FILTER (WHERE NOT is_active)::int AS inactive,
+        COUNT(*) FILTER (WHERE is_active AND track_expiry)::int AS tracked FROM items`);
+    return [m('activeItems', r.active, 'count', '/items'), m('inactiveItems', r.inactive, 'count', '/items'), m('expiryTrackedItems', r.tracked, 'count', '/items')];
+  });
   await when(req, 'categories.read', out, async () => m('categories', (await one('SELECT COUNT(*)::int AS c FROM categories')).c, 'count', '/categories'));
+
+  // Stock on hand: units, items in / out / low, batches, retail value
   await when(req, 'stock.read', out, async () => {
     const [lvl, exp] = await Promise.all([
-      one(`SELECT COUNT(*) FILTER (WHERE COALESCE(sl.quantity, 0) <= 0)::int AS "out",
-             COUNT(*) FILTER (WHERE COALESCE(sl.quantity, 0) > 0 AND i.reorder_level > 0 AND sl.quantity <= i.reorder_level)::int AS low ${LEVELS}`),
-      one(`SELECT COUNT(*) FILTER (WHERE expiry_date < CURRENT_DATE)::int AS expired,
-             COUNT(*) FILTER (WHERE expiry_date >= CURRENT_DATE AND expiry_date <= CURRENT_DATE + 30)::int AS soon
+      one(`SELECT COALESCE(SUM(COALESCE(sl.quantity, 0)), 0)::text AS units,
+             COUNT(*) FILTER (WHERE COALESCE(sl.quantity, 0) > 0)::int AS "inStock",
+             COUNT(*) FILTER (WHERE COALESCE(sl.quantity, 0) <= 0)::int AS "out",
+             COUNT(*) FILTER (WHERE COALESCE(sl.quantity, 0) > 0 AND i.reorder_level > 0 AND sl.quantity <= i.reorder_level)::int AS low,
+             COALESCE(SUM(COALESCE(sl.quantity, 0) * i.selling_price), 0)::text AS retail ${LEVELS}`),
+      one(`SELECT COUNT(*)::int AS batches, COALESCE(SUM(quantity), 0)::text AS "batchUnits",
+             COUNT(*) FILTER (WHERE expiry_date < CURRENT_DATE)::int AS expired,
+             COALESCE(SUM(quantity) FILTER (WHERE expiry_date < CURRENT_DATE), 0)::text AS "expiredUnits",
+             COUNT(*) FILTER (WHERE expiry_date >= CURRENT_DATE AND expiry_date <= CURRENT_DATE + 30)::int AS soon,
+             COALESCE(SUM(quantity) FILTER (WHERE expiry_date >= CURRENT_DATE AND expiry_date <= CURRENT_DATE + 30), 0)::text AS "soonUnits"
            FROM stock_batches WHERE quantity > 0`),
     ]);
     return [
+      m('totalUnits', qtyText(lvl.units), 'qty', '/stock'),
+      m('itemsInStock', lvl.inStock, 'count', '/stock'),
       m('outOfStock', lvl.out, 'count', '/stock', { tone: tone(lvl.out, 'bad') }),
       m('lowStock', lvl.low, 'count', '/stock', { tone: tone(lvl.low, 'warn') }),
+      m('retailValue', lvl.retail, 'money', '/stock'),
+      m('batchesOnHand', exp.batches, 'count', '/stock'),
+      m('batchUnits', qtyText(exp.batchUnits), 'qty', '/stock'),
       m('expiringSoon', exp.soon, 'count', '/stock', { tone: tone(exp.soon, 'warn') }),
+      m('expiringSoonUnits', qtyText(exp.soonUnits), 'qty', '/stock', { tone: tone(exp.soon, 'warn') }),
       m('expiredOnHand', exp.expired, 'count', '/stock', { tone: tone(exp.expired, 'bad') }),
+      m('expiredUnits', qtyText(exp.expiredUnits), 'qty', '/stock', { tone: tone(exp.expired, 'bad') }),
     ];
   });
   await when(req, 'stock_reports.valuation', out, async () => m('stockValue', (await one(
     'SELECT COALESCE(SUM(COALESCE(sl.quantity, 0) * i.cost_price), 0)::text AS v ' + LEVELS)).v, 'money', '/reports'));
+
+  // Stock movements: units in / out
+  await when(req, 'movements.read', out, async () => {
+    const r = await one(`SELECT COUNT(*) FILTER (WHERE occurred_at::date = CURRENT_DATE)::int AS today,
+        COALESCE(SUM(quantity) FILTER (WHERE direction = 'IN' AND occurred_at::date = CURRENT_DATE), 0)::text AS "inToday",
+        COALESCE(SUM(quantity) FILTER (WHERE direction = 'OUT' AND occurred_at::date = CURRENT_DATE), 0)::text AS "outToday",
+        COALESCE(SUM(quantity) FILTER (WHERE direction = 'IN' AND occurred_at >= ${MONTH}), 0)::text AS "inMonth",
+        COALESCE(SUM(quantity) FILTER (WHERE direction = 'OUT' AND occurred_at >= ${MONTH}), 0)::text AS "outMonth"
+      FROM stock_movements`);
+    return [m('movementsToday', r.today, 'count', '/movements'), m('unitsInToday', qtyText(r.inToday), 'qty', '/movements'),
+      m('unitsOutToday', qtyText(r.outToday), 'qty', '/movements'), m('unitsInMonth', qtyText(r.inMonth), 'qty', '/movements'),
+      m('unitsOutMonth', qtyText(r.outMonth), 'qty', '/movements')];
+  });
+
+  // Documents per type (this month) + anything still waiting from before approval was removed
   const types = Object.entries(STOCK_DOC_PERM).filter(([, p]) => can(req, `${p}.read`)).map(([t]) => t);
   if (types.length) {
-    const r = await one("SELECT COUNT(*)::int AS c FROM stock_documents WHERE status = 'SUBMITTED' AND type IN (:types)", { types });
-    out.push(m('pendingStockDocs', r.c, 'count', can(req, 'approvals.read') ? '/approvals' : undefined, { tone: tone(r.c, 'warn') }));
+    const r = await one(`SELECT COUNT(*) FILTER (WHERE status = 'SUBMITTED')::int AS pending,
+        COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'RECEIVING' AND posted_at >= ${MONTH})::int AS rec,
+        COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'ADJUSTMENT' AND posted_at >= ${MONTH})::int AS adj,
+        COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'REJECT_IN' AND posted_at >= ${MONTH})::int AS rin,
+        COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'REJECT_OUT' AND posted_at >= ${MONTH})::int AS rout,
+        COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'EXPIRED' AND posted_at >= ${MONTH})::int AS exp,
+        COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'DAMAGED' AND posted_at >= ${MONTH})::int AS dmg
+      FROM stock_documents WHERE type IN (:types)`, { types });
+    const route = { RECEIVING: '/receiving', ADJUSTMENT: '/adjustments', REJECT_IN: '/reject-in', REJECT_OUT: '/reject-out', EXPIRED: '/expired', DAMAGED: '/damaged' };
+    const cnt = { RECEIVING: r.rec, ADJUSTMENT: r.adj, REJECT_IN: r.rin, REJECT_OUT: r.rout, EXPIRED: r.exp, DAMAGED: r.dmg };
+    const keys = { RECEIVING: 'receivingsMonth', ADJUSTMENT: 'adjustmentsMonth', REJECT_IN: 'rejectInMonth', REJECT_OUT: 'rejectOutMonth', EXPIRED: 'expiredMonth', DAMAGED: 'damagedMonth' };
+    for (const t of types) out.push(m(keys[t], cnt[t], 'count', route[t]));
+    if (r.pending > 0) out.push(m('pendingStockDocs', r.pending, 'count', can(req, 'approvals.read') ? '/approvals' : undefined, { tone: 'warn' }));
   }
-  await when(req, 'movements.read', out, async () => m('movementsToday', (await one(
-    'SELECT COUNT(*)::int AS c FROM stock_movements WHERE occurred_at::date = CURRENT_DATE')).c, 'count', '/movements'));
-  return out;
+
+  /* ---- lists ---- */
+  if (can(req, 'stock.read')) {
+    const [attention, expiring, byCategory] = await Promise.all([
+      q(`SELECT i.id, i.sku, i.name, i.unit, COALESCE(sl.quantity, 0)::text AS quantity, i.reorder_level::text AS "reorderLevel"
+         ${LEVELS} AND (COALESCE(sl.quantity, 0) <= 0 OR (i.reorder_level > 0 AND sl.quantity <= i.reorder_level))
+         ORDER BY COALESCE(sl.quantity, 0) ASC, i.name ASC LIMIT 8`),
+      q(`SELECT b.id, i.sku, i.name, b.batch_no AS "batchNo", to_char(b.expiry_date, 'YYYY-MM-DD') AS "expiryDate", b.quantity::text AS quantity, i.unit
+         FROM stock_batches b JOIN items i ON i.id = b.item_id
+         WHERE b.quantity > 0 AND b.expiry_date <= CURRENT_DATE + 30 ORDER BY b.expiry_date ASC, i.name ASC LIMIT 8`),
+      q(`SELECT c.id, c.name AS category, COUNT(i.id)::int AS items, COALESCE(SUM(sl.quantity), 0)::text AS units
+         FROM categories c LEFT JOIN items i ON i.category_id = c.id AND i.is_active LEFT JOIN stock_levels sl ON sl.item_id = i.id
+         GROUP BY c.id, c.name ORDER BY COALESCE(SUM(sl.quantity), 0) DESC, c.name ASC LIMIT 12`),
+    ]);
+    lists.push({ key: 'needAttention', to: '/stock', rows: attention, columns: [{ key: 'sku' }, { key: 'name' }, { key: 'quantity', kind: 'qty' }, { key: 'reorderLevel', kind: 'qty' }, { key: 'unit' }] });
+    lists.push({ key: 'expiringBatches', to: '/stock', rows: expiring, columns: [{ key: 'name' }, { key: 'batchNo' }, { key: 'expiryDate', kind: 'date' }, { key: 'quantity', kind: 'qty' }, { key: 'unit' }] });
+    lists.push({ key: 'stockByCategory', to: '/stock', rows: byCategory, columns: [{ key: 'category' }, { key: 'items', kind: 'qty' }, { key: 'units', kind: 'qty' }] });
+  }
+  if (can(req, 'movements.read')) {
+    const rows = await q(`SELECT m.id::text AS id, m.occurred_at AS "occurredAt", i.name, m.movement_type AS "movementType", m.direction,
+        m.quantity::text AS quantity, m.balance_after::text AS "balanceAfter"
+      FROM stock_movements m JOIN items i ON i.id = m.item_id ORDER BY m.id DESC LIMIT 8`);
+    lists.push({ key: 'recentMovements', to: '/movements', rows, columns: [{ key: 'occurredAt', kind: 'datetime' }, { key: 'name' }, { key: 'movementType', kind: 'type' },
+      { key: 'direction', kind: 'direction' }, { key: 'quantity', kind: 'qty' }, { key: 'balanceAfter', kind: 'qty' }] });
+  }
+  return { metrics: out, lists };
 }
 
 /* ---------- 2. Sales & Customers ---------- */
@@ -89,7 +161,8 @@ async function sales(req) {
 
   await when(req, 'customers.read', out, async () => {
     const o = own('customers.read_all', 'c');
-    return m('activeCustomers', (await one(`SELECT COUNT(*)::int AS c FROM customers c WHERE c.is_active${o.sql}`, o.rep)).c, 'count', '/customers');
+    const r = await one(`SELECT COUNT(*) FILTER (WHERE c.is_active)::int AS active, COUNT(*) FILTER (WHERE NOT c.is_active)::int AS inactive FROM customers c WHERE 1 = 1${o.sql}`, o.rep);
+    return [m('activeCustomers', r.active, 'count', '/customers'), m('inactiveCustomers', r.inactive, 'count', '/customers')];
   });
   await when(req, 'salespersons.read', out, async () => m('activeSalespersons', (await one(
     'SELECT COUNT(*)::int AS c FROM salespersons WHERE is_active')).c, 'count', '/salespersons'));
@@ -117,7 +190,9 @@ async function sales(req) {
       const o = own(`${perm}.read_all`, 's');
       const r = await one(`SELECT COALESCE(SUM(total), 0)::text AS total, COUNT(*)::int AS c FROM sales s
         WHERE s.sale_type = :type AND s.status = 'COMPLETED' AND s.sale_date >= ${MONTH}${o.sql}`, { type, ...o.rep });
-      return [m(key, r.total, 'money', to), m(`${key}Count`, r.c, 'count', to)];
+      const d = await one(`SELECT COALESCE(SUM(total), 0)::text AS total FROM sales s
+        WHERE s.sale_type = :type AND s.status = 'COMPLETED' AND s.sale_date = CURRENT_DATE${o.sql}`, { type, ...o.rep });
+      return [m(key.replace('Month', 'Today'), d.total, 'money', to), m(key, r.total, 'money', to), m(`${key}Count`, r.c, 'count', to)];
     });
   }
   await when(req, 'customer_balances.read', out, async () => {
@@ -249,10 +324,10 @@ const MODULES = [['approvals', approvals], ['inventory', inventory], ['sales', s
 
 async function summary(req, only) {
   const results = await Promise.all(MODULES.filter(([key]) => !only || key === only).map(async ([key, fn]) => {
-    try { return { key, metrics: await fn(req) }; } catch (e) { console.error(`dashboard summary: ${key} failed:`, e.message); return { key, error: true, metrics: [] }; }
+    try { const r = await fn(req); return Array.isArray(r) ? { key, metrics: r, lists: [] } : { key, metrics: r.metrics, lists: r.lists || [] }; } catch (e) { console.error(`dashboard summary: ${key} failed:`, e.message); return { key, error: true, metrics: [], lists: [] }; }
   }));
   // A module the user can see nothing of is left out entirely (same idea as the hidden menu groups).
-  return { generatedAt: new Date().toISOString(), modules: results.filter((r) => r.error || r.metrics.length) };
+  return { generatedAt: new Date().toISOString(), modules: results.filter((r) => r.error || r.metrics.length || r.lists.length) };
 }
 
 module.exports = { summary };
