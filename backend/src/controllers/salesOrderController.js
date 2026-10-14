@@ -1,5 +1,5 @@
 const { Op, literal } = require('sequelize');
-const { SalesOrder, SalesOrderLine, Customer, Salesperson, User, ApprovalRequest, StockDocument } = require('../models');
+const { SalesOrder, SalesOrderLine, Customer, Salesperson, User, ApprovalRequest, StockDocument, Sale } = require('../models');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
 const svc = require('../services/salesOrders');
@@ -11,12 +11,14 @@ const salesperson = { model: Salesperson, as: 'salesperson', attributes: ['id', 
 const creator = { model: User, as: 'creator', attributes: ['id', 'username', 'fullName'] };
 const approval = { model: ApprovalRequest, as: 'approval', attributes: ['id', 'status', 'decidedBy', 'decidedAt', 'decisionNote'] };
 const stockDoc = { model: StockDocument, as: 'stockDocument', attributes: ['id', 'docNo', 'status', 'postedAt'] };
+// The cash / credit sale created automatically when the order was approved (null until then).
+const sale = { model: Sale, as: 'sale', required: false, attributes: ['id', 'saleNo', 'saleType', 'status', 'paymentStatus'] };
 const lineCount = literal('(SELECT CAST(COUNT(*) AS int) FROM sales_order_lines l WHERE l.order_id = "SalesOrder"."id")');
 const startOf = (d) => d; // dates are plain YYYY-MM-DD (DATEONLY)
 
 // A user without sales_orders.read_all can only touch orders of their own salesperson profile.
 const fetch = async (req, id) => {
-  const o = await SalesOrder.findByPk(id, { include: [customer, salesperson, creator, approval, stockDoc,
+  const o = await SalesOrder.findByPk(id, { include: [customer, salesperson, creator, approval, stockDoc, sale,
     { model: SalesOrderLine, as: 'lines' }], order: [[{ model: SalesOrderLine, as: 'lines' }, 'itemName', 'ASC']] });
   if (!o || !(await canSee(req, 'sales_orders.read_all', o.salespersonId))) throw new AppError(404, 'NOT_FOUND', 'Sales order not found');
   return o;
@@ -28,7 +30,8 @@ const waiting = async (req, id) => {
 };
 
 exports.list = async (req, res) => {
-  const { status, customerId, salespersonId, createdBy, search, from, to, page, limit } = req.query; let where = {};
+  const { saleType, status, customerId, salespersonId, createdBy, search, from, to, page, limit } = req.query; let where = {};
+  if (saleType) where.saleType = saleType;
   if (status) where.status = status;
   if (customerId) where.customerId = customerId;
   if (salespersonId) where.salespersonId = salespersonId;
@@ -36,7 +39,7 @@ exports.list = async (req, res) => {
   if (from || to) where.orderDate = { ...(from && { [Op.gte]: startOf(from) }), ...(to && { [Op.lte]: startOf(to) }) };
   if (search) where[Op.or] = [{ orderNo: { [Op.iLike]: like(search) } }, { '$customer.name$': { [Op.iLike]: like(search) } }];
   where = await scope(req, 'sales_orders.read_all', where);
-  const { rows, count } = await SalesOrder.findAndCountAll({ where, include: [{ ...customer, required: true }, salesperson], attributes: { include: [[lineCount, 'lineCount']] },
+  const { rows, count } = await SalesOrder.findAndCountAll({ where, include: [{ ...customer, required: true }, salesperson, sale], attributes: { include: [[lineCount, 'lineCount']] },
     order: [['createdAt', 'DESC']], limit, offset: (page - 1) * limit, subQuery: false });
   res.json({ data: rows, total: count, page, limit });
 };

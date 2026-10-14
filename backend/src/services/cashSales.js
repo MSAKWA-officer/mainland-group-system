@@ -42,6 +42,7 @@ const void_ = (req, id, reason) => sequelize.transaction(async (t) => {
   const sale = await Sale.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
   if (!sale || sale.saleType !== 'CASH') throw new AppError(404, 'NOT_FOUND', 'Cash sale not found');
   if (sale.status !== 'COMPLETED') throw new AppError(409, 'BAD_STATE', `Cannot void a sale that is ${sale.status}`);
+  if (sale.salesOrderId) throw new AppError(409, 'FROM_ORDER', 'This sale was created from a sales order. Cancel the sales order instead; it will void this sale and return the stock.');
   if (!reason || reason.trim().length < 3) throw bad('reason', 'A reason is required to void a sale');
   const old = snap(sale);
   const doc = await core.restock(t, req, sale, reason);

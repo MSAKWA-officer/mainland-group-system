@@ -186,6 +186,7 @@ const voidPayment = (req, id, paymentId, reason) => sequelize.transaction(async 
 const voidSale = (req, id, reason) => sequelize.transaction(async (t) => {
   const s = await load(id, t);
   if (s.status !== 'COMPLETED') throw new AppError(409, 'BAD_STATE', `Cannot void a sale that is ${s.status}`);
+  if (s.salesOrderId) throw new AppError(409, 'FROM_ORDER', 'This sale was created from a sales order. Cancel the sales order instead; it will void this sale and return the stock.');
   if (!reason || reason.trim().length < 3) throw bad('reason', 'A reason is required to void a sale');
   if (cents(s.amountPaid) > 0n) throw new AppError(409, 'HAS_PAYMENTS', 'This sale has payments. Void the payments first, then void the sale.');
   const old = snap(s);
@@ -226,4 +227,5 @@ const closeSale = (status, action) => async (r, ctx) => {
 approvals.register(TYPE, { label: 'Credit sale', approvePermission: 'credit_sales.approve',
   execute: completeSale, onReject: closeSale('REJECTED', 'CREDIT_SALE_REJECTED'), onCancel: closeSale('CANCELLED', 'CREDIT_SALE_CANCELLED') });
 
-module.exports = { create, update, submit, cancel, remove, receivePayment, voidPayment, void: voidSale, position: async (c) => publicPosition(await position(c)) };
+module.exports = { create, update, submit, cancel, remove, receivePayment, voidPayment, void: voidSale, position: async (c) => publicPosition(await position(c)),
+  internal: { position, exceeds } };   // used by services/salesOrders.js when an approved credit order becomes a credit sale

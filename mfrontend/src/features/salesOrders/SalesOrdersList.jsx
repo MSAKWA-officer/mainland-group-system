@@ -33,6 +33,22 @@ export const Status = ({ status }) => {
   return <span className="inline-flex items-center gap-2 text-black"><span className={`h-2 w-2 rounded-full ${dot}`} />{label}</span>;
 };
 
+// Cash / Credit badge (text stays black, only the dot is coloured).
+export const SaleType = ({ type }) => {
+  const { t } = useTranslation('salesOrders');
+  if (!type) return '—';
+  return <span className="inline-flex items-center gap-2 text-black"><span className={`h-2 w-2 rounded-full ${type === 'CASH' ? 'bg-emerald-600' : 'bg-indigo-500'}`} />{t(`saleType.${type}`)}</span>;
+};
+// Link to the sale that was created automatically when the order was approved.
+export function SaleLink({ order }) {
+  const { can } = useAuth();
+  const s = order.sale;
+  if (!s) return '—';
+  const base = s.saleType === 'CASH' ? 'cash-sales' : 'credit-sales';
+  return can(`${s.saleType === 'CASH' ? 'cash_sales' : 'credit_sales'}.read`)
+    ? <Link to={`/${base}/${s.id}`} className="text-black underline">{s.saleNo}</Link> : s.saleNo;
+}
+
 const IconBtn = ({ label, onClick, tone, children }) => (
   <button type="button" onClick={onClick} title={label} aria-label={label}
     className={`inline-flex h-8 w-8 items-center justify-center rounded-md border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/50 ${tone}`}>
@@ -48,13 +64,13 @@ const TONES = {
 
 // Icon-only actions. Used by this list and by SalesOrdersView.
 // Shown by status, ownership and permission (the API enforces the same rules).
-export function RowActions({ r, showView, onChanged, onError, afterDelete }) {
+export function RowActions({ r, showView, onChanged, onError, onNotice, afterDelete }) {
   const { t } = useTranslation('salesOrders');
   const { user, can } = useAuth();
   const navigate = useNavigate();
   const mine = r.createdBy === user.id;
   const approver = can('sales_orders.approve');
-  const run = async (fn, done) => { onError(''); try { await fn(); (done || onChanged)?.(); } catch (x) { onError(errMsg(x)); } };
+  const run = async (fn, done) => { onError(''); onNotice?.(''); try { await fn(); (done || onChanged)?.(); } catch (x) { onError(errMsg(x)); } };
   const p = { orderNo: r.orderNo };
 
   const submit = () => run(() => salesOrderApi.submit(r.id));
@@ -66,7 +82,13 @@ export function RowActions({ r, showView, onChanged, onError, afterDelete }) {
     } else if (!window.confirm(t('actions.cancelConfirm', p))) return;
     run(() => salesOrderApi.cancel(r.id, reason?.trim()));
   };
-  const approve = () => { if (window.confirm(t('actions.approveConfirm', p))) run(() => salesOrderApi.approve(r.id)); };
+  const approve = () => {
+    if (!window.confirm(t(`actions.approveConfirm${r.saleType === 'CREDIT' ? 'Credit' : 'Cash'}`, p))) return;
+    run(async () => {
+      const o = await salesOrderApi.approve(r.id);                           // the API creates the cash / credit sale in the same step
+      onNotice?.(o.sale ? t('actions.approvedWithSale', { orderNo: o.orderNo, saleNo: o.sale.saleNo, type: t(`saleType.${o.sale.saleType}`) }) : t('actions.approved', p));
+    });
+  };
   const reject = () => { const note = window.prompt(t('actions.rejectPrompt', p)); if (note && note.trim()) run(() => salesOrderApi.reject(r.id, note.trim())); };
   const remove = () => { if (window.confirm(t('actions.deleteConfirm', p))) run(() => salesOrderApi.remove(r.id), afterDelete); };
 
@@ -92,7 +114,7 @@ export function RowActions({ r, showView, onChanged, onError, afterDelete }) {
 const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
 const HEAD = `${CELL} bg-white font-semibold uppercase`;
 const al = (i) => (i === 0 ? 'text-left' : 'text-center');
-const COLS = ['orderNo', 'date', 'customer', 'salesperson', 'items', 'total', 'status', 'actions'];
+const COLS = ['orderNo', 'date', 'customer', 'saleType', 'salesperson', 'items', 'total', 'status', 'sale', 'actions'];
 
 export default function SalesOrdersList() {
   const { t } = useTranslation('salesOrders');
@@ -102,11 +124,12 @@ export default function SalesOrdersList() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [q, setQ] = useState('');                       // debounced search term
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(''); const [saleType, setSaleType] = useState('');
+  const [ok, setOk] = useState('');
   const [from, setFrom] = useState(''); const [to, setTo] = useState('');
   const [err, setErr] = useState('');
   useEffect(() => { const t = setTimeout(() => { setQ(search.trim()); setPage(1); }, 300); return () => clearTimeout(t); }, [search]);
-  const list = useLoad(() => salesOrderApi.list({ page, limit: 25, ...(q && { search: q }), ...(status && { status }), ...(from && { from }), ...(to && { to }) }), [page, q, status, from, to]);
+  const list = useLoad(() => salesOrderApi.list({ page, limit: 25, ...(q && { search: q }), ...(saleType && { saleType }), ...(status && { status }), ...(from && { from }), ...(to && { to }) }), [page, q, saleType, status, from, to]);
   const rows = list.data?.data || [];
   const total = list.data?.total || 0; const limit = list.data?.limit || 25;
   const reset = (set) => (e) => { set(e.target.value); setPage(1); };
@@ -121,30 +144,35 @@ export default function SalesOrdersList() {
       </div>
       <div className="flex flex-wrap items-center gap-3 px-4 pb-4">
         <input className="input max-w-xs !text-[14px] !text-[#212121]" placeholder={t('search')} aria-label={t('searchAria')} value={search} maxLength={80} onChange={(e) => setSearch(e.target.value)} />
+        <select className="input max-w-[12rem] !text-[14px] !text-[#212121]" aria-label={t('filterTypeAria')} value={saleType} onChange={reset(setSaleType)}>
+          <option value="">{t('allTypes')}</option><option value="CASH">{t('saleType.CASH')}</option><option value="CREDIT">{t('saleType.CREDIT')}</option>
+        </select>
         <select className="input max-w-[14rem] !text-[14px] !text-[#212121]" aria-label={t('filterStatusAria')} value={status} onChange={reset(setStatus)}>
           <option value="">{t('allStatuses')}</option>{Object.keys(STATUS).map((k) => <option key={k} value={k}>{t(`status.${k}`)}</option>)}
         </select>
         <label className="flex items-center gap-2 text-[14px]">{t('from')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={from} max={to || undefined} onChange={reset(setFrom)} /></label>
         <label className="flex items-center gap-2 text-[14px]">{t('to')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={to} min={from || undefined} onChange={reset(setTo)} /></label>
       </div>
-      {(err || list.error || location.state?.msg) && (
-        <div className={`px-4 ${NOTICE}`}><Banner>{err || list.error}</Banner><Banner kind="ok">{location.state?.msg}</Banner></div>
+      {(err || list.error || ok || location.state?.msg) && (
+        <div className={`px-4 ${NOTICE}`}><Banner>{err || list.error}</Banner><Banner kind="ok">{ok || location.state?.msg}</Banner></div>
       )}
       <div className="overflow-x-auto px-4">
         <table className="w-full border-collapse bg-white">
           <thead><tr>{COLS.map((k, i) => <th key={k} className={`${HEAD} ${al(i)}`}>{t(`columns.${k}`)}</th>)}</tr></thead>
           <tbody>
-            {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={COLS.length}>{q || status || from || to ? t('emptyFiltered') : t('emptyNone')}</td></tr>}
+            {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={COLS.length}>{q || status || saleType || from || to ? t('emptyFiltered') : t('emptyNone')}</td></tr>}
             {rows.map((r) => (
               <tr key={r.id} className="bg-white">
                 <td className={`${CELL} whitespace-nowrap text-left`}>{r.orderNo}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{day(r.orderDate)}</td>
                 <td className={`${CELL} text-center`}>{r.customer?.name}<div className="text-xs">{r.customer?.code}</div></td>
+                <td className={`${CELL} whitespace-nowrap text-center`}><SaleType type={r.saleType} /></td>
                 <td className={`${CELL} text-center`}>{r.salesperson?.fullName || '—'}</td>
                 <td className={`${CELL} text-center`}>{r.lineCount}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{money(r.total)}</td>
                 <td className={`${CELL} text-center`}><Status status={r.status} /></td>
-                <td className={`${CELL} text-center`}><div className="flex justify-center"><RowActions r={r} showView onChanged={list.reload} onError={setErr} /></div></td>
+                <td className={`${CELL} whitespace-nowrap text-center`}><SaleLink order={r} /></td>
+                <td className={`${CELL} text-center`}><div className="flex justify-center"><RowActions r={r} showView onChanged={list.reload} onError={(m) => { setErr(m); if (m) setOk(''); }} onNotice={(m) => { setOk(m); setErr(''); }} /></div></td>
               </tr>
             ))}
           </tbody>

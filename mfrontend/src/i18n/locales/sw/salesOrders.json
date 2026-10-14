@@ -17,10 +17,12 @@
     "items": "Bidhaa",
     "total": "Jumla",
     "status": "Hali",
-    "actions": "Vitendo"
+    "actions": "Vitendo",
+    "saleType": "Aina",
+    "sale": "Mauzo"
   },
   "emptyFiltered": "Hakuna oda zinazolingana na vichujio vyako.",
-  "emptyNone": "Hakuna oda za mauzo bado. Tumia “Oda Mpya” kuunda rasimu, kisha iwasilishe.",
+  "emptyNone": "Hakuna oda za mauzo bado. Tumia “Oda Mpya”, chagua Cash au Credit, kisha iwasilishe.",
   "status": {
     "DRAFT": "Rasimu",
     "SUBMITTED": "Inasubiri idhini",
@@ -36,19 +38,26 @@
     "approve": "Idhinisha",
     "reject": "Kataa",
     "delete": "Futa",
-    "cancelConfirmedPrompt": "Sababu ya kughairi {{orderNo}}? Bidhaa zitarudishwa stoo.",
+    "cancelConfirmedPrompt": "Sababu ya kughairi {{orderNo}}? Bidhaa zitarudishwa stoo na mauzo yake ya cash/credit yatabatilishwa.",
     "cancelConfirm": "Ghairi {{orderNo}}?",
     "approveConfirm": "Idhinisha {{orderNo}}? Bidhaa zitatolewa stoo kwa kila mstari.",
     "rejectPrompt": "Sababu ya kukataa {{orderNo}}:",
     "deleteConfirm": "Futa {{orderNo}} kabisa? Kitendo hiki hakiwezi kutenduliwa.",
-    "deleted": "Oda imefutwa."
+    "deleted": "Oda imefutwa.",
+    "approveConfirmCash": "Idhinisha {{orderNo}}? Bidhaa zitatolewa stoo na Mauzo ya Cash yataundwa kiotomatiki.",
+    "approveConfirmCredit": "Idhinisha {{orderNo}}? Bidhaa zitatolewa stoo na Mauzo ya Credit (deni) yataundwa kiotomatiki.",
+    "approved": "{{orderNo}} imeidhinishwa.",
+    "approvedWithSale": "{{orderNo}} imeidhinishwa. {{type}} {{saleNo}} imeundwa na sasa inaonekana kwenye ukurasa wa Sales na ukurasa wake."
   },
   "create": {
     "title": "Oda mpya ya mauzo",
-    "subtitle": "Hakuna kinachotumwa kwa idhini wala bidhaa kutolewa hadi uwasilishe rasimu na iidhinishwe.",
+    "subtitle": "Chagua Cash au Credit. Hakuna kinachosogezwa hadi oda iwasilishwe na kuidhinishwa; kisha mauzo yanaundwa kiotomatiki.",
     "back": "Rudi kwenye orodha",
     "save": "Hifadhi kama rasimu",
-    "saved": "Rasimu imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari."
+    "saved": "Rasimu imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari.",
+    "saveSubmit": "Hifadhi na uwasilishe kwa idhini",
+    "savedSubmitted": "Oda imehifadhiwa na kuwasilishwa kwa idhini.",
+    "savedSubmitFailed": "Rasimu imehifadhiwa, lakini haikuweza kuwasilishwa: {{error}}"
   },
   "edit": {
     "title": "Hariri oda ya mauzo",
@@ -56,7 +65,10 @@
     "back": "Rudi",
     "locked": "Oda hii {{status}} au ni ya mtu mwingine, kwa hiyo haiwezi tena kuhaririwa hapa.",
     "save": "Hifadhi mabadiliko",
-    "updated": "Rasimu imesasishwa."
+    "updated": "Rasimu imesasishwa.",
+    "saveSubmit": "Hifadhi na uwasilishe kwa idhini",
+    "updatedSubmitted": "Oda imesasishwa na kuwasilishwa kwa idhini.",
+    "updatedSubmitFailed": "Rasimu imesasishwa, lakini haikuweza kuwasilishwa: {{error}}"
   },
   "view": {
     "fallbackTitle": "Oda ya mauzo",
@@ -78,7 +90,19 @@
     "stockDocument": "Hati ya stoo",
     "cancelled": "Imeghairiwa",
     "cancelReason": "Sababu ya kughairi",
-    "items": "Bidhaa"
+    "items": "Bidhaa",
+    "saleType": "Aina ya mauzo",
+    "paymentMethod": "Njia ya malipo",
+    "paymentReference": "Kumbukumbu ya malipo",
+    "dueDate": "Tarehe ya mwisho ya malipo",
+    "sale": "Mauzo yaliyoundwa",
+    "saleNotYet": "Huundwa kiotomatiki oda inapoidhinishwa",
+    "saleStatus": {
+      "COMPLETED": "Yamekamilika",
+      "VOIDED": "Yamebatilishwa"
+    },
+    "willCreateCash": "Oda hii ikiidhinishwa itakuwa Mauzo ya Cash kiotomatiki (ukurasa wa Sales + Cash sales).",
+    "willCreateCredit": "Oda hii ikiidhinishwa itakuwa Mauzo ya Credit kiotomatiki (ukurasa wa Sales + Credit sales)."
   },
   "lines": {
     "sku": "SKU",
@@ -120,13 +144,35 @@
     "change": "Badilisha",
     "changeAria": "Badilisha {{label}}",
     "searching": "Inatafuta…",
-    "noResults": "Hakuna matokeo"
+    "noResults": "Hakuna matokeo",
+    "saleType": "Aina ya mauzo",
+    "cash": "Mauzo ya Cash",
+    "cashHelp": "Mteja analipa yote sasa. Inaonekana kwenye ukurasa wa Cash sales baada ya idhini.",
+    "credit": "Mauzo ya Credit",
+    "creditHelp": "Mteja analipa baadaye. Inaonekana kwenye ukurasa wa Credit sales baada ya idhini.",
+    "paymentMethod": "Njia ya malipo",
+    "paymentReference": "Kumbukumbu ya malipo (si lazima)",
+    "dueDate": "Tarehe ya mwisho ya malipo (si lazima)",
+    "dueAuto_one": "Acha wazi kutumia masharti ya malipo ya mteja (siku {{count}} tangu tarehe ya oda).",
+    "dueAuto_other": "Acha wazi kutumia masharti ya malipo ya mteja (siku {{count}} tangu tarehe ya oda).",
+    "dueAutoNoCustomer": "Acha wazi kutumia masharti ya malipo ya mteja.",
+    "flowCASH": "Baada ya idhini: bidhaa zinatolewa na Mauzo ya Cash yaliyolipwa yanaundwa. Kisha yanaonekana kwenye Sales na Cash sales.",
+    "flowCREDIT": "Baada ya idhini: bidhaa zinatolewa na Mauzo ya Credit yasiyolipwa yanaundwa (kikomo cha mkopo kinakaguliwa). Kisha yanaonekana kwenye Sales na Credit sales."
   },
   "problems": {
     "chooseCustomer": "Chagua mteja.",
     "lineNeedsItem": "Kila mstari unahitaji bidhaa. Ondoa mistari tupu.",
     "qtyPositive": "Kila kiasi lazima kiwe zaidi ya 0.",
     "itemTwice": "Bidhaa imeonekana mara mbili. Iunganishe kuwa mstari mmoja.",
-    "deliveryBeforeOrder": "Tarehe ya kuwasilisha haiwezi kuwa kabla ya tarehe ya oda."
+    "deliveryBeforeOrder": "Tarehe ya kuwasilisha haiwezi kuwa kabla ya tarehe ya oda.",
+    "chooseSaleType": "Chagua Mauzo ya Cash au ya Credit.",
+    "dueBeforeOrder": "Tarehe ya mwisho ya malipo haiwezi kuwa kabla ya tarehe ya oda.",
+    "totalPositive": "Jumla ya oda lazima iwe kubwa kuliko sifuri."
+  },
+  "allTypes": "Aina zote",
+  "filterTypeAria": "Chuja kwa aina ya mauzo",
+  "saleType": {
+    "CASH": "Mauzo ya fedha taslimu",
+    "CREDIT": "Mauzo ya mkopo"
   }
 }

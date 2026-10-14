@@ -17,10 +17,12 @@
     "items": "商品数",
     "total": "合计",
     "status": "状态",
-    "actions": "操作"
+    "actions": "操作",
+    "saleType": "类型",
+    "sale": "销售单"
   },
   "emptyFiltered": "没有符合筛选条件的订单。",
-  "emptyNone": "暂无销售订单。点击“新建订单”创建草稿，然后提交。",
+  "emptyNone": "暂无销售订单。点击“新建订单”，选择现金或赊销，然后提交。",
   "status": {
     "DRAFT": "草稿",
     "SUBMITTED": "等待审批",
@@ -36,19 +38,26 @@
     "approve": "批准",
     "reject": "拒绝",
     "delete": "删除",
-    "cancelConfirmedPrompt": "取消 {{orderNo}} 的原因？库存将被退回。",
+    "cancelConfirmedPrompt": "取消 {{orderNo}} 的原因？库存将退回，对应的现金/赊销单将作废。",
     "cancelConfirm": "取消 {{orderNo}}？",
     "approveConfirm": "批准 {{orderNo}}？每一行商品都将出库。",
     "rejectPrompt": "拒绝 {{orderNo}} 的原因：",
     "deleteConfirm": "永久删除 {{orderNo}}？此操作无法撤销。",
-    "deleted": "订单已删除。"
+    "deleted": "订单已删除。",
+    "approveConfirmCash": "批准 {{orderNo}}？将出库并自动生成现金销售单。",
+    "approveConfirmCredit": "批准 {{orderNo}}？将出库并自动生成赊销单（应收款）。",
+    "approved": "{{orderNo}} 已批准。",
+    "approvedWithSale": "{{orderNo}} 已批准。已生成{{type}} {{saleNo}}，现已显示在销售页面及对应页面。"
   },
   "create": {
     "title": "新建销售订单",
-    "subtitle": "在您提交草稿并获得批准之前，不会发送审批，也不会变动库存。",
+    "subtitle": "请选择现金或赊销。订单提交并批准前不会有任何变动；批准后将自动生成销售单。",
     "back": "返回列表",
     "save": "保存为草稿",
-    "saved": "草稿已保存。准备好后请提交审批。"
+    "saved": "草稿已保存。准备好后请提交审批。",
+    "saveSubmit": "保存并提交审批",
+    "savedSubmitted": "订单已保存并提交审批。",
+    "savedSubmitFailed": "草稿已保存，但提交失败：{{error}}"
   },
   "edit": {
     "title": "编辑销售订单",
@@ -56,7 +65,10 @@
     "back": "返回",
     "locked": "此订单{{status}}或属于他人，因此无法在此编辑。",
     "save": "保存更改",
-    "updated": "草稿已更新。"
+    "updated": "草稿已更新。",
+    "saveSubmit": "保存并提交审批",
+    "updatedSubmitted": "订单已更新并提交审批。",
+    "updatedSubmitFailed": "草稿已更新，但提交失败：{{error}}"
   },
   "view": {
     "fallbackTitle": "销售订单",
@@ -78,7 +90,19 @@
     "stockDocument": "出库单",
     "cancelled": "取消时间",
     "cancelReason": "取消原因",
-    "items": "商品"
+    "items": "商品",
+    "saleType": "销售类型",
+    "paymentMethod": "付款方式",
+    "paymentReference": "付款参考号",
+    "dueDate": "到期日",
+    "sale": "生成的销售单",
+    "saleNotYet": "订单批准后自动生成",
+    "saleStatus": {
+      "COMPLETED": "已完成",
+      "VOIDED": "已作废"
+    },
+    "willCreateCash": "此订单批准后将自动成为现金销售单（销售页面 + 现金销售页面）。",
+    "willCreateCredit": "此订单批准后将自动成为赊销单（销售页面 + 赊销页面）。"
   },
   "lines": {
     "sku": "SKU",
@@ -120,13 +144,34 @@
     "change": "更换",
     "changeAria": "更换{{label}}",
     "searching": "搜索中…",
-    "noResults": "无结果"
+    "noResults": "无结果",
+    "saleType": "销售类型",
+    "cash": "现金销售",
+    "cashHelp": "客户当场全额付款。批准后显示在现金销售页面。",
+    "credit": "赊销",
+    "creditHelp": "客户日后付款。批准后显示在赊销页面。",
+    "paymentMethod": "付款方式",
+    "paymentReference": "付款参考号（可选）",
+    "dueDate": "到期日（可选）",
+    "dueAuto_other": "留空则按客户付款条款（自订单日期起 {{count}} 天）。",
+    "dueAutoNoCustomer": "留空则按客户付款条款。",
+    "flowCASH": "批准后：出库并生成已付款的现金销售单，显示在销售和现金销售页面。",
+    "flowCREDIT": "批准后：出库并生成未付款的赊销单（会检查信用额度），显示在销售和赊销页面。"
   },
   "problems": {
     "chooseCustomer": "请选择客户。",
     "lineNeedsItem": "每一行都需要选择商品。请删除空行。",
     "qtyPositive": "每个数量必须大于 0。",
     "itemTwice": "同一商品出现了两次。请合并为一行。",
-    "deliveryBeforeOrder": "交货日期不能早于订单日期。"
+    "deliveryBeforeOrder": "交货日期不能早于订单日期。",
+    "chooseSaleType": "请选择现金销售或赊销。",
+    "dueBeforeOrder": "到期日不能早于订单日期。",
+    "totalPositive": "订单总额必须大于零。"
+  },
+  "allTypes": "全部类型",
+  "filterTypeAria": "按销售类型筛选",
+  "saleType": {
+    "CASH": "现金销售",
+    "CREDIT": "赊销"
   }
 }

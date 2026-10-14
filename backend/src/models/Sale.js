@@ -14,6 +14,7 @@ const Sale = sequelize.define('Sale', {
   taxRate: { type: D.DECIMAL(5, 2), allowNull: false, defaultValue: 0 },
   subtotal: money(), discountTotal: money(), taxTotal: money(), total: money(), amountPaid: money(),
   paymentStatus: str(8, { allowNull: false, defaultValue: 'UNPAID' }),
+  salesOrderId: D.UUID,                          // set when the sale was created automatically from an approved sales order
   approvalId: D.UUID, stockDocumentId: D.UUID, cancelDocumentId: D.UUID,
   createdBy: { type: D.UUID, allowNull: false },
   submittedAt: D.DATE, completedAt: D.DATE, cancelledAt: D.DATE, voidedAt: D.DATE, voidedBy: D.UUID, voidReason: D.TEXT,

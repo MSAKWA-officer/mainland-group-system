@@ -8,7 +8,8 @@ import { ArrowLeftIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { fmt } from '../../utils/format';
 import OrderWorkflowPanel from '../orderWorkflow/OrderWorkflowPanel.jsx';
-import { NOTICE, RowActions, Status, day, money } from './SalesOrdersList.jsx';
+import { METHOD } from '../sales/saleUi.jsx';
+import { NOTICE, RowActions, SaleLink, SaleType, Status, day, money } from './SalesOrdersList.jsx';
 
 const Row = ({ label, children }) => (
   <div className="grid gap-1 border-b border-line/70 py-2.5 text-sm text-black sm:grid-cols-[11rem_1fr]">
@@ -25,7 +26,7 @@ export default function SalesOrdersView() {
   const navigate = useNavigate();
   const location = useLocation();
   const { can } = useAuth();
-  const [err, setErr] = useState('');
+  const [err, setErr] = useState(''); const [ok, setOk] = useState('');
   const q = useLoad(() => salesOrderApi.get(id), [id]);
   const r = q.data;
   return (
@@ -37,19 +38,24 @@ export default function SalesOrdersView() {
         </div>
         <Link to="/sales-orders" className="inline-flex items-center gap-2 text-sm text-black hover:underline"><ArrowLeftIcon />{t('view.backToList')}</Link>
       </div>
-      {(err || q.error || location.state?.msg) && (
-        <div className={`px-6 ${NOTICE}`}><Banner>{err || q.error}</Banner><Banner kind="ok">{location.state?.msg}</Banner></div>
+      {(err || q.error || ok || location.state?.msg) && (
+        <div className={`px-6 ${NOTICE}`}><Banner>{err || q.error}</Banner><Banner kind="ok">{ok || location.state?.msg}</Banner></div>
       )}
+      {r && ['SUBMITTED', 'DRAFT'].includes(r.status) && <div className={`px-6 ${NOTICE}`}><Banner kind="ok">{t(`view.willCreate${r.saleType === 'CREDIT' ? 'Credit' : 'Cash'}`)}</Banner></div>}
       {r && <OrderWorkflowPanel orderId={r.id} key={`${r.status}-${r.submittedAt}`} />}
       {r && (
         <div className="border-t border-line px-6 py-4">
           <dl className="max-w-3xl">
+            <Row label={t('view.saleType')}><SaleType type={r.saleType} /></Row>
             <Row label={t('view.customer')}>{r.customer && (can('customers.read')
               ? <Link to={`/customers/${r.customer.id}`} className="text-black underline">{r.customer.name} ({r.customer.code})</Link> : `${r.customer.name} (${r.customer.code})`)}</Row>
             <Row label={t('view.customerPhone')}>{r.customer?.phone}</Row>
             <Row label={t('view.salesperson')}>{r.salesperson && `${r.salesperson.fullName} (${r.salesperson.code})`}</Row>
             <Row label={t('view.orderDate')}>{day(r.orderDate)}</Row>
             <Row label={t('view.deliveryDate')}>{r.deliveryDate && day(r.deliveryDate)}</Row>
+            {r.saleType === 'CASH' && <Row label={t('view.paymentMethod')}>{r.paymentMethod && METHOD[r.paymentMethod]}</Row>}
+            {r.saleType === 'CASH' && <Row label={t('view.paymentReference')}>{r.paymentReference}</Row>}
+            {r.saleType === 'CREDIT' && <Row label={t('view.dueDate')}>{r.dueDate && day(r.dueDate)}</Row>}
             <Row label={t('view.paymentTerms')}>{r.customer && t('view.paymentTermsDays', { count: r.customer.paymentTermsDays })}</Row>
             <Row label={t('view.notes')}>{r.notes}</Row>
             <Row label={t('view.createdBy')}>{r.creator?.fullName}</Row>
@@ -58,6 +64,7 @@ export default function SalesOrdersView() {
             <Row label={t('view.decisionNote')}>{r.approval?.decisionNote}</Row>
             <Row label={t('view.confirmed')}>{r.confirmedAt && fmt(r.confirmedAt)}</Row>
             <Row label={t('view.stockDocument')}>{r.stockDocument?.docNo}</Row>
+            <Row label={t('view.sale')}>{r.sale ? <><SaleLink order={r} /> · {t(`saleType.${r.sale.saleType}`)} · {t(`view.saleStatus.${r.sale.status}`, { defaultValue: r.sale.status })}</> : (r.status === 'CONFIRMED' ? null : t('view.saleNotYet'))}</Row>
             <Row label={t('view.cancelled')}>{r.cancelledAt && fmt(r.cancelledAt)}</Row>
             <Row label={t('view.cancelReason')}>{r.cancelReason}</Row>
           </dl>
@@ -88,7 +95,7 @@ export default function SalesOrdersView() {
           </dl>
 
           <div className="mt-4 pb-2">
-            <RowActions r={r} onChanged={q.reload} onError={setErr} afterDelete={() => navigate('/sales-orders', { state: { msg: t('actions.deleted') } })} />
+            <RowActions r={r} onChanged={q.reload} onError={(m) => { setErr(m); if (m) setOk(''); }} onNotice={(m) => { setOk(m); setErr(''); }} afterDelete={() => navigate('/sales-orders', { state: { msg: t('actions.deleted') } })} />
           </div>
         </div>
       )}

@@ -5,18 +5,23 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import Field from '../../components/Field.jsx';
 import { PlusIcon, TrashIcon, XIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
+import { METHOD } from '../sales/saleUi.jsx';
 import { money } from './SalesOrdersList.jsx';
 
 const today = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 let seq = 0;
 const key = () => { seq += 1; return `l${seq}`; };
 export const blankLine = () => ({ key: key(), item: null, quantity: '1', unitPrice: '', discountPercent: '0' });
-export const EMPTY = () => ({ customer: null, salespersonId: '', orderDate: today(), deliveryDate: '', taxRate: '0', notes: '', lines: [blankLine()] });
+// saleType starts empty on purpose: the salesperson must choose Cash or Credit, so an order never lands on the wrong page by default.
+export const EMPTY = () => ({ saleType: '', customer: null, salespersonId: '', orderDate: today(), deliveryDate: '', dueDate: '', paymentMethod: 'CASH', paymentReference: '',
+  taxRate: '0', notes: '', lines: [blankLine()] });
 
 // Turns a saved order (from the API) into form state.
 export const fromOrder = (o) => ({
-  customer: o.customer ? { id: o.customer.id, code: o.customer.code, name: o.customer.name } : null,
-  salespersonId: o.salespersonId || '', orderDate: o.orderDate || today(), deliveryDate: o.deliveryDate || '', taxRate: String(Number(o.taxRate ?? 0)), notes: o.notes || '',
+  saleType: o.saleType || '',
+  customer: o.customer ? { id: o.customer.id, code: o.customer.code, name: o.customer.name, paymentTermsDays: o.customer.paymentTermsDays } : null,
+  salespersonId: o.salespersonId || '', orderDate: o.orderDate || today(), deliveryDate: o.deliveryDate || '', dueDate: o.dueDate || '',
+  paymentMethod: o.paymentMethod || 'CASH', paymentReference: o.paymentReference || '', taxRate: String(Number(o.taxRate ?? 0)), notes: o.notes || '',
   lines: (o.lines || []).map((l) => ({ key: key(), item: { id: l.itemId, sku: l.sku, name: l.itemName, unit: l.unit, sellingPrice: l.unitPrice },
     quantity: String(Number(l.quantity)), unitPrice: String(Number(l.unitPrice)), discountPercent: String(Number(l.discountPercent)) })),
 });
@@ -32,21 +37,27 @@ export const estimate = (f) => {
 };
 
 // Form -> API body. Prices and discounts are only sent for users who may set them; everyone else gets the catalogue price from the server.
+// Cash orders send the payment method; credit orders send the due date (empty = the server uses today + the customer's payment terms).
 export const toBody = (f, { canSetPrice, canPickSalesperson }) => ({
+  saleType: f.saleType,
   customerId: f.customer.id,
   ...(canPickSalesperson && f.salespersonId && { salespersonId: f.salespersonId }),
   orderDate: f.orderDate || undefined, deliveryDate: f.deliveryDate || null, notes: f.notes.trim() || null, taxRate: n(f.taxRate),
+  ...(f.saleType === 'CREDIT' ? { dueDate: f.dueDate || null } : { paymentMethod: f.paymentMethod || 'CASH', paymentReference: f.paymentReference.trim() || null }),
   lines: f.lines.map((l) => ({ itemId: l.item.id, quantity: n(l.quantity), ...(canSetPrice && { unitPrice: n(l.unitPrice), discountPercent: n(l.discountPercent) }) })),
 });
 // Client-side checks (the API checks everything again). `t` is the translate function of the 'salesOrders' namespace.
 // Returns a message or ''.
 export const problem = (f, t) => {
+  if (!['CASH', 'CREDIT'].includes(f.saleType)) return t('problems.chooseSaleType');
   if (!f.customer) return t('problems.chooseCustomer');
   if (!f.lines.length || f.lines.some((l) => !l.item)) return t('problems.lineNeedsItem');
   if (f.lines.some((l) => !(n(l.quantity) > 0))) return t('problems.qtyPositive');
   const ids = f.lines.map((l) => l.item.id);
   if (new Set(ids).size !== ids.length) return t('problems.itemTwice');
   if (f.deliveryDate && f.orderDate && f.deliveryDate < f.orderDate) return t('problems.deliveryBeforeOrder');
+  if (f.saleType === 'CREDIT' && f.dueDate && f.orderDate && f.dueDate < f.orderDate) return t('problems.dueBeforeOrder');
+  if (!(estimate(f).total > 0)) return t('problems.totalPositive');
   return '';
 };
 
@@ -89,8 +100,31 @@ const searchCustomers = (q) => customerApi.list({ ...(q && { search: q }), isAct
 const searchItems = (q) => itemApi.list({ ...(q && { search: q }), isActive: 'true', limit: 10 }).then((r) => r.data);
 
 const LINE_HEADS = ['item', 'quantity', 'unitPrice', 'discountPercent', 'lineTotal'];
+const TYPES = [['CASH', 'cash'], ['CREDIT', 'credit']];
 
-// Form fields shared by SalesOrdersCreate and SalesOrdersUpdate: header, line items and estimated totals.
+// Two big radio cards: Cash sale / Credit sale.
+function SaleTypePicker({ value, onChange, error }) {
+  const { t } = useTranslation('salesOrders');
+  return (
+    <fieldset className="sm:col-span-2">
+      <legend className="label">{t('form.saleType')}</legend>
+      <div className="grid gap-3 sm:grid-cols-2" role="radiogroup" aria-label={t('form.saleType')}>
+        {TYPES.map(([code, k]) => {
+          const on = value === code;
+          return (
+            <label key={code} className={`flex cursor-pointer items-start gap-3 rounded-md border p-3 text-black transition ${on ? 'border-brand bg-emerald-50 ring-1 ring-brand' : 'border-line bg-white hover:bg-slate-50'}`}>
+              <input type="radio" name="saleType" className="mt-1" value={code} checked={on} onChange={() => onChange(code)} />
+              <span><span className="block text-sm font-semibold">{t(`form.${k}`)}</span><span className="block text-xs">{t(`form.${k}Help`)}</span></span>
+            </label>
+          );
+        })}
+      </div>
+      {error && <p className="mt-1 text-xs text-danger">{error}</p>}
+    </fieldset>
+  );
+}
+
+// Form fields shared by SalesOrdersCreate and SalesOrdersUpdate: sale type, header, line items and estimated totals.
 export default function SalesOrderForm({ f, setF, fe }) {
   const { t } = useTranslation('salesOrders');
   const { can } = useAuth();
@@ -101,9 +135,11 @@ export default function SalesOrderForm({ f, setF, fe }) {
   const setLine = (i, patch) => setF({ ...f, lines: f.lines.map((l, x) => (x === i ? { ...l, ...patch } : l)) });
   const pickItem = (i, it) => setLine(i, it ? { item: { id: it.id, sku: it.sku, name: it.name, unit: it.unit, sellingPrice: it.sellingPrice }, unitPrice: String(Number(it.sellingPrice)) } : { item: null, unitPrice: '' });
   const est = estimate(f);
+  const terms = f.customer?.paymentTermsDays;
   return (
     <div className="space-y-6">
       <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
+        <SaleTypePicker value={f.saleType} onChange={(saleType) => setF({ ...f, saleType })} error={fe.saleType} />
         <Lookup label={t('form.customer')} value={f.customer} placeholder={t('form.customerPlaceholder')} error={fe.customerId} search={searchCustomers}
           show={(c) => `${c.name} (${c.code})`} render={(c) => <>{c.name} <span className="text-xs">{c.code}{c.phone ? ` · ${c.phone}` : ''}</span></>}
           onPick={(c) => setF({ ...f, customer: c, salespersonId: c?.salespersonId || f.salespersonId })} />
@@ -117,8 +153,21 @@ export default function SalesOrderForm({ f, setF, fe }) {
         ) : <p className="self-end pb-2 text-sm text-black">{t('form.createdForYou')}</p>}
         <Field label={t('form.orderDate')} error={fe.orderDate}><input className="input" type="date" required value={f.orderDate} onChange={set('orderDate')} /></Field>
         <Field label={t('form.deliveryDate')} error={fe.deliveryDate}><input className="input" type="date" min={f.orderDate || undefined} value={f.deliveryDate} onChange={set('deliveryDate')} /></Field>
+        {f.saleType === 'CASH' && (<>
+          <Field label={t('form.paymentMethod')} error={fe.paymentMethod}>
+            <select className="input" value={f.paymentMethod} onChange={set('paymentMethod')}>{Object.entries(METHOD).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
+          </Field>
+          <Field label={t('form.paymentReference')} error={fe.paymentReference}><input className="input" maxLength={100} value={f.paymentReference} onChange={set('paymentReference')} /></Field>
+        </>)}
+        {f.saleType === 'CREDIT' && (
+          <div>
+            <Field label={t('form.dueDate')} error={fe.dueDate}><input className="input" type="date" min={f.orderDate || undefined} value={f.dueDate} onChange={set('dueDate')} /></Field>
+            <p className="mt-1 text-xs text-black">{terms != null ? t('form.dueAuto', { count: Number(terms) }) : t('form.dueAutoNoCustomer')}</p>
+          </div>
+        )}
         <Field label={t('form.taxRate')} error={fe.taxRate}><input className="input" type="number" min="0" max="100" step="0.01" value={f.taxRate} onChange={set('taxRate')} /></Field>
         <div className="sm:col-span-2"><Field label={t('form.notes')} error={fe.notes}><textarea className="input" rows={2} maxLength={2000} value={f.notes} onChange={set('notes')} /></Field></div>
+        {f.saleType && <p className="rounded-md border border-line bg-slate-50 px-3 py-2 text-xs text-black sm:col-span-2">{t(`form.flow${f.saleType}`)}</p>}
       </div>
 
       <div>

@@ -10,7 +10,8 @@ import useLoad from '../../utils/useLoad';
 import SalesOrderForm, { EMPTY, fromOrder, problem, toBody } from './SalesOrderForm.jsx';
 import { NOTICE } from './SalesOrdersList.jsx';
 
-// Only a DRAFT can be edited, and only by its creator (the API enforces this too).
+// Update (the U of CRUD). Only a DRAFT can be edited, and only by its creator (the API enforces this too).
+// The salesperson may still switch between Cash and Credit here until the order is submitted.
 export default function SalesOrdersUpdate() {
   const { t } = useTranslation('salesOrders');
   const { t: tc } = useTranslation('common');
@@ -23,14 +24,18 @@ export default function SalesOrdersUpdate() {
   const o = item.data;
   useEffect(() => { if (o) setF(fromOrder(o)); }, [o]);
   const editable = o && o.status === 'DRAFT' && o.createdBy === user.id;
-  const submit = async (e) => {
-    e.preventDefault(); setErr(''); setFe({});
+  const save = async (andSubmit) => {
+    setErr(''); setFe({});
     const p = problem(f, t); if (p) { setErr(p); return; }
     setBusy(true);
     try {
       await salesOrderApi.update(id, toBody(f, { canSetPrice: can('sales_orders.set_price'), canPickSalesperson: can('sales_orders.read_all') }));
-      navigate(`/sales-orders/${id}`, { state: { msg: t('edit.updated') } });
-    } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
+    } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); return; }
+    if (!andSubmit) { navigate(`/sales-orders/${id}`, { state: { msg: t('edit.updated') } }); return; }
+    try {
+      await salesOrderApi.submit(id);
+      navigate(`/sales-orders/${id}`, { state: { msg: t('edit.updatedSubmitted') } });
+    } catch (x) { navigate(`/sales-orders/${id}`, { state: { msg: t('edit.updatedSubmitFailed', { error: errMsg(x) }) } }); }
   };
   const statusName = o ? t(`status.${o.status}`, { defaultValue: o.status }).toLocaleLowerCase(currentLocale()) : '';
   return (
@@ -42,14 +47,17 @@ export default function SalesOrdersUpdate() {
         </div>
         <Link to={`/sales-orders/${id}`} className="inline-flex items-center gap-2 text-sm text-black hover:underline"><ArrowLeftIcon />{t('edit.back')}</Link>
       </div>
-      <form onSubmit={submit} className="space-y-4 border-t border-line px-6 py-6 [&_.text-danger]:!text-black">
+      <form onSubmit={(e) => { e.preventDefault(); save(false); }} className="space-y-4 border-t border-line px-6 py-6 [&_.text-danger]:!text-black">
         <div className={NOTICE}>
           <Banner>{err || item.error}</Banner>
           {o && !editable && <Banner>{t('edit.locked', { status: statusName })}</Banner>}
         </div>
         {editable && (<>
           <SalesOrderForm f={f} setF={setF} fe={fe} />
-          <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('edit.save')}</button>
+          <div className="flex flex-wrap gap-3">
+            <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('edit.save')}</button>
+            <button type="button" className="btn-ghost" disabled={busy} onClick={() => save(true)}>{t('edit.saveSubmit')}</button>
+          </div>
         </>)}
       </form>
     </div>

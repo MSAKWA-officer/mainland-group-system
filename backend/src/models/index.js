@@ -110,6 +110,8 @@ EfdReceipt.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
 EfdReceipt.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
 
 // Phase 3b - Cash and credit sales associations
+Sale.belongsTo(SalesOrder, { as: 'order', foreignKey: 'salesOrderId' });
+SalesOrder.hasOne(Sale, { as: 'sale', foreignKey: 'salesOrderId' });
 Sale.belongsTo(Customer, { as: 'customer', foreignKey: 'customerId' });
 Customer.hasMany(Sale, { as: 'sales', foreignKey: 'customerId' });
 Sale.belongsTo(Salesperson, { as: 'salesperson', foreignKey: 'salespersonId' });

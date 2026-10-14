@@ -17,10 +17,12 @@
     "items": "Items",
     "total": "Total",
     "status": "Status",
-    "actions": "Actions"
+    "actions": "Actions",
+    "saleType": "Type",
+    "sale": "Sale"
   },
   "emptyFiltered": "No orders match your filters.",
-  "emptyNone": "No sales orders yet. Use “New Order” to create a draft, then submit it.",
+  "emptyNone": "No sales orders yet. Use “New Order” to create one, choose Cash or Credit, then submit it.",
   "status": {
     "DRAFT": "Draft",
     "SUBMITTED": "Waiting for approval",
@@ -36,19 +38,26 @@
     "approve": "Approve",
     "reject": "Reject",
     "delete": "Delete",
-    "cancelConfirmedPrompt": "Reason for cancelling {{orderNo}}? The stock will be returned.",
+    "cancelConfirmedPrompt": "Reason for cancelling {{orderNo}}? The stock will be returned and its cash/credit sale will be voided.",
     "cancelConfirm": "Cancel {{orderNo}}?",
     "approveConfirm": "Approve {{orderNo}}? Stock will be issued for every line.",
     "rejectPrompt": "Reason for rejecting {{orderNo}}:",
     "deleteConfirm": "Delete {{orderNo}} permanently? This cannot be undone.",
-    "deleted": "Order deleted."
+    "deleted": "Order deleted.",
+    "approveConfirmCash": "Approve {{orderNo}}? Stock will be issued and a Cash sale will be created automatically.",
+    "approveConfirmCredit": "Approve {{orderNo}}? Stock will be issued and a Credit sale (receivable) will be created automatically.",
+    "approved": "{{orderNo}} approved.",
+    "approvedWithSale": "{{orderNo}} approved. {{type}} {{saleNo}} was created and is now on the Sales page and the {{type}}s page."
   },
   "create": {
     "title": "New sales order",
-    "subtitle": "Nothing is sent for approval and no stock moves until you submit the draft and it is approved.",
+    "subtitle": "Choose Cash or Credit. Nothing moves until the order is submitted and approved; then the sale is created automatically.",
     "back": "Back to list",
     "save": "Save as draft",
-    "saved": "Draft saved. Submit it for approval when you are ready."
+    "saved": "Draft saved. Submit it for approval when you are ready.",
+    "saveSubmit": "Save and submit for approval",
+    "savedSubmitted": "Order saved and submitted for approval.",
+    "savedSubmitFailed": "Draft saved, but it could not be submitted: {{error}}"
   },
   "edit": {
     "title": "Edit sales order",
@@ -56,7 +65,10 @@
     "back": "Back",
     "locked": "This order is {{status}} or belongs to someone else, so it can no longer be edited here.",
     "save": "Save changes",
-    "updated": "Draft updated."
+    "updated": "Draft updated.",
+    "saveSubmit": "Save and submit for approval",
+    "updatedSubmitted": "Order updated and submitted for approval.",
+    "updatedSubmitFailed": "Draft updated, but it could not be submitted: {{error}}"
   },
   "view": {
     "fallbackTitle": "Sales order",
@@ -78,7 +90,19 @@
     "stockDocument": "Stock document",
     "cancelled": "Cancelled",
     "cancelReason": "Cancel reason",
-    "items": "Items"
+    "items": "Items",
+    "saleType": "Sale type",
+    "paymentMethod": "Payment method",
+    "paymentReference": "Payment reference",
+    "dueDate": "Due date",
+    "sale": "Sale created",
+    "saleNotYet": "Created automatically when the order is approved",
+    "saleStatus": {
+      "COMPLETED": "Completed",
+      "VOIDED": "Voided"
+    },
+    "willCreateCash": "When this order is approved it becomes a Cash sale automatically (Sales page + Cash sales page).",
+    "willCreateCredit": "When this order is approved it becomes a Credit sale automatically (Sales page + Credit sales page)."
   },
   "lines": {
     "sku": "SKU",
@@ -120,13 +144,35 @@
     "change": "Change",
     "changeAria": "Change {{label}}",
     "searching": "Searching…",
-    "noResults": "No results"
+    "noResults": "No results",
+    "saleType": "Sale type",
+    "cash": "Cash sale",
+    "cashHelp": "Customer pays in full now. Appears on the Cash sales page after approval.",
+    "credit": "Credit sale",
+    "creditHelp": "Customer pays later. Appears on the Credit sales page after approval.",
+    "paymentMethod": "Payment method",
+    "paymentReference": "Payment reference (optional)",
+    "dueDate": "Due date (optional)",
+    "dueAuto_one": "Leave empty to use the customer’s payment terms ({{count}} day from the order date).",
+    "dueAuto_other": "Leave empty to use the customer’s payment terms ({{count}} days from the order date).",
+    "dueAutoNoCustomer": "Leave empty to use the customer’s payment terms.",
+    "flowCASH": "After approval: stock is issued and a paid Cash sale is created. It then appears on the Sales and Cash sales pages.",
+    "flowCREDIT": "After approval: stock is issued and an unpaid Credit sale is created (credit limit is checked). It then appears on the Sales and Credit sales pages."
   },
   "problems": {
     "chooseCustomer": "Choose a customer.",
     "lineNeedsItem": "Every line needs an item. Remove empty lines.",
     "qtyPositive": "Every quantity must be greater than 0.",
     "itemTwice": "An item appears twice. Combine it into one line.",
-    "deliveryBeforeOrder": "Delivery date cannot be before the order date."
+    "deliveryBeforeOrder": "Delivery date cannot be before the order date.",
+    "chooseSaleType": "Choose Cash sale or Credit sale.",
+    "dueBeforeOrder": "Due date cannot be before the order date.",
+    "totalPositive": "The order total must be greater than zero."
+  },
+  "allTypes": "All types",
+  "filterTypeAria": "Filter by sale type",
+  "saleType": {
+    "CASH": "Cash sale",
+    "CREDIT": "Credit sale"
   }
 }

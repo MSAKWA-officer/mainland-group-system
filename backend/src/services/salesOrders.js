@@ -1,15 +1,22 @@
 const { Op } = require('sequelize');
-const { sequelize, SalesOrder, SalesOrderLine, Customer, Salesperson, Item, StockBatch, StockDocument, StockDocumentLine, StockMovement, Discount, EfdReceipt } = require('../models');
+const { sequelize, SalesOrder, SalesOrderLine, Customer, Salesperson, Item, StockBatch, StockDocument, StockDocumentLine, StockMovement, Discount, EfdReceipt, Sale, SaleLine, SalePayment } = require('../models');
 const approvals = require('./approvals');
 const audit = require('./audit');
 const ledger = require('./stockLedger');
 const discountSvc = require('./discounts');
+const core = require('./saleCore');
+const creditSales = require('./creditSales');
 const workflow = require('./orderWorkflow');
 const { mine, canAll } = require('./salesScope');
 const { AppError } = require('../utils/errors');
 
 /* Sales order lifecycle:
    DRAFT -> (submit) SUBMITTED -> (approve) CONFIRMED  | (reject) REJECTED | (cancel) CANCELLED
+   Every order is either a CASH or a CREDIT sale (saleType, chosen by the salesperson). When the order is approved, a COMPLETED record is created
+   automatically in `sales` (same transaction, same stock document), so it appears on the Sales register and on the Cash sales / Credit sales page:
+     CASH   -> paid in full (payment method + reference taken from the order), paymentStatus PAID
+     CREDIT -> UNPAID receivable with a due date; the customer's credit limit is checked (override needs `credit_sales.override_limit`)
+   Cancelling a CONFIRMED order also voids that sale. A sale created from an order cannot be voided on its own.
    Stock is issued when the order is CONFIRMED (approved): inside the approval transaction, through the Phase 2 stock ledger,
    using FEFO (first-expiry-first-out) for items that track expiry. Cancelling a CONFIRMED order puts the stock back with a reversing
    ledger entry. All money is calculated here on the server; amounts sent by the client are never trusted. */
@@ -27,7 +34,7 @@ function totals(rows, taxRate) {
   const tax = half(net * BigInt(Math.round(taxRate * 100)), 10000n);
   return { subtotal: str(gross), discountTotal: str(gross - net), taxTotal: str(tax), total: str(net + tax) };
 }
-const snap = (o) => ({ orderNo: o.orderNo, status: o.status, customerId: o.customerId, salespersonId: o.salespersonId, orderDate: o.orderDate,
+const snap = (o) => ({ orderNo: o.orderNo, saleType: o.saleType, dueDate: o.dueDate, paymentMethod: o.paymentMethod, status: o.status, customerId: o.customerId, salespersonId: o.salespersonId, orderDate: o.orderDate,
   deliveryDate: o.deliveryDate, taxRate: o.taxRate, total: o.total, notes: o.notes });
 
 /* ---------- helpers ---------- */
@@ -97,6 +104,18 @@ async function normalizeLines(req, lines, customerId, t) {
       lineTotal: str(lineCents(l.quantity, unitPrice, discountPercent)) };
   });
 }
+// Cash / credit rules: a credit order has a due date (default = today + the customer's payment terms) and no payment method;
+// a cash order is paid at once, so it has a payment method (default CASH) and no due date.
+async function saleTerms(customer, { saleType, dueDate, paymentMethod, paymentReference }, orderDate, t) {
+  if (!['CASH', 'CREDIT'].includes(saleType)) throw bad('saleType', 'Choose Cash sale or Credit sale');
+  if (saleType === 'CREDIT') {
+    const today = await core.dbToday(t);
+    const due = dueDate || await core.dbToday(t, customer.paymentTermsDays);
+    if (due < (orderDate || today)) throw bad('dueDate', 'Due date cannot be before the order date');
+    return { saleType, dueDate: due, paymentMethod: null, paymentReference: null };
+  }
+  return { saleType, dueDate: null, paymentMethod: paymentMethod || 'CASH', paymentReference: paymentReference || null };
+}
 const checkDates = (orderDate, deliveryDate) => {
   if (orderDate && deliveryDate && deliveryDate < orderDate) throw bad('deliveryDate', 'Delivery date cannot be before the order date');
 };
@@ -107,10 +126,13 @@ const create = (req, body) => sequelize.transaction(async (t) => {
   checkDates(body.orderDate, body.deliveryDate);
   const rows = await normalizeLines(req, body.lines, customer.id, t);
   const taxRate = body.taxRate ?? 0;
+  const terms = await saleTerms(customer, body, body.orderDate, t);
   const orderNo = `SO-${new Date().getFullYear()}-${String(await nextNo('sales_order_seq', t)).padStart(6, '0')}`;
+  const sums = totals(rows, taxRate);
+  if (core.cents(sums.total) <= 0n) throw bad('lines', 'The order total must be greater than zero');
   const o = await SalesOrder.create({ orderNo, customerId: customer.id, salespersonId: salesperson.id, status: 'DRAFT',
     ...(body.orderDate && { orderDate: body.orderDate }), deliveryDate: body.deliveryDate ?? null, notes: body.notes ?? null,
-    taxRate, ...totals(rows, taxRate), createdBy: req.user.id }, { transaction: t });
+    ...terms, taxRate, ...sums, createdBy: req.user.id }, { transaction: t });
   await SalesOrderLine.bulkCreate(rows.map((r) => ({ ...r, orderId: o.id })), { transaction: t });
   await audit.log(req, { action: 'SALES_ORDER_CREATED', entityType: 'SalesOrder', entityId: o.id, newValues: { ...snap(o), lines: rows.length } }, t);
   return o;
@@ -127,6 +149,18 @@ const update = (req, id, body) => sequelize.transaction(async (t) => {
     head.customerId = customer.id; head.salespersonId = salesperson.id;
   }
   for (const k of ['orderDate', 'deliveryDate', 'notes', 'taxRate']) if (body[k] !== undefined) head[k] = body[k];
+  if (['saleType', 'dueDate', 'paymentMethod', 'paymentReference', 'customerId'].some((k) => body[k] !== undefined)) {
+    const cust = head.customerId ? await Customer.findByPk(head.customerId, { transaction: t }) : await Customer.findByPk(o.customerId, { transaction: t });
+    const type = body.saleType ?? o.saleType;
+    // switching type resets the fields of the other type; a changed customer re-derives the credit due date unless one was sent
+    const switched = type !== o.saleType; const custChanged = head.customerId && head.customerId !== o.customerId;
+    Object.assign(head, await saleTerms(cust, {
+      saleType: type,
+      dueDate: body.dueDate !== undefined ? body.dueDate : (switched || custChanged ? null : o.dueDate),
+      paymentMethod: body.paymentMethod !== undefined ? body.paymentMethod : (switched ? null : o.paymentMethod),
+      paymentReference: body.paymentReference !== undefined ? body.paymentReference : (switched ? null : o.paymentReference),
+    }, head.orderDate ?? o.orderDate, t));
+  }
   checkDates(head.orderDate ?? o.orderDate, head.deliveryDate !== undefined ? head.deliveryDate : o.deliveryDate);
   let rows;
   if (body.lines) {
@@ -137,7 +171,10 @@ const update = (req, id, body) => sequelize.transaction(async (t) => {
     rows = (await SalesOrderLine.findAll({ where: { orderId: o.id }, transaction: t }))
       .map((l) => ({ quantity: Number(l.quantity), unitPrice: Number(l.unitPrice), discountPercent: Number(l.discountPercent) }));
   }
-  if (rows) Object.assign(head, totals(rows, head.taxRate ?? Number(o.taxRate)));
+  if (rows) {
+    Object.assign(head, totals(rows, head.taxRate ?? Number(o.taxRate)));
+    if (core.cents(head.total) <= 0n) throw bad('lines', 'The order total must be greater than zero');
+  }
   await o.update(head, { transaction: t });
   await audit.log(req, { action: 'SALES_ORDER_UPDATED', entityType: 'SalesOrder', entityId: o.id, oldValues: old, newValues: { ...snap(o), ...(rows && { lines: rows.length }) } }, t);
   return o;
@@ -214,7 +251,18 @@ const cancel = async (req, id, reason) => {
       if (!reason || reason.trim().length < 3) throw bad('reason', 'A reason is required to cancel a confirmed order');
       const efd = await EfdReceipt.findOne({ where: { salesOrderId: o.id, status: 'ISSUED' }, transaction: t });
       if (efd) throw new AppError(409, 'EFD_ISSUED', `This order has EFD receipt ${efd.receiptNo}. Void the EFD receipt first, then cancel the order.`);
+      const sale = await Sale.findOne({ where: { salesOrderId: o.id }, transaction: t, lock: t.LOCK.UPDATE });
+      if (sale && sale.status === 'COMPLETED' && core.cents(sale.amountPaid) > 0n && sale.saleType === 'CREDIT')
+        throw new AppError(409, 'HAS_PAYMENTS', `The credit sale ${sale.saleNo} has payments. Void the payments first, then cancel the order.`);
       const doc = await restock(t, req, o);
+      if (sale && sale.status === 'COMPLETED') {                                   // the automatic sale goes with the order
+        const oldSale = core.snap(sale);
+        await SalePayment.update({ voidedAt: new Date(), voidedBy: req.user.id, voidReason: `Order cancelled: ${reason}`.slice(0, 500) },
+          { where: { saleId: sale.id, voidedAt: null }, transaction: t });
+        await sale.update({ status: 'VOIDED', voidedAt: new Date(), voidedBy: req.user.id, voidReason: `Order ${o.orderNo} cancelled: ${reason}`, cancelDocumentId: doc.id }, { transaction: t });
+        await audit.log(req, { action: `${sale.saleType}_SALE_VOIDED`, entityType: 'Sale', entityId: sale.id, oldValues: oldSale,
+          newValues: { ...core.snap(sale), restockDocument: doc.docNo, salesOrder: o.orderNo }, reason }, t);
+      }
       await o.update({ status: 'CANCELLED', cancelledAt: new Date(), cancelReason: reason, cancelDocumentId: doc.id }, { transaction: t });
       await audit.log(req, { action: 'SALES_ORDER_CANCELLED', entityType: 'SalesOrder', entityId: o.id, oldValues: old,
         newValues: { ...snap(o), restockDocument: doc.docNo }, reason }, t);
@@ -271,6 +319,15 @@ const confirmOrder = async (r, ctx) => {
   const itemRows = await Item.findAll({ where: { id: lines.map((l) => l.itemId) }, order: [['id', 'ASC']], transaction: t, lock: t.LOCK.UPDATE }); // same lock order as the ledger
   const items = new Map(itemRows.map((i) => [i.id, i]));
   const [{ d: today }] = (await sequelize.query("SELECT to_char(CURRENT_DATE, 'YYYY-MM-DD') AS d", { transaction: t }))[0];
+  // Credit orders: check the credit limit first (the customer row is locked so approvals for the same customer run one after another).
+  let limitOverridden = false;
+  if (o.saleType === 'CREDIT') {
+    await Customer.findByPk(o.customerId, { transaction: t, lock: t.LOCK.UPDATE });
+    const pos = await creditSales.internal.position(customer, t);
+    limitOverridden = creditSales.internal.exceeds(pos, o.total);
+    if (limitOverridden && !ctx.user.permissions.has('credit_sales.override_limit'))
+      throw new AppError(409, 'CREDIT_LIMIT_EXCEEDED', `Credit limit exceeded: limit ${pos.creditLimit}, outstanding ${pos.outstanding}, this order ${o.total}. You need permission to override the limit.`);
+  }
   const alloc = await allocate(t, lines, items, today);
   const doc = await StockDocument.create({ docNo: `SAL-${new Date().getFullYear()}-${String(await nextNo('stock_doc_seq', t)).padStart(6, '0')}`,
     type: 'SALE', status: 'DRAFT', partyName: customer.name, reference: o.orderNo, approvalId: r.id, createdBy: ctx.user.id }, { transaction: t });
@@ -279,9 +336,35 @@ const confirmOrder = async (r, ctx) => {
   await doc.update({ status: 'POSTED', postedAt: new Date() }, { transaction: t });
   const old = snap(o);
   await o.update({ status: 'CONFIRMED', confirmedAt: new Date(), stockDocumentId: doc.id }, { transaction: t });
+  const sale = await createSaleFromOrder(ctx, o, customer, lines, doc, limitOverridden, t);
   await audit.log(ctx.req, { action: 'SALES_ORDER_CONFIRMED', entityType: 'SalesOrder', entityId: o.id, oldValues: old,
-    newValues: { ...snap(o), stockDocument: doc.docNo, stockLines: docLines.length } }, t);
+    newValues: { ...snap(o), stockDocument: doc.docNo, stockLines: docLines.length, sale: sale.saleNo } }, t);
 };
+
+// Creates the Cash sale / Credit sale record of an approved order. It reuses the order's stock document, so stock moves exactly once.
+async function createSaleFromOrder(ctx, o, customer, orderLines, doc, limitOverridden, t) {
+  const type = o.saleType;
+  const today = await core.dbToday(t);
+  const saleNo = `${core.TYPES[type].prefix}-${core.year()}-${core.pad(await core.nextNo(type === 'CASH' ? 'cash_sale_seq' : 'credit_sale_seq', t))}`;
+  let dueDate = null;
+  if (type === 'CREDIT') { dueDate = o.dueDate || await core.dbToday(t, customer.paymentTermsDays); if (dueDate < today) dueDate = today; }
+  const sale = await Sale.create({ saleNo, saleType: type, customerId: o.customerId, salespersonId: o.salespersonId, status: 'DRAFT', dueDate,
+    notes: o.notes ?? null, taxRate: o.taxRate, subtotal: o.subtotal, discountTotal: o.discountTotal, taxTotal: o.taxTotal, total: o.total,
+    salesOrderId: o.id, approvalId: o.approvalId, createdBy: o.createdBy, submittedAt: o.submittedAt }, { transaction: t });
+  await SaleLine.bulkCreate(orderLines.map((l) => ({ saleId: sale.id, itemId: l.itemId, sku: l.sku, itemName: l.itemName, unit: l.unit, quantity: l.quantity,
+    unitPrice: l.unitPrice, discountPercent: l.discountPercent, lineTotal: l.lineTotal })), { transaction: t });
+  const done = { status: 'COMPLETED', completedAt: new Date(), stockDocumentId: doc.id };
+  if (type === 'CASH') {
+    const method = o.paymentMethod || 'CASH';
+    await SalePayment.create({ receiptNo: `RCP-${core.year()}-${core.pad(await core.nextNo('sale_receipt_seq', t))}`, saleId: sale.id, amount: o.total,
+      tendered: method === 'CASH' ? o.total : null, method, reference: o.paymentReference ?? null, receivedBy: o.createdBy }, { transaction: t });
+    Object.assign(done, { amountPaid: o.total, paymentStatus: 'PAID' });
+  }
+  await sale.update(done, { transaction: t });
+  await audit.log(ctx.req, { action: `${type}_SALE_COMPLETED`, entityType: 'Sale', entityId: sale.id,
+    newValues: { ...core.snap(sale), fromOrder: o.orderNo, stockDocument: doc.docNo, ...(type === 'CREDIT' && { limitOverridden }) } }, t);
+  return sale;
+}
 const closeOrder = (status, action) => async (r, ctx) => {
   const t = ctx.transaction;
   const o = await SalesOrder.findByPk(r.entityId, { transaction: t, lock: t.LOCK.UPDATE });
