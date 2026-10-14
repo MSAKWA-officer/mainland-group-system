@@ -6,10 +6,11 @@ const { AppError } = require('../utils/errors');
 
 /* One engine for all six stock documents. Lifecycle:
    DRAFT -> (submit) SUBMITTED -> (approve) POSTED   | (reject) REJECTED | (cancel) CANCELLED
-   Stock changes ONLY when the document is approved and posted (see stockLedger). Each document type registers an
-   approval type with its own permission, e.g. `receiving.approve`, and the requester can never approve their own document. */
+   Stock changes ONLY when the document is posted (see stockLedger). Types with `autoPost: true` (Stock receiving) need NO approval:
+   they are posted straight to stock the moment they are saved. All other types register an approval type with its own permission,
+   e.g. `adjustments.approve`, and the requester can never approve their own document. */
 const TYPES = {
-  RECEIVING:  { label: 'Stock receiving',            prefix: 'RCV', module: 'receiving',   approval: 'STOCK_RECEIVING',   direction: 'IN',  reasonRequired: false },
+  RECEIVING:  { label: 'Stock receiving',            prefix: 'RCV', module: 'receiving',   approval: 'STOCK_RECEIVING',   direction: 'IN',  reasonRequired: false, autoPost: true },
   ADJUSTMENT: { label: 'Stock adjustment',           prefix: 'ADJ', module: 'adjustments', approval: 'STOCK_ADJUSTMENT',  direction: null,  reasonRequired: true },
   REJECT_IN:  { label: 'Reject in (customer return)', prefix: 'RIN', module: 'reject_in',   approval: 'STOCK_REJECT_IN',   direction: 'IN',  reasonRequired: true },
   REJECT_OUT: { label: 'Reject out (return to supplier)', prefix: 'ROU', module: 'reject_out', approval: 'STOCK_REJECT_OUT', direction: 'OUT', reasonRequired: true },
@@ -60,6 +61,15 @@ async function normalizeLines(type, lines, t) {
   });
 }
 
+// Posts a document to stock inside the caller's transaction. Used by approval (other types) and directly by autoPost types.
+const postNow = async (req, doc, t) => {
+  const lines = await StockDocumentLine.findAll({ where: { documentId: doc.id }, order: [['itemId', 'ASC'], ['createdAt', 'ASC']], transaction: t });
+  await ledger.post(t, doc, lines, req.user.id);
+  await doc.update({ status: 'POSTED', postedAt: new Date() }, { transaction: t });
+  await audit.log(req, { action: 'STOCK_POSTED', entityType: 'StockDocument', entityId: doc.id,
+    newValues: { docNo: doc.docNo, type: doc.type, lines: lines.length } }, t);
+};
+
 const create = (req, type, body) => sequelize.transaction(async (t) => {
   const cfg = TYPES[type];
   const lines = await normalizeLines(type, body.lines, t);
@@ -69,6 +79,7 @@ const create = (req, type, body) => sequelize.transaction(async (t) => {
     partyName: body.partyName ?? null, reference: body.reference ?? null, reason: body.reason ?? null, createdBy: req.user.id }, { transaction: t });
   await StockDocumentLine.bulkCreate(lines.map((l) => ({ ...l, documentId: doc.id })), { transaction: t });
   await audit.log(req, { action: 'STOCK_DOC_CREATED', entityType: 'StockDocument', entityId: doc.id, newValues: snapshot(doc, lines.length) }, t);
+  if (cfg.autoPost) await postNow(req, doc, t);              // no approval: stock is increased right away, in this same transaction
   return doc;
 });
 
@@ -97,6 +108,11 @@ const submit = (req, type, id) => sequelize.transaction(async (t) => {
   mustOwn(req, doc, 'submit');
   if (doc.status !== 'DRAFT') throw new AppError(409, 'BAD_STATE', `Cannot submit a document that is ${doc.status}`);
   if (cfg.reasonRequired && !doc.reason) throw bad('reason', 'A reason is required');
+  if (cfg.autoPost) {                                          // old drafts saved before auto-posting: submitting now posts them, no approval
+    await normalizeLines(type, (await StockDocumentLine.findAll({ where: { documentId: doc.id }, transaction: t })).map((l) => l.get({ plain: true })), t);
+    await postNow(req, doc, t);
+    return doc;
+  }
   const lines = (await StockDocumentLine.findAll({ where: { documentId: doc.id }, transaction: t })).map((l) => l.get({ plain: true }));
   if (!lines.length) throw bad('lines', 'Add at least one line');
   await normalizeLines(type, lines, t);                       // re-validate: items may have changed since the draft was saved
@@ -139,11 +155,7 @@ const postDocument = async (r, ctx) => {
   const t = ctx.transaction;
   const doc = await StockDocument.findByPk(r.entityId, { transaction: t, lock: t.LOCK.UPDATE });
   if (!doc || doc.status !== 'SUBMITTED') throw new AppError(409, 'BAD_STATE', 'This stock document is not waiting for approval');
-  const lines = await StockDocumentLine.findAll({ where: { documentId: doc.id }, order: [['itemId', 'ASC'], ['createdAt', 'ASC']], transaction: t });
-  await ledger.post(t, doc, lines, ctx.user.id);
-  await doc.update({ status: 'POSTED', postedAt: new Date() }, { transaction: t });
-  await audit.log(ctx.req, { action: 'STOCK_POSTED', entityType: 'StockDocument', entityId: doc.id,
-    newValues: { docNo: doc.docNo, type: doc.type, lines: lines.length } }, t);
+  await postNow(ctx.req, doc, t);
 };
 const closeDocument = (status, action) => async (r, ctx) => {
   const t = ctx.transaction;
