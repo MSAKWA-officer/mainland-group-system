@@ -49,9 +49,9 @@ export default function AdjustmentsView() {
             <Row label={t('view.reason')}>{d.reason}</Row>
             <Row label={t('view.createdBy')}>{d.creator?.fullName}</Row>
             <Row label={t('view.created')}>{fmt(d.createdAt)}</Row>
-            <Row label={t('view.submitted')}>{d.submittedAt && fmt(d.submittedAt)}</Row>
-            <Row label={t('view.decision')}>{d.approval?.decidedAt && `${docs.status(d.status)}, ${fmt(d.approval.decidedAt)}`}</Row>
-            <Row label={t('view.decisionNote')}>{d.approval?.decisionNote}</Row>
+            {d.submittedAt && <Row label={t('view.submitted')}>{fmt(d.submittedAt)}</Row>}
+            {d.approval?.decidedAt && <Row label={t('view.decision')}>{`${docs.status(d.status)}, ${fmt(d.approval.decidedAt)}`}</Row>}
+            {d.approval?.decisionNote && <Row label={t('view.decisionNote')}>{d.approval.decisionNote}</Row>}
             <Row label={t('view.posted')}>{d.postedAt && fmt(d.postedAt)}</Row>
           </dl>
           <div className="mt-6">

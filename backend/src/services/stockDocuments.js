@@ -6,12 +6,12 @@ const { AppError } = require('../utils/errors');
 
 /* One engine for all six stock documents. Lifecycle:
    DRAFT -> (submit) SUBMITTED -> (approve) POSTED   | (reject) REJECTED | (cancel) CANCELLED
-   Stock changes ONLY when the document is posted (see stockLedger). Types with `autoPost: true` (Stock receiving) need NO approval:
+   Stock changes ONLY when the document is posted (see stockLedger). Types with `autoPost: true` (Stock receiving, Stock adjustment) need NO approval:
    they are posted straight to stock the moment they are saved. All other types register an approval type with its own permission,
    e.g. `adjustments.approve`, and the requester can never approve their own document. */
 const TYPES = {
   RECEIVING:  { label: 'Stock receiving',            prefix: 'RCV', module: 'receiving',   approval: 'STOCK_RECEIVING',   direction: 'IN',  reasonRequired: false, autoPost: true },
-  ADJUSTMENT: { label: 'Stock adjustment',           prefix: 'ADJ', module: 'adjustments', approval: 'STOCK_ADJUSTMENT',  direction: null,  reasonRequired: true },
+  ADJUSTMENT: { label: 'Stock adjustment',           prefix: 'ADJ', module: 'adjustments', approval: 'STOCK_ADJUSTMENT',  direction: null,  reasonRequired: true,  autoPost: true },
   REJECT_IN:  { label: 'Reject in (customer return)', prefix: 'RIN', module: 'reject_in',   approval: 'STOCK_REJECT_IN',   direction: 'IN',  reasonRequired: true },
   REJECT_OUT: { label: 'Reject out (return to supplier)', prefix: 'ROU', module: 'reject_out', approval: 'STOCK_REJECT_OUT', direction: 'OUT', reasonRequired: true },
   EXPIRED:    { label: 'Expired stock write-off',    prefix: 'EXP', module: 'expired',     approval: 'STOCK_EXPIRED',     direction: 'OUT', reasonRequired: false },
