@@ -15,7 +15,8 @@
     "actions": "操作",
     "items": "商品",
     "unit": "单位",
-    "batchNo": "批次号"
+    "batchNo": "批次号",
+    "unitQty": "数量（单位）"
   },
   "empty": "暂无收货单据。",
   "newTitle": "新建库存收货",
@@ -60,7 +61,9 @@
     "decision": "审批结果",
     "decisionNote": "审批意见",
     "posted": "入库时间",
-    "itemsReceived": "收货商品"
+    "itemsReceived": "收货商品",
+    "docNo": "单据编号",
+    "noLines": "此收货单没有商品。"
   },
   "lineCols": {
     "item": "商品",

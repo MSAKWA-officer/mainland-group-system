@@ -62,7 +62,7 @@ module.exports = (type) => {
           { model: Item, as: 'item', attributes: ['id', 'sku', 'name', 'unit'] },
           { model: StockBatch, as: 'batch', attributes: ['id', 'batchNo'] }] }) : [];
       const byDoc = {};
-      docLines.forEach((l) => { (byDoc[l.documentId] ||= []).push({ id: l.id, batchNo: l.batchNo, item: l.item, batch: l.batch }); });
+      docLines.forEach((l) => { (byDoc[l.documentId] ||= []).push({ id: l.id, quantity: l.quantity, batchNo: l.batchNo, item: l.item, batch: l.batch }); });
       const data = rows.map((r) => ({ ...r.toJSON(), lines: byDoc[r.id] || [] }));
       res.json({ data, total: count, page, limit });
     },

@@ -15,7 +15,8 @@
     "actions": "Vitendo",
     "items": "Bidhaa",
     "unit": "Kipimo",
-    "batchNo": "Namba ya bechi"
+    "batchNo": "Namba ya bechi",
+    "unitQty": "Kiasi (kipimo)"
   },
   "empty": "Hakuna hati za mapokezi bado.",
   "newTitle": "Mapokezi mapya ya bidhaa",
@@ -60,7 +61,9 @@
     "decision": "Uamuzi",
     "decisionNote": "Maelezo ya uamuzi",
     "posted": "Imewekwa stoo",
-    "itemsReceived": "Bidhaa zilizopokelewa"
+    "itemsReceived": "Bidhaa zilizopokelewa",
+    "docNo": "Namba ya hati",
+    "noLines": "Hakuna bidhaa kwenye mapokezi haya."
   },
   "lineCols": {
     "item": "Bidhaa",

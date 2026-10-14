@@ -15,7 +15,8 @@
     "actions": "Actions",
     "items": "Items",
     "unit": "Unit",
-    "batchNo": "Batch no."
+    "batchNo": "Batch no.",
+    "unitQty": "Unit quantity"
   },
   "empty": "No receiving documents yet.",
   "newTitle": "New stock receiving",
@@ -60,7 +61,9 @@
     "decision": "Decision",
     "decisionNote": "Decision note",
     "posted": "Posted to stock",
-    "itemsReceived": "Items received"
+    "itemsReceived": "Items received",
+    "docNo": "Document no.",
+    "noLines": "No items on this receiving."
   },
   "lineCols": {
     "item": "Item",

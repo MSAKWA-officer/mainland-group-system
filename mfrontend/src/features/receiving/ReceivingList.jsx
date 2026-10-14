@@ -7,7 +7,7 @@ import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
 import { EyeIcon, PencilIcon, TrashIcon, BanIcon, CheckIcon, XIcon, SendIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
-import { IconBtn, STATUS, Tag } from '../stock/StockList.jsx';
+import { IconBtn, Tag, qty } from '../stock/StockList.jsx';
 import { useDocText } from '../../utils/docText';
 
 // Full set of workflow icons for one receiving document. Used by ReceivingView.
@@ -97,7 +97,7 @@ export default function ReceivingList() {
   }, [input]);
   const list = useLoad(() => receivingApi.list({ page, search: search || undefined }), [page, search]);
   const rows = list.data?.data || [];
-  const heads = ['date', 'items', 'unit', 'batchNo', 'createdBy', 'status', 'actions'];
+  const heads = ['date', 'items', 'unitQty', 'batchNo', 'createdBy', 'status', 'actions'];
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
       <div className="flex items-center justify-between gap-3 p-4">
@@ -126,7 +126,7 @@ export default function ReceivingList() {
                 <tr key={`${d.id}-${l?.id ?? n}`} className="bg-white">
                   {n === 0 && <td rowSpan={lines.length} className={`${CELL} whitespace-nowrap text-left`}>{d.docDate}</td>}
                   <td className={`${CELL} text-center`}>{l?.item?.name || '—'}</td>
-                  <td className={`${CELL} text-center`}>{l?.item?.unit || '—'}</td>
+                  <td className={`${CELL} text-center`}>{l ? `${qty(l.quantity)} ${l.item?.unit || ''}`.trim() : '—'}</td>
                   <td className={`${CELL} text-center`}>{l?.batch?.batchNo || l?.batchNo || '—'}</td>
                   {n === 0 && (
                     <>
