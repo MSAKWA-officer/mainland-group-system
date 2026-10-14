@@ -47,7 +47,9 @@
     "dateReceived": "Tarehe ya kupokea",
     "supplier": "Msambazaji",
     "reference": "Kumbukumbu (namba ya ankara au hati ya uwasilishaji)",
-    "notes": "Maelezo ya ziada"
+    "notes": "Maelezo ya ziada",
+    "referenceAuto": "Namba ya kumbukumbu",
+    "referenceAutoHint": "Hutengenezwa kiotomatiki unapohifadhi"
   },
   "view": {
     "date": "Tarehe ya kupokea",
@@ -77,5 +79,8 @@
   "from": "Kuanzia",
   "new": "+ Pokezi Jipya",
   "editLocked": "Haiwezi kuhaririwa.",
-  "deleteLocked": "Haiwezi kufutwa."
+  "deleteLocked": "Haiwezi kufutwa.",
+  "receivedSaved": "Upokeaji {{docNo}} umehifadhiwa. Namba ya kumbukumbu {{reference}}.",
+  "expiryListed": "Bidhaa zenye tarehe ya kuisha zimeorodheshwa kwenye ukurasa wa Zilizoisha muda.",
+  "saveReceiving": "Hifadhi upokeaji"
 }

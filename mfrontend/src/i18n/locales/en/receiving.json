@@ -47,7 +47,9 @@
     "dateReceived": "Date received",
     "supplier": "Supplier",
     "reference": "Reference (invoice or delivery note no.)",
-    "notes": "Notes"
+    "notes": "Notes",
+    "referenceAuto": "Reference no.",
+    "referenceAutoHint": "Generated automatically when you save"
   },
   "view": {
     "date": "Date received",
@@ -77,5 +79,8 @@
   "from": "From",
   "new": "+ New Receiving",
   "editLocked": "Edit is not available for this receiving.",
-  "deleteLocked": "Delete is not available for this receiving."
+  "deleteLocked": "Delete is not available for this receiving.",
+  "receivedSaved": "Receiving {{docNo}} saved. Reference no. {{reference}}.",
+  "expiryListed": "Expiry items are listed on the Expired page.",
+  "saveReceiving": "Save receiving"
 }

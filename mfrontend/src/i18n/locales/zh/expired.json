@@ -60,5 +60,21 @@
     "expiry": "有效期",
     "remarks": "备注",
     "deleted": "报损单 {{docNo}} 已删除。"
+  },
+  "batches": {
+    "title": "已入库的有效期商品",
+    "subtitle": "入库时自动添加，按最近到期排序。",
+    "empty": "暂无带有效期的入库商品。",
+    "expired": "已过期",
+    "soon": "即将过期",
+    "valid": "有效",
+    "cols": {
+      "sku": "SKU",
+      "item": "商品",
+      "batchNo": "批号",
+      "expiryDate": "到期日",
+      "quantity": "库存数量",
+      "status": "状态"
+    }
   }
 }

@@ -60,5 +60,21 @@
     "expiry": "Expiry",
     "remarks": "Remarks",
     "deleted": "Write-off {{docNo}} deleted."
+  },
+  "batches": {
+    "title": "Received items with expiry",
+    "subtitle": "Added automatically when stock is received. Nearest expiry first.",
+    "empty": "No received items with an expiry date yet.",
+    "expired": "Expired",
+    "soon": "Expiring soon",
+    "valid": "Valid",
+    "cols": {
+      "sku": "SKU",
+      "item": "Item",
+      "batchNo": "Batch no.",
+      "expiryDate": "Expiry date",
+      "quantity": "Quantity in stock",
+      "status": "Status"
+    }
   }
 }

@@ -74,9 +74,12 @@ const create = (req, type, body) => sequelize.transaction(async (t) => {
   const cfg = TYPES[type];
   const lines = await normalizeLines(type, body.lines, t);
   const [seq] = await sequelize.query("SELECT nextval('stock_doc_seq') AS n", { transaction: t });
-  const docNo = `${cfg.prefix}-${new Date().getFullYear()}-${String(seq[0].n).padStart(6, '0')}`;
+  const num = `${new Date().getFullYear()}-${String(seq[0].n).padStart(6, '0')}`;
+  const docNo = `${cfg.prefix}-${num}`;
+  // Stock receiving: the reference number is generated automatically on save (REF-<year>-<same number as the document no.>).
+  const reference = type === 'RECEIVING' ? `REF-${num}` : (body.reference ?? null);
   const doc = await StockDocument.create({ docNo, type, status: 'DRAFT', ...(body.docDate && { docDate: body.docDate }),
-    partyName: body.partyName ?? null, reference: body.reference ?? null, reason: body.reason ?? null, createdBy: req.user.id }, { transaction: t });
+    partyName: body.partyName ?? null, reference, reason: body.reason ?? null, createdBy: req.user.id }, { transaction: t });
   await StockDocumentLine.bulkCreate(lines.map((l) => ({ ...l, documentId: doc.id })), { transaction: t });
   await audit.log(req, { action: 'STOCK_DOC_CREATED', entityType: 'StockDocument', entityId: doc.id, newValues: snapshot(doc, lines.length) }, t);
   if (cfg.autoPost) await postNow(req, doc, t);              // no approval: stock is increased right away, in this same transaction

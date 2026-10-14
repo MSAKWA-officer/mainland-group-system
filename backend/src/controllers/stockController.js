@@ -43,3 +43,13 @@ exports.batches = async (req, res) => {
   const t = today();
   res.json(rows.map((b) => ({ ...b.toJSON(), expired: b.expiryDate < t })));
 };
+
+// Every batch of an item that tracks expiry, filled automatically by stock receiving. Feeds the Expired list.
+// status: expired (date passed), soon (within `days`, default 30), valid.
+exports.expiryBatches = async (req, res) => {
+  const { days, includeEmpty } = req.query; const soon = days ?? 30;
+  const rows = await StockBatch.findAll({ where: includeEmpty ? {} : { quantity: { [Op.gt]: 0 } }, order: [['expiryDate', 'ASC']],
+    include: [{ model: Item, as: 'item', required: true, where: { trackExpiry: true }, attributes: ['id', 'sku', 'name', 'unit'] }] });
+  const t = today(); const limit = new Date(Date.now() + soon * 864e5).toISOString().slice(0, 10);
+  res.json(rows.map((b) => ({ ...b.toJSON(), status: b.expiryDate < t ? 'expired' : b.expiryDate <= limit ? 'soon' : 'valid' })));
+};

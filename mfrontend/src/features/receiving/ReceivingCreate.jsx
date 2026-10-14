@@ -14,9 +14,10 @@ export const emptyLine = () => ({ itemId: '', quantity: '', unitCost: '', batchN
 export const today = () => new Date().toISOString().slice(0, 10);
 
 // Turns the form into the API body. Batch fields are sent only for items that track expiry.
-export function buildPayload(head, lines, canCost, items) {
+export function buildPayload(head, lines, canCost, items, autoRef = false) {
   return {
-    docDate: head.docDate, partyName: head.partyName.trim() || null, reference: head.reference.trim() || null, reason: head.reason.trim() || null,
+    docDate: head.docDate, partyName: head.partyName.trim() || null, reason: head.reason.trim() || null,
+    ...(!autoRef && { reference: head.reference.trim() || null }),   // on create the server generates the reference number
     lines: lines.map((l) => ({
       itemId: l.itemId, quantity: Number(l.quantity), remarks: l.remarks.trim() || null,
       ...(canCost && l.unitCost !== '' && l.unitCost != null && { unitCost: Number(l.unitCost) }),
@@ -101,14 +102,20 @@ export function LineEditor({ lines, setLines, fe = {} }) {
   );
 }
 
-export function HeadFields({ head, setHead, fe }) {
+export function HeadFields({ head, setHead, fe, autoRef = false }) {
   const { t } = useTranslation('receiving');
   const set = (k) => (e) => setHead({ ...head, [k]: e.target.value });
   return (
     <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
       <Field label={t('form.dateReceived')} error={fe.docDate}><input className="input !text-black" type="date" required value={head.docDate} onChange={set('docDate')} /></Field>
       <Field label={t('form.supplier')} error={fe.partyName}><input className="input !text-black" maxLength={150} value={head.partyName} onChange={set('partyName')} /></Field>
-      <Field label={t('form.reference')} error={fe.reference}><input className="input !text-black" maxLength={100} value={head.reference} onChange={set('reference')} /></Field>
+      {autoRef ? (
+        <Field label={t('form.referenceAuto', { defaultValue: 'Reference no.' })} error={fe.reference}>
+          <input className="input !text-black" readOnly disabled value={t('form.referenceAutoHint', { defaultValue: 'Generated automatically when you save' })} />
+        </Field>
+      ) : (
+        <Field label={t('form.reference')} error={fe.reference}><input className="input !text-black" maxLength={100} value={head.reference} onChange={set('reference')} /></Field>
+      )}
       <Field label={t('form.notes')} error={fe.reason}><input className="input !text-black" maxLength={1000} value={head.reason} onChange={set('reason')} /></Field>
     </div>
   );
@@ -128,8 +135,11 @@ export default function ReceivingCreate() {
       // Look up each chosen item so batch fields are sent for items that track expiry.
       const items = {};
       await Promise.all([...new Set(lines.map((l) => l.itemId))].map(async (id) => { items[id] = await itemApi.get(id); }));
-      const d = await receivingApi.create(buildPayload(head, lines, can('items.view_cost'), items));
-      navigate('/receiving', { state: { msg: t('draftSaved', { docNo: d.docNo }) } });
+      const d = await receivingApi.create(buildPayload(head, lines, can('items.view_cost'), items, true));
+      // The server posts the stock and generates the reference. Items that track expiry now also show on the Expired list.
+      const tracked = lines.some((l) => items[l.itemId]?.trackExpiry);
+      navigate('/receiving', { state: { msg: t('receivedSaved', { docNo: d.docNo, reference: d.reference,
+        defaultValue: 'Receiving {{docNo}} saved. Reference no. {{reference}}.' }) + (tracked ? ' ' + t('expiryListed', { defaultValue: 'Expiry items are listed on the Expired page.' }) : '') } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
   };
   return (
@@ -143,9 +153,9 @@ export default function ReceivingCreate() {
       </div>
       <form onSubmit={submit} className="space-y-6 border-t border-line px-6 py-6">
         <Banner>{err}</Banner>
-        <HeadFields head={head} setHead={setHead} fe={fe} />
+        <HeadFields head={head} setHead={setHead} fe={fe} autoRef />
         <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} /></div>
-        <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('saveDraft')}</button>
+        <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('saveReceiving', { defaultValue: t('saveDraft') })}</button>
       </form>
     </div>
   );

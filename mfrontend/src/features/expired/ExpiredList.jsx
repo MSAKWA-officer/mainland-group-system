@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { expiredApi, errMsg } from '../../api/index.js';
+import { expiredApi, stockApi, errMsg } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
@@ -46,6 +46,42 @@ export function RowActions({ d, showView, onChanged, onError, afterDelete }) {
 const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
 const HEAD = `${CELL} bg-white font-semibold uppercase`;
 const al = (i) => (i === 0 ? 'text-left' : 'text-center');
+
+
+// Batches received through Stock receiving (items that track expiry) are listed here automatically.
+const BATCH_TONE = { expired: 'text-red-600 font-semibold', soon: 'text-amber-600 font-semibold', valid: 'text-[#212121]' };
+function ReceivedExpiryList() {
+  const { t } = useTranslation('expired');
+  const batches = useLoad(() => stockApi.expiryBatches(), []);
+  const rows = Array.isArray(batches.data) ? batches.data : [];
+  const label = { expired: t('batches.expired', { defaultValue: 'Expired' }), soon: t('batches.soon', { defaultValue: 'Expiring soon' }), valid: t('batches.valid', { defaultValue: 'Valid' }) };
+  const cols = ['sku', 'item', 'batchNo', 'expiryDate', 'quantity', 'status'];
+  const dflt = { sku: 'SKU', item: 'Item', batchNo: 'Batch no.', expiryDate: 'Expiry date', quantity: 'Quantity in stock', status: 'Status' };
+  return (
+    <div className="mt-6 px-4 pb-4">
+      <h2 className="text-[16px] font-bold">{t('batches.title', { defaultValue: 'Received items with expiry' })}</h2>
+      <p className="mb-3 mt-0.5 text-[14px]">{t('batches.subtitle', { defaultValue: 'Added automatically when stock is received. Nearest expiry first.' })}</p>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse bg-white">
+          <thead><tr>{cols.map((k, i) => <th key={k} className={`${HEAD} ${al(i)}`}>{t(`batches.cols.${k}`, { defaultValue: dflt[k] })}</th>)}</tr></thead>
+          <tbody>
+            {!batches.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={cols.length}>{t('batches.empty', { defaultValue: 'No received items with an expiry date yet.' })}</td></tr>}
+            {rows.map((b) => (
+              <tr key={b.id} className="bg-white">
+                <td className={`${CELL} whitespace-nowrap text-left`}>{b.item?.sku}</td>
+                <td className={`${CELL} text-center`}>{b.item?.name}</td>
+                <td className={`${CELL} text-center`}>{b.batchNo}</td>
+                <td className={`${CELL} whitespace-nowrap text-center`}>{b.expiryDate}</td>
+                <td className={`${CELL} text-center`}>{Number(b.quantity)} {b.item?.unit}</td>
+                <td className={`${CELL} text-center ${BATCH_TONE[b.status]}`}>{label[b.status]}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
 
 export default function ExpiredList() {
   const { t } = useTranslation('expired');
@@ -101,6 +137,7 @@ export default function ExpiredList() {
         </table>
       </div>
       {list.data && <Pager page={page} total={list.data.total} limit={list.data.limit} set={setPage} />}
+      <ReceivedExpiryList />
     </div>
   );
 }

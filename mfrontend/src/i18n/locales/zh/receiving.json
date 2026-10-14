@@ -47,7 +47,9 @@
     "dateReceived": "收货日期",
     "supplier": "供应商",
     "reference": "参考号（发票或送货单编号）",
-    "notes": "备注说明"
+    "notes": "备注说明",
+    "referenceAuto": "参考号",
+    "referenceAutoHint": "保存时自动生成"
   },
   "view": {
     "date": "收货日期",
@@ -77,5 +79,8 @@
   "from": "从",
   "new": "+ 新建收货",
   "editLocked": "此收货单无法编辑。",
-  "deleteLocked": "此收货单无法删除。"
+  "deleteLocked": "此收货单无法删除。",
+  "receivedSaved": "入库单 {{docNo}} 已保存。参考号 {{reference}}。",
+  "expiryListed": "有效期商品已列入“过期”页面。",
+  "saveReceiving": "保存入库"
 }

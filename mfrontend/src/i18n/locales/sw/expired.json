@@ -60,5 +60,21 @@
     "expiry": "Muda wa kuisha",
     "remarks": "Maelezo",
     "deleted": "Uondoaji {{docNo}} umefutwa."
+  },
+  "batches": {
+    "title": "Bidhaa zilizopokelewa zenye tarehe ya kuisha",
+    "subtitle": "Huongezwa kiotomatiki stoo inapopokelewa. Zinazokaribia kuisha kwanza.",
+    "empty": "Bado hakuna bidhaa zilizopokelewa zenye tarehe ya kuisha.",
+    "expired": "Imeisha muda",
+    "soon": "Inakaribia kuisha",
+    "valid": "Nzuri",
+    "cols": {
+      "sku": "SKU",
+      "item": "Bidhaa",
+      "batchNo": "Namba ya bechi",
+      "expiryDate": "Tarehe ya kuisha",
+      "quantity": "Kiasi kilichopo",
+      "status": "Hali"
+    }
   }
 }
