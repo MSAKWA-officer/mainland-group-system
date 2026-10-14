@@ -6,16 +6,16 @@ const { AppError } = require('../utils/errors');
 
 /* One engine for all six stock documents. Lifecycle:
    DRAFT -> (submit) SUBMITTED -> (approve) POSTED   | (reject) REJECTED | (cancel) CANCELLED
-   Stock changes ONLY when the document is posted (see stockLedger). Types with `autoPost: true` (Stock receiving, Stock adjustment) need NO approval:
-   they are posted straight to stock the moment they are saved. All other types register an approval type with its own permission,
-   e.g. `adjustments.approve`, and the requester can never approve their own document. */
+   Stock changes ONLY when the document is posted (see stockLedger). Every type has `autoPost: true`, so NO approval is needed:
+   the document is posted straight to stock the moment it is saved. The approval types below stay registered only so documents
+   that were submitted before this change can still be approved or rejected. */
 const TYPES = {
   RECEIVING:  { label: 'Stock receiving',            prefix: 'RCV', module: 'receiving',   approval: 'STOCK_RECEIVING',   direction: 'IN',  reasonRequired: false, autoPost: true },
   ADJUSTMENT: { label: 'Stock adjustment',           prefix: 'ADJ', module: 'adjustments', approval: 'STOCK_ADJUSTMENT',  direction: null,  reasonRequired: true,  autoPost: true },
-  REJECT_IN:  { label: 'Reject in (customer return)', prefix: 'RIN', module: 'reject_in',   approval: 'STOCK_REJECT_IN',   direction: 'IN',  reasonRequired: true },
-  REJECT_OUT: { label: 'Reject out (return to supplier)', prefix: 'ROU', module: 'reject_out', approval: 'STOCK_REJECT_OUT', direction: 'OUT', reasonRequired: true },
-  EXPIRED:    { label: 'Expired stock write-off',    prefix: 'EXP', module: 'expired',     approval: 'STOCK_EXPIRED',     direction: 'OUT', reasonRequired: false },
-  DAMAGED:    { label: 'Damaged stock write-off',    prefix: 'DMG', module: 'damaged',     approval: 'STOCK_DAMAGED',     direction: 'OUT', reasonRequired: true },
+  REJECT_IN:  { label: 'Reject in (customer return)', prefix: 'RIN', module: 'reject_in',   approval: 'STOCK_REJECT_IN',   direction: 'IN',  reasonRequired: true, autoPost: true },
+  REJECT_OUT: { label: 'Reject out (return to supplier)', prefix: 'ROU', module: 'reject_out', approval: 'STOCK_REJECT_OUT', direction: 'OUT', reasonRequired: true, autoPost: true },
+  EXPIRED:    { label: 'Expired stock write-off',    prefix: 'EXP', module: 'expired',     approval: 'STOCK_EXPIRED',     direction: 'OUT', reasonRequired: false, autoPost: true },
+  DAMAGED:    { label: 'Damaged stock write-off',    prefix: 'DMG', module: 'damaged',     approval: 'STOCK_DAMAGED',     direction: 'OUT', reasonRequired: true, autoPost: true },
 };
 
 const bad = (field, message) => new AppError(400, 'VALIDATION_ERROR', 'Check the highlighted fields', [{ field, message }]);

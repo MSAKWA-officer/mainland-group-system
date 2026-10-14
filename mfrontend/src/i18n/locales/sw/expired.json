@@ -22,9 +22,9 @@
   },
   "create": {
     "title": "Uondoaji mpya wa stoo iliyoisha muda",
-    "subtitle": "Ni bidhaa zinazofuatiliwa tarehe ya kuisha muda pekee zinazoweza kuondolewa. Stoo haipungui hadi uondoaji utakapowasilishwa na kuidhinishwa.",
-    "saveDraft": "Hifadhi kama rasimu",
-    "draftSaved": "Rasimu {{docNo}} imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari."
+    "subtitle": "Ni bidhaa zinazofuatiliwa tarehe ya kuisha muda pekee zinazoweza kuondolewa. Stoo hupungua mara tu uondoaji unapohifadhiwa. Hakuna idhini inayohitajika.",
+    "saveDraft": "Hifadhi uondoaji",
+    "draftSaved": "Uondoaji {{docNo}} umehifadhiwa na stoo imesasishwa."
   },
   "edit": {
     "title": "Hariri uondoaji wa stoo iliyoisha muda",

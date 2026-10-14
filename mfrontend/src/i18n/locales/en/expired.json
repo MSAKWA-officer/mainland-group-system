@@ -22,9 +22,9 @@
   },
   "create": {
     "title": "New expired stock write-off",
-    "subtitle": "Only items that track expiry can be written off. Stock does not decrease until the write-off is submitted and approved.",
-    "saveDraft": "Save as draft",
-    "draftSaved": "Draft {{docNo}} saved. Submit it for approval when you are ready."
+    "subtitle": "Only items that track expiry can be written off. Stock decreases as soon as the write-off is saved. No approval is needed.",
+    "saveDraft": "Save write-off",
+    "draftSaved": "Expired write-off {{docNo}} saved and stock updated."
   },
   "edit": {
     "title": "Edit expired stock write-off",

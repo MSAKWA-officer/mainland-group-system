@@ -18,9 +18,9 @@
   },
   "create": {
     "title": "Rejesho jipya la mteja",
-    "subtitle": "Stoo haiongezeki hadi rejesho litakapowasilishwa na kuidhinishwa.",
-    "saveDraft": "Hifadhi kama rasimu",
-    "draftSaved": "Rasimu {{docNo}} imehifadhiwa. Iwasilishe kwa idhini ukiwa tayari."
+    "subtitle": "Stoo huongezeka mara tu rejesho linapohifadhiwa. Hakuna idhini inayohitajika.",
+    "saveDraft": "Hifadhi rejesho",
+    "draftSaved": "Rejesho {{docNo}} limehifadhiwa na stoo imesasishwa."
   },
   "edit": {
     "title": "Hariri rejesho la mteja",

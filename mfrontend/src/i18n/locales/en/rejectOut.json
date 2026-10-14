@@ -18,9 +18,9 @@
   },
   "create": {
     "title": "New return to supplier",
-    "subtitle": "Stock does not decrease until the return is submitted and approved.",
-    "saveDraft": "Save as draft",
-    "draftSaved": "Draft {{docNo}} saved. Submit it for approval when you are ready."
+    "subtitle": "Stock decreases as soon as the return is saved. No approval is needed.",
+    "saveDraft": "Save return",
+    "draftSaved": "Reject out {{docNo}} saved and stock updated."
   },
   "edit": {
     "title": "Edit return to supplier",
