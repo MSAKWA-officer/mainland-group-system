@@ -1,4 +1,5 @@
-const { Op, literal } = require('sequelize');
+const { Op, literal, QueryTypes } = require('sequelize');
+const sequelize = require('../config/sequelize');
 const { StockLevel, Item, Category, StockBatch } = require('../models');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
@@ -44,12 +45,39 @@ exports.batches = async (req, res) => {
   res.json(rows.map((b) => ({ ...b.toJSON(), expired: b.expiryDate < t })));
 };
 
-// Every batch of an item that tracks expiry, filled automatically by stock receiving. Feeds the Expired list.
-// status: expired (date passed), soon (within `days`, default 30), valid.
+/* ---- Expired list: every batch of an item that tracks expiry, created automatically by stock receiving ---- */
+const statusOf = (expiryDate, soon) => {
+  const t = today(); const limit = new Date(Date.now() + soon * 864e5).toISOString().slice(0, 10);
+  return expiryDate < t ? 'expired' : expiryDate <= limit ? 'soon' : 'valid';
+};
+const batchItem = { model: Item, as: 'item', required: true, where: { trackExpiry: true }, attributes: ['id', 'sku', 'name', 'unit'] };
+// Receiving documents that brought stock into the given batches (oldest first).
+const receipts = (ids) => (ids.length ? sequelize.query(
+  `SELECT m.batch_id AS "batchId", d.id AS "documentId", d.doc_no AS "docNo", d.doc_date AS "docDate", d.reference, d.party_name AS "partyName",
+          d.reason AS notes, m.quantity, u.full_name AS "receivedBy"
+     FROM stock_movements m JOIN stock_documents d ON d.id = m.document_id LEFT JOIN users u ON u.id = d.created_by
+    WHERE m.batch_id IN (:ids) AND m.movement_type = 'RECEIVING' AND m.direction = 'IN'
+    ORDER BY m.occurred_at ASC`, { replacements: { ids }, type: QueryTypes.SELECT }) : Promise.resolve([]));
+
 exports.expiryBatches = async (req, res) => {
   const { days, includeEmpty } = req.query; const soon = days ?? 30;
-  const rows = await StockBatch.findAll({ where: includeEmpty ? {} : { quantity: { [Op.gt]: 0 } }, order: [['expiryDate', 'ASC']],
-    include: [{ model: Item, as: 'item', required: true, where: { trackExpiry: true }, attributes: ['id', 'sku', 'name', 'unit'] }] });
-  const t = today(); const limit = new Date(Date.now() + soon * 864e5).toISOString().slice(0, 10);
-  res.json(rows.map((b) => ({ ...b.toJSON(), status: b.expiryDate < t ? 'expired' : b.expiryDate <= limit ? 'soon' : 'valid' })));
+  const rows = await StockBatch.findAll({ where: includeEmpty ? {} : { quantity: { [Op.gt]: 0 } }, order: [['expiryDate', 'ASC']], include: [batchItem] });
+  const first = new Map();
+  (await receipts(rows.map((b) => b.id))).forEach((r) => { if (!first.has(r.batchId)) first.set(r.batchId, r); });
+  res.json(rows.map((b) => { const r = first.get(b.id);
+    return { ...b.toJSON(), dateReceived: r?.docDate || String(b.createdAt.toISOString()).slice(0, 10), status: statusOf(b.expiryDate, soon) }; }));
+};
+
+// One batch with everything else about it: item, every receiving document and every expired write-off.
+exports.expiryBatch = async (req, res) => {
+  const b = await StockBatch.findByPk(req.params.batchId, { include: [{ ...batchItem, attributes: ['id', 'sku', 'name', 'unit', 'barcode'] }] });
+  if (!b) throw new AppError(404, 'NOT_FOUND', 'Batch not found');
+  const recv = await receipts([b.id]);
+  const writeOffs = await sequelize.query(
+    `SELECT d.id, d.doc_no AS "docNo", d.doc_date AS "docDate", d.reference, d.reason AS notes, d.status, l.quantity, l.remarks, u.full_name AS "createdBy"
+       FROM stock_document_lines l JOIN stock_documents d ON d.id = l.document_id LEFT JOIN users u ON u.id = d.created_by
+      WHERE l.batch_id = :id AND d.type = 'EXPIRED' ORDER BY d.created_at DESC`, { replacements: { id: b.id }, type: QueryTypes.SELECT });
+  const days = Math.round((new Date(b.expiryDate) - new Date(today())) / 864e5);
+  res.json({ ...b.toJSON(), dateReceived: recv[0]?.docDate || String(b.createdAt.toISOString()).slice(0, 10), status: statusOf(b.expiryDate, 30), daysToExpiry: days,
+    receipts: recv, writeOffs });
 };

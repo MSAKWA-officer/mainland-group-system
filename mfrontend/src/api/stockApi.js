@@ -5,6 +5,7 @@ export const list = (params) => api.get('/stock', { params }).then((r) => r.data
 export const get = (itemId) => api.get(`/stock/${itemId}`).then((r) => r.data);
 // Batches of expiry-tracked items created by stock receiving (for the Expired list).
 export const expiryBatches = (params) => api.get('/stock/expiry-batches', { params }).then((r) => r.data);
+export const expiryBatch = (batchId) => api.get(`/stock/expiry-batches/${batchId}`).then((r) => r.data);
 export const batches = (itemId, params) => api.get(`/stock/${itemId}/batches`, { params }).then((r) => r.data);
 
 // ---- Stock adjustments (the documents that add or remove stock, with approval) ----

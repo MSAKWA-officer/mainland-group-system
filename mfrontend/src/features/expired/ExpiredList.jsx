@@ -5,139 +5,107 @@ import { expiredApi, stockApi, errMsg } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
-import { EyeIcon, PencilIcon, TrashIcon, BanIcon, CheckIcon, XIcon, SendIcon } from '../../components/Icons.jsx';
+import { EyeIcon, TrashIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
-import { IconBtn, Tag } from '../stock/StockList.jsx';
-import { useDocText } from '../../utils/docText';
-
-// Icon actions for one write-off document. Used by this list and by ExpiredView.
-// Rules mirror the API: only the creator edits / submits / cancels, approvers never act on their own document,
-// and only draft, cancelled or rejected documents can be deleted (by the creator or the Owner).
-export function RowActions({ d, showView, onChanged, onError, afterDelete }) {
-  const { t } = useDocText();
-  const { user, can } = useAuth();
-  const navigate = useNavigate();
-  const mine = d.createdBy === user.id;
-  const run = async (fn) => { onError(''); try { await fn(); onChanged?.(); } catch (x) { onError(errMsg(x)); } };
-  const act = (action, body) => run(() => expiredApi.act(d.id, action, body));
-  const remove = async () => {
-    if (!window.confirm(t('confirmDelete', { docNo: d.docNo }))) return;
-    onError('');
-    try { await expiredApi.remove(d.id); (afterDelete || onChanged)?.(); } catch (x) { onError(errMsg(x)); }
-  };
-  const canDelete = can('expired.create') && (mine || user.role === 'OWNER') && ['DRAFT', 'CANCELLED', 'REJECTED'].includes(d.status);
-  return (
-    <div className="flex items-center gap-1">
-      {showView && <IconBtn label={t('actions.view')} onClick={() => navigate(`/expired/${d.id}`)}><EyeIcon /></IconBtn>}
-      {mine && d.status === 'DRAFT' && <IconBtn label={t('actions.edit')} onClick={() => navigate(`/expired/${d.id}/edit`)}><PencilIcon /></IconBtn>}
-      {mine && d.status === 'DRAFT' && <IconBtn label={t('actions.submit')} onClick={() => act('submit')}><SendIcon /></IconBtn>}
-      {mine && ['DRAFT', 'SUBMITTED'].includes(d.status) && <IconBtn label={t('actions.cancel')} onClick={() => act('cancel')}><BanIcon /></IconBtn>}
-      {!mine && d.status === 'SUBMITTED' && can('expired.approve') && <IconBtn label={t('actions.approve')} onClick={() => act('approve', {})}><CheckIcon /></IconBtn>}
-      {!mine && d.status === 'SUBMITTED' && can('expired.approve') && (
-        <IconBtn label={t('actions.reject')} danger onClick={() => { const note = window.prompt(t('rejectPrompt')); if (note) act('reject', { note }); }}><XIcon /></IconBtn>
-      )}
-      {canDelete && <IconBtn label={t('actions.delete')} danger onClick={remove}><TrashIcon /></IconBtn>}
-    </div>
-  );
-}
+import { IconBtn, qty } from '../stock/StockList.jsx';
 
 // Table look: Arial 14px, near-black text, 1px light-grey grid on every cell, ~39px rows,
 // first column left-aligned and the rest centred, capital column titles.
-const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
-const HEAD = `${CELL} bg-white font-semibold uppercase`;
-const al = (i) => (i === 0 ? 'text-left' : 'text-center');
+export const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
+export const HEAD = `${CELL} bg-white font-semibold uppercase`;
+export const al = (i) => (i === 0 ? 'text-left' : 'text-center');
+export const TONE = { expired: 'font-semibold text-red-600', soon: 'font-semibold text-amber-600', valid: 'text-[#212121]' };
+const LIMIT = 20;
 
-
-// Batches received through Stock receiving (items that track expiry) are listed here automatically.
-const BATCH_TONE = { expired: 'text-red-600 font-semibold', soon: 'text-amber-600 font-semibold', valid: 'text-[#212121]' };
-function ReceivedExpiryList() {
+export const useBatchText = () => {
   const { t } = useTranslation('expired');
-  const batches = useLoad(() => stockApi.expiryBatches(), []);
-  const rows = Array.isArray(batches.data) ? batches.data : [];
-  const label = { expired: t('batches.expired', { defaultValue: 'Expired' }), soon: t('batches.soon', { defaultValue: 'Expiring soon' }), valid: t('batches.valid', { defaultValue: 'Valid' }) };
-  const cols = ['sku', 'item', 'batchNo', 'expiryDate', 'quantity', 'status'];
-  const dflt = { sku: 'SKU', item: 'Item', batchNo: 'Batch no.', expiryDate: 'Expiry date', quantity: 'Quantity in stock', status: 'Status' };
+  return {
+    t,
+    status: (s) => t(`batches.${s}`, { defaultValue: { expired: 'Expired', soon: 'Expiring soon', valid: 'Valid' }[s] || s }),
+  };
+};
+
+// View + delete icons for one batch. Used by this list and by ExpiredView.
+// Delete = write off the batch's remaining quantity as expired stock. It is only offered once the batch has expired,
+// because stock never changes without a document (the write-off is saved, posted and kept in the audit trail).
+export function BatchActions({ b, showView, onChanged, onError, afterDelete }) {
+  const { t } = useBatchText();
+  const { can } = useAuth();
+  const navigate = useNavigate();
+  const canDelete = can('expired.create') && b.status === 'expired' && Number(b.quantity) > 0;
+  const remove = async () => {
+    const name = `${b.item?.name} / ${b.batchNo}`;
+    if (!window.confirm(t('batches.confirmDelete', { name, qty: qty(b.quantity), defaultValue: `Delete expired stock ${name}? The remaining ${qty(b.quantity)} will be removed from stock.` }))) return;
+    onError('');
+    try {
+      const d = await expiredApi.create({ docDate: new Date().toISOString().slice(0, 10), reference: null, reason: null,
+        lines: [{ itemId: b.itemId, batchId: b.id, quantity: Number(b.quantity), remarks: null }] });
+      (afterDelete || onChanged)?.(d);
+    } catch (x) { onError(errMsg(x)); }
+  };
   return (
-    <div className="mt-6 px-4 pb-4">
-      <h2 className="text-[16px] font-bold">{t('batches.title', { defaultValue: 'Received items with expiry' })}</h2>
-      <p className="mb-3 mt-0.5 text-[14px]">{t('batches.subtitle', { defaultValue: 'Added automatically when stock is received. Nearest expiry first.' })}</p>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse bg-white">
-          <thead><tr>{cols.map((k, i) => <th key={k} className={`${HEAD} ${al(i)}`}>{t(`batches.cols.${k}`, { defaultValue: dflt[k] })}</th>)}</tr></thead>
-          <tbody>
-            {!batches.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={cols.length}>{t('batches.empty', { defaultValue: 'No received items with an expiry date yet.' })}</td></tr>}
-            {rows.map((b) => (
-              <tr key={b.id} className="bg-white">
-                <td className={`${CELL} whitespace-nowrap text-left`}>{b.item?.sku}</td>
-                <td className={`${CELL} text-center`}>{b.item?.name}</td>
-                <td className={`${CELL} text-center`}>{b.batchNo}</td>
-                <td className={`${CELL} whitespace-nowrap text-center`}>{b.expiryDate}</td>
-                <td className={`${CELL} text-center`}>{Number(b.quantity)} {b.item?.unit}</td>
-                <td className={`${CELL} text-center ${BATCH_TONE[b.status]}`}>{label[b.status]}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <div className="flex items-center justify-center gap-1">
+      {showView && <IconBtn label={t('actions.view', { ns: 'docs', defaultValue: 'View' })} onClick={() => navigate(`/expired/${b.id}`)}><EyeIcon /></IconBtn>}
+      {canDelete && <IconBtn label={t('actions.delete', { ns: 'docs', defaultValue: 'Delete' })} danger onClick={remove}><TrashIcon /></IconBtn>}
     </div>
   );
 }
 
 export default function ExpiredList() {
-  const { t } = useTranslation('expired');
-  const { status: statusText } = useDocText();
+  const { t, status: statusText } = useBatchText();
   const { can } = useAuth();
   const location = useLocation();
   const [page, setPage] = useState(1); const [search, setSearch] = useState(''); const [status, setStatus] = useState('');
-  const [from, setFrom] = useState(''); const [to, setTo] = useState('');
   const [err, setErr] = useState('');
-  const list = useLoad(() => expiredApi.list({ page, search: search || undefined, status: status || undefined, from: from || undefined, to: to || undefined }), [page, search, status, from, to]);
-  const rows = list.data?.data || [];
-  const heads = ['docNo', 'date', 'reference', 'notes', 'lines', 'createdBy', 'status', 'actions'].map((k) => t(`heads.${k}`));
+  const list = useLoad(() => stockApi.expiryBatches(), []);
+  const q = search.trim().toLowerCase();
+  const all = (Array.isArray(list.data) ? list.data : []).filter((b) =>
+    (!status || b.status === status) &&
+    (!q || [b.batchNo, b.item?.name, b.item?.sku, b.dateReceived, b.expiryDate].some((v) => String(v || '').toLowerCase().includes(q))));
+  const rows = all.slice((page - 1) * LIMIT, page * LIMIT);
+  const heads = ['batchNo', 'item', 'dateReceived', 'quantity', 'expiryDate', 'status', 'actions'];
+  const dflt = { batchNo: 'Batch no.', item: 'Item', dateReceived: 'Date received', quantity: 'Quantity in stock', expiryDate: 'Expiry date', status: 'Status', actions: 'Action' };
   const reset = (set) => (e) => { setPage(1); set(e.target.value); };
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
       <div className="flex items-center justify-between gap-3 p-4">
         <div>
           <h1 className="text-[18px] font-bold">{t('list.title')}</h1>
-          <p className="mt-0.5 text-[14px]">{t('registered', { count: list.data ? list.data.total : 0 })}</p>
+          <p className="mt-0.5 text-[14px]">{t('registered', { count: list.data ? all.length : 0 })}</p>
         </div>
         {can('expired.create') && <Link to="/expired/new" className="btn-primary px-4 py-2 text-[14px] font-bold">{t('newWriteOff')}</Link>}
       </div>
       <div className="px-4">
         <Banner>{err || list.error}</Banner><Banner kind="ok">{location.state?.msg}</Banner>
         <div className="mb-4 flex flex-wrap items-end gap-3">
-          <input className="input max-w-xs !text-[14px] !text-[#212121]" placeholder={t('list.search')} value={search} onChange={reset(setSearch)} />
+          <input className="input max-w-xs !text-[14px] !text-[#212121]" placeholder={t('batches.search', { defaultValue: 'Search batch, item or date' })} value={search} onChange={reset(setSearch)} />
           <select className="input max-w-[11rem] !text-[14px] !text-[#212121]" value={status} onChange={reset(setStatus)}>
             <option value="">{t('allStatuses')}</option>
-            {['DRAFT', 'SUBMITTED', 'POSTED', 'REJECTED', 'CANCELLED'].map((k) => <option key={k} value={k}>{statusText(k)}</option>)}
+            {['valid', 'soon', 'expired'].map((k) => <option key={k} value={k}>{statusText(k)}</option>)}
           </select>
-          <label className="text-[14px]">{t('from')} <input className="input ml-1 inline-block w-auto !text-[14px] !text-[#212121]" type="date" value={from} onChange={reset(setFrom)} /></label>
-          <label className="text-[14px]">{t('to')} <input className="input ml-1 inline-block w-auto !text-[14px] !text-[#212121]" type="date" value={to} onChange={reset(setTo)} /></label>
         </div>
       </div>
       <div className="overflow-x-auto px-4">
         <table className="w-full border-collapse bg-white">
-          <thead><tr>{heads.map((h, i) => <th key={h} className={`${HEAD} ${al(i)}`}>{h}</th>)}</tr></thead>
+          <thead><tr>{heads.map((k, i) => <th key={k} className={`${HEAD} ${al(i)}`}>{t(`batches.cols.${k}`, { defaultValue: dflt[k] })}</th>)}</tr></thead>
           <tbody>
-            {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={heads.length}>{t('list.empty')}</td></tr>}
-            {rows.map((d) => (
-              <tr key={d.id} className="bg-white">
-                <td className={`${CELL} whitespace-nowrap text-left`}>{d.docNo}</td>
-                <td className={`${CELL} whitespace-nowrap text-center`}>{d.docDate}</td>
-                <td className={`${CELL} text-center`}>{d.reference || '—'}</td>
-                <td className={`${CELL} text-center`}>{d.reason || '—'}</td>
-                <td className={`${CELL} text-center`}>{d.lineCount ?? 0}</td>
-                <td className={`${CELL} text-center`}>{d.creator?.fullName}</td>
-                <td className={`${CELL} text-center`}><Tag>{statusText(d.status)}</Tag></td>
-                <td className={`${CELL} text-center`}><div className="flex justify-center"><RowActions d={d} showView onChanged={list.reload} onError={setErr} /></div></td>
+            {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={heads.length}>{t('batches.empty', { defaultValue: 'No received items with an expiry date yet.' })}</td></tr>}
+            {rows.map((b) => (
+              <tr key={b.id} className="bg-white">
+                <td className={`${CELL} whitespace-nowrap text-left`}>{b.batchNo}</td>
+                <td className={`${CELL} text-center`}>{b.item?.name}</td>
+                <td className={`${CELL} whitespace-nowrap text-center`}>{b.dateReceived}</td>
+                <td className={`${CELL} text-center`}>{qty(b.quantity)} {b.item?.unit}</td>
+                <td className={`${CELL} whitespace-nowrap text-center`}>{b.expiryDate}</td>
+                <td className={`${CELL} text-center ${TONE[b.status]}`}>{statusText(b.status)}</td>
+                <td className={`${CELL} text-center`}><BatchActions b={b} showView onChanged={list.reload} onError={setErr}
+                  afterDelete={(d) => { list.reload(); setErr(''); }} /></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      {list.data && <Pager page={page} total={list.data.total} limit={list.data.limit} set={setPage} />}
-      <ReceivedExpiryList />
+      {list.data && <Pager page={page} total={all.length} limit={LIMIT} set={setPage} />}
     </div>
   );
 }
