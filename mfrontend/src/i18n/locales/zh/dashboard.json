@@ -143,29 +143,5 @@
     "creditSalesToday": "今日赊销",
     "inactiveCustomers": "停用客户"
   },
-  "glanceTitle": "概览",
-  "viewAll": "查看全部",
-  "listEmpty": "暂无数据。",
-  "lists": {
-    "needAttention": "缺货或库存偏低的商品",
-    "expiringBatches": "即将到期或已过期的批次",
-    "stockByCategory": "按分类的库存",
-    "recentMovements": "最新库存变动"
-  },
-  "cols": {
-    "sku": "SKU",
-    "name": "商品",
-    "quantity": "库存",
-    "reorderLevel": "补货点",
-    "unit": "单位",
-    "batchNo": "批次",
-    "expiryDate": "到期日",
-    "category": "分类",
-    "items": "商品数",
-    "units": "数量",
-    "occurredAt": "时间",
-    "movementType": "类型",
-    "direction": "方向",
-    "balanceAfter": "变动后余额"
-  }
+  "glanceTitle": "概览"
 }

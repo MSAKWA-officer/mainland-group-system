@@ -10,7 +10,7 @@ const customerReports = require('./customerReports');
    - Nothing is stored; every figure is calculated live by the database.
    - A module that fails returns { error: true } so one broken query never blanks the whole dashboard.
    Metric: { key, value, kind: 'count' | 'money' | 'qty', tone?: 'warn' | 'bad', to?: route, currency? }
-   List (small table under a module's figures): { key, to?, columns: [{ key, kind?: 'qty' | 'money' | 'date' | 'datetime' | 'text' | 'type' | 'direction' }], rows: [...] } */
+   */
 const NONE = '00000000-0000-0000-0000-000000000000';
 const MONTH = "date_trunc('month', CURRENT_DATE)";
 
@@ -54,7 +54,7 @@ const LEVELS = 'FROM items i LEFT JOIN stock_levels sl ON sl.item_id = i.id WHER
 const qtyText = (v) => String(v ?? 0);
 
 async function inventory(req) {
-  const out = []; const lists = [];
+  const out = [];
   // Items: how many exist, how many are sold / tracked
   await when(req, 'items.read', out, async () => {
     const r = await one(`SELECT COUNT(*) FILTER (WHERE is_active)::int AS active, COUNT(*) FILTER (WHERE NOT is_active)::int AS inactive,
@@ -126,31 +126,7 @@ async function inventory(req) {
     if (r.pending > 0) out.push(m('pendingStockDocs', r.pending, 'count', can(req, 'approvals.read') ? '/approvals' : undefined, { tone: 'warn' }));
   }
 
-  /* ---- lists ---- */
-  if (can(req, 'stock.read')) {
-    const [attention, expiring, byCategory] = await Promise.all([
-      q(`SELECT i.id, i.sku, i.name, i.unit, COALESCE(sl.quantity, 0)::text AS quantity, i.reorder_level::text AS "reorderLevel"
-         ${LEVELS} AND (COALESCE(sl.quantity, 0) <= 0 OR (i.reorder_level > 0 AND sl.quantity <= i.reorder_level))
-         ORDER BY COALESCE(sl.quantity, 0) ASC, i.name ASC LIMIT 8`),
-      q(`SELECT b.id, i.sku, i.name, b.batch_no AS "batchNo", to_char(b.expiry_date, 'YYYY-MM-DD') AS "expiryDate", b.quantity::text AS quantity, i.unit
-         FROM stock_batches b JOIN items i ON i.id = b.item_id
-         WHERE b.quantity > 0 AND b.expiry_date <= CURRENT_DATE + 30 ORDER BY b.expiry_date ASC, i.name ASC LIMIT 8`),
-      q(`SELECT c.id, c.name AS category, COUNT(i.id)::int AS items, COALESCE(SUM(sl.quantity), 0)::text AS units
-         FROM categories c LEFT JOIN items i ON i.category_id = c.id AND i.is_active LEFT JOIN stock_levels sl ON sl.item_id = i.id
-         GROUP BY c.id, c.name ORDER BY COALESCE(SUM(sl.quantity), 0) DESC, c.name ASC LIMIT 12`),
-    ]);
-    lists.push({ key: 'needAttention', to: '/stock', rows: attention, columns: [{ key: 'sku' }, { key: 'name' }, { key: 'quantity', kind: 'qty' }, { key: 'reorderLevel', kind: 'qty' }, { key: 'unit' }] });
-    lists.push({ key: 'expiringBatches', to: '/stock', rows: expiring, columns: [{ key: 'name' }, { key: 'batchNo' }, { key: 'expiryDate', kind: 'date' }, { key: 'quantity', kind: 'qty' }, { key: 'unit' }] });
-    lists.push({ key: 'stockByCategory', to: '/stock', rows: byCategory, columns: [{ key: 'category' }, { key: 'items', kind: 'qty' }, { key: 'units', kind: 'qty' }] });
-  }
-  if (can(req, 'movements.read')) {
-    const rows = await q(`SELECT m.id::text AS id, m.occurred_at AS "occurredAt", i.name, m.movement_type AS "movementType", m.direction,
-        m.quantity::text AS quantity, m.balance_after::text AS "balanceAfter"
-      FROM stock_movements m JOIN items i ON i.id = m.item_id ORDER BY m.id DESC LIMIT 8`);
-    lists.push({ key: 'recentMovements', to: '/movements', rows, columns: [{ key: 'occurredAt', kind: 'datetime' }, { key: 'name' }, { key: 'movementType', kind: 'type' },
-      { key: 'direction', kind: 'direction' }, { key: 'quantity', kind: 'qty' }, { key: 'balanceAfter', kind: 'qty' }] });
-  }
-  return { metrics: out, lists };
+  return out;
 }
 
 /* ---------- 2. Sales & Customers ---------- */
@@ -324,10 +300,10 @@ const MODULES = [['approvals', approvals], ['inventory', inventory], ['sales', s
 
 async function summary(req, only) {
   const results = await Promise.all(MODULES.filter(([key]) => !only || key === only).map(async ([key, fn]) => {
-    try { const r = await fn(req); return Array.isArray(r) ? { key, metrics: r, lists: [] } : { key, metrics: r.metrics, lists: r.lists || [] }; } catch (e) { console.error(`dashboard summary: ${key} failed:`, e.message); return { key, error: true, metrics: [], lists: [] }; }
+    try { return { key, metrics: await fn(req) }; } catch (e) { console.error(`dashboard summary: ${key} failed:`, e.message); return { key, error: true, metrics: [] }; }
   }));
   // A module the user can see nothing of is left out entirely (same idea as the hidden menu groups).
-  return { generatedAt: new Date().toISOString(), modules: results.filter((r) => r.error || r.metrics.length || r.lists.length) };
+  return { generatedAt: new Date().toISOString(), modules: results.filter((r) => r.error || r.metrics.length) };
 }
 
 module.exports = { summary };

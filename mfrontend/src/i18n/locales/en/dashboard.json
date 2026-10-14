@@ -143,29 +143,5 @@
     "creditSalesToday": "Credit sales today",
     "inactiveCustomers": "Inactive customers"
   },
-  "glanceTitle": "At a glance",
-  "viewAll": "View all",
-  "listEmpty": "Nothing to show.",
-  "lists": {
-    "needAttention": "Items out of stock or low",
-    "expiringBatches": "Batches expiring soon or expired",
-    "stockByCategory": "Stock by category",
-    "recentMovements": "Latest stock movements"
-  },
-  "cols": {
-    "sku": "SKU",
-    "name": "Item",
-    "quantity": "In stock",
-    "reorderLevel": "Reorder level",
-    "unit": "Unit",
-    "batchNo": "Batch",
-    "expiryDate": "Expiry",
-    "category": "Category",
-    "items": "Items",
-    "units": "Units",
-    "occurredAt": "When",
-    "movementType": "Type",
-    "direction": "Direction",
-    "balanceAfter": "Balance after"
-  }
+  "glanceTitle": "At a glance"
 }

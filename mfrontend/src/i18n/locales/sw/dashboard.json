@@ -143,29 +143,5 @@
     "creditSalesToday": "Mauzo ya mkopo leo",
     "inactiveCustomers": "Wateja wasiotumika"
   },
-  "glanceTitle": "Muhtasari",
-  "viewAll": "Tazama zote",
-  "listEmpty": "Hakuna cha kuonyesha.",
-  "lists": {
-    "needAttention": "Bidhaa zilizoisha au zilizo chini",
-    "expiringBatches": "Bechi zinazokaribia kuisha muda au zilizoisha",
-    "stockByCategory": "Stoo kwa kundi",
-    "recentMovements": "Mienendo ya karibuni ya stoo"
-  },
-  "cols": {
-    "sku": "SKU",
-    "name": "Bidhaa",
-    "quantity": "Zilizopo",
-    "reorderLevel": "Kiwango cha kuagiza tena",
-    "unit": "Kipimo",
-    "batchNo": "Bechi",
-    "expiryDate": "Kuisha muda",
-    "category": "Kundi",
-    "items": "Bidhaa",
-    "units": "Vipimo",
-    "occurredAt": "Lini",
-    "movementType": "Aina",
-    "direction": "Mwelekeo",
-    "balanceAfter": "Salio baada"
-  }
+  "glanceTitle": "Muhtasari"
 }
