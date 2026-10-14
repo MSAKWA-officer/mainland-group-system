@@ -1,7 +1,7 @@
 {
   "title": "库存收货",
   "registered": "已登记 {{total}} 条",
-  "search": "搜索单据编号、供应商或参考号",
+  "search": "按日期、批次号或商品搜索",
   "allStatuses": "所有状态",
   "to": "至",
   "cols": {
@@ -12,7 +12,10 @@
     "lines": "行数",
     "createdBy": "创建人",
     "status": "状态",
-    "actions": "操作"
+    "actions": "操作",
+    "items": "商品",
+    "unit": "单位",
+    "batchNo": "批次号"
   },
   "empty": "暂无收货单据。",
   "newTitle": "新建库存收货",
@@ -70,5 +73,7 @@
   },
   "totalCost": "总成本",
   "from": "从",
-  "new": "+ 新建收货"
+  "new": "+ 新建收货",
+  "editLocked": "此收货单无法编辑。",
+  "deleteLocked": "此收货单无法删除。"
 }

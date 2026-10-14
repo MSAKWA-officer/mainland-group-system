@@ -1,7 +1,7 @@
 {
   "title": "Mapokezi ya bidhaa",
   "registered": "{{total}} zimesajiliwa",
-  "search": "Tafuta namba ya hati, msambazaji au kumbukumbu",
+  "search": "Tafuta kwa tarehe, namba ya bechi au bidhaa",
   "allStatuses": "Hali zote",
   "to": "Hadi",
   "cols": {
@@ -12,7 +12,10 @@
     "lines": "Mistari",
     "createdBy": "Imeundwa na",
     "status": "Hali",
-    "actions": "Vitendo"
+    "actions": "Vitendo",
+    "items": "Bidhaa",
+    "unit": "Kipimo",
+    "batchNo": "Namba ya bechi"
   },
   "empty": "Hakuna hati za mapokezi bado.",
   "newTitle": "Mapokezi mapya ya bidhaa",
@@ -70,5 +73,7 @@
   },
   "totalCost": "Jumla ya gharama",
   "from": "Kuanzia",
-  "new": "+ Pokezi Jipya"
+  "new": "+ Pokezi Jipya",
+  "editLocked": "Haiwezi kuhaririwa.",
+  "deleteLocked": "Haiwezi kufutwa."
 }

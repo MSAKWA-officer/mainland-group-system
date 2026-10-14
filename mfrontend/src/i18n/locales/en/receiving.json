@@ -1,7 +1,7 @@
 {
   "title": "Stock receiving",
   "registered": "{{total}} registered",
-  "search": "Search document no., supplier or reference",
+  "search": "Search by date, batch no. or item",
   "allStatuses": "All statuses",
   "to": "To",
   "cols": {
@@ -12,7 +12,10 @@
     "lines": "Lines",
     "createdBy": "Created by",
     "status": "Status",
-    "actions": "Actions"
+    "actions": "Actions",
+    "items": "Items",
+    "unit": "Unit",
+    "batchNo": "Batch no."
   },
   "empty": "No receiving documents yet.",
   "newTitle": "New stock receiving",
@@ -70,5 +73,7 @@
   },
   "totalCost": "Total cost",
   "from": "From",
-  "new": "+ New Receiving"
+  "new": "+ New Receiving",
+  "editLocked": "Edit is not available for this receiving.",
+  "deleteLocked": "Delete is not available for this receiving."
 }

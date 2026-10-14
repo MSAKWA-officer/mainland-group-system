@@ -1,5 +1,6 @@
 const { Op, literal } = require('sequelize');
 const { StockDocument, StockDocumentLine, Item, StockBatch, User, ApprovalRequest } = require('../models');
+const sequelize = require('../config/sequelize');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
 const svc = require('../services/stockDocuments');
@@ -37,10 +38,33 @@ module.exports = (type) => {
       if (status) where.status = status;
       if (createdBy) where.createdBy = createdBy;
       if (from || to) where.docDate = { ...(from && { [Op.gte]: from }), ...(to && { [Op.lte]: to }) };
-      if (search) where[Op.or] = ['docNo', 'partyName', 'reference'].map((f) => ({ [f]: { [Op.iLike]: like(search) } }));
+      if (search) {
+        if (type === 'RECEIVING') {
+          // Receiving list search: date (YYYY-MM-DD), batch number or item name / SKU, matched on the document's lines.
+          const p = sequelize.escape(like(search));
+          where[Op.or] = [
+            literal(`CAST("StockDocument"."doc_date" AS TEXT) ILIKE ${p}`),
+            literal(`EXISTS (SELECT 1 FROM stock_document_lines sl
+              LEFT JOIN items si ON si.id = sl.item_id
+              LEFT JOIN stock_batches sb ON sb.id = sl.batch_id
+              WHERE sl.document_id = "StockDocument"."id"
+                AND (sl.batch_no ILIKE ${p} OR sb.batch_no ILIKE ${p} OR si.name ILIKE ${p} OR si.sku ILIKE ${p}))`),
+          ];
+        } else {
+          where[Op.or] = ['docNo', 'partyName', 'reference'].map((f) => ({ [f]: { [Op.iLike]: like(search) } }));
+        }
+      }
       const { rows, count } = await StockDocument.findAndCountAll({ where, include: [creator], attributes: { include: [[lineCount, 'lineCount']] },
         order: [['createdAt', 'DESC']], limit, offset: (page - 1) * limit });
-      res.json({ data: rows, total: count, page, limit });
+      // Attach the item lines (item, unit, batch) of this page so the list can show one row per item.
+      const docLines = rows.length ? await StockDocumentLine.findAll({ where: { documentId: rows.map((r) => r.id) }, order: [['createdAt', 'ASC']],
+        include: [
+          { model: Item, as: 'item', attributes: ['id', 'sku', 'name', 'unit'] },
+          { model: StockBatch, as: 'batch', attributes: ['id', 'batchNo'] }] }) : [];
+      const byDoc = {};
+      docLines.forEach((l) => { (byDoc[l.documentId] ||= []).push({ id: l.id, batchNo: l.batchNo, item: l.item, batch: l.batch }); });
+      const data = rows.map((r) => ({ ...r.toJSON(), lines: byDoc[r.id] || [] }));
+      res.json({ data, total: count, page, limit });
     },
     getOne: async (req, res) => res.json(view(await fetch(req.params.id), req)),
     create: async (req, res) => res.status(201).json(view(await fetch((await svc.create(req, type, req.body)).id), req)),

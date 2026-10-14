@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { receivingApi, errMsg } from '../../api/index.js';
@@ -87,13 +87,17 @@ export default function ReceivingList() {
   const docs = useDocText();
   const { can } = useAuth();
   const location = useLocation();
-  const [page, setPage] = useState(1); const [search, setSearch] = useState(''); const [status, setStatus] = useState('');
-  const [from, setFrom] = useState(''); const [to, setTo] = useState('');
+  const [page, setPage] = useState(1);
+  const [input, setInput] = useState('');     // what the user types
+  const [search, setSearch] = useState('');   // debounced value sent to the API (date, batch no or item)
   const [err, setErr] = useState('');
-  const list = useLoad(() => receivingApi.list({ page, search: search || undefined, status: status || undefined, from: from || undefined, to: to || undefined }), [page, search, status, from, to]);
+  useEffect(() => {
+    const h = setTimeout(() => { setSearch(input.trim()); setPage(1); }, 350);
+    return () => clearTimeout(h);
+  }, [input]);
+  const list = useLoad(() => receivingApi.list({ page, search: search || undefined }), [page, search]);
   const rows = list.data?.data || [];
   const heads = ['date', 'items', 'unit', 'batchNo', 'createdBy', 'status', 'actions'];
-  const reset = (set) => (e) => { setPage(1); set(e.target.value); };
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
       <div className="flex items-center justify-between gap-3 p-4">
@@ -105,14 +109,9 @@ export default function ReceivingList() {
       </div>
       <div className="px-4">
         <Banner>{err || list.error}</Banner><Banner kind="ok">{location.state?.msg}</Banner>
-        <div className="mb-4 flex flex-wrap items-end gap-3">
-          <input className="input max-w-xs !text-[14px] !text-[#212121]" placeholder={t('search')} value={search} onChange={reset(setSearch)} />
-          <select className="input max-w-[11rem] !text-[14px] !text-[#212121]" value={status} onChange={reset(setStatus)}>
-            <option value="">{t('allStatuses')}</option>
-            {Object.keys(STATUS).map((k) => <option key={k} value={k}>{docs.status(k)}</option>)}
-          </select>
-          <label className="text-[14px]">{t('from')} <input className="input ml-1 inline-block w-auto !text-[14px] !text-[#212121]" type="date" value={from} onChange={reset(setFrom)} /></label>
-          <label className="text-[14px]">{t('to')} <input className="input ml-1 inline-block w-auto !text-[14px] !text-[#212121]" type="date" value={to} onChange={reset(setTo)} /></label>
+        <div className="mb-4">
+          <input type="search" className="input max-w-sm !text-[14px] !text-[#212121]" placeholder={t('search')} aria-label={t('search')}
+            value={input} onChange={(e) => setInput(e.target.value)} />
         </div>
       </div>
       <div className="overflow-x-auto px-4">
@@ -131,7 +130,7 @@ export default function ReceivingList() {
                   <td className={`${CELL} text-center`}>{l?.batch?.batchNo || l?.batchNo || '—'}</td>
                   {n === 0 && (
                     <>
-                      <td rowSpan={lines.length} className={`${CELL} text-center`}>{d.creator?.fullName}</td>
+                      <td rowSpan={lines.length} className={`${CELL} text-center`}>{d.creator?.fullName || '—'}</td>
                       <td rowSpan={lines.length} className={`${CELL} text-center`}><Tag>{docs.status(d.status)}</Tag></td>
                       <td rowSpan={lines.length} className={`${CELL} text-center`}><ListActions d={d} onChanged={list.reload} onError={setErr} /></td>
                     </>
