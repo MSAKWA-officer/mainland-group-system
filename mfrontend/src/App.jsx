@@ -91,7 +91,7 @@ const EfdReportsList = lazy(() => import('./features/efdReports/EfdReportsList.j
 const EfdDevicesList = lazy(() => import('./features/efdDevices/EfdDevicesList.jsx'));
 const EfdDevicesView = lazy(() => import('./features/efdDevices/EfdDevicesView.jsx'));
 const EfdDevicesUpdate = lazy(() => import('./features/efdDevices/EfdDevicesUpdate.jsx'));
-const EfdDeviceForm = lazy(() => import('./features/efdDevices/EfdDeviceForm.jsx'));
+const EfdDevicesCreate = lazy(() => import('./features/efdDevices/EfdDevicesCreate.jsx'));
 const BanksList = lazy(() => import('./features/banks/BanksList.jsx'));
 const BanksView = lazy(() => import('./features/banks/BanksView.jsx'));
 const BankForm = lazy(() => import('./features/banks/BankForm.jsx'));
@@ -148,6 +148,7 @@ const SalespersonsUpdate = lazy(() => import('./features/salespersons/Salesperso
 const SalespersonsView = lazy(() => import('./features/salespersons/SalespersonsView.jsx'));
 const StaffList = lazy(() => import('./features/staff/StaffList.jsx'));
 const StaffForm = lazy(() => import('./features/staff/StaffForm.jsx'));
+const StaffUpdate = lazy(() => import('./features/staff/StaffUpdate.jsx'));
 const UserList = lazy(() => import('./features/users/UserList.jsx'));
 const UserCreate = lazy(() => import('./features/users/UserCreate.jsx'));
 const UserUpdate = lazy(() => import('./features/users/UserUpdate.jsx'));
@@ -249,9 +250,9 @@ export default function App() {
         <Route path="/efd-differences/view" element={<Guard perm="efd_differences.read"><EfdDifferencesView /></Guard>} />
         <Route path="/efd-reports" element={<Guard perm="efd_reports.read"><EfdReportsList /></Guard>} />
         <Route path="/efd-devices" element={<Guard perm="efd_devices.read"><EfdDevicesList /></Guard>} />
-        <Route path="/efd-devices/new" element={<Guard perm="efd_devices.create"><EfdDeviceForm /></Guard>} />
+        <Route path="/efd-devices/new" element={<Guard perm="efd_devices.create"><EfdDevicesCreate /></Guard>} />
         <Route path="/efd-devices/:id" element={<Guard perm="efd_devices.read"><EfdDevicesView /></Guard>} />
-        <Route path="/efd-devices/:id/edit" element={<Guard perm="efd_devices.update"><EfdDeviceForm /></Guard>} />
+        <Route path="/efd-devices/:id/edit" element={<Guard perm="efd_devices.update"><EfdDevicesUpdate /></Guard>} />
         <Route path="/banks" element={<Guard perm="banks.read"><BanksList /></Guard>} />
         <Route path="/banks/new" element={<Guard perm="banks.create"><BankForm /></Guard>} />
         <Route path="/banks/:id" element={<Guard perm="banks.read"><BanksView /></Guard>} />
@@ -310,7 +311,7 @@ export default function App() {
         <Route path="/reports/:type" element={<Guard perm="stock_reports.read"><ReportsView /></Guard>} />
         <Route path="/staff" element={<Guard perm="staff.read"><StaffList /></Guard>} />
         <Route path="/staff/new" element={<Guard perm="staff.create"><StaffForm /></Guard>} />
-        <Route path="/staff/:id/edit" element={<Guard perm="staff.update"><StaffForm /></Guard>} />
+        <Route path="/staff/:id/edit" element={<Guard perm="staff.update"><StaffUpdate /></Guard>} />
         <Route path="/users" element={<Guard perm="users.read"><UserList /></Guard>} />
         <Route path="/users/new" element={<Guard perm="users.create"><UserCreate /></Guard>} />
         <Route path="/users/:id" element={<Guard perm="users.read"><UserView /></Guard>} />
