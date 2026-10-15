@@ -376,4 +376,4 @@ const closeOrder = (status, action) => async (r, ctx) => {
 approvals.register('SALES_ORDER', { label: 'Sales order', approvePermission: 'sales_orders.approve',
   execute: confirmOrder, onReject: closeOrder('REJECTED', 'SALES_ORDER_REJECTED'), onCancel: closeOrder('CANCELLED', 'SALES_ORDER_CANCELLED') });
 
-module.exports = { create, update, submit, cancel, remove, totals, normalizeLines };
+module.exports = { create, update, submit, cancel, remove, totals, normalizeLines, createSaleFromOrder };   // createSaleFromOrder is also used by scripts/backfill-sales-from-orders.js

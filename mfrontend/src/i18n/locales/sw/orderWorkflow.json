@@ -18,11 +18,14 @@
     "date": "Tarehe",
     "customer": "Mteja",
     "salesperson": "Muuzaji",
+    "saleType": "Aina ya mauzo",
+    "payment": "Malipo",
     "total": "Jumla",
     "attempt": "Jaribio",
     "status": "Hali",
     "with": "Iko kwa",
-    "lastUpdate": "Sasisho la mwisho"
+    "lastUpdate": "Sasisho la mwisho",
+    "approve": "Approve"
   },
   "yourTurn": "Zamu yako",
   "emptyFiltered": "Hakuna oda zinazolingana na mwonekano huu.",
@@ -196,5 +199,14 @@
     "submitAgain": "Wasilisha tena",
     "confirm": "Wasilisha {{orderNo}} kwa idhini tena? Itarudi kwa mtunza stoo.",
     "done": "Oda imewasilishwa tena. Sasa iko kwa mtunza stoo."
+  },
+  "saleType": {
+    "CASH": "Cash sale",
+    "CREDIT": "Credit sale"
+  },
+  "pay": {
+    "UNPAID": "Bado hajalipa",
+    "PARTIAL": "Amelipa sehemu",
+    "PAID": "Amelipa"
   }
 }

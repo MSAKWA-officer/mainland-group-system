@@ -16,7 +16,12 @@ import { NOTICE, STAGES, STATUS, StatusDot, hasAction, useWorkflowText } from '.
 const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
 const HEAD = `${CELL} bg-white font-semibold uppercase`;
 const al = (i) => (i === 0 ? 'text-left' : 'text-center');
-const COLS = ['orderNo', 'date', 'customer', 'salesperson', 'total', 'attempt', 'status', 'with', 'lastUpdate', ''];
+const COLS = ['orderNo', 'date', 'customer', 'salesperson', 'saleType', 'payment', 'total', 'attempt', 'status', 'with', 'lastUpdate', 'approve'];
+
+// Payment state of an order: once approved the sale record knows best (a credit sale may be part/fully paid);
+// before that a CASH order is paid at the counter and a CREDIT order is still owed.
+const payOf = (o) => o?.sale?.paymentStatus || (o?.saleType === 'CASH' ? 'PAID' : 'UNPAID');
+const PAY_DOT = { PAID: 'bg-emerald-600', PARTIAL: 'bg-amber-500', UNPAID: 'bg-red-500' };
 
 export default function OrderWorkflowList() {
   const x = useWorkflowText();
@@ -62,7 +67,7 @@ export default function OrderWorkflowList() {
       {(list.error || location.state?.msg) && <div className={`px-4 ${NOTICE}`}><Banner>{list.error}</Banner><Banner kind="ok">{location.state?.msg}</Banner></div>}
       <div className="overflow-x-auto px-4">
         <table className="w-full border-collapse bg-white">
-          <thead><tr>{COLS.map((k, i) => <th key={k || 'x'} className={`${HEAD} ${al(i)}`}>{k && t(`columns.${k}`)}</th>)}</tr></thead>
+          <thead><tr>{COLS.map((k, i) => <th key={k} className={`${HEAD} ${al(i)}`}>{t(`columns.${k}`)}</th>)}</tr></thead>
           <tbody>
             {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={COLS.length}>{q || status || stage ? t('emptyFiltered') : t('emptyNone')}</td></tr>}
             {rows.map((r) => (
@@ -71,6 +76,12 @@ export default function OrderWorkflowList() {
                 <td className={`${CELL} whitespace-nowrap text-center`}>{day(r.order?.orderDate)}</td>
                 <td className={`${CELL} text-center`}>{r.order?.customer?.name}<div className="text-xs">{r.order?.customer?.code}</div></td>
                 <td className={`${CELL} text-center`}>{r.order?.salesperson?.fullName || '—'}</td>
+                <td className={`${CELL} whitespace-nowrap text-center`}>
+                  <span className="inline-flex items-center gap-2 text-black"><span className={`h-2 w-2 rounded-full ${r.order?.saleType === 'CASH' ? 'bg-emerald-600' : 'bg-indigo-500'}`} />{r.order?.saleType ? t(`saleType.${r.order.saleType}`) : '—'}</span>
+                </td>
+                <td className={`${CELL} whitespace-nowrap text-center`}>
+                  <span className="inline-flex items-center gap-2 text-black"><span className={`h-2 w-2 rounded-full ${PAY_DOT[payOf(r.order)] || 'bg-slate-400'}`} />{t(`pay.${payOf(r.order)}`, { defaultValue: payOf(r.order) })}</span>
+                </td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{money(r.order?.total)}</td>
                 <td className={`${CELL} text-center`}>{r.cycle}</td>
                 <td className={`${CELL} text-center`}><StatusDot status={r.status} />{hasAction(r) && <div className="mt-1"><Pill tone="warn">{t('yourTurn')}</Pill></div>}</td>

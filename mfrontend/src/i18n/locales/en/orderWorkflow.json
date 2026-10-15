@@ -18,11 +18,14 @@
     "date": "Date",
     "customer": "Customer",
     "salesperson": "Salesperson",
+    "saleType": "Sale type",
+    "payment": "Payment",
     "total": "Total",
     "attempt": "Attempt",
     "status": "Status",
     "with": "With",
-    "lastUpdate": "Last update"
+    "lastUpdate": "Last update",
+    "approve": "Approve"
   },
   "yourTurn": "Your turn",
   "emptyFiltered": "No orders match this view.",
@@ -196,5 +199,14 @@
     "submitAgain": "Submit again",
     "confirm": "Submit {{orderNo}} for approval again? It goes back to the storekeeper.",
     "done": "Order submitted again. It is now with the storekeeper."
+  },
+  "saleType": {
+    "CASH": "Cash sale",
+    "CREDIT": "Credit sale"
+  },
+  "pay": {
+    "UNPAID": "Not paid",
+    "PARTIAL": "Part paid",
+    "PAID": "Paid"
   }
 }

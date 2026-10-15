@@ -18,11 +18,14 @@
     "date": "日期",
     "customer": "客户",
     "salesperson": "销售员",
+    "saleType": "销售类型",
+    "payment": "付款",
     "total": "合计",
     "attempt": "第几次",
     "status": "状态",
     "with": "当前处理人",
-    "lastUpdate": "最后更新"
+    "lastUpdate": "最后更新",
+    "approve": "审批"
   },
   "yourTurn": "轮到您处理",
   "emptyFiltered": "没有符合当前视图的订单。",
@@ -196,5 +199,14 @@
     "submitAgain": "重新提交",
     "confirm": "重新提交 {{orderNo}} 审批？订单将回到仓管员处。",
     "done": "订单已重新提交，现在由仓管员处理。"
+  },
+  "saleType": {
+    "CASH": "现金销售",
+    "CREDIT": "赊销"
+  },
+  "pay": {
+    "UNPAID": "未付款",
+    "PARTIAL": "部分付款",
+    "PAID": "已付款"
   }
 }

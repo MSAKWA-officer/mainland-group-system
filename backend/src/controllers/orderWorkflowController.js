@@ -1,5 +1,5 @@
 const { Op, fn, col } = require('sequelize');
-const { OrderWorkflow, OrderWorkflowEvent, SalesOrder, SalesOrderLine, Customer, Salesperson, StockLevel, User } = require('../models');
+const { OrderWorkflow, OrderWorkflowEvent, SalesOrder, SalesOrderLine, Customer, Salesperson, StockLevel, User, Sale } = require('../models');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
 const svc = require('../services/orderWorkflow');
@@ -55,7 +55,8 @@ exports.list = async (req, res) => {
   if (search) filters[Op.or] = [{ '$order.order_no$': { [Op.iLike]: like(search) } }, { '$order.customer.name$': { [Op.iLike]: like(search) } }];
   const { rows, count } = await OrderWorkflow.findAndCountAll({
     where: { [Op.and]: [filters, await svc.visibility(req)] }, subQuery: false, distinct: true,
-    include: [{ model: SalesOrder, as: 'order', required: true, attributes: ['id', 'orderNo', 'orderDate', 'total', 'createdBy', 'salespersonId', 'status'], include: [{ ...customer, required: true }, salesperson] }],
+    include: [{ model: SalesOrder, as: 'order', required: true, attributes: ['id', 'orderNo', 'orderDate', 'total', 'createdBy', 'salespersonId', 'status', 'saleType', 'paymentMethod', 'dueDate'],
+      include: [{ ...customer, required: true }, salesperson, { model: Sale, as: 'sale', required: false, attributes: ['id', 'saleNo', 'paymentStatus', 'amountPaid'] }] }],
     order: [['updatedAt', 'DESC']], limit, offset: (page - 1) * limit,
   });
   res.json({ data: rows.map((w) => present(req, w)), total: count, page, limit });
