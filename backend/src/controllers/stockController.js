@@ -69,13 +69,25 @@ const receipts = (ids) => (ids.length ? sequelize.query(
     WHERE m.batch_id IN (:ids) AND m.movement_type = 'RECEIVING' AND m.direction = 'IN'
     ORDER BY m.occurred_at ASC`, { replacements: { ids }, type: QueryTypes.SELECT }) : Promise.resolve([]));
 
+// Warehouses that hold each batch right now, as { batchId: [{ id, code, name, quantity }] }.
+const holders = async (ids) => {
+  const by = {};
+  if (!ids.length) return by;
+  (await sequelize.query(
+    `SELECT wsb.batch_id AS "batchId", w.id, w.code, w.name, wsb.quantity FROM warehouse_stock_batches wsb JOIN warehouses w ON w.id = wsb.warehouse_id
+      WHERE wsb.batch_id IN (:ids) AND wsb.quantity > 0 ORDER BY w.name`, { replacements: { ids }, type: QueryTypes.SELECT }))
+    .forEach((r) => { (by[r.batchId] ||= []).push({ id: r.id, code: r.code, name: r.name, quantity: r.quantity }); });
+  return by;
+};
+
 exports.expiryBatches = async (req, res) => {
   const { days, includeEmpty } = req.query; const soon = days ?? 30;
   const rows = await StockBatch.findAll({ where: includeEmpty ? {} : { quantity: { [Op.gt]: 0 } }, order: [['expiryDate', 'ASC']], include: [batchItem] });
   const first = new Map();
   (await receipts(rows.map((b) => b.id))).forEach((r) => { if (!first.has(r.batchId)) first.set(r.batchId, r); });
+  const where = await holders(rows.map((b) => b.id));
   res.json(rows.map((b) => { const r = first.get(b.id);
-    return { ...b.toJSON(), dateReceived: r?.docDate || String(b.createdAt.toISOString()).slice(0, 10), status: statusOf(b.expiryDate, soon) }; }));
+    return { ...b.toJSON(), warehouses: where[b.id] || [], dateReceived: r?.docDate || String(b.createdAt.toISOString()).slice(0, 10), status: statusOf(b.expiryDate, soon) }; }));
 };
 
 // One batch with everything else about it: item, every receiving document and every expired write-off.
@@ -88,6 +100,7 @@ exports.expiryBatch = async (req, res) => {
        FROM stock_document_lines l JOIN stock_documents d ON d.id = l.document_id LEFT JOIN users u ON u.id = d.created_by
       WHERE l.batch_id = :id AND d.type = 'EXPIRED' ORDER BY d.created_at DESC`, { replacements: { id: b.id }, type: QueryTypes.SELECT });
   const days = Math.round((new Date(b.expiryDate) - new Date(today())) / 864e5);
-  res.json({ ...b.toJSON(), dateReceived: recv[0]?.docDate || String(b.createdAt.toISOString()).slice(0, 10), status: statusOf(b.expiryDate, 30), daysToExpiry: days,
+  const where = await holders([b.id]);
+  res.json({ ...b.toJSON(), warehouses: where[b.id] || [], dateReceived: recv[0]?.docDate || String(b.createdAt.toISOString()).slice(0, 10), status: statusOf(b.expiryDate, 30), daysToExpiry: days,
     receipts: recv, writeOffs });
 };

@@ -12,7 +12,8 @@
     "lines": "行数",
     "createdBy": "创建人",
     "status": "状态",
-    "actions": "操作"
+    "actions": "操作",
+    "warehouse": "仓库"
   },
   "empty": "暂无调整单据。",
   "newTitle": "新建库存调整",
@@ -42,7 +43,8 @@
     "decision": "审批结果",
     "decisionNote": "审批意见",
     "posted": "入库时间",
-    "itemsAdjusted": "调整商品"
+    "itemsAdjusted": "调整商品",
+    "warehouse": "仓库"
   },
   "lineCols": {
     "item": "商品",

@@ -14,7 +14,8 @@
     "lines": "Lines",
     "createdBy": "Created by",
     "status": "Status",
-    "actions": "Actions"
+    "actions": "Actions",
+    "warehouse": "Warehouse"
   },
   "create": {
     "title": "New customer return",
@@ -69,7 +70,8 @@
     "expiry": "Expiry",
     "unitCost": "Unit cost",
     "remarks": "Remarks",
-    "deleted": "Return {{docNo}} deleted."
+    "deleted": "Return {{docNo}} deleted.",
+    "warehouse": "Warehouse"
   },
   "list": {
     "title": "Reject in (customer returns)",

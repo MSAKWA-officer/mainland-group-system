@@ -45,6 +45,7 @@ export default function AdjustmentsView() {
         <div className="border-t border-line px-6 py-4">
           <dl className="max-w-3xl">
             <Row label={t('view.date')}>{d.docDate}</Row>
+            <Row label={t('view.warehouse')}>{d.warehouse?.name}</Row>
             <Row label={t('view.reference')}>{d.reference}</Row>
             <Row label={t('view.reason')}>{d.reason}</Row>
             <Row label={t('view.createdBy')}>{d.creator?.fullName}</Row>

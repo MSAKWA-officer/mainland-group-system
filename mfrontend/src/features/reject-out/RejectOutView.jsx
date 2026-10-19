@@ -41,6 +41,7 @@ export default function RejectOutView() {
         <div className="border-t border-line px-6 py-4">
           <dl className="max-w-3xl">
             <Row label={t('view.dateReturned')}>{d.docDate}</Row>
+            <Row label={t('view.warehouse')}>{d.warehouse?.name}</Row>
             <Row label={t('view.party')}>{d.partyName}</Row>
             <Row label={t('view.reference')}>{d.reference}</Row>
             <Row label={t('view.reason')}>{d.reason}</Row>

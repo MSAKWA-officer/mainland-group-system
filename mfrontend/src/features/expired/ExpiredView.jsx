@@ -60,6 +60,7 @@ export default function ExpiredView() {
             <Row label={L('batchNo', 'Batch no.')}>{b.batchNo}</Row>
             <Row label={L('item', 'Item')}>{b.item?.name}</Row>
             <Row label={V('sku', 'SKU')}>{b.item?.sku}</Row>
+            <Row label={L('warehouse', 'Warehouse')}>{(b.warehouses || []).map((w) => `${w.name} (${w.quantity})`).join(', ')}</Row>
             <Row label={V('barcode', 'Barcode')}>{b.item?.barcode}</Row>
             <Row label={L('dateReceived', 'Date received')}>{b.dateReceived}</Row>
             <Row label={L('quantity', 'Quantity in stock')}>{`${qty(b.quantity)} ${b.item?.unit || ''}`}</Row>

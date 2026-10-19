@@ -74,7 +74,8 @@
       "batchNo": "Namba ya bechi",
       "expiryDate": "Tarehe ya kuisha",
       "quantity": "Kiasi kilichopo",
-      "status": "Hali"
+      "status": "Hali",
+      "warehouse": "Ghala"
     }
   }
 }

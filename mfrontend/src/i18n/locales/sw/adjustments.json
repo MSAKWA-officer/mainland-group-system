@@ -12,7 +12,8 @@
     "lines": "Mistari",
     "createdBy": "Imeundwa na",
     "status": "Hali",
-    "actions": "Vitendo"
+    "actions": "Vitendo",
+    "warehouse": "Ghala"
   },
   "empty": "Hakuna marekebisho bado.",
   "newTitle": "Marekebisho mapya ya stoo",
@@ -42,7 +43,8 @@
     "decision": "Uamuzi",
     "decisionNote": "Maelezo ya uamuzi",
     "posted": "Imewekwa stoo",
-    "itemsAdjusted": "Bidhaa zilizorekebishwa"
+    "itemsAdjusted": "Bidhaa zilizorekebishwa",
+    "warehouse": "Ghala"
   },
   "lineCols": {
     "item": "Bidhaa",

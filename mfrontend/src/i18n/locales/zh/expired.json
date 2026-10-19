@@ -74,7 +74,8 @@
       "batchNo": "批号",
       "expiryDate": "到期日",
       "quantity": "库存数量",
-      "status": "状态"
+      "status": "状态",
+      "warehouse": "仓库"
     }
   }
 }

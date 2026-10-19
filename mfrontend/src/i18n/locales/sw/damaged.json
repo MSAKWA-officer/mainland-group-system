@@ -13,7 +13,8 @@
     "lines": "Mistari",
     "createdBy": "Imeundwa na",
     "status": "Hali",
-    "actions": "Vitendo"
+    "actions": "Vitendo",
+    "warehouse": "Ghala"
   },
   "list": {
     "title": "Uondoaji wa stoo iliyoharibika",
@@ -59,6 +60,7 @@
     "batch": "Bechi",
     "expiry": "Muda wa kuisha",
     "remarks": "Maelezo",
-    "deleted": "Uondoaji {{docNo}} umefutwa."
+    "deleted": "Uondoaji {{docNo}} umefutwa.",
+    "warehouse": "Ghala"
   }
 }

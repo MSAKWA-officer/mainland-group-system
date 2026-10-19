@@ -13,7 +13,8 @@
     "lines": "Lines",
     "createdBy": "Created by",
     "status": "Status",
-    "actions": "Actions"
+    "actions": "Actions",
+    "warehouse": "Warehouse"
   },
   "list": {
     "title": "Damaged stock write-off",
@@ -59,6 +60,7 @@
     "batch": "Batch",
     "expiry": "Expiry",
     "remarks": "Remarks",
-    "deleted": "Write-off {{docNo}} deleted."
+    "deleted": "Write-off {{docNo}} deleted.",
+    "warehouse": "Warehouse"
   }
 }

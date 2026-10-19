@@ -13,7 +13,8 @@
     "lines": "行数",
     "createdBy": "创建人",
     "status": "状态",
-    "actions": "操作"
+    "actions": "操作",
+    "warehouse": "仓库"
   },
   "list": {
     "title": "损坏库存报损",
@@ -59,6 +60,7 @@
     "batch": "批次",
     "expiry": "有效期",
     "remarks": "备注",
-    "deleted": "报损单 {{docNo}} 已删除。"
+    "deleted": "报损单 {{docNo}} 已删除。",
+    "warehouse": "仓库"
   }
 }

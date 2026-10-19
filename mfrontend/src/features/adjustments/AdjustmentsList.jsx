@@ -57,7 +57,7 @@ export default function AdjustmentsList() {
   const [err, setErr] = useState('');
   const list = useLoad(() => adjustmentApi.list({ page, search: search || undefined, status: status || undefined, from: from || undefined, to: to || undefined }), [page, search, status, from, to]);
   const rows = list.data?.data || [];
-  const heads = ['docNo', 'date', 'reference', 'reason', 'lines', 'createdBy', 'status', 'actions'];
+  const heads = ['docNo', 'date', 'warehouse', 'reference', 'reason', 'lines', 'createdBy', 'status', 'actions'];
   const reset = (set) => (e) => { setPage(1); set(e.target.value); };
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
@@ -89,6 +89,7 @@ export default function AdjustmentsList() {
               <tr key={d.id} className="bg-white">
                 <td className={`${CELL} whitespace-nowrap text-left`}>{d.docNo}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{d.docDate}</td>
+                <td className={`${CELL} text-center`}>{d.warehouse?.name || '—'}</td>
                 <td className={`${CELL} text-center`}>{d.reference || '—'}</td>
                 <td className={`${CELL} text-center`}>{d.reason || '—'}</td>
                 <td className={`${CELL} text-center`}>{d.lineCount ?? 0}</td>

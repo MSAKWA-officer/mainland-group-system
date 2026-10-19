@@ -14,7 +14,8 @@
     "lines": "行数",
     "createdBy": "创建人",
     "status": "状态",
-    "actions": "操作"
+    "actions": "操作",
+    "warehouse": "仓库"
   },
   "create": {
     "title": "新建供应商退货",
@@ -58,7 +59,8 @@
     "expiry": "有效期",
     "unitCost": "单位成本",
     "remarks": "备注",
-    "deleted": "退货单 {{docNo}} 已删除。"
+    "deleted": "退货单 {{docNo}} 已删除。",
+    "warehouse": "仓库"
   },
   "list": {
     "title": "退货出库（退给供应商）",

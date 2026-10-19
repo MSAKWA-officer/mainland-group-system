@@ -74,7 +74,8 @@
       "batchNo": "Batch no.",
       "expiryDate": "Expiry date",
       "quantity": "Quantity in stock",
-      "status": "Status"
+      "status": "Status",
+      "warehouse": "Warehouse"
     }
   }
 }

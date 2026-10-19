@@ -12,7 +12,8 @@
     "lines": "Lines",
     "createdBy": "Created by",
     "status": "Status",
-    "actions": "Actions"
+    "actions": "Actions",
+    "warehouse": "Warehouse"
   },
   "empty": "No adjustments yet.",
   "newTitle": "New stock adjustment",
@@ -42,7 +43,8 @@
     "decision": "Decision",
     "decisionNote": "Decision note",
     "posted": "Posted to stock",
-    "itemsAdjusted": "Items adjusted"
+    "itemsAdjusted": "Items adjusted",
+    "warehouse": "Warehouse"
   },
   "lineCols": {
     "item": "Item",

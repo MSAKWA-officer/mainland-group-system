@@ -14,7 +14,8 @@
     "lines": "Mistari",
     "createdBy": "Imeundwa na",
     "status": "Hali",
-    "actions": "Vitendo"
+    "actions": "Vitendo",
+    "warehouse": "Ghala"
   },
   "create": {
     "title": "Rejesho jipya kwa msambazaji",
@@ -58,7 +59,8 @@
     "expiry": "Muda wa kuisha",
     "unitCost": "Gharama kwa kipimo",
     "remarks": "Maelezo",
-    "deleted": "Rejesho {{docNo}} limefutwa."
+    "deleted": "Rejesho {{docNo}} limefutwa.",
+    "warehouse": "Ghala"
   },
   "list": {
     "title": "Reject out (marejesho kwa wasambazaji)",

@@ -63,8 +63,8 @@ export default function ExpiredList() {
     (!status || b.status === status) &&
     (!q || [b.batchNo, b.item?.name, b.item?.sku, b.dateReceived, b.expiryDate].some((v) => String(v || '').toLowerCase().includes(q))));
   const rows = all.slice((page - 1) * LIMIT, page * LIMIT);
-  const heads = ['batchNo', 'item', 'dateReceived', 'quantity', 'expiryDate', 'status', 'actions'];
-  const dflt = { batchNo: 'Batch no.', item: 'Item', dateReceived: 'Date received', quantity: 'Quantity in stock', expiryDate: 'Expiry date', status: 'Status', actions: 'Action' };
+  const heads = ['batchNo', 'item', 'dateReceived', 'warehouse', 'quantity', 'expiryDate', 'status', 'actions'];
+  const dflt = { batchNo: 'Batch no.', item: 'Item', dateReceived: 'Date received', warehouse: 'Warehouse', quantity: 'Quantity in stock', expiryDate: 'Expiry date', status: 'Status', actions: 'Action' };
   const reset = (set) => (e) => { setPage(1); set(e.target.value); };
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
@@ -95,6 +95,7 @@ export default function ExpiredList() {
                 <td className={`${CELL} whitespace-nowrap text-left`}>{b.batchNo}</td>
                 <td className={`${CELL} text-center`}>{b.item?.name}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{b.dateReceived}</td>
+                <td className={`${CELL} text-center`}>{(b.warehouses || []).map((w) => w.name).join(', ') || '—'}</td>
                 <td className={`${CELL} text-center`}>{qty(b.quantity)} {b.item?.unit}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{b.expiryDate}</td>
                 <td className={`${CELL} text-center ${TONE[b.status]}`}>{statusText(b.status)}</td>
