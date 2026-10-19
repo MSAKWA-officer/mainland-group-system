@@ -52,7 +52,9 @@ exports.list = async (req, res) => {
 // Warehouses the user can pick in forms (receiving, transfers, salesperson). Needs a login only; the result is already limited to what the user may use.
 exports.options = async (req, res) => {
   const mine = req.query.all === 'true' ? null : await wh.scope(req);   // ?all=true: every active warehouse (names only), e.g. the destination of a transfer
-  const rows = await Warehouse.findAll({ where: { isActive: true, ...(mine && { id: mine }) }, attributes: ['id', 'code', 'name', 'isDefault'], order: [['isDefault', 'DESC'], ['name', 'ASC']] });
+  const rows = await Warehouse.findAll({ where: { isActive: true, ...(mine && { id: mine }) }, attributes: ['id', 'code', 'name', 'isDefault',
+      [literal(`(SELECT STRING_AGG(s.full_name, ', ') FROM salespersons s WHERE s.warehouse_id = "Warehouse"."id" AND s.is_active)`), 'salespersonNames']],
+    order: [['isDefault', 'DESC'], ['name', 'ASC']] });
   res.json(rows);
 };
 
@@ -111,7 +113,7 @@ exports.setStatus = async (req, res) => {
       if (w.isDefault) throw new AppError(409, 'IS_DEFAULT', 'Make another warehouse the default before deactivating this one');
       const [{ units }] = await sequelize.query('SELECT COALESCE(SUM(quantity), 0) AS units FROM warehouse_stock WHERE warehouse_id = :id', { replacements: { id: w.id }, type: QueryTypes.SELECT, transaction: t });
       if (Number(units) > 0) throw new AppError(409, 'NOT_EMPTY', `This warehouse still holds ${units} units. Transfer the stock out first.`);
-      const [{ n }] = await sequelize.query(`SELECT COUNT(*)::int AS n FROM warehouse_transfers WHERE status = 'SUBMITTED' AND (from_warehouse_id = :id OR to_warehouse_id = :id)`, { replacements: { id: w.id }, type: QueryTypes.SELECT, transaction: t });
+      const [{ n }] = await sequelize.query(`SELECT COUNT(*)::int AS n FROM warehouse_transfers WHERE status IN ('SUBMITTED', 'IN_TRANSIT') AND (from_warehouse_id = :id OR to_warehouse_id = :id)`, { replacements: { id: w.id }, type: QueryTypes.SELECT, transaction: t });
       if (n) throw new AppError(409, 'PENDING_TRANSFERS', 'There are transfers waiting for approval for this warehouse');
       const sp = await Salesperson.count({ where: { warehouseId: w.id, isActive: true }, transaction: t });
       if (sp) throw new AppError(409, 'HAS_SALESPERSONS', 'Salespersons are still assigned to this warehouse. Move them to another warehouse first.');

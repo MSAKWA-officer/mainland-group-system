@@ -54,8 +54,9 @@ export default function WarehouseTransfersCreate() {
           </Field>
           <Field label={t('form.to')} error={fe.toWarehouseId}>
             <select className="input !text-black" required value={head.toWarehouseId} onChange={(e) => setHead({ ...head, toWarehouseId: e.target.value })}>
-              <option value="">{t('form.selectWarehouse')}</option>{(allW.data || []).filter((w) => w.id !== head.fromWarehouseId).map((w) => <option key={w.id} value={w.id}>{w.code} — {w.name}</option>)}
+              <option value="">{t('form.selectWarehouse')}</option>{(allW.data || []).filter((w) => w.id !== head.fromWarehouseId).map((w) => <option key={w.id} value={w.id}>{w.code} — {w.name}{w.salespersonNames ? ` (${t('form.salesperson')}: ${w.salespersonNames})` : ''}</option>)}
             </select>
+            {(allW.data || []).find((w) => w.id === head.toWarehouseId)?.salespersonNames && <p className="mt-1 text-xs">{t('form.needsReceiptHint')}</p>}
           </Field>
           <Field label={t('form.date')} error={fe.transferDate}><input className="input !text-black" type="date" required value={head.transferDate} onChange={(e) => setHead({ ...head, transferDate: e.target.value })} /></Field>
           <Field label={t('form.reason')} error={fe.reason}><input className="input !text-black" required minLength={3} maxLength={1000} value={head.reason} onChange={(e) => setHead({ ...head, reason: e.target.value })} /></Field>

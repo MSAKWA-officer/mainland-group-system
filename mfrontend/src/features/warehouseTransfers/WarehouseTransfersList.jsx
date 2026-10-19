@@ -5,23 +5,25 @@ import { warehouseTransferApi, errMsg } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
-import { EyeIcon, CheckIcon, XIcon, BanIcon } from '../../components/Icons.jsx';
+import { EyeIcon, CheckIcon, XIcon, BanIcon, UserCheckIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { CELL, HEAD, al } from '../../components/TableUi.js';
 import { IconBtn, Tag, qty } from '../stock/StockList.jsx';
 
-// Approve / Reject (Manager, never on your own request), Cancel (the requester, while it waits). Used by the list and by the view page.
+// Approve / Reject (Manager, never on your own request), Cancel (the requester, while it waits), Confirm receipt (the salesperson of the receiving warehouse,
+// once the Manager approved and the goods are IN_TRANSIT). Used by the list and by the view page.
 export function RowActions({ d, showView, onChanged, onError }) {
   const { t } = useTranslation('warehouseTransfers');
   const { user, can } = useAuth();
   const navigate = useNavigate();
-  const mine = d.createdBy === user.id; const waiting = d.status === 'SUBMITTED';
+  const mine = d.createdBy === user.id; const waiting = d.status === 'SUBMITTED'; const inTransit = d.status === 'IN_TRANSIT';
   const run = async (action, body) => { onError(''); try { await warehouseTransferApi.act(d.id, action, body); onChanged?.(); } catch (x) { onError(errMsg(x)); } };
   return (
     <div className="flex items-center justify-center gap-1">
       {showView && <IconBtn label={t('actions.view')} onClick={() => navigate(`/warehouse-transfers/${d.id}`)}><EyeIcon /></IconBtn>}
       {waiting && !mine && can('warehouse_transfers.approve') && <IconBtn label={t('actions.approve')} onClick={() => { if (window.confirm(t('confirmApprove', { no: d.transferNo }))) run('approve'); }}><CheckIcon /></IconBtn>}
       {waiting && !mine && can('warehouse_transfers.approve') && <IconBtn label={t('actions.reject')} danger onClick={() => { const note = window.prompt(t('rejectPrompt')); if (note && note.trim()) run('reject', { note: note.trim() }); }}><XIcon /></IconBtn>}
+      {inTransit && can('warehouse_transfers.receive') && <IconBtn label={t('actions.receive')} onClick={() => { if (window.confirm(t('confirmReceive', { no: d.transferNo }))) run('receive'); }}><UserCheckIcon /></IconBtn>}
       {waiting && mine && <IconBtn label={t('actions.cancel')} danger onClick={() => { if (window.confirm(t('confirmCancel', { no: d.transferNo }))) run('cancel'); }}><BanIcon /></IconBtn>}
     </div>
   );
@@ -51,7 +53,7 @@ export default function WarehouseTransfersList() {
           <input type="search" className="input max-w-sm !text-[14px]" placeholder={t('search')} value={input} onChange={(e) => setInput(e.target.value)} />
           <select className="input max-w-[12rem] !text-[14px]" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
             <option value="">{t('allStatuses')}</option>
-            {['SUBMITTED', 'COMPLETED', 'REJECTED', 'CANCELLED'].map((s) => <option key={s} value={s}>{t(`status.${s}`)}</option>)}
+            {['SUBMITTED', 'IN_TRANSIT', 'COMPLETED', 'REJECTED', 'CANCELLED'].map((s) => <option key={s} value={s}>{t(`status.${s}`)}</option>)}
           </select>
         </div>
       </div>

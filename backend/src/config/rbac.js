@@ -75,7 +75,7 @@ const PERMISSIONS = {
 
   // ---- Warehouses ----
   warehouses: ['read', 'read_all', 'create', 'update', 'deactivate', 'assign'],              // read_all = every warehouse, not only the ones you are in charge of; assign = choose storekeepers / a salesperson's warehouse
-  warehouse_transfers: ['read', 'read_all', 'create', 'approve'],                            // moves of stock between warehouses; create = request one (source-warehouse storekeeper); approve = Manager releases the stock
+  warehouse_transfers: ['read', 'read_all', 'create', 'approve', 'receive'],                            // moves of stock between warehouses; create = request one (source-warehouse storekeeper); approve = Manager releases the stock
 };
 const ALL = Object.entries(PERMISSIONS).flatMap(([m, a]) => a.map((x) => `${m}.${x}`));
 
@@ -153,6 +153,8 @@ const efdManager = ['efd_z_reports.read', 'efd_z_reports.read_all', 'efd_z_repor
 // Warehouses: a storekeeper sees the warehouses they are in charge of and requests transfers out of them; a manager sees everything, creates warehouses,
 // assigns storekeepers / salespersons and approves transfers. (A manager cannot approve a transfer they requested themselves.)
 const warehouseStorekeeper = ['warehouses.read', 'warehouse_transfers.read', 'warehouse_transfers.create'];
+// A salesperson sees the warehouse assigned to them and confirms the stock a Manager approved for it (receive).
+const warehouseSalesperson = ['warehouses.read', 'warehouse_transfers.read', 'warehouse_transfers.receive'];
 const warehouseManager = ['warehouses.read', 'warehouses.read_all', 'warehouses.create', 'warehouses.update', 'warehouses.deactivate', 'warehouses.assign',
   'warehouse_transfers.read', 'warehouse_transfers.read_all', 'warehouse_transfers.create', 'warehouse_transfers.approve'];
 
@@ -161,6 +163,6 @@ const ROLES = {
   MANAGER: { name: 'Manager', level: 70, description: 'Reviews and approves; limited admin',
     permissions: [...common, 'approvals.read_all', 'approvals.approve', 'users.read', 'roles.read', ...invManager, ...salesManager, ...salesV2Manager, ...salesExtraManager, ...workflowManager, ...bankingManager, ...fuelManager, ...fuelUsageManager, ...efdManager, ...warehouseManager] },
   STOREKEEPER: { name: 'Storekeeper', level: 40, description: 'Warehouse and stock control', permissions: [...common, ...invStorekeeper, ...workflowStorekeeper, ...bankingSelf.filter((p) => p.startsWith('expenses.')), ...fuelSelf, ...fuelUsageSelf, ...warehouseStorekeeper] },
-  SALESPERSON: { name: 'Sales Person', level: 30, description: 'Own customers, orders and sales', permissions: [...common, ...invView, ...salesSelf, ...salesV2Self, ...salesExtraSelf, ...workflowSelf, ...bankingSelf] },
+  SALESPERSON: { name: 'Sales Person', level: 30, description: 'Own customers, orders and sales', permissions: [...common, ...invView, ...salesSelf, ...salesV2Self, ...salesExtraSelf, ...workflowSelf, ...bankingSelf, ...warehouseSalesperson] },
 };
 module.exports = { PERMISSIONS, ALL, ROLES, INVENTORY_MODULES, SALES_MODULES, SALES_V2_MODULES, SALES_V3_MODULES, SALES_EXTRA_MODULES, STAFF_MODULES, DOC_MODULES, WORKFLOW_MODULES, BANKING_MODULES, BANKING_EXTRA_MODULES, FUEL_MODULES, FUEL_USAGE_MODULES, EFD_MODULES, WAREHOUSE_MODULES };

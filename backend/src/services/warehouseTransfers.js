@@ -1,5 +1,6 @@
 const { QueryTypes } = require('sequelize');
-const { sequelize, WarehouseTransfer, WarehouseTransferLine, Item, StockBatch } = require('../models');
+const { sequelize, WarehouseTransfer, WarehouseTransferLine, Item, StockBatch, Salesperson } = require('../models');
+const notify = require('./notify');
 const approvals = require('./approvals');
 const audit = require('./audit');
 const ledger = require('./stockLedger');
@@ -8,7 +9,8 @@ const { AppError } = require('../utils/errors');
 
 /* Moving stock from one warehouse to another.
      storekeeper of the SOURCE warehouse requests  -> SUBMITTED (a Manager is notified)
-     Manager approves                             -> stock leaves the source and enters the destination, in ONE transaction -> COMPLETED
+     Manager approves                             -> stock leaves the source. If the destination is a salesperson's warehouse it is IN_TRANSIT until that
+                                                     salesperson confirms receipt (then it enters the destination -> COMPLETED); otherwise it enters at once -> COMPLETED
      Manager rejects / requester cancels          -> REJECTED / CANCELLED (stock never moved)
    Company-wide stock (stock_levels) does not change: the same goods are only in a different place.
    Reuses the generic approval engine, so a requester can never approve their own transfer. */
@@ -57,7 +59,8 @@ const create = (req, body) => sequelize.transaction(async (t) => {
   const rows = await normalizeLines(from.id, body.lines, t);
   const [seq] = await sequelize.query("SELECT nextval('warehouse_transfer_seq') AS n", { transaction: t });
   const transferNo = `WTR-${new Date().getFullYear()}-${String(seq[0].n).padStart(6, '0')}`;
-  const tr = await WarehouseTransfer.create({ transferNo, fromWarehouseId: from.id, toWarehouseId: to.id, status: 'SUBMITTED',
+  const sellers = await Salesperson.findAll({ where: { warehouseId: to.id, isActive: true }, attributes: ['userId'], transaction: t });
+  const tr = await WarehouseTransfer.create({ transferNo, fromWarehouseId: from.id, toWarehouseId: to.id, status: 'SUBMITTED', requiresReceipt: sellers.length > 0,
     ...(body.transferDate && { transferDate: body.transferDate }), reason: body.reason ?? null, createdBy: req.user.id, submittedAt: new Date() }, { transaction: t });
   await WarehouseTransferLine.bulkCreate(rows.map((r) => ({ ...r, transferId: tr.id })), { transaction: t });
   const ar = await approvals.create(req, { type: TYPE, entityType: 'WarehouseTransfer', entityId: tr.id,
@@ -77,6 +80,25 @@ const cancel = async (req, id) => {
   await approvals.cancel(req, tr.approvalId);
 };
 
+// The salesperson of the destination warehouse confirms the goods arrived: only now does the stock enter that warehouse.
+const receive = (req, id, note) => sequelize.transaction(async (t) => {
+  const tr = await WarehouseTransfer.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
+  if (!tr) throw new AppError(404, 'NOT_FOUND', 'Transfer not found');
+  if (tr.status !== 'IN_TRANSIT') throw new AppError(409, 'BAD_STATE', `This transfer is ${tr.status}, not waiting to be received`);
+  const mine = await Salesperson.findOne({ where: { userId: req.user.id, warehouseId: tr.toWarehouseId, isActive: true }, transaction: t });
+  if (!mine) throw new AppError(403, 'NOT_YOUR_WAREHOUSE', 'Only a salesperson assigned to the receiving warehouse can confirm this transfer');
+  const lines = await WarehouseTransferLine.findAll({ where: { transferId: tr.id }, order: [['itemId', 'ASC'], ['createdAt', 'ASC']], transaction: t });
+  const items = new Map((await Item.findAll({ where: { id: lines.map((l) => l.itemId) }, order: [['id', 'ASC']], transaction: t, lock: t.LOCK.UPDATE })).map((i) => [i.id, i]));
+  for (const l of lines)
+    await ledger.warehouseMove(t, { warehouseId: tr.toWarehouseId, itemId: l.itemId, batchId: l.batchId, quantity: l.quantity, label: label(items.get(l.itemId)), direction: 'IN',
+      movementType: 'TRANSFER_IN', refType: 'WarehouseTransfer', refId: tr.id, userId: req.user.id, note: `Transfer ${tr.transferNo}` });
+  const old = snap(tr);
+  await tr.update({ status: 'COMPLETED', completedAt: new Date(), receivedBy: req.user.id, receivedAt: new Date(), receiveNote: note || null }, { transaction: t });
+  await audit.log(req, { action: 'WAREHOUSE_TRANSFER_RECEIVED', entityType: 'WarehouseTransfer', entityId: tr.id, oldValues: old, newValues: { ...snap(tr), lines: lines.length }, reason: note }, t);
+  await notify([tr.createdBy], { title: 'Transfer received', body: `${tr.transferNo} was confirmed by ${req.user.fullName}`, link: `/warehouse-transfers/${tr.id}` }, t);
+  return tr;
+});
+
 /* ---- approval hooks: run inside services/approvals.js's transaction ---- */
 const execute = async (r, ctx) => {
   const t = ctx.transaction;
@@ -90,10 +112,17 @@ const execute = async (r, ctx) => {
     const common = { itemId: l.itemId, batchId: l.batchId, quantity: l.quantity, label: label(items.get(l.itemId)), refType: 'WarehouseTransfer', refId: tr.id,
       userId: ctx.user.id, note: `Transfer ${tr.transferNo}` };
     await ledger.warehouseMove(t, { ...common, warehouseId: tr.fromWarehouseId, direction: 'OUT', movementType: 'TRANSFER_OUT' });   // fails (and rolls back everything) if the source no longer holds it
-    await ledger.warehouseMove(t, { ...common, warehouseId: tr.toWarehouseId, direction: 'IN', movementType: 'TRANSFER_IN' });
+    if (!tr.requiresReceipt) await ledger.warehouseMove(t, { ...common, warehouseId: tr.toWarehouseId, direction: 'IN', movementType: 'TRANSFER_IN' });
   }
   const old = snap(tr);
-  await tr.update({ status: 'COMPLETED', completedAt: new Date() }, { transaction: t });
+  if (tr.requiresReceipt) {                                                                // goods are on the way: the salesperson must confirm
+    await tr.update({ status: 'IN_TRANSIT', approvedAt: new Date() }, { transaction: t });
+    await audit.log(ctx.req, { action: 'WAREHOUSE_TRANSFER_APPROVED', entityType: 'WarehouseTransfer', entityId: tr.id, oldValues: old, newValues: { ...snap(tr), lines: lines.length } }, t);
+    const sellers = await Salesperson.findAll({ where: { warehouseId: tr.toWarehouseId, isActive: true }, attributes: ['userId'], transaction: t });
+    await notify(sellers.map((s) => s.userId), { title: 'Stock on the way', body: `${tr.transferNo}: confirm when you receive it`, link: `/warehouse-transfers/${tr.id}` }, t);
+    return;
+  }
+  await tr.update({ status: 'COMPLETED', approvedAt: new Date(), completedAt: new Date() }, { transaction: t });
   await audit.log(ctx.req, { action: 'WAREHOUSE_TRANSFER_COMPLETED', entityType: 'WarehouseTransfer', entityId: tr.id, oldValues: old, newValues: { ...snap(tr), lines: lines.length } }, t);
 };
 const close = (status, action) => async (r, ctx) => {
@@ -106,4 +135,4 @@ const close = (status, action) => async (r, ctx) => {
 approvals.register(TYPE, { label: 'Warehouse transfer', approvePermission: 'warehouse_transfers.approve', execute,
   onReject: close('REJECTED', 'WAREHOUSE_TRANSFER_REJECTED'), onCancel: close('CANCELLED', 'WAREHOUSE_TRANSFER_CANCELLED') });
 
-module.exports = { create, cancel };
+module.exports = { create, cancel, receive };

@@ -16,7 +16,8 @@
     "SUBMITTED": "Unasubiri idhini",
     "COMPLETED": "Umekamilika",
     "REJECTED": "Umekataliwa",
-    "CANCELLED": "Umeghairiwa"
+    "CANCELLED": "Umeghairiwa",
+    "IN_TRANSIT": "Njiani"
   },
   "cols": {
     "date": "Tarehe",
@@ -32,7 +33,8 @@
     "view": "Tazama",
     "approve": "Idhinisha",
     "reject": "Kataa",
-    "cancel": "Ghairi"
+    "cancel": "Ghairi",
+    "receive": "Thibitisha nimepokea"
   },
   "form": {
     "from": "Kutoka ghala",
@@ -52,19 +54,26 @@
     "removeLine": "Ondoa mstari",
     "addItem": "Ongeza bidhaa nyingine",
     "saving": "Inatuma…",
-    "submit": "Tuma kuidhinishwa"
+    "submit": "Tuma kuidhinishwa",
+    "salesperson": "Muuzaji",
+    "needsReceiptHint": "Muuzaji lazima athibitishe kupokea baada ya Meneja kuidhinisha."
   },
   "view": {
     "reason": "Sababu",
     "requested": "Imeombwa",
     "decision": "Uamuzi",
     "decisionNote": "Maelezo ya uamuzi",
-    "completed": "Bidhaa zimehamishwa"
+    "completed": "Bidhaa zimehamishwa",
+    "needsReceipt": "Kupokea",
+    "needsReceiptYes": "Muuzaji lazima athibitishe kupokea",
+    "received": "Imepokelewa",
+    "receiveNote": "Maelezo ya kupokea"
   },
   "lineCols": {
     "item": "Bidhaa",
     "batch": "Bechi",
     "quantity": "Kiasi",
     "remarks": "Maelezo"
-  }
+  },
+  "confirmReceive": "Thibitisha kuwa umepokea bidhaa zote za {{no}}? Bidhaa zitaingia kwenye ghala lako."
 }

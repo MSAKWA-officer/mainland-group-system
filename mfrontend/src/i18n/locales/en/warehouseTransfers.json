@@ -16,7 +16,8 @@
     "SUBMITTED": "Waiting for approval",
     "COMPLETED": "Completed",
     "REJECTED": "Rejected",
-    "CANCELLED": "Cancelled"
+    "CANCELLED": "Cancelled",
+    "IN_TRANSIT": "On the way"
   },
   "cols": {
     "date": "Date",
@@ -32,7 +33,8 @@
     "view": "View",
     "approve": "Approve",
     "reject": "Reject",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "receive": "Confirm received"
   },
   "form": {
     "from": "From warehouse",
@@ -52,19 +54,26 @@
     "removeLine": "Remove line",
     "addItem": "Add another item",
     "saving": "Sending…",
-    "submit": "Send for approval"
+    "submit": "Send for approval",
+    "salesperson": "Salesperson",
+    "needsReceiptHint": "The salesperson must confirm receipt after the Manager approves."
   },
   "view": {
     "reason": "Reason",
     "requested": "Requested",
     "decision": "Decision",
     "decisionNote": "Decision note",
-    "completed": "Stock moved"
+    "completed": "Stock moved",
+    "needsReceipt": "Receipt",
+    "needsReceiptYes": "Salesperson must confirm receipt",
+    "received": "Received",
+    "receiveNote": "Receipt note"
   },
   "lineCols": {
     "item": "Item",
     "batch": "Batch",
     "quantity": "Quantity",
     "remarks": "Remarks"
-  }
+  },
+  "confirmReceive": "Confirm that you received all items of {{no}}? The stock will be added to your warehouse."
 }

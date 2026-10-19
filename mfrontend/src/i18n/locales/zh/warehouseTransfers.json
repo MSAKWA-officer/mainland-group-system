@@ -16,7 +16,8 @@
     "SUBMITTED": "待审批",
     "COMPLETED": "已完成",
     "REJECTED": "已拒绝",
-    "CANCELLED": "已取消"
+    "CANCELLED": "已取消",
+    "IN_TRANSIT": "运输中"
   },
   "cols": {
     "date": "日期",
@@ -32,7 +33,8 @@
     "view": "查看",
     "approve": "批准",
     "reject": "拒绝",
-    "cancel": "取消"
+    "cancel": "取消",
+    "receive": "确认收货"
   },
   "form": {
     "from": "调出仓库",
@@ -52,19 +54,26 @@
     "removeLine": "删除行",
     "addItem": "添加商品",
     "saving": "提交中…",
-    "submit": "提交审批"
+    "submit": "提交审批",
+    "salesperson": "销售员",
+    "needsReceiptHint": "经理批准后，销售员必须确认收货。"
   },
   "view": {
     "reason": "原因",
     "requested": "申请时间",
     "decision": "审批时间",
     "decisionNote": "审批意见",
-    "completed": "库存移动时间"
+    "completed": "库存移动时间",
+    "needsReceipt": "收货",
+    "needsReceiptYes": "销售员须确认收货",
+    "received": "收货时间",
+    "receiveNote": "收货备注"
   },
   "lineCols": {
     "item": "商品",
     "batch": "批次",
     "quantity": "数量",
     "remarks": "备注"
-  }
+  },
+  "confirmReceive": "确认已收到 {{no}} 的全部商品？库存将加入您的仓库。"
 }

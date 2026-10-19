@@ -41,6 +41,9 @@ export default function WarehouseTransfersView() {
             <Row label={t('view.requested')}>{fmt(d.submittedAt)}</Row>
             {d.approval?.decidedAt && <Row label={t('view.decision')}>{fmt(d.approval.decidedAt)}</Row>}
             {d.approval?.decisionNote && <Row label={t('view.decisionNote')}>{d.approval.decisionNote}</Row>}
+            {d.requiresReceipt && <Row label={t('view.needsReceipt')}>{t('view.needsReceiptYes')}</Row>}
+            {d.receivedAt && <Row label={t('view.received')}>{fmt(d.receivedAt)}</Row>}
+            {d.receiveNote && <Row label={t('view.receiveNote')}>{d.receiveNote}</Row>}
             {d.completedAt && <Row label={t('view.completed')}>{fmt(d.completedAt)}</Row>}
           </dl>
           <div className="mt-6 overflow-x-auto"><table className="w-full border-collapse bg-white">

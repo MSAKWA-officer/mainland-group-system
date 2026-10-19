@@ -1,4 +1,4 @@
-const { Warehouse, WarehouseStorekeeper } = require('../models');
+const { Warehouse, WarehouseStorekeeper, Salesperson } = require('../models');
 const { AppError } = require('../utils/errors');
 
 /* Who may use which warehouse.
@@ -8,17 +8,20 @@ const { AppError } = require('../utils/errors');
 const seesAll = (req) => req.user.permissions.has('warehouses.read_all');
 
 // null = no restriction, otherwise the list of warehouse ids this user is in charge of.
-const scope = async (req, t) => (seesAll(req) ? null
-  : (await WarehouseStorekeeper.findAll({ where: { userId: req.user.id }, attributes: ['warehouseId'], transaction: t })).map((r) => r.warehouseId));
+// Everybody else: the warehouses they look after as storekeeper plus the warehouse they sell from as salesperson.
+const scope = async (req, t) => {
+  if (seesAll(req)) return null;
+  const keep = await WarehouseStorekeeper.findAll({ where: { userId: req.user.id }, attributes: ['warehouseId'], transaction: t });
+  const sell = await Salesperson.findAll({ where: { userId: req.user.id, isActive: true }, attributes: ['warehouseId'], transaction: t });
+  return [...new Set([...keep, ...sell].map((r) => r.warehouseId).filter(Boolean))];
+};
 
 // Loads a warehouse the user may use. { active: true } also requires it to be active (receiving into it, transferring out of it, ...).
 async function access(req, id, t, { active = false } = {}) {
   const w = await Warehouse.findByPk(id, { transaction: t });
   if (!w) throw new AppError(404, 'NOT_FOUND', 'Warehouse not found');
-  if (!seesAll(req)) {
-    const mine = await WarehouseStorekeeper.findOne({ where: { warehouseId: id, userId: req.user.id }, transaction: t });
-    if (!mine) throw new AppError(403, 'NOT_YOUR_WAREHOUSE', 'You are not in charge of this warehouse');
-  }
+  const mine = await scope(req, t);
+  if (mine && !mine.includes(id)) throw new AppError(403, 'NOT_YOUR_WAREHOUSE', 'You are not in charge of this warehouse');
   if (active && !w.isActive) throw new AppError(409, 'WAREHOUSE_INACTIVE', `${w.name} is inactive`);
   return w;
 }
