@@ -17,7 +17,9 @@
     "COMPLETED": "Completed",
     "REJECTED": "Rejected",
     "CANCELLED": "Cancelled",
-    "IN_TRANSIT": "On the way"
+    "IN_TRANSIT": "On the way",
+    "RECEIVED_SHORT": "Received short",
+    "NOT_RECEIVED": "Not received"
   },
   "cols": {
     "date": "Date",
@@ -34,7 +36,8 @@
     "approve": "Approve",
     "reject": "Reject",
     "cancel": "Cancel",
-    "receive": "Confirm received"
+    "receive": "Confirm received",
+    "problem": "Received short / not received"
   },
   "form": {
     "from": "From warehouse",
@@ -67,13 +70,36 @@
     "needsReceipt": "Receipt",
     "needsReceiptYes": "Salesperson must confirm receipt",
     "received": "Received",
-    "receiveNote": "Receipt note"
+    "receiveNote": "Receipt note",
+    "problem": {
+      "RECEIVED_SHORT": "The receiver reported that less arrived than was sent. The missing quantity went back to the sending warehouse. The Manager follows this up.",
+      "NOT_RECEIVED": "The receiver reported that nothing arrived. All the stock went back to the sending warehouse. The Manager follows this up."
+    }
   },
   "lineCols": {
     "item": "Item",
     "batch": "Batch",
     "quantity": "Quantity",
-    "remarks": "Remarks"
+    "remarks": "Remarks",
+    "sent": "Sent",
+    "received": "Received"
   },
-  "confirmReceive": "Confirm that you received all items of {{no}}? The stock will be added to your warehouse."
+  "confirmReceive": "Confirm that you received all items of {{no}}? The stock will be added to your warehouse.",
+  "receive": {
+    "title": "Did the goods arrive?",
+    "hint": "Enter what you really received. If something is missing, say what went wrong: the Manager is told and sorts it out. Anything not received goes back to the sending warehouse.",
+    "note": "Note",
+    "notePlaceholder": "Required when something is missing, e.g. 2 cartons missing from the delivery",
+    "noteRequired": "Say what is missing or what went wrong",
+    "badQty": "Enter a quantity for every line, not more than was sent.",
+    "nothingShort": "Every line is complete: use \"Received all\" instead.",
+    "full": "Received all",
+    "short": "Received short",
+    "none": "Not received",
+    "confirm": {
+      "FULL": "Confirm you received everything on {{no}}? The stock enters your warehouse.",
+      "SHORT": "Confirm {{no}} was received SHORT? Only the quantities you entered enter your warehouse; the rest goes back to the sending warehouse and the Manager is told.",
+      "NONE": "Confirm NOTHING of {{no}} was received? All of it goes back to the sending warehouse and the Manager is told."
+    }
+  }
 }

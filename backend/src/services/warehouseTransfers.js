@@ -80,22 +80,55 @@ const cancel = async (req, id) => {
   await approvals.cancel(req, tr.approvalId);
 };
 
-// The salesperson of the destination warehouse confirms the goods arrived: only now does the stock enter that warehouse.
-const receive = (req, id, note) => sequelize.transaction(async (t) => {
+/* The salesperson of the destination warehouse answers for the goods that were sent (status IN_TRANSIT):
+     FULL (default) - everything arrived: all of it enters the destination                           -> COMPLETED
+     SHORT          - less arrived: only lines[].receivedQty enters the destination, the rest goes back to the SOURCE warehouse -> RECEIVED_SHORT
+     NONE           - nothing arrived: everything goes back to the SOURCE warehouse                    -> NOT_RECEIVED
+   Sending the shortfall back keeps company-wide stock equal to the sum of the warehouses. The Manager (and the requester) are notified and sort the
+   problem out outside the system; the note is required whenever something is missing. */
+const mil = (n) => Math.round(Number(n) * 1000);
+const receive = (req, id, body = {}) => sequelize.transaction(async (t) => {
+  const outcome = body.outcome || 'FULL'; const note = (body.note || '').trim();
   const tr = await WarehouseTransfer.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
   if (!tr) throw new AppError(404, 'NOT_FOUND', 'Transfer not found');
   if (tr.status !== 'IN_TRANSIT') throw new AppError(409, 'BAD_STATE', `This transfer is ${tr.status}, not waiting to be received`);
   const mine = await Salesperson.findOne({ where: { userId: req.user.id, warehouseId: tr.toWarehouseId, isActive: true }, transaction: t });
   if (!mine) throw new AppError(403, 'NOT_YOUR_WAREHOUSE', 'Only a salesperson assigned to the receiving warehouse can confirm this transfer');
+  if (outcome !== 'FULL' && note.length < 3) throw bad('note', 'Say what is missing or what went wrong');
   const lines = await WarehouseTransferLine.findAll({ where: { transferId: tr.id }, order: [['itemId', 'ASC'], ['createdAt', 'ASC']], transaction: t });
+  // How much of each line really arrived.
+  const got = new Map(lines.map((l) => [l.id, outcome === 'FULL' ? mil(l.quantity) : 0]));
+  if (outcome === 'SHORT') {
+    const sent = new Map((body.lines || []).map((x) => [x.lineId, x.receivedQty]));
+    lines.forEach((l, n) => {
+      if (!sent.has(l.id)) throw bad(`lines.${n}.receivedQty`, 'Enter the quantity received for every line');
+      const q = mil(sent.get(l.id));
+      if (q < 0 || q > mil(l.quantity)) throw bad(`lines.${n}.receivedQty`, 'Cannot be more than was sent');
+      got.set(l.id, q);
+    });
+    if (lines.every((l) => got.get(l.id) === mil(l.quantity))) throw bad('lines', 'Everything was received: confirm the transfer as received instead');
+    if (lines.every((l) => got.get(l.id) === 0)) throw bad('lines', 'Nothing was received: use "Not received" instead');
+  }
   const items = new Map((await Item.findAll({ where: { id: lines.map((l) => l.itemId) }, order: [['id', 'ASC']], transaction: t, lock: t.LOCK.UPDATE })).map((i) => [i.id, i]));
-  for (const l of lines)
-    await ledger.warehouseMove(t, { warehouseId: tr.toWarehouseId, itemId: l.itemId, batchId: l.batchId, quantity: l.quantity, label: label(items.get(l.itemId)), direction: 'IN',
-      movementType: 'TRANSFER_IN', refType: 'WarehouseTransfer', refId: tr.id, userId: req.user.id, note: `Transfer ${tr.transferNo}` });
+  for (const l of lines) {
+    const common = { itemId: l.itemId, batchId: l.batchId, label: label(items.get(l.itemId)), direction: 'IN', refType: 'WarehouseTransfer', refId: tr.id, userId: req.user.id };
+    const ok = got.get(l.id) / 1000; const missing = (mil(l.quantity) - got.get(l.id)) / 1000;
+    if (ok > 0) await ledger.warehouseMove(t, { ...common, warehouseId: tr.toWarehouseId, quantity: ok, movementType: 'TRANSFER_IN', note: `Transfer ${tr.transferNo}` });
+    if (missing > 0) await ledger.warehouseMove(t, { ...common, warehouseId: tr.fromWarehouseId, quantity: missing, movementType: 'TRANSFER_RETURN', note: `Transfer ${tr.transferNo}: not received` });
+    await l.update({ receivedQty: ok }, { transaction: t });
+  }
+  const status = outcome === 'FULL' ? 'COMPLETED' : outcome === 'SHORT' ? 'RECEIVED_SHORT' : 'NOT_RECEIVED';
   const old = snap(tr);
-  await tr.update({ status: 'COMPLETED', completedAt: new Date(), receivedBy: req.user.id, receivedAt: new Date(), receiveNote: note || null }, { transaction: t });
-  await audit.log(req, { action: 'WAREHOUSE_TRANSFER_RECEIVED', entityType: 'WarehouseTransfer', entityId: tr.id, oldValues: old, newValues: { ...snap(tr), lines: lines.length }, reason: note }, t);
-  await notify([tr.createdBy], { title: 'Transfer received', body: `${tr.transferNo} was confirmed by ${req.user.fullName}`, link: `/warehouse-transfers/${tr.id}` }, t);
+  await tr.update({ status, completedAt: new Date(), receivedBy: req.user.id, receivedAt: new Date(), receiveNote: note || null }, { transaction: t });
+  const action = { COMPLETED: 'WAREHOUSE_TRANSFER_RECEIVED', RECEIVED_SHORT: 'WAREHOUSE_TRANSFER_RECEIVED_SHORT', NOT_RECEIVED: 'WAREHOUSE_TRANSFER_NOT_RECEIVED' }[status];
+  await audit.log(req, { action, entityType: 'WarehouseTransfer', entityId: tr.id, oldValues: old, newValues: { ...snap(tr), lines: lines.length }, reason: note || undefined }, t);
+  const link = `/warehouse-transfers/${tr.id}`;
+  if (status === 'COMPLETED') await notify([tr.createdBy], { title: 'Transfer received', body: `${tr.transferNo} was confirmed by ${req.user.fullName}`, link }, t);
+  else {                                                                                  // a problem: tell the requester and every Manager who can approve transfers
+    const managers = await approvals.approversOf('warehouse_transfers.approve', req.user.id, t);
+    await notify([...new Set([tr.createdBy, ...managers])].filter((u) => u !== req.user.id),
+      { title: status === 'NOT_RECEIVED' ? 'Transfer NOT received' : 'Transfer received short', body: `${tr.transferNo}: ${req.user.fullName} reported a problem - ${note}`, link }, t);
+  }
   return tr;
 });
 

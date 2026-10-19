@@ -5,6 +5,7 @@ import { adjustmentApi, itemApi, errMsg, fieldErrs } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
+import WarehouseField from '../../components/WarehouseField.jsx';
 import { useDocText } from '../../utils/docText';
 import { LineEditor, buildPayload, emptyLine, today } from '../stock/StockCreate.jsx';
 
@@ -15,6 +16,7 @@ export function HeadFields({ head, setHead, fe }) {
   return (
     <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
       <Field label={t('form.date')} error={fe.docDate}><input className="input !text-black" type="date" required value={head.docDate} onChange={set('docDate')} /></Field>
+      <WarehouseField head={head} setHead={setHead} fe={fe} />
       <Field label={t('form.reference')} error={fe.reference}><input className="input !text-black" maxLength={100} value={head.reference} onChange={set('reference')} /></Field>
       <div className="sm:col-span-2"><Field label={t('form.reason')} error={fe.reason}><textarea className="input !text-black" rows={3} required minLength={3} maxLength={1000} value={head.reason} onChange={set('reason')} /></Field></div>
     </div>
@@ -27,7 +29,7 @@ export default function AdjustmentsCreate() {
   const navigate = useNavigate();
   const { can } = useAuth();
   const [params] = useSearchParams();
-  const [head, setHead] = useState({ docDate: today(), reference: '', reason: '' });
+  const [head, setHead] = useState({ docDate: today(), warehouseId: '', reference: '', reason: '' });
   const [lines, setLines] = useState([emptyLine(params.get('itemId') || '')]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const submit = async (e) => {
@@ -52,7 +54,7 @@ export default function AdjustmentsCreate() {
       <form onSubmit={submit} className="space-y-6 border-t border-line px-6 py-6">
         <Banner>{err}</Banner>
         <HeadFields head={head} setHead={setHead} fe={fe} />
-        <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} /></div>
+        <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
         <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('saveDraft')}</button>
       </form>
     </div>

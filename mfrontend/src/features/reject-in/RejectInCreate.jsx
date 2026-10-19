@@ -5,6 +5,7 @@ import { itemApi, rejectInApi, errMsg, fieldErrs } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
+import WarehouseField from '../../components/WarehouseField.jsx';
 import { TrashIcon, PlusIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { qty } from '../stock/StockList.jsx';
@@ -95,6 +96,7 @@ export function HeadFields({ head, setHead, fe }) {
   return (
     <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
       <Field label={t('form.dateReturned')} error={fe.docDate}><input className="input !text-black" type="date" required value={head.docDate} onChange={set('docDate')} /></Field>
+      <WarehouseField head={head} setHead={setHead} fe={fe} />
       <Field label={t('form.party')} error={fe.partyName}><input className="input !text-black" maxLength={150} value={head.partyName} onChange={set('partyName')} /></Field>
       <div className="sm:col-span-2"><Field label={t('form.reference')} error={fe.reference}><input className="input !text-black" maxLength={100} value={head.reference} onChange={set('reference')} /></Field></div>
       <div className="sm:col-span-2"><Field label={t('form.reason')} error={fe.reason}><textarea className="input !text-black" rows={3} required minLength={3} maxLength={1000} value={head.reason} onChange={set('reason')} /></Field></div>
@@ -107,7 +109,7 @@ export default function RejectInCreate() {
   const { t: td } = useTranslation('docs');
   const navigate = useNavigate();
   const { can } = useAuth();
-  const [head, setHead] = useState({ docDate: today(), partyName: '', reference: '', reason: '' });
+  const [head, setHead] = useState({ docDate: today(), warehouseId: '', partyName: '', reference: '', reason: '' });
   const [lines, setLines] = useState([emptyLine()]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const submit = async (e) => {

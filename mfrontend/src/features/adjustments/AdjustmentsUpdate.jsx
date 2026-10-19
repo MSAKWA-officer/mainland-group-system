@@ -18,13 +18,13 @@ export default function AdjustmentsUpdate() {
   const navigate = useNavigate();
   const { user, can } = useAuth();
   const doc = useLoad(() => adjustmentApi.get(id), [id]);
-  const [head, setHead] = useState({ docDate: today(), reference: '', reason: '' });
+  const [head, setHead] = useState({ docDate: today(), warehouseId: '', reference: '', reason: '' });
   const [lines, setLines] = useState([emptyLine()]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const d = doc.data;
   useEffect(() => {
     if (!d) return;
-    setHead({ docDate: d.docDate, reference: d.reference || '', reason: d.reason || '' });
+    setHead({ docDate: d.docDate, warehouseId: d.warehouseId || '', reference: d.reference || '', reason: d.reason || '' });
     setLines((d.lines || []).map((l) => ({
       itemId: l.itemId, direction: l.direction, quantity: String(l.quantity), unitCost: l.unitCost ?? '',
       batchNo: l.batchNo || '', expiryDate: l.expiryDate || '', batchId: l.batchId || '', remarks: l.remarks || '',
@@ -55,7 +55,7 @@ export default function AdjustmentsUpdate() {
         {editable && (
           <>
             <HeadFields head={head} setHead={setHead} fe={fe} />
-            <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} /></div>
+            <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
             <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('saveChanges')}</button>
           </>
         )}

@@ -110,4 +110,4 @@ const remove = (req, id) => sequelize.transaction(async (t) => {
   await audit.log(req, { action: 'APPROVAL_DELETED', entityType: 'ApprovalRequest', entityId: id, oldValues: old }, t);
 });
 
-module.exports = { register, registry, create, update, remove, submit, approve: decide('approve'), reject: decide('reject'), cancel };
+module.exports = { approversOf, register, registry, create, update, remove, submit, approve: decide('approve'), reject: decide('reject'), cancel };

@@ -9,7 +9,7 @@ const listQ = z.object({ search: text(80).optional(), categoryId: uuid.optional(
   status: z.enum(['in_stock', 'low', 'out']).optional(), ...paging });
 const itemParam = z.object({ itemId: uuid });
 const batchParam = z.object({ batchId: uuid });
-const batchQ = z.object({ includeEmpty: bool.optional() });
+const batchQ = z.object({ includeEmpty: bool.optional(), warehouseId: uuid.optional() });   // warehouseId: only the batches held in that warehouse
 const expiryQ = z.object({ includeEmpty: bool.optional(), days: z.coerce.number().int().min(0).max(365).optional() });
 
 router.get('/', authorize('stock.read'), validate(listQ, 'query'), ah(c.list));

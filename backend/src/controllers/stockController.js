@@ -2,6 +2,7 @@ const { Op, literal, QueryTypes } = require('sequelize');
 const sequelize = require('../config/sequelize');
 const { StockLevel, Item, Category, StockBatch } = require('../models');
 const { AppError } = require('../utils/errors');
+const wh = require('../services/warehouses');
 const { like } = require('../utils/schemas');
 
 // Item fields visible in stock screens. Cost price is never exposed here (see stock_reports.valuation).
@@ -37,11 +38,20 @@ exports.getOne = async (req, res) => {
 };
 
 exports.batches = async (req, res) => {
-  const { includeEmpty } = req.query;
+  const { includeEmpty, warehouseId } = req.query;
   const item = await Item.findByPk(req.params.itemId, { attributes: ['id'] });
   if (!item) throw new AppError(404, 'NOT_FOUND', 'Item not found');
-  const rows = await StockBatch.findAll({ where: { itemId: item.id, ...(!includeEmpty && { quantity: { [Op.gt]: 0 } }) }, order: [['expiryDate', 'ASC']] });
   const t = today();
+  if (warehouseId) {                                    // batches (and quantities) of ONE warehouse, so a document posts against what that warehouse really holds
+    await wh.access(req, warehouseId);                  // a storekeeper may only look at his own warehouses
+    const rows = await sequelize.query(
+      `SELECT b.id, b.item_id AS "itemId", b.batch_no AS "batchNo", b.expiry_date AS "expiryDate", wsb.quantity
+         FROM warehouse_stock_batches wsb JOIN stock_batches b ON b.id = wsb.batch_id
+        WHERE wsb.warehouse_id = :w AND b.item_id = :i ${includeEmpty ? '' : 'AND wsb.quantity > 0'} ORDER BY b.expiry_date ASC`,
+      { replacements: { w: warehouseId, i: item.id }, type: QueryTypes.SELECT });
+    return res.json(rows.map((b) => ({ ...b, expired: b.expiryDate < t })));
+  }
+  const rows = await StockBatch.findAll({ where: { itemId: item.id, ...(!includeEmpty && { quantity: { [Op.gt]: 0 } }) }, order: [['expiryDate', 'ASC']] });
   res.json(rows.map((b) => ({ ...b.toJSON(), expired: b.expiryDate < t })));
 };
 

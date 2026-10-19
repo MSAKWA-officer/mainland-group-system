@@ -17,13 +17,13 @@ export default function RejectOutUpdate() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const doc = useLoad(() => rejectOutApi.get(id), [id]);
-  const [head, setHead] = useState({ docDate: today(), partyName: '', reference: '', reason: '' });
+  const [head, setHead] = useState({ docDate: today(), warehouseId: '', partyName: '', reference: '', reason: '' });
   const [lines, setLines] = useState([emptyOutLine()]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const d = doc.data;
   useEffect(() => {
     if (!d) return;
-    setHead({ docDate: d.docDate, partyName: d.partyName || '', reference: d.reference || '', reason: d.reason || '' });
+    setHead({ docDate: d.docDate, warehouseId: d.warehouseId || '', partyName: d.partyName || '', reference: d.reference || '', reason: d.reason || '' });
     setLines((d.lines || []).map((l) => ({ itemId: l.itemId, quantity: String(l.quantity), batchId: l.batchId || '', remarks: l.remarks || '' })));
   }, [d]);
   const editable = d && d.status === 'DRAFT' && d.createdBy === user.id;
@@ -51,7 +51,7 @@ export default function RejectOutUpdate() {
         {editable && (
           <>
             <HeadFields head={head} setHead={setHead} fe={fe} />
-            <div className="max-w-3xl"><OutLineEditor lines={lines} setLines={setLines} fe={fe} title={t('form.itemsReturned')} qtyLabel={t('form.qtyReturned')} expiryOnly={false} /></div>
+            <div className="max-w-3xl"><OutLineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} title={t('form.itemsReturned')} qtyLabel={t('form.qtyReturned')} expiryOnly={false} /></div>
             <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('edit.saveChanges')}</button>
           </>
         )}

@@ -16,13 +16,13 @@ export default function RejectInUpdate() {
   const navigate = useNavigate();
   const { user, can } = useAuth();
   const doc = useLoad(() => rejectInApi.get(id), [id]);
-  const [head, setHead] = useState({ docDate: today(), partyName: '', reference: '', reason: '' });
+  const [head, setHead] = useState({ docDate: today(), warehouseId: '', partyName: '', reference: '', reason: '' });
   const [lines, setLines] = useState([emptyLine()]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const d = doc.data;
   useEffect(() => {
     if (!d) return;
-    setHead({ docDate: d.docDate, partyName: d.partyName || '', reference: d.reference || '', reason: d.reason || '' });
+    setHead({ docDate: d.docDate, warehouseId: d.warehouseId || '', partyName: d.partyName || '', reference: d.reference || '', reason: d.reason || '' });
     setLines((d.lines || []).map((l) => ({
       itemId: l.itemId, quantity: String(l.quantity), unitCost: l.unitCost ?? '',
       batchNo: l.batchNo || '', expiryDate: l.expiryDate || '', remarks: l.remarks || '',

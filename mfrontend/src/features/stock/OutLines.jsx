@@ -14,7 +14,7 @@ export const today = () => new Date().toISOString().slice(0, 10);
 // Turns the form into the API body. batchId is sent only for items that track expiry.
 export function buildOutPayload(head, lines, items, withParty) {
   return {
-    docDate: head.docDate, reference: head.reference.trim() || null, reason: head.reason.trim() || null,
+    docDate: head.docDate, warehouseId: head.warehouseId, reference: head.reference.trim() || null, reason: head.reason.trim() || null,
     ...(withParty && { partyName: head.partyName.trim() || null }),
     lines: lines.map((l) => ({
       itemId: l.itemId, quantity: Number(l.quantity), remarks: l.remarks.trim() || null,
@@ -23,13 +23,18 @@ export function buildOutPayload(head, lines, items, withParty) {
   };
 }
 
-function OutLineRow({ l, i, item, options, set, remove, fe, canRemove, qtyLabel }) {
+function OutLineRow({ l, i, item, options, set, remove, fe, canRemove, qtyLabel, warehouseId }) {
   const { t } = useTranslation('stock');
   const [batches, setBatches] = useState([]);
   useEffect(() => {
-    if (item?.trackExpiry) stockApi.batches(item.id).then(setBatches).catch(() => setBatches([]));
-    else setBatches([]);
-  }, [item?.id, item?.trackExpiry]);
+    // Batches of the CHOSEN warehouse only. A batch picked for another warehouse is dropped.
+    if (item?.trackExpiry) {
+      stockApi.batches(item.id, warehouseId ? { warehouseId } : undefined).then((list) => {
+        setBatches(list);
+        if (warehouseId && l.batchId && !list.some((b) => b.id === l.batchId)) set(i, { batchId: '' });
+      }).catch(() => setBatches([]));
+    } else setBatches([]);
+  }, [item?.id, item?.trackExpiry, warehouseId]); // eslint-disable-line
   const e = (k) => fe[`lines.${i}.${k}`];
   return (
     <div className="rounded-md border border-line p-4">
@@ -66,7 +71,7 @@ function OutLineRow({ l, i, item, options, set, remove, fe, canRemove, qtyLabel 
 }
 
 // Item search, one editable card per line, and an add-line button. expiryOnly limits the search to items that track expiry.
-export function OutLineEditor({ lines, setLines, fe = {}, title, qtyLabel, expiryOnly }) {
+export function OutLineEditor({ lines, setLines, fe = {}, title, qtyLabel, expiryOnly, warehouseId }) {
   const { t } = useTranslation('stock');
   const [search, setSearch] = useState('');
   const [known, setKnown] = useState({});
@@ -95,7 +100,7 @@ export function OutLineEditor({ lines, setLines, fe = {}, title, qtyLabel, expir
       <Banner>{found.error}</Banner>
       {lines.map((l, i) => (
         <OutLineRow key={i} l={l} i={i} item={known[l.itemId]} options={options} set={set} remove={remove} fe={fe}
-          canRemove={lines.length > 1} qtyLabel={qtyLabel} />
+          canRemove={lines.length > 1} qtyLabel={qtyLabel} warehouseId={warehouseId} />
       ))}
       <button type="button" className="btn-ghost gap-2 !text-black" onClick={() => setLines([...lines, emptyOutLine()])}><PlusIcon /> {t('lines.addAnother')}</button>
     </div>

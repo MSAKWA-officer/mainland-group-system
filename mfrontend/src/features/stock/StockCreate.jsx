@@ -15,7 +15,7 @@ export const today = () => new Date().toISOString().slice(0, 10);
 // Turns the form into the API body. Fields that do not apply to a line (batch, cost) are left out.
 export function buildPayload(head, lines, canCost, items) {
   return {
-    docDate: head.docDate, reference: head.reference.trim() || null, reason: head.reason.trim(),
+    docDate: head.docDate, warehouseId: head.warehouseId, reference: head.reference.trim() || null, reason: head.reason.trim(),
     lines: lines.map((l) => {
       const tracked = items[l.itemId]?.trackExpiry;
       return {
@@ -28,13 +28,17 @@ export function buildPayload(head, lines, canCost, items) {
   };
 }
 
-function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove }) {
+function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, warehouseId }) {
   const { t } = useTranslation('stock');
   const [batches, setBatches] = useState([]);
   useEffect(() => {
-    if (item?.trackExpiry && l.direction === 'OUT') stockApi.batches(item.id).then(setBatches).catch(() => setBatches([]));
-    else setBatches([]);
-  }, [item?.id, item?.trackExpiry, l.direction]);
+    if (item?.trackExpiry && l.direction === 'OUT') {       // batches of the chosen warehouse only (company-wide when no warehouse is chosen)
+      stockApi.batches(item.id, warehouseId ? { warehouseId } : undefined).then((list) => {
+        setBatches(list);
+        if (warehouseId && l.batchId && !list.some((b) => b.id === l.batchId)) set(i, { batchId: '' });
+      }).catch(() => setBatches([]));
+    } else setBatches([]);
+  }, [item?.id, item?.trackExpiry, l.direction, warehouseId]); // eslint-disable-line
   const e = (k) => fe[`lines.${i}.${k}`];
   const tracked = item?.trackExpiry;
   return (
@@ -88,7 +92,7 @@ function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove }) {
 }
 
 // Shared by StockCreate and StockUpdate: item search, one editable card per line, and an add-line button.
-export function LineEditor({ lines, setLines, fe = {} }) {
+export function LineEditor({ lines, setLines, fe = {}, warehouseId }) {
   const { t } = useTranslation('stock');
   const { can } = useAuth();
   const [search, setSearch] = useState('');
@@ -118,7 +122,7 @@ export function LineEditor({ lines, setLines, fe = {} }) {
       <Banner>{found.error}</Banner>
       {lines.map((l, i) => (
         <LineRow key={i} l={l} i={i} item={known[l.itemId]} options={options} set={set} remove={remove} fe={fe}
-          canCost={can('items.view_cost')} canRemove={lines.length > 1} />
+          canCost={can('items.view_cost')} canRemove={lines.length > 1} warehouseId={warehouseId} />
       ))}
       <button type="button" className="btn-ghost gap-2 !text-black" onClick={() => setLines([...lines, emptyLine()])}><PlusIcon /> {t('lines.addAnother')}</button>
     </div>

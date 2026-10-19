@@ -17,7 +17,9 @@
     "COMPLETED": "Umekamilika",
     "REJECTED": "Umekataliwa",
     "CANCELLED": "Umeghairiwa",
-    "IN_TRANSIT": "Njiani"
+    "IN_TRANSIT": "Njiani",
+    "RECEIVED_SHORT": "Imepokelewa pungufu",
+    "NOT_RECEIVED": "Haijapokelewa"
   },
   "cols": {
     "date": "Tarehe",
@@ -34,7 +36,8 @@
     "approve": "Idhinisha",
     "reject": "Kataa",
     "cancel": "Ghairi",
-    "receive": "Thibitisha nimepokea"
+    "receive": "Thibitisha nimepokea",
+    "problem": "Nimepokea pungufu / sijapokea"
   },
   "form": {
     "from": "Kutoka ghala",
@@ -67,13 +70,36 @@
     "needsReceipt": "Kupokea",
     "needsReceiptYes": "Muuzaji lazima athibitishe kupokea",
     "received": "Imepokelewa",
-    "receiveNote": "Maelezo ya kupokea"
+    "receiveNote": "Maelezo ya kupokea",
+    "problem": {
+      "RECEIVED_SHORT": "Mpokeaji ameripoti kuwa kilichofika ni pungufu ya kilichotumwa. Kiasi kilichopungua kimerudi kwenye ghala lililotuma. Meneja analifuatilia.",
+      "NOT_RECEIVED": "Mpokeaji ameripoti kuwa hakuna kilichofika. Bidhaa zote zimerudi kwenye ghala lililotuma. Meneja analifuatilia."
+    }
   },
   "lineCols": {
     "item": "Bidhaa",
     "batch": "Bechi",
     "quantity": "Kiasi",
-    "remarks": "Maelezo"
+    "remarks": "Maelezo",
+    "sent": "Iliyotumwa",
+    "received": "Iliyopokelewa"
   },
-  "confirmReceive": "Thibitisha kuwa umepokea bidhaa zote za {{no}}? Bidhaa zitaingia kwenye ghala lako."
+  "confirmReceive": "Thibitisha kuwa umepokea bidhaa zote za {{no}}? Bidhaa zitaingia kwenye ghala lako.",
+  "receive": {
+    "title": "Bidhaa zimefika?",
+    "hint": "Weka kiasi ulichopokea kweli. Kama kuna kilichopungua, eleza tatizo: Meneja ataarifiwa na kulishughulikia. Kisichopokelewa kinarudi kwenye ghala lililotuma.",
+    "note": "Maelezo",
+    "notePlaceholder": "Lazima kama kuna kilichopungua, mfano: katoni 2 hazikuletwa",
+    "noteRequired": "Eleza kinachopungua au tatizo lililotokea",
+    "badQty": "Weka kiasi kwa kila mstari, kisizidi kilichotumwa.",
+    "nothingShort": "Kila mstari uko kamili: tumia \"Nimepokea zote\".",
+    "full": "Nimepokea zote",
+    "short": "Nimepokea pungufu",
+    "none": "Sijapokea",
+    "confirm": {
+      "FULL": "Thibitisha umepokea kila kitu cha {{no}}? Bidhaa zitaingia kwenye ghala lako.",
+      "SHORT": "Thibitisha {{no}} imepokelewa PUNGUFU? Ni kiasi ulichoweka tu kitaingia ghala lako; kilichobaki kinarudi ghala lililotuma na Meneja ataarifiwa.",
+      "NONE": "Thibitisha HAKUNA kitu cha {{no}} kilichopokelewa? Vyote vitarudi ghala lililotuma na Meneja ataarifiwa."
+    }
+  }
 }

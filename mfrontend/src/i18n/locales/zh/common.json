@@ -47,5 +47,10 @@
   "error": "错误",
   "success": "成功",
   "deleteConfirm": "确定要删除此记录吗？",
-  "records": "共 {{total}} 条记录"
+  "records": "共 {{total}} 条记录",
+  "warehouseField": {
+    "label": "仓库",
+    "select": "选择仓库",
+    "none": "您尚未被分配到任何仓库，请联系经理分配。"
+  }
 }

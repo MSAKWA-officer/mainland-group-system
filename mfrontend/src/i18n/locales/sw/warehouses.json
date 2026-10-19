@@ -89,6 +89,7 @@
     "REJECT_IN": "Zilizokataliwa (Ndani)",
     "REJECT_OUT": "Zilizokataliwa (Nje)",
     "EXPIRED": "Zilizoisha muda",
-    "DAMAGED": "Zilizoharibika"
+    "DAMAGED": "Zilizoharibika",
+    "TRANSFER_RETURN": "Uhamisho umerudi (haukupokelewa)"
   }
 }

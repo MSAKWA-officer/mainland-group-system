@@ -47,5 +47,10 @@
   "error": "Hitilafu",
   "success": "Imefanikiwa",
   "deleteConfirm": "Una uhakika unataka kufuta rekodi hii?",
-  "records": "Rekodi {{total}}"
+  "records": "Rekodi {{total}}",
+  "warehouseField": {
+    "label": "Ghala",
+    "select": "Chagua ghala",
+    "none": "Hujapangiwa ghala lolote. Mwombe Meneja akupangie."
+  }
 }

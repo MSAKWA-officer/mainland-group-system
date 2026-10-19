@@ -89,6 +89,7 @@
     "REJECT_IN": "退货入库",
     "REJECT_OUT": "退货给供应商",
     "EXPIRED": "过期",
-    "DAMAGED": "损坏"
+    "DAMAGED": "损坏",
+    "TRANSFER_RETURN": "调拨退回（未收到）"
   }
 }

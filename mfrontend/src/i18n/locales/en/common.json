@@ -47,5 +47,10 @@
   "error": "Error",
   "success": "Success",
   "deleteConfirm": "Are you sure you want to delete this record?",
-  "records": "{{total}} records"
+  "records": "{{total}} records",
+  "warehouseField": {
+    "label": "Warehouse",
+    "select": "Select warehouse",
+    "none": "You are not assigned to any warehouse. Ask a Manager to assign you."
+  }
 }

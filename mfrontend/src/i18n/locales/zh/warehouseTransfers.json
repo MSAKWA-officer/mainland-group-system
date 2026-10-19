@@ -17,7 +17,9 @@
     "COMPLETED": "已完成",
     "REJECTED": "已拒绝",
     "CANCELLED": "已取消",
-    "IN_TRANSIT": "运输中"
+    "IN_TRANSIT": "运输中",
+    "RECEIVED_SHORT": "短收",
+    "NOT_RECEIVED": "未收到"
   },
   "cols": {
     "date": "日期",
@@ -34,7 +36,8 @@
     "approve": "批准",
     "reject": "拒绝",
     "cancel": "取消",
-    "receive": "确认收货"
+    "receive": "确认收货",
+    "problem": "短收 / 未收到"
   },
   "form": {
     "from": "调出仓库",
@@ -67,13 +70,36 @@
     "needsReceipt": "收货",
     "needsReceiptYes": "销售员须确认收货",
     "received": "收货时间",
-    "receiveNote": "收货备注"
+    "receiveNote": "收货备注",
+    "problem": {
+      "RECEIVED_SHORT": "收货人报告实收数量少于发出数量。短少的数量已退回发货仓库，由经理跟进处理。",
+      "NOT_RECEIVED": "收货人报告未收到任何货物。全部库存已退回发货仓库，由经理跟进处理。"
+    }
   },
   "lineCols": {
     "item": "商品",
     "batch": "批次",
     "quantity": "数量",
-    "remarks": "备注"
+    "remarks": "备注",
+    "sent": "发出数量",
+    "received": "实收数量"
   },
-  "confirmReceive": "确认已收到 {{no}} 的全部商品？库存将加入您的仓库。"
+  "confirmReceive": "确认已收到 {{no}} 的全部商品？库存将加入您的仓库。",
+  "receive": {
+    "title": "货物到了吗？",
+    "hint": "请填写实际收到的数量。如有短少，请说明情况：系统会通知经理处理。未收到的部分将退回发货仓库。",
+    "note": "备注",
+    "notePlaceholder": "有短少时必填，例如：少了2箱",
+    "noteRequired": "请说明短少数量或出现的问题",
+    "badQty": "请填写每一行的数量，且不得超过发出数量。",
+    "nothingShort": "所有行都已收齐：请使用“全部收到”。",
+    "full": "全部收到",
+    "short": "短收",
+    "none": "未收到",
+    "confirm": {
+      "FULL": "确认已收到 {{no}} 的全部货物？库存将进入您的仓库。",
+      "SHORT": "确认 {{no}} 为短收？仅您填写的数量进入您的仓库，其余退回发货仓库并通知经理。",
+      "NONE": "确认 {{no}} 一件都没收到？全部退回发货仓库并通知经理。"
+    }
+  }
 }

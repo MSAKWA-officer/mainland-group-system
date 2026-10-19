@@ -89,6 +89,7 @@
     "REJECT_IN": "Reject in",
     "REJECT_OUT": "Reject out",
     "EXPIRED": "Expired",
-    "DAMAGED": "Damaged"
+    "DAMAGED": "Damaged",
+    "TRANSFER_RETURN": "Transfer returned (not received)"
   }
 }
