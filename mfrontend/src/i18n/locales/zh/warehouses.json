@@ -5,6 +5,7 @@
   "allStatuses": "所有状态",
   "new": "新建仓库",
   "empty": "暂无仓库。",
+  "salespersonTag": "销售员",
   "default": "默认",
   "status": {
     "ACTIVE": "启用",

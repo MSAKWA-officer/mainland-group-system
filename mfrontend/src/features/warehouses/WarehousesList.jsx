@@ -83,7 +83,11 @@ export default function WarehousesList() {
                 <td className={`${CELL} text-left`}>{r.code}{r.isDefault && <span className="ml-2 rounded border border-black/30 px-1.5 text-xs">{t('default')}</span>}</td>
                 <td className={`${CELL} text-center`}>{r.name}</td>
                 <td className={`${CELL} text-center`}>{r.location || '—'}</td>
-                <td className={`${CELL} text-center`}>{r.storekeepers.length ? r.storekeepers.map((k) => k.fullName).join(', ') : '—'}</td>
+                <td className={`${CELL} text-center`}>
+                  {r.storekeepers.length === 0 && r.salespersons.length === 0 && '—'}
+                  {r.storekeepers.length > 0 && <div>{r.storekeepers.map((k) => k.fullName).join(', ')}</div>}
+                  {r.salespersons.length > 0 && <div>{r.salespersons.map((s) => s.fullName).join(', ')} <span className="text-xs opacity-70">({t('salespersonTag')})</span></div>}
+                </td>
                 <td className={`${CELL} text-center`}>{r.itemCount}</td>
                 <td className={`${CELL} text-center`}>{qty(r.totalUnits)}</td>
                 <td className={`${CELL} text-center`}><Status active={r.isActive} /></td>

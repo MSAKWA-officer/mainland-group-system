@@ -11,6 +11,13 @@ const totals = [
   [literal('(SELECT CAST(COUNT(*) AS int) FROM warehouse_stock s WHERE s.warehouse_id = "Warehouse"."id" AND s.quantity > 0)'), 'itemCount'],
   [literal('(SELECT COALESCE(SUM(s.quantity), 0) FROM warehouse_stock s WHERE s.warehouse_id = "Warehouse"."id")'), 'totalUnits'],
 ];
+// active salespersons that sell from the given warehouses, as { warehouseId: [...] }
+const sellersOf = async (ids) => {
+  const out = {}; if (!ids.length) return out;
+  const rows = await Salesperson.findAll({ where: { warehouseId: ids, isActive: true }, attributes: ['id', 'warehouseId', 'fullName'], order: [['fullName', 'ASC']] });
+  rows.forEach((r) => { (out[r.warehouseId] ||= []).push({ id: r.id, fullName: r.fullName }); });
+  return out;
+};
 const audited = (w, keepers) => ({ code: w.code, name: w.name, location: w.location, description: w.description, isDefault: w.isDefault, isActive: w.isActive,
   ...(keepers && { storekeepers: keepers }) });
 
@@ -45,8 +52,9 @@ exports.list = async (req, res) => {
   if (isActive !== undefined) where.isActive = isActive;
   if (search) where[Op.or] = ['name', 'code', 'location'].map((f) => ({ [f]: { [Op.iLike]: like(search) } }));
   const { rows, count } = await Warehouse.findAndCountAll({ where, attributes: { include: totals }, order: [['isDefault', 'DESC'], ['name', 'ASC']], limit, offset: (page - 1) * limit });
-  const keepers = await keepersOf(rows.map((r) => r.id));
-  res.json({ data: rows.map((r) => ({ ...r.toJSON(), storekeepers: keepers[r.id] || [] })), total: count, page, limit });
+  const ids = rows.map((r) => r.id);
+  const keepers = await keepersOf(ids); const sellers = await sellersOf(ids);
+  res.json({ data: rows.map((r) => ({ ...r.toJSON(), storekeepers: keepers[r.id] || [], salespersons: sellers[r.id] || [] })), total: count, page, limit });
 };
 
 // Warehouses the user can pick in forms (receiving, transfers, salesperson). Needs a login only; the result is already limited to what the user may use.

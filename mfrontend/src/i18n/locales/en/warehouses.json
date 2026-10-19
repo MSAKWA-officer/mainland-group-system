@@ -5,6 +5,7 @@
   "allStatuses": "All statuses",
   "new": "New warehouse",
   "empty": "No warehouses yet.",
+  "salespersonTag": "Salesperson",
   "default": "Default",
   "status": {
     "ACTIVE": "Active",
