@@ -5,8 +5,8 @@ import { useAuth } from '../context/AuthContext.jsx';
 import Banner from '../components/Banner.jsx';
 import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
 
-// Logo iko kwenye: mfrontend/public/logo.jpeg
-const LOGO = `${import.meta.env.BASE_URL}logo.jpeg`;
+// Logo iko kwenye: mfrontend/public/logo.png
+const LOGO = `${import.meta.env.BASE_URL}logo.png`;
 
 const icon = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', viewBox: '0 0 24 24', 'aria-hidden': true };
 const UserIcon = (p) => (<svg {...icon} {...p}><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" /></svg>);
@@ -29,26 +29,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="grid min-h-screen bg-white lg:grid-cols-[1.1fr_1fr]">
+    <div className="grid min-h-screen bg-mn lg:grid-cols-[1.1fr_1fr]">
       {/* Logo panel — logo kamili, rangi zake halisi, hakuna overlay */}
-      <aside className="relative hidden flex-col items-center justify-between bg-white p-10 lg:flex">
+      <aside className="relative hidden flex-col items-center justify-between p-10 lg:flex">
         <div />
-        <img src={LOGO} alt="DALFAM Company Ltd" className="max-h-[70vh] w-full max-w-xl select-none object-contain mix-blend-multiply" draggable="false" />
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="w-full max-w-xs rounded-2xl bg-white p-8 shadow-2xl shadow-black/30">
+          <img src={LOGO} alt="Mainland Group" className="mx-auto w-full max-w-[240px] select-none object-contain" draggable="false" />
+        </div>
+        <div className="flex items-center gap-2 text-xs text-slate-300">
           <ShieldIcon className="h-4 w-4 shrink-0" />
           <span>{t('accessLogged')}</span>
         </div>
       </aside>
 
       {/* Form panel */}
-      <main className="relative flex items-center justify-center bg-slate-50 px-6 py-12 lg:border-l lg:border-slate-200">
-        <div className="absolute right-4 top-4"><LanguageSwitcher /></div>
+      <main className="relative flex items-center justify-center px-6 py-12">
+        <div className="absolute right-4 top-4 rounded-lg bg-white shadow-sm"><LanguageSwitcher /></div>
         <div className="w-full max-w-md">
           {/* Simu: logo juu ya fomu */}
-          <img src={LOGO} alt="DALFAM Company Ltd" className="mx-auto mb-6 h-44 w-44 select-none object-contain mix-blend-multiply lg:hidden" draggable="false" />
-          <div className="rounded-2xl border border-line bg-white p-8 shadow-xl shadow-slate-200/60 sm:p-10">
+          <div className="mx-auto mb-6 flex h-32 w-32 items-center justify-center rounded-2xl bg-white p-3 shadow-xl shadow-black/30 lg:hidden">
+            <img src={LOGO} alt="Mainland Group" className="h-full w-full select-none object-contain" draggable="false" />
+          </div>
+          <div className="rounded-2xl border border-line bg-white p-8 shadow-2xl shadow-black/30 sm:p-10">
             <h1 className="text-2xl font-bold tracking-tight text-ink">{t('signIn')}</h1>
-            <div className="mt-1 h-1 w-10 rounded-full bg-[#C9962B]" />
+            <div className="mt-1 h-1 w-10 rounded-full bg-brand" />
 
             <form onSubmit={submit} className="mt-6 space-y-5">
               <Banner>{err}</Banner>
@@ -88,7 +92,7 @@ export default function LoginPage() {
               </button>
             </form>
           </div>
-          <p className="mt-6 text-center text-xs text-slate-500">&copy; {new Date().getFullYear()} DALFAM Company Ltd</p>
+          <p className="mt-6 text-center text-xs text-slate-300">&copy; {new Date().getFullYear()} Mainland Group</p>
         </div>
       </main>
     </div>
