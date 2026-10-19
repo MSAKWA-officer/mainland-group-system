@@ -87,15 +87,14 @@ async function normalizeLines(req, type, lines, t) {
 
 /* ---------- stock (through the Phase 2 ledger) ---------- */
 // FEFO: for items that track expiry, take stock from the batches that expire first, never from expired batches.
-async function allocate(t, lines, items, today) {
+async function allocate(t, lines, items, today, warehouseId) {
   const out = [];
   for (const l of lines) {
     const item = items.get(l.itemId);
     const label = `${item.sku} - ${item.name}`;
     if (!item.isActive) throw new AppError(409, 'ITEM_INACTIVE', `${label} is inactive and cannot be sold`);
     if (!item.trackExpiry) { out.push({ itemId: item.id, direction: 'OUT', quantity: l.quantity }); continue; }
-    const batches = await StockBatch.findAll({ where: { itemId: item.id, quantity: { [Op.gt]: 0 }, expiryDate: { [Op.gte]: today } },
-      order: [['expiryDate', 'ASC'], ['batchNo', 'ASC']], transaction: t, lock: t.LOCK.UPDATE });
+    const batches = await ledger.batchesIn(t, warehouseId, item.id, today);   // only batches that are physically in the salesperson's warehouse
     let need = Math.round(Number(l.quantity) * 1000); const wanted = need;
     for (const b of batches) {
       if (need <= 0) break;
@@ -113,9 +112,12 @@ async function issueStock(t, req, sale, lines, partyName, approvalId = null) {
   const sorted = [...lines].sort((a, b) => (a.itemId < b.itemId ? -1 : 1));
   const itemRows = await Item.findAll({ where: { id: sorted.map((l) => l.itemId) }, order: [['id', 'ASC']], transaction: t, lock: t.LOCK.UPDATE });
   const items = new Map(itemRows.map((i) => [i.id, i]));
-  const alloc = await allocate(t, sorted, items, await dbToday(t));
+  // Stock leaves the warehouse the salesperson is assigned to (no salesperson / none assigned -> the default warehouse).
+  const sp = sale.salespersonId ? await Salesperson.findByPk(sale.salespersonId, { transaction: t }) : null;
+  const warehouseId = await ledger.resolveWarehouse(t, sp && sp.warehouseId);
+  const alloc = await allocate(t, sorted, items, await dbToday(t), warehouseId);
   const doc = await StockDocument.create({ docNo: `SAL-${year()}-${pad(await nextNo('stock_doc_seq', t))}`, type: 'SALE', status: 'DRAFT',
-    partyName: partyName || null, reference: sale.saleNo, approvalId, createdBy: req.user.id }, { transaction: t });
+    partyName: partyName || null, reference: sale.saleNo, approvalId, warehouseId, createdBy: req.user.id }, { transaction: t });
   const docLines = await StockDocumentLine.bulkCreate(alloc.map((a) => ({ ...a, documentId: doc.id, remarks: sale.saleNo })), { transaction: t });
   await ledger.post(t, doc, docLines, req.user.id);
   await doc.update({ status: 'POSTED', postedAt: new Date() }, { transaction: t });
@@ -126,12 +128,13 @@ async function issueStock(t, req, sale, lines, partyName, approvalId = null) {
 async function restock(t, req, sale, reason) {
   const origLines = await StockDocumentLine.findAll({ where: { documentId: sale.stockDocumentId }, order: [['itemId', 'ASC'], ['createdAt', 'ASC']], transaction: t });
   if (!origLines.length) throw new AppError(409, 'NO_STOCK_DOC', 'This sale has no stock entries to reverse');
+  const origDoc = await StockDocument.findByPk(sale.stockDocumentId, { attributes: ['warehouseId'], transaction: t });   // goods go back to the warehouse they came from
   const mv = await StockMovement.findAll({ where: { documentId: sale.stockDocumentId }, attributes: ['lineId', 'unitCost'], transaction: t });
   const costOf = new Map(mv.map((m) => [m.lineId, m.unitCost]));
   const batchIds = origLines.map((l) => l.batchId).filter(Boolean);
   const batches = new Map((batchIds.length ? await StockBatch.findAll({ where: { id: batchIds }, transaction: t }) : []).map((b) => [b.id, b]));
   const doc = await StockDocument.create({ docNo: `SRT-${year()}-${pad(await nextNo('stock_doc_seq', t))}`, type: 'SALE_CANCEL', status: 'DRAFT',
-    reference: sale.saleNo, reason: `Voided ${sale.saleNo}: ${reason}`.slice(0, 500), approvalId: sale.approvalId, createdBy: req.user.id }, { transaction: t });
+    reference: sale.saleNo, reason: `Voided ${sale.saleNo}: ${reason}`.slice(0, 500), approvalId: sale.approvalId, warehouseId: origDoc && origDoc.warehouseId, createdBy: req.user.id }, { transaction: t });
   const lines = await StockDocumentLine.bulkCreate(origLines.map((l) => {
     const b = l.batchId ? batches.get(l.batchId) : null;
     return { documentId: doc.id, itemId: l.itemId, direction: 'IN', quantity: l.quantity, unitCost: costOf.get(l.id) ?? null,

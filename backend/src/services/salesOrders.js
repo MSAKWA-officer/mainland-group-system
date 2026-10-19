@@ -214,13 +214,14 @@ const submit = (req, id) => sequelize.transaction(async (t) => {
 async function restock(t, req, order) {
   const origLines = await StockDocumentLine.findAll({ where: { documentId: order.stockDocumentId }, order: [['itemId', 'ASC'], ['createdAt', 'ASC']], transaction: t });
   if (!origLines.length) throw new AppError(409, 'NO_STOCK_DOC', 'This order has no stock entries to reverse');
+  const origDoc = await StockDocument.findByPk(order.stockDocumentId, { attributes: ['warehouseId'], transaction: t });   // goods go back to the warehouse they came from
   const mv = await StockMovement.findAll({ where: { documentId: order.stockDocumentId }, attributes: ['lineId', 'unitCost'], transaction: t });
   const costOf = new Map(mv.map((m) => [m.lineId, m.unitCost]));
   const batchIds = origLines.map((l) => l.batchId).filter(Boolean);
   const batches = new Map((batchIds.length ? await StockBatch.findAll({ where: { id: batchIds }, transaction: t }) : []).map((b) => [b.id, b]));
   const doc = await StockDocument.create({ docNo: `SRT-${new Date().getFullYear()}-${String(await nextNo('stock_doc_seq', t)).padStart(6, '0')}`,
     type: 'SALE_CANCEL', status: 'DRAFT', partyName: null, reference: order.orderNo, reason: `Cancelled ${order.orderNo}`,
-    approvalId: order.approvalId, createdBy: req.user.id }, { transaction: t });
+    approvalId: order.approvalId, warehouseId: origDoc && origDoc.warehouseId, createdBy: req.user.id }, { transaction: t });
   const lines = await StockDocumentLine.bulkCreate(origLines.map((l) => {
     const b = l.batchId ? batches.get(l.batchId) : null;
     return { documentId: doc.id, itemId: l.itemId, direction: 'IN', quantity: l.quantity, unitCost: costOf.get(l.id) ?? null,
@@ -285,15 +286,14 @@ const remove = (req, id) => sequelize.transaction(async (t) => {
 
 /* ---------- approval hooks: run inside services/approvals.js's transaction ---------- */
 // FEFO: for items that track expiry, take stock from the batches that expire first, and never from expired batches.
-async function allocate(t, lines, items, today) {
+async function allocate(t, lines, items, today, warehouseId) {
   const out = [];
   for (const l of lines) {
     const item = items.get(l.itemId);
     const label = `${item.sku} - ${item.name}`;
     if (!item.isActive) throw new AppError(409, 'ITEM_INACTIVE', `${label} is inactive and cannot be sold`);
     if (!item.trackExpiry) { out.push({ itemId: item.id, direction: 'OUT', quantity: l.quantity }); continue; }
-    const batches = await StockBatch.findAll({ where: { itemId: item.id, quantity: { [Op.gt]: 0 }, expiryDate: { [Op.gte]: today } },
-      order: [['expiryDate', 'ASC'], ['batchNo', 'ASC']], transaction: t, lock: t.LOCK.UPDATE });
+    const batches = await ledger.batchesIn(t, warehouseId, item.id, today);   // only batches that are physically in the salesperson's warehouse
     let need = Math.round(Number(l.quantity) * 1000); const wanted = need;
     for (const b of batches) {
       if (need <= 0) break;
@@ -328,9 +328,10 @@ const confirmOrder = async (r, ctx) => {
     if (limitOverridden && !ctx.user.permissions.has('credit_sales.override_limit'))
       throw new AppError(409, 'CREDIT_LIMIT_EXCEEDED', `Credit limit exceeded: limit ${pos.creditLimit}, outstanding ${pos.outstanding}, this order ${o.total}. You need permission to override the limit.`);
   }
-  const alloc = await allocate(t, lines, items, today);
+  const warehouseId = await ledger.resolveWarehouse(t, sp.warehouseId);   // stock leaves the salesperson's warehouse (none assigned -> the default one)
+  const alloc = await allocate(t, lines, items, today, warehouseId);
   const doc = await StockDocument.create({ docNo: `SAL-${new Date().getFullYear()}-${String(await nextNo('stock_doc_seq', t)).padStart(6, '0')}`,
-    type: 'SALE', status: 'DRAFT', partyName: customer.name, reference: o.orderNo, approvalId: r.id, createdBy: ctx.user.id }, { transaction: t });
+    type: 'SALE', status: 'DRAFT', partyName: customer.name, reference: o.orderNo, approvalId: r.id, warehouseId, createdBy: ctx.user.id }, { transaction: t });
   const docLines = await StockDocumentLine.bulkCreate(alloc.map((a) => ({ ...a, documentId: doc.id, remarks: o.orderNo })), { transaction: t });
   await ledger.post(t, doc, docLines, ctx.user.id);
   await doc.update({ status: 'POSTED', postedAt: new Date() }, { transaction: t });

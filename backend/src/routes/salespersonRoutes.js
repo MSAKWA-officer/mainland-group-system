@@ -8,7 +8,7 @@ const c = require('../controllers/salespersonController');
 const opt = (s) => z.preprocess((v) => (v === '' ? null : v), s.nullable().optional());
 const base = {
   userId: opt(uuid), fullName: text(100).min(2), phone: opt(z.string().trim().regex(/^[0-9+()\-\s]{6,30}$/, 'Enter a valid phone number')),
-  email: opt(z.string().trim().toLowerCase().email().max(150)), region: opt(text(80)),
+  email: opt(z.string().trim().toLowerCase().email().max(150)), region: opt(text(80)), warehouseId: opt(uuid),
   commissionRate: z.coerce.number().min(0).max(100).refine((n) => Math.abs(n * 100 - Math.round(n * 100)) < 1e-6, 'At most 2 decimal places'),
   monthlyTarget: money,
 };

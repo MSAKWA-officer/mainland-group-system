@@ -1,0 +1,70 @@
+{
+  "title": "仓库调拨",
+  "registered": "已登记 {{total}} 个",
+  "search": "搜索调拨单号或原因",
+  "allStatuses": "所有状态",
+  "new": "新建调拨",
+  "empty": "暂无调拨。",
+  "back": "返回",
+  "newTitle": "新建仓库调拨",
+  "newSubtitle": "经理批准后库存才会移动。",
+  "requested": "调拨 {{no}} 已提交给经理审批。",
+  "confirmApprove": "批准 {{no}}？库存将立即移动。",
+  "confirmCancel": "取消调拨 {{no}}？",
+  "rejectPrompt": "拒绝原因：",
+  "status": {
+    "SUBMITTED": "待审批",
+    "COMPLETED": "已完成",
+    "REJECTED": "已拒绝",
+    "CANCELLED": "已取消"
+  },
+  "cols": {
+    "date": "日期",
+    "transferNo": "调拨单号",
+    "from": "调出",
+    "to": "调入",
+    "items": "商品",
+    "createdBy": "申请人",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "actions": {
+    "view": "查看",
+    "approve": "批准",
+    "reject": "拒绝",
+    "cancel": "取消"
+  },
+  "form": {
+    "from": "调出仓库",
+    "to": "调入仓库",
+    "selectWarehouse": "选择仓库",
+    "date": "调拨日期",
+    "reason": "原因",
+    "items": "调拨商品",
+    "searchItems": "在调出仓库中搜索商品",
+    "item": "商品",
+    "selectItem": "选择商品",
+    "batch": "批次",
+    "selectBatch": "选择批次",
+    "quantity": "数量",
+    "quantityUnit": "数量（{{unit}}）",
+    "remarks": "备注",
+    "removeLine": "删除行",
+    "addItem": "添加商品",
+    "saving": "提交中…",
+    "submit": "提交审批"
+  },
+  "view": {
+    "reason": "原因",
+    "requested": "申请时间",
+    "decision": "审批时间",
+    "decisionNote": "审批意见",
+    "completed": "库存移动时间"
+  },
+  "lineCols": {
+    "item": "商品",
+    "batch": "批次",
+    "quantity": "数量",
+    "remarks": "备注"
+  }
+}

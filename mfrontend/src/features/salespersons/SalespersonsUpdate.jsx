@@ -19,13 +19,13 @@ export default function SalespersonsUpdate() {
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const s = item.data;
   useEffect(() => {
-    if (s) setF({ userId: s.userId || '', fullName: s.fullName, phone: s.phone || '', email: s.email || '', region: s.region || '',
+    if (s) setF({ userId: s.userId || '', fullName: s.fullName, phone: s.phone || '', email: s.email || '', region: s.region || '', warehouseId: s.warehouseId || '',
       commissionRate: String(s.commissionRate ?? 0), monthlyTarget: String(s.monthlyTarget ?? 0) });
   }, [s]);
   const submit = async (e) => {
     e.preventDefault(); setErr(''); setFe({}); setBusy(true);
     try {
-      await salespersonApi.update(id, toBody(f, { canLink: can('users.read'), canPay: can('salespersons.view_commission'), creating: false }));
+      await salespersonApi.update(id, toBody(f, { canLink: can('users.read'), canPay: can('salespersons.view_commission'), canAssign: can('warehouses.assign'), creating: false }));
       navigate(`/salespersons/${id}`, { state: { msg: t('edit.done') } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
   };

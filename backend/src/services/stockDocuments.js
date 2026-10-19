@@ -2,6 +2,7 @@ const { sequelize, StockDocument, StockDocumentLine, Item, StockBatch } = requir
 const approvals = require('./approvals');
 const audit = require('./audit');
 const ledger = require('./stockLedger');
+const wh = require('./warehouses');
 const { AppError } = require('../utils/errors');
 
 /* One engine for all six stock documents. Lifecycle:
@@ -19,7 +20,7 @@ const TYPES = {
 };
 
 const bad = (field, message) => new AppError(400, 'VALIDATION_ERROR', 'Check the highlighted fields', [{ field, message }]);
-const snapshot = (d, n) => ({ docNo: d.docNo, type: d.type, status: d.status, docDate: d.docDate, partyName: d.partyName,
+const snapshot = (d, n) => ({ docNo: d.docNo, type: d.type, status: d.status, docDate: d.docDate, warehouseId: d.warehouseId, partyName: d.partyName,
   reference: d.reference, reason: d.reason, ...(n != null && { lines: n }) });
 const loadDoc = async (id, type, t) => {
   const d = await StockDocument.findByPk(id, { transaction: t, ...(t && { lock: t.LOCK.UPDATE }) });
@@ -72,6 +73,9 @@ const postNow = async (req, doc, t) => {
 
 const create = (req, type, body) => sequelize.transaction(async (t) => {
   const cfg = TYPES[type];
+  // Receiving must say which warehouse the goods go into (a storekeeper may only choose one they are in charge of). Other documents without a warehouse use the default one.
+  if (type === 'RECEIVING' && !body.warehouseId) throw bad('warehouseId', 'Choose the warehouse that receives the goods');
+  if (body.warehouseId) await wh.access(req, body.warehouseId, t, { active: true });
   const lines = await normalizeLines(type, body.lines, t);
   const [seq] = await sequelize.query("SELECT nextval('stock_doc_seq') AS n", { transaction: t });
   const num = `${new Date().getFullYear()}-${String(seq[0].n).padStart(6, '0')}`;
@@ -79,7 +83,7 @@ const create = (req, type, body) => sequelize.transaction(async (t) => {
   // Stock receiving: the reference number is generated automatically on save (REF-<year>-<same number as the document no.>).
   const reference = type === 'RECEIVING' ? `REF-${num}` : (body.reference ?? null);
   const doc = await StockDocument.create({ docNo, type, status: 'DRAFT', ...(body.docDate && { docDate: body.docDate }),
-    partyName: body.partyName ?? null, reference, reason: body.reason ?? null, createdBy: req.user.id }, { transaction: t });
+    partyName: body.partyName ?? null, reference, reason: body.reason ?? null, warehouseId: body.warehouseId ?? null, createdBy: req.user.id }, { transaction: t });
   await StockDocumentLine.bulkCreate(lines.map((l) => ({ ...l, documentId: doc.id })), { transaction: t });
   await audit.log(req, { action: 'STOCK_DOC_CREATED', entityType: 'StockDocument', entityId: doc.id, newValues: snapshot(doc, lines.length) }, t);
   if (cfg.autoPost) await postNow(req, doc, t);              // no approval: stock is increased right away, in this same transaction
@@ -92,6 +96,7 @@ const update = (req, type, id, body) => sequelize.transaction(async (t) => {
   if (doc.status !== 'DRAFT') throw new AppError(409, 'BAD_STATE', `Cannot edit a document that is ${doc.status}`);
   const old = snapshot(doc);
   const { lines, ...head } = body;
+  if (head.warehouseId) await wh.access(req, head.warehouseId, t, { active: true });
   await doc.update(head, { transaction: t });
   let n;
   if (lines) {

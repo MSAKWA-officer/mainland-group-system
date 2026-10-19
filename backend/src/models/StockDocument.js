@@ -9,7 +9,7 @@ const StockDocument = sequelize.define('StockDocument', {
   id, docNo: str(30, { allowNull: false, unique: true }), type: str(20, { allowNull: false }),
   status: str(12, { allowNull: false, defaultValue: 'DRAFT' }),
   docDate: D.DATEONLY,                       // DB default is CURRENT_DATE
-  partyName: str(150), reference: str(100), reason: D.TEXT, approvalId: D.UUID,
+  partyName: str(150), reference: str(100), reason: D.TEXT, approvalId: D.UUID, warehouseId: D.UUID,
   createdBy: { type: D.UUID, allowNull: false }, submittedAt: D.DATE, postedAt: D.DATE,
 }, { tableName: 'stock_documents' });
 module.exports = StockDocument;

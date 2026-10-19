@@ -42,7 +42,10 @@
     "phonePlaceholder": "+255 ...",
     "email": "Email",
     "commissionRate": "Commission rate (%)",
-    "monthlyTarget": "Monthly target"
+    "monthlyTarget": "Monthly target",
+    "warehouse": "Warehouse",
+    "defaultWarehouse": "Default warehouse",
+    "warehouseHint": "The warehouse this salesperson sells from. Stock for their sales is taken from it. Empty = the default warehouse."
   },
   "create": {
     "title": "New salesperson",
@@ -70,7 +73,8 @@
     "status": "Status",
     "created": "Created",
     "updated": "Last updated",
-    "deleted": "Salesperson deleted."
+    "deleted": "Salesperson deleted.",
+    "warehouse": "Warehouse"
   },
   "perf": {
     "title": "Monthly performance",

@@ -15,7 +15,8 @@
     "actions": "Vitendo",
     "items": "Bidhaa",
     "unit": "Kipimo",
-    "batchNo": "Namba ya bechi"
+    "batchNo": "Namba ya bechi",
+    "warehouse": "Ghala"
   },
   "empty": "Hakuna hati za mapokezi bado.",
   "newTitle": "Mapokezi mapya ya bidhaa",
@@ -49,7 +50,10 @@
     "reference": "Kumbukumbu (namba ya ankara au hati ya uwasilishaji)",
     "notes": "Maelezo ya ziada",
     "referenceAuto": "Namba ya kumbukumbu",
-    "referenceAutoHint": "Hutengenezwa kiotomatiki unapohifadhi"
+    "referenceAutoHint": "Hutengenezwa kiotomatiki unapohifadhi",
+    "warehouse": "Ghala",
+    "selectWarehouse": "Chagua ghala",
+    "noWarehouse": "Hujapangiwa ghala lolote. Mwombe Meneja akupangie."
   },
   "view": {
     "date": "Tarehe ya kupokea",
@@ -64,7 +68,8 @@
     "posted": "Imewekwa stoo",
     "itemsReceived": "Bidhaa zilizopokelewa",
     "docNo": "Namba ya hati",
-    "noLines": "Hakuna bidhaa kwenye mapokezi haya."
+    "noLines": "Hakuna bidhaa kwenye mapokezi haya.",
+    "warehouse": "Ghala"
   },
   "lineCols": {
     "item": "Bidhaa",

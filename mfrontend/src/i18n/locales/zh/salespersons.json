@@ -42,7 +42,10 @@
     "phonePlaceholder": "+255 ...",
     "email": "邮箱",
     "commissionRate": "提成比例 (%)",
-    "monthlyTarget": "月度目标"
+    "monthlyTarget": "月度目标",
+    "warehouse": "仓库",
+    "defaultWarehouse": "默认仓库",
+    "warehouseHint": "该销售员发货的仓库，其销售库存从该仓库扣减。留空则使用默认仓库。"
   },
   "create": {
     "title": "新建销售员",
@@ -70,7 +73,8 @@
     "status": "状态",
     "created": "创建时间",
     "updated": "最后更新",
-    "deleted": "销售员已删除。"
+    "deleted": "销售员已删除。",
+    "warehouse": "仓库"
   },
   "perf": {
     "title": "月度业绩",

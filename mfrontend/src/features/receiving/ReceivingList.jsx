@@ -97,7 +97,7 @@ export default function ReceivingList() {
   }, [input]);
   const list = useLoad(() => receivingApi.list({ page, search: search || undefined }), [page, search]);
   const rows = list.data?.data || [];
-  const heads = ['date', 'items', 'unitQty', 'batchNo', 'createdBy', 'status', 'actions'];
+  const heads = ['date', 'warehouse', 'items', 'unitQty', 'batchNo', 'createdBy', 'status', 'actions'];
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
       <div className="flex items-center justify-between gap-3 p-4">
@@ -125,6 +125,7 @@ export default function ReceivingList() {
               return lines.map((l, n) => (
                 <tr key={`${d.id}-${l?.id ?? n}`} className="bg-white">
                   {n === 0 && <td rowSpan={lines.length} className={`${CELL} whitespace-nowrap text-left`}>{d.docDate}</td>}
+                  {n === 0 && <td rowSpan={lines.length} className={`${CELL} text-center`}>{d.warehouse?.name || '—'}</td>}
                   <td className={`${CELL} text-center`}>{l?.item?.name || '—'}</td>
                   <td className={`${CELL} text-center`}>{l ? `${qty(l.quantity)} ${l.item?.unit || ''}`.trim() : '—'}</td>
                   <td className={`${CELL} text-center`}>{l?.batch?.batchNo || l?.batchNo || '—'}</td>

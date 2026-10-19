@@ -15,7 +15,8 @@
     "actions": "Actions",
     "items": "Items",
     "unit": "Unit",
-    "batchNo": "Batch no."
+    "batchNo": "Batch no.",
+    "warehouse": "Warehouse"
   },
   "empty": "No receiving documents yet.",
   "newTitle": "New stock receiving",
@@ -49,7 +50,10 @@
     "reference": "Reference (invoice or delivery note no.)",
     "notes": "Notes",
     "referenceAuto": "Reference no.",
-    "referenceAutoHint": "Generated automatically when you save"
+    "referenceAutoHint": "Generated automatically when you save",
+    "warehouse": "Warehouse",
+    "selectWarehouse": "Select warehouse",
+    "noWarehouse": "You are not assigned to any warehouse. Ask a Manager to assign you."
   },
   "view": {
     "date": "Date received",
@@ -64,7 +68,8 @@
     "posted": "Posted to stock",
     "itemsReceived": "Items received",
     "docNo": "Document no.",
-    "noLines": "No items on this receiving."
+    "noLines": "No items on this receiving.",
+    "warehouse": "Warehouse"
   },
   "lineCols": {
     "item": "Item",

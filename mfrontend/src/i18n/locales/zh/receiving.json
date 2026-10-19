@@ -15,7 +15,8 @@
     "actions": "操作",
     "items": "商品",
     "unit": "单位",
-    "batchNo": "批次号"
+    "batchNo": "批次号",
+    "warehouse": "仓库"
   },
   "empty": "暂无收货单据。",
   "newTitle": "新建库存收货",
@@ -49,7 +50,10 @@
     "reference": "参考号（发票或送货单编号）",
     "notes": "备注说明",
     "referenceAuto": "参考号",
-    "referenceAutoHint": "保存时自动生成"
+    "referenceAutoHint": "保存时自动生成",
+    "warehouse": "仓库",
+    "selectWarehouse": "选择仓库",
+    "noWarehouse": "您尚未被分配到任何仓库，请联系经理分配。"
   },
   "view": {
     "date": "收货日期",
@@ -64,7 +68,8 @@
     "posted": "入库时间",
     "itemsReceived": "收货商品",
     "docNo": "单据编号",
-    "noLines": "此收货单没有商品。"
+    "noLines": "此收货单没有商品。",
+    "warehouse": "仓库"
   },
   "lineCols": {
     "item": "商品",

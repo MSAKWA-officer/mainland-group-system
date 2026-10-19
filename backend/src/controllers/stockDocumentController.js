@@ -1,5 +1,5 @@
 const { Op, literal } = require('sequelize');
-const { StockDocument, StockDocumentLine, Item, StockBatch, User, ApprovalRequest } = require('../models');
+const { StockDocument, StockDocumentLine, Item, StockBatch, User, ApprovalRequest, Warehouse } = require('../models');
 const sequelize = require('../config/sequelize');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
@@ -7,6 +7,7 @@ const svc = require('../services/stockDocuments');
 const approvals = require('../services/approvals');
 
 const creator = { model: User, as: 'creator', attributes: ['id', 'username', 'fullName'] };
+const warehouse = { model: Warehouse, as: 'warehouse', attributes: ['id', 'code', 'name'] };
 const approval = { model: ApprovalRequest, as: 'approval', attributes: ['id', 'status', 'decidedBy', 'decidedAt', 'decisionNote'] };
 const lines = { model: StockDocumentLine, as: 'lines', include: [
   { model: Item, as: 'item', attributes: ['id', 'sku', 'name', 'unit', 'trackExpiry'] },
@@ -21,7 +22,7 @@ module.exports = (type) => {
     return o;
   };
   const fetch = async (id) => {
-    const d = await StockDocument.findOne({ where: { id, type }, include: [creator, approval, lines], order: [[{ model: StockDocumentLine, as: 'lines' }, 'createdAt', 'ASC']] });
+    const d = await StockDocument.findOne({ where: { id, type }, include: [creator, warehouse, approval, lines], order: [[{ model: StockDocumentLine, as: 'lines' }, 'createdAt', 'ASC']] });
     if (!d) throw new AppError(404, 'NOT_FOUND', 'Document not found');
     return d;
   };
@@ -34,7 +35,8 @@ module.exports = (type) => {
 
   return {
     list: async (req, res) => {
-      const { status, search, from, to, createdBy, page, limit } = req.query; const where = { type };
+      const { status, search, from, to, createdBy, warehouseId, page, limit } = req.query; const where = { type };
+      if (warehouseId) where.warehouseId = warehouseId;
       if (status) where.status = status;
       if (createdBy) where.createdBy = createdBy;
       if (from || to) where.docDate = { ...(from && { [Op.gte]: from }), ...(to && { [Op.lte]: to }) };
@@ -54,7 +56,7 @@ module.exports = (type) => {
           where[Op.or] = ['docNo', 'partyName', 'reference'].map((f) => ({ [f]: { [Op.iLike]: like(search) } }));
         }
       }
-      const { rows, count } = await StockDocument.findAndCountAll({ where, include: [creator], attributes: { include: [[lineCount, 'lineCount']] },
+      const { rows, count } = await StockDocument.findAndCountAll({ where, include: [creator, warehouse], attributes: { include: [[lineCount, 'lineCount']] },
         order: [['createdAt', 'DESC']], limit, offset: (page - 1) * limit });
       // Attach the item lines (item, unit, batch) of this page so the list can show one row per item.
       const docLines = rows.length ? await StockDocumentLine.findAll({ where: { documentId: rows.map((r) => r.id) }, order: [['createdAt', 'ASC']],

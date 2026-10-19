@@ -15,6 +15,7 @@ const TOP = [['/', 'Dashboard', null], ['/approvals', 'Approvals', 'approvals.re
 const GROUPS = [
   { key: 'inventory', label: 'Inventory', items: [
     ['/categories', 'Categories', 'categories.read'], ['/items', 'Items', 'items.read'], ['/stock', 'Stock', 'stock.read'],
+    ['/warehouses', 'Warehouses', 'warehouses.read'], ['/warehouse-transfers', 'Warehouse transfers', 'warehouse_transfers.read'],
     ['/receiving', 'Receiving', 'receiving.read'], ['/adjustments', 'Adjustments', 'adjustments.read'],
     ['/reject-in', 'Reject in', 'reject_in.read'], ['/reject-out', 'Reject out', 'reject_out.read'],
     ['/expired', 'Expired', 'expired.read'], ['/damaged', 'Damaged', 'damaged.read'],

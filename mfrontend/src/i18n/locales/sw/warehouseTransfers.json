@@ -1,0 +1,70 @@
+{
+  "title": "Uhamisho wa maghala",
+  "registered": "{{total}} umesajiliwa",
+  "search": "Tafuta namba ya uhamisho au sababu",
+  "allStatuses": "Hali zote",
+  "new": "Uhamisho mpya",
+  "empty": "Hakuna uhamisho bado.",
+  "back": "Rudi",
+  "newTitle": "Uhamisho mpya kati ya maghala",
+  "newSubtitle": "Bidhaa huhamishwa tu baada ya Meneja kuidhinisha ombi.",
+  "requested": "Uhamisho {{no}} umetumwa kwa Meneja kuidhinishwa.",
+  "confirmApprove": "Idhinisha {{no}}? Bidhaa zitahamishwa mara moja.",
+  "confirmCancel": "Ghairi uhamisho {{no}}?",
+  "rejectPrompt": "Sababu ya kukataa:",
+  "status": {
+    "SUBMITTED": "Unasubiri idhini",
+    "COMPLETED": "Umekamilika",
+    "REJECTED": "Umekataliwa",
+    "CANCELLED": "Umeghairiwa"
+  },
+  "cols": {
+    "date": "Tarehe",
+    "transferNo": "Namba ya uhamisho",
+    "from": "Kutoka",
+    "to": "Kwenda",
+    "items": "Bidhaa",
+    "createdBy": "Ameomba",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "actions": {
+    "view": "Tazama",
+    "approve": "Idhinisha",
+    "reject": "Kataa",
+    "cancel": "Ghairi"
+  },
+  "form": {
+    "from": "Kutoka ghala",
+    "to": "Kwenda ghala",
+    "selectWarehouse": "Chagua ghala",
+    "date": "Tarehe ya uhamisho",
+    "reason": "Sababu",
+    "items": "Bidhaa za kuhamisha",
+    "searchItems": "Tafuta bidhaa kwenye ghala la kutoka",
+    "item": "Bidhaa",
+    "selectItem": "Chagua bidhaa",
+    "batch": "Bechi",
+    "selectBatch": "Chagua bechi",
+    "quantity": "Kiasi",
+    "quantityUnit": "Kiasi ({{unit}})",
+    "remarks": "Maelezo",
+    "removeLine": "Ondoa mstari",
+    "addItem": "Ongeza bidhaa nyingine",
+    "saving": "Inatuma…",
+    "submit": "Tuma kuidhinishwa"
+  },
+  "view": {
+    "reason": "Sababu",
+    "requested": "Imeombwa",
+    "decision": "Uamuzi",
+    "decisionNote": "Maelezo ya uamuzi",
+    "completed": "Bidhaa zimehamishwa"
+  },
+  "lineCols": {
+    "item": "Bidhaa",
+    "batch": "Bechi",
+    "quantity": "Kiasi",
+    "remarks": "Maelezo"
+  }
+}

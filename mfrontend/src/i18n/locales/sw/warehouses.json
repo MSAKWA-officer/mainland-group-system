@@ -1,0 +1,94 @@
+{
+  "title": "Maghala",
+  "registered": "{{total}} yamesajiliwa",
+  "search": "Tafuta jina, msimbo au mahali",
+  "allStatuses": "Hali zote",
+  "new": "Ghala jipya",
+  "empty": "Bado hakuna maghala.",
+  "default": "Msingi",
+  "status": {
+    "ACTIVE": "Linatumika",
+    "INACTIVE": "Halitumiki"
+  },
+  "cols": {
+    "code": "Msimbo",
+    "name": "Jina",
+    "location": "Mahali",
+    "storekeepers": "Wasimamizi wa stoo",
+    "items": "Bidhaa",
+    "units": "Vipimo",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "actions": {
+    "view": "Tazama",
+    "edit": "Hariri",
+    "activate": "Washa",
+    "deactivate": "Zima",
+    "deactivatePrompt": "Sababu ya kuzima “{{name}}”:"
+  },
+  "form": {
+    "newTitle": "Ghala jipya",
+    "newSub": "Sajili ghala na uchague anayeliwajibikia.",
+    "editTitle": "Hariri ghala",
+    "back": "Rudi",
+    "name": "Jina la ghala",
+    "location": "Mahali",
+    "description": "Maelezo",
+    "storekeepers": "Wasimamizi wa stoo (Storekeeper)",
+    "noStorekeepers": "Hakuna watumiaji hai wenye jukumu la Storekeeper.",
+    "storekeepersHint": "Hawa tu ndio wanaweza kupokea bidhaa kwenye ghala hili au kutoa bidhaa kutoka humo. Mameneja wanaweza kutumia maghala yote.",
+    "makeDefault": "Fanya hili kuwa ghala msingi",
+    "save": "Hifadhi ghala",
+    "saveChanges": "Hifadhi mabadiliko",
+    "saving": "Inahifadhi…",
+    "created": "Ghala limeundwa.",
+    "updated": "Ghala limesasishwa."
+  },
+  "view": {
+    "location": "Mahali",
+    "description": "Maelezo",
+    "storekeepers": "Wasimamizi wa stoo",
+    "salespersons": "Wauzaji",
+    "totals": "Vilivyopo",
+    "items": "bidhaa",
+    "units": "vipimo",
+    "status": "Hali",
+    "transferOut": "Hamisha bidhaa kutoka hapa",
+    "searchItems": "Tafuta bidhaa",
+    "noStock": "Hakuna bidhaa kwenye ghala hili.",
+    "noMovements": "Hakuna mienendo bado.",
+    "tabs": {
+      "stock": "Bidhaa zilizopo",
+      "movements": "Mienendo"
+    }
+  },
+  "stockCols": {
+    "item": "Bidhaa",
+    "category": "Kategoria",
+    "quantity": "Kiasi",
+    "batches": "Bechi (kiasi, kuisha muda)"
+  },
+  "moveCols": {
+    "date": "Tarehe",
+    "type": "Aina",
+    "item": "Bidhaa",
+    "batch": "Bechi",
+    "in": "Ingia",
+    "out": "Toka",
+    "balance": "Salio",
+    "by": "Na"
+  },
+  "moveTypes": {
+    "RECEIVING": "Mapokezi",
+    "SALE": "Mauzo",
+    "SALE_CANCEL": "Mauzo yaliyofutwa",
+    "TRANSFER_IN": "Uhamisho wa kuingia",
+    "TRANSFER_OUT": "Uhamisho wa kutoka",
+    "ADJUSTMENT": "Marekebisho",
+    "REJECT_IN": "Zilizokataliwa (Ndani)",
+    "REJECT_OUT": "Zilizokataliwa (Nje)",
+    "EXPIRED": "Zilizoisha muda",
+    "DAMAGED": "Zilizoharibika"
+  }
+}

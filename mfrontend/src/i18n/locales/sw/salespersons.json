@@ -42,7 +42,10 @@
     "phonePlaceholder": "+255 ...",
     "email": "Barua pepe",
     "commissionRate": "Kiwango cha kamisheni (%)",
-    "monthlyTarget": "Lengo la mwezi"
+    "monthlyTarget": "Lengo la mwezi",
+    "warehouse": "Ghala",
+    "defaultWarehouse": "Ghala msingi",
+    "warehouseHint": "Ghala ambalo muuzaji huyu anauzia. Bidhaa za mauzo yake hutolewa humo. Tupu = ghala msingi."
   },
   "create": {
     "title": "Muuzaji mpya",
@@ -70,7 +73,8 @@
     "status": "Hali",
     "created": "Imeundwa",
     "updated": "Ilisasishwa mwisho",
-    "deleted": "Muuzaji amefutwa."
+    "deleted": "Muuzaji amefutwa.",
+    "warehouse": "Ghala"
   },
   "perf": {
     "title": "Utendaji wa mwezi",

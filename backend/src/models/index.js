@@ -33,6 +33,13 @@ const SaleLine = require('./SaleLine');
 const SalePayment = require('./SalePayment');
 // Staff register
 const Staff = require('./Staff');
+
+// Warehouses
+const Warehouse = require('./Warehouse');
+const WarehouseStorekeeper = require('./WarehouseStorekeeper');
+const WarehouseStock = require('./WarehouseStock');
+const WarehouseTransfer = require('./WarehouseTransfer');
+const WarehouseTransferLine = require('./WarehouseTransferLine');
 // Phase 4 - Approval workflow
 const OrderWorkflow = require('./OrderWorkflow');
 const OrderWorkflowEvent = require('./OrderWorkflowEvent');
@@ -218,6 +225,24 @@ EfdReconciliation.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
 EfdReconciliation.belongsTo(User, { as: 'reconciler', foreignKey: 'reconciledBy' });
 EfdReconciliation.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
 
+// Warehouses
+Warehouse.belongsToMany(User, { as: 'storekeepers', through: WarehouseStorekeeper, foreignKey: 'warehouseId', otherKey: 'userId' });
+User.belongsToMany(Warehouse, { as: 'warehouses', through: WarehouseStorekeeper, foreignKey: 'userId', otherKey: 'warehouseId' });
+Warehouse.hasMany(WarehouseStock, { as: 'stock', foreignKey: 'warehouseId' });
+WarehouseStock.belongsTo(Warehouse, { as: 'warehouse', foreignKey: 'warehouseId' });
+WarehouseStock.belongsTo(Item, { as: 'item', foreignKey: 'itemId' });
+StockDocument.belongsTo(Warehouse, { as: 'warehouse', foreignKey: 'warehouseId' });
+Salesperson.belongsTo(Warehouse, { as: 'warehouse', foreignKey: 'warehouseId' });
+Warehouse.hasMany(Salesperson, { as: 'salespersons', foreignKey: 'warehouseId' });
+WarehouseTransfer.belongsTo(Warehouse, { as: 'fromWarehouse', foreignKey: 'fromWarehouseId' });
+WarehouseTransfer.belongsTo(Warehouse, { as: 'toWarehouse', foreignKey: 'toWarehouseId' });
+WarehouseTransfer.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
+WarehouseTransfer.belongsTo(ApprovalRequest, { as: 'approval', foreignKey: 'approvalId' });
+WarehouseTransfer.hasMany(WarehouseTransferLine, { as: 'lines', foreignKey: 'transferId' });
+WarehouseTransferLine.belongsTo(WarehouseTransfer, { as: 'transfer', foreignKey: 'transferId' });
+WarehouseTransferLine.belongsTo(Item, { as: 'item', foreignKey: 'itemId' });
+WarehouseTransferLine.belongsTo(StockBatch, { as: 'batch', foreignKey: 'batchId' });
+
 module.exports = {
   sequelize, Sequelize, Role, Permission, RolePermission, User, Session, AuditLog, ApprovalRequest, Notification, Attachment,
   Category, Item, StockLevel, StockBatch, StockDocument, StockDocumentLine, StockMovement,
@@ -227,4 +252,5 @@ module.exports = {
   Bank, BankAccount, BankTransaction, CustomerPayment, CustomerPaymentAllocation,
   Expense, Payment,
   Driver, Vehicle, FuelFunding, FuelUsage,
+  Warehouse, WarehouseStorekeeper, WarehouseStock, WarehouseTransfer, WarehouseTransferLine,
 };

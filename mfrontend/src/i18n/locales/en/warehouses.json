@@ -1,0 +1,94 @@
+{
+  "title": "Warehouses",
+  "registered": "{{total}} registered",
+  "search": "Search name, code or location",
+  "allStatuses": "All statuses",
+  "new": "New warehouse",
+  "empty": "No warehouses yet.",
+  "default": "Default",
+  "status": {
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive"
+  },
+  "cols": {
+    "code": "Code",
+    "name": "Name",
+    "location": "Location",
+    "storekeepers": "Storekeepers",
+    "items": "Items",
+    "units": "Units",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "deactivatePrompt": "Reason for deactivating “{{name}}”:"
+  },
+  "form": {
+    "newTitle": "New warehouse",
+    "newSub": "Register a warehouse and choose who is in charge of it.",
+    "editTitle": "Edit warehouse",
+    "back": "Back",
+    "name": "Warehouse name",
+    "location": "Location",
+    "description": "Description",
+    "storekeepers": "Storekeepers in charge",
+    "noStorekeepers": "No active users with the Storekeeper role.",
+    "storekeepersHint": "Only these storekeepers can receive stock into this warehouse or send stock out of it. Managers can use every warehouse.",
+    "makeDefault": "Make this the default warehouse",
+    "save": "Save warehouse",
+    "saveChanges": "Save changes",
+    "saving": "Saving…",
+    "created": "Warehouse created.",
+    "updated": "Warehouse updated."
+  },
+  "view": {
+    "location": "Location",
+    "description": "Description",
+    "storekeepers": "Storekeepers",
+    "salespersons": "Salespersons",
+    "totals": "In stock",
+    "items": "items",
+    "units": "units",
+    "status": "Status",
+    "transferOut": "Transfer stock out",
+    "searchItems": "Search items",
+    "noStock": "No stock in this warehouse.",
+    "noMovements": "No movements yet.",
+    "tabs": {
+      "stock": "Stock",
+      "movements": "Movements"
+    }
+  },
+  "stockCols": {
+    "item": "Item",
+    "category": "Category",
+    "quantity": "Quantity",
+    "batches": "Batches (qty, expiry)"
+  },
+  "moveCols": {
+    "date": "Date",
+    "type": "Type",
+    "item": "Item",
+    "batch": "Batch",
+    "in": "In",
+    "out": "Out",
+    "balance": "Balance",
+    "by": "By"
+  },
+  "moveTypes": {
+    "RECEIVING": "Receiving",
+    "SALE": "Sale",
+    "SALE_CANCEL": "Sale cancelled",
+    "TRANSFER_IN": "Transfer in",
+    "TRANSFER_OUT": "Transfer out",
+    "ADJUSTMENT": "Adjustment",
+    "REJECT_IN": "Reject in",
+    "REJECT_OUT": "Reject out",
+    "EXPIRED": "Expired",
+    "DAMAGED": "Damaged"
+  }
+}

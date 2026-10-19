@@ -1,5 +1,6 @@
 const { Op, literal } = require('sequelize');
-const { sequelize, Salesperson, User, Customer, SalesOrder } = require('../models');
+const { sequelize, Salesperson, User, Customer, SalesOrder, Warehouse } = require('../models');
+const whs = require('../services/warehouses');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
 const audit = require('../services/audit');
@@ -9,12 +10,12 @@ const canPay = (req) => req.user.permissions.has('salespersons.view_commission')
 const PAY = ['commissionRate', 'monthlyTarget'];
 // Commission rate and target are hidden unless the user may see them (or it is their own profile).
 const pub = (s, req, own) => { const o = s.toJSON(); if (!canPay(req) && !own) PAY.forEach((k) => delete o[k]); return o; };
-const inc = [{ model: User, as: 'user', attributes: ['id', 'username', 'fullName'] }];
+const inc = [{ model: User, as: 'user', attributes: ['id', 'username', 'fullName'] }, { model: Warehouse, as: 'warehouse', attributes: ['id', 'code', 'name'] }];
 const counts = [
   [literal('(SELECT CAST(COUNT(*) AS int) FROM customers c WHERE c.salesperson_id = "Salesperson"."id")'), 'customerCount'],
   [literal('(SELECT CAST(COUNT(*) AS int) FROM sales_orders o WHERE o.salesperson_id = "Salesperson"."id")'), 'orderCount'],
 ];
-const audited = (s) => ({ code: s.code, userId: s.userId, fullName: s.fullName, phone: s.phone, email: s.email, region: s.region,
+const audited = (s) => ({ code: s.code, userId: s.userId, fullName: s.fullName, phone: s.phone, email: s.email, region: s.region, warehouseId: s.warehouseId,
   commissionRate: s.commissionRate, monthlyTarget: s.monthlyTarget, isActive: s.isActive });
 const find = async (id, t) => {
   const s = await Salesperson.findByPk(id, { transaction: t, ...(t && { lock: t.LOCK.UPDATE }) });
@@ -22,6 +23,12 @@ const find = async (id, t) => {
   return s;
 };
 const show = (id) => Salesperson.findByPk(id, { include: inc, attributes: { include: counts } });
+// Choosing the warehouse a salesperson sells from needs warehouses.assign (Manager / Owner), and the warehouse must be active.
+const needAssign = async (req, t) => {
+  if (req.body.warehouseId === undefined) return;
+  if (!req.user.permissions.has('warehouses.assign')) throw new AppError(403, 'FORBIDDEN', 'You are not allowed to assign a warehouse');
+  if (req.body.warehouseId) await whs.activeOne(req.body.warehouseId, t);
+};
 const needPay = (req) => {
   if (PAY.some((k) => req.body[k] !== undefined) && !canPay(req)) throw new AppError(403, 'FORBIDDEN', 'You are not allowed to set commission or targets');
 };
@@ -57,6 +64,7 @@ exports.create = async (req, res) => {
   needPay(req);
   const id = await sequelize.transaction(async (t) => {
     const b = req.body; let { fullName } = b;
+    await needAssign(req, t);
     if (b.userId) { const u = await checkUser(b.userId, null, t); fullName = fullName || u.fullName; }
     if (!fullName) throw new AppError(400, 'VALIDATION_ERROR', 'Check the highlighted fields', [{ field: 'fullName', message: 'Name is required' }]);
     const [r] = await sequelize.query("SELECT nextval('salesperson_code_seq') AS n", { transaction: t });
@@ -71,6 +79,7 @@ exports.update = async (req, res) => {
   needPay(req);
   await sequelize.transaction(async (t) => {
     const s = await find(req.params.id, t); const b = req.body;
+    await needAssign(req, t);
     if (b.userId && b.userId !== s.userId) await checkUser(b.userId, s.id, t);
     const old = audited(s); await s.update(b, { transaction: t });
     await audit.log(req, { action: 'SALESPERSON_UPDATED', entityType: 'Salesperson', entityId: s.id, oldValues: old, newValues: audited(s) }, t);

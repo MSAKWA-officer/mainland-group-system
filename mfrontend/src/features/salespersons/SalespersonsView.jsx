@@ -44,6 +44,7 @@ export default function SalespersonsView() {
             <Row label={t('view.code')}>{r.code}</Row>
             <Row label={t('view.name')}>{r.fullName}</Row>
             <Row label={t('view.region')}>{r.region}</Row>
+            <Row label={t('view.warehouse')}>{r.warehouse ? `${r.warehouse.code} — ${r.warehouse.name}` : ''}</Row>
             <Row label={t('view.phone')}>{r.phone}</Row>
             <Row label={t('view.email')}>{r.email}</Row>
             <Row label={t('view.loginAccount')}>{r.user && `${r.user.fullName} (${r.user.username})`}</Row>

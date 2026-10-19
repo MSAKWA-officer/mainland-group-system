@@ -54,11 +54,13 @@
     "staff": "员工",
     "users": "用户管理",
     "roles": "角色与权限",
-    "audit": "审计日志"
+    "audit": "审计日志",
+    "warehouses": "仓库",
+    "warehouse-transfers": "仓库调拨"
   },
   "password": "修改密码",
   "account": "账户",
-    "home": "首页",
+  "home": "首页",
   "mainMenu": "主菜单",
   "mainNav": "主导航",
   "breadcrumb": "面包屑导航",

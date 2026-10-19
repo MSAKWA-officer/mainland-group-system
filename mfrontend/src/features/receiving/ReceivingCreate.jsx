@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { itemApi, receivingApi, errMsg, fieldErrs } from '../../api/index.js';
+import { itemApi, receivingApi, warehouseApi, errMsg, fieldErrs } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
@@ -16,7 +16,7 @@ export const today = () => new Date().toISOString().slice(0, 10);
 // Turns the form into the API body. Batch fields are sent only for items that track expiry.
 export function buildPayload(head, lines, canCost, items, autoRef = false) {
   return {
-    docDate: head.docDate, partyName: head.partyName.trim() || null, reason: head.reason.trim() || null,
+    docDate: head.docDate, warehouseId: head.warehouseId, partyName: head.partyName.trim() || null, reason: head.reason.trim() || null,
     ...(!autoRef && { reference: head.reference.trim() || null }),   // on create the server generates the reference number
     lines: lines.map((l) => ({
       itemId: l.itemId, quantity: Number(l.quantity), remarks: l.remarks.trim() || null,
@@ -104,10 +104,20 @@ export function LineEditor({ lines, setLines, fe = {} }) {
 
 export function HeadFields({ head, setHead, fe, autoRef = false }) {
   const { t } = useTranslation('receiving');
+  // Warehouses this user may receive into (a storekeeper: only the ones he is in charge of). A single one is chosen automatically.
+  const wh = useLoad(() => warehouseApi.options(), []);
+  useEffect(() => { if (wh.data && !head.warehouseId && wh.data.length === 1) setHead({ ...head, warehouseId: wh.data[0].id }); }, [wh.data]); // eslint-disable-line
   const set = (k) => (e) => setHead({ ...head, [k]: e.target.value });
   return (
     <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
       <Field label={t('form.dateReceived')} error={fe.docDate}><input className="input !text-black" type="date" required value={head.docDate} onChange={set('docDate')} /></Field>
+      <Field label={t('form.warehouse')} error={fe.warehouseId}>
+        <select className="input !text-black" required value={head.warehouseId || ''} onChange={set('warehouseId')}>
+          <option value="">{t('form.selectWarehouse')}</option>
+          {(wh.data || []).map((w) => <option key={w.id} value={w.id}>{w.code} — {w.name}</option>)}
+        </select>
+        {wh.data && wh.data.length === 0 && <p className="mt-1 text-xs">{t('form.noWarehouse')}</p>}
+      </Field>
       <Field label={t('form.supplier')} error={fe.partyName}><input className="input !text-black" maxLength={150} value={head.partyName} onChange={set('partyName')} /></Field>
       {autoRef ? (
         <Field label={t('form.referenceAuto', { defaultValue: 'Reference no.' })} error={fe.reference}>
@@ -126,7 +136,7 @@ export default function ReceivingCreate() {
   const docs = useDocText();
   const navigate = useNavigate();
   const { can } = useAuth();
-  const [head, setHead] = useState({ docDate: today(), partyName: '', reference: '', reason: '' });
+  const [head, setHead] = useState({ docDate: today(), warehouseId: '', partyName: '', reference: '', reason: '' });
   const [lines, setLines] = useState([emptyLine()]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const submit = async (e) => {

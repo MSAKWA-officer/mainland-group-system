@@ -61,6 +61,10 @@ router.use('/expenses', authenticate, require('./expenseRoutes'));
 router.use('/payments', authenticate, require('./paymentRoutes'));
 router.use('/transfers', authenticate, require('./transferRoutes'));
 
+// ---- Warehouses ----
+router.use('/warehouses', authenticate, require('./warehouseRoutes'));
+router.use('/warehouse-transfers', authenticate, require('./warehouseTransferRoutes'));
+
 // ---- Phase 6: Fuel ----
 router.use('/drivers', authenticate, require('./driverRoutes'));
 router.use('/vehicles', authenticate, require('./vehicleRoutes'));

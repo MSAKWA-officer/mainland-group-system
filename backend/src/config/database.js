@@ -1,7 +1,7 @@
 
- // Used by sequelize-cli only (migrations / seeders)
-
 require('dotenv').config();
+
+// Used by sequelize-cli only (migrations / seeders)
 
 const base = {
   username: process.env.DB_USER,
@@ -14,12 +14,14 @@ const base = {
 
   logging: false,
 
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
+  dialectOptions: process.env.DB_SSL === 'true'
+    ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      }
+    : {},
 };
 
 module.exports = {

@@ -1,0 +1,94 @@
+{
+  "title": "仓库",
+  "registered": "已登记 {{total}} 个",
+  "search": "搜索名称、编码或地点",
+  "allStatuses": "所有状态",
+  "new": "新建仓库",
+  "empty": "暂无仓库。",
+  "default": "默认",
+  "status": {
+    "ACTIVE": "启用",
+    "INACTIVE": "停用"
+  },
+  "cols": {
+    "code": "编码",
+    "name": "名称",
+    "location": "地点",
+    "storekeepers": "仓管员",
+    "items": "品项",
+    "units": "数量",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "activate": "启用",
+    "deactivate": "停用",
+    "deactivatePrompt": "停用“{{name}}”的原因："
+  },
+  "form": {
+    "newTitle": "新建仓库",
+    "newSub": "登记仓库并选择负责人。",
+    "editTitle": "编辑仓库",
+    "back": "返回",
+    "name": "仓库名称",
+    "location": "地点",
+    "description": "说明",
+    "storekeepers": "负责的仓管员",
+    "noStorekeepers": "没有拥有仓管员角色的启用用户。",
+    "storekeepersHint": "只有这些仓管员可以向本仓库收货或从本仓库调出货物。经理可使用所有仓库。",
+    "makeDefault": "设为默认仓库",
+    "save": "保存仓库",
+    "saveChanges": "保存更改",
+    "saving": "保存中…",
+    "created": "仓库已创建。",
+    "updated": "仓库已更新。"
+  },
+  "view": {
+    "location": "地点",
+    "description": "说明",
+    "storekeepers": "仓管员",
+    "salespersons": "销售员",
+    "totals": "库存",
+    "items": "品项",
+    "units": "数量",
+    "status": "状态",
+    "transferOut": "调出库存",
+    "searchItems": "搜索商品",
+    "noStock": "本仓库没有库存。",
+    "noMovements": "暂无变动。",
+    "tabs": {
+      "stock": "库存",
+      "movements": "变动"
+    }
+  },
+  "stockCols": {
+    "item": "商品",
+    "category": "类别",
+    "quantity": "数量",
+    "batches": "批次（数量，到期日）"
+  },
+  "moveCols": {
+    "date": "日期",
+    "type": "类型",
+    "item": "商品",
+    "batch": "批次",
+    "in": "入",
+    "out": "出",
+    "balance": "结余",
+    "by": "操作人"
+  },
+  "moveTypes": {
+    "RECEIVING": "收货",
+    "SALE": "销售",
+    "SALE_CANCEL": "销售取消",
+    "TRANSFER_IN": "调入",
+    "TRANSFER_OUT": "调出",
+    "ADJUSTMENT": "调整",
+    "REJECT_IN": "退货入库",
+    "REJECT_OUT": "退货给供应商",
+    "EXPIRED": "过期",
+    "DAMAGED": "损坏"
+  }
+}

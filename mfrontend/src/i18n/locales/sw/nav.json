@@ -54,11 +54,13 @@
     "staff": "Wafanyakazi",
     "users": "Usimamizi wa watumiaji",
     "roles": "Majukumu na ruhusa",
-    "audit": "Kumbukumbu za ukaguzi"
+    "audit": "Kumbukumbu za ukaguzi",
+    "warehouses": "Maghala",
+    "warehouse-transfers": "Uhamisho wa maghala"
   },
   "password": "Badili nenosiri",
   "account": "Akaunti",
-    "home": "Nyumbani",
+  "home": "Nyumbani",
   "mainMenu": "Menyu kuu",
   "mainNav": "Menyu kuu",
   "breadcrumb": "Njia ya kurasa",

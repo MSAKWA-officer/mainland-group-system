@@ -17,7 +17,7 @@ export default function SalespersonsCreate() {
   const submit = async (e) => {
     e.preventDefault(); setErr(''); setFe({}); setBusy(true);
     try {
-      await salespersonApi.create(toBody(f, { canLink: can('users.read'), canPay: can('salespersons.view_commission'), creating: true }));
+      await salespersonApi.create(toBody(f, { canLink: can('users.read'), canPay: can('salespersons.view_commission'), canAssign: can('warehouses.assign'), creating: true }));
       navigate('/salespersons', { state: { msg: t('create.done') } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
   };

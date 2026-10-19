@@ -52,6 +52,7 @@ export default function ReceivingView() {
         <div className="border-t border-line px-6 py-4">
           <dl className="max-w-3xl">
             <Row label={t('view.docNo')}>{d.docNo}</Row>
+            <Row label={t('view.warehouse')}>{d.warehouse ? `${d.warehouse.code} — ${d.warehouse.name}` : ''}</Row>
             <Row label={t('view.supplier')}>{d.partyName}</Row>
             <Row label={t('view.reference')}>{d.reference}</Row>
             <Row label={t('view.notes')}>{d.reason}</Row>

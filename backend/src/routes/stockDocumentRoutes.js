@@ -17,12 +17,13 @@ module.exports = (type) => {
     batchId: uuid.nullable().optional(), remarks: text(255).nullable().optional(),
   });
   const reason = cfg.reasonRequired ? text(1000).min(3) : text(1000).nullable().optional();
-  const head = { docDate: date, partyName: text(150).nullable(), reference: text(100).nullable(), reason };
-  const createS = z.object({ ...Object.fromEntries(Object.entries(head).map(([k, v]) => [k, k === 'reason' ? v : v.optional()])),
+  const head = { docDate: date, partyName: text(150).nullable(), reference: text(100).nullable(), reason, warehouseId: uuid };
+  const required = ['reason', ...(type === 'RECEIVING' ? ['warehouseId'] : [])];   // receiving must name its warehouse
+  const createS = z.object({ ...Object.fromEntries(Object.entries(head).map(([k, v]) => [k, required.includes(k) ? v : v.optional()])),
     lines: z.array(line).min(1).max(200) });
   const updateS = createS.partial().refine((o) => Object.keys(o).length, 'Nothing to update');
   const listQ = z.object({ status: z.enum(['DRAFT', 'SUBMITTED', 'POSTED', 'REJECTED', 'CANCELLED']).optional(), search: text(80).optional(),
-    from: date.optional(), to: date.optional(), createdBy: uuid.optional(), ...paging });
+    from: date.optional(), to: date.optional(), createdBy: uuid.optional(), warehouseId: uuid.optional(), ...paging });
   const note = z.object({ note: text(500).optional() });
 
   router.get('/', authorize(`${m}.read`), validate(listQ, 'query'), ah(c.list));

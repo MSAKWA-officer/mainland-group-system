@@ -1,0 +1,70 @@
+{
+  "title": "Warehouse transfers",
+  "registered": "{{total}} registered",
+  "search": "Search transfer no. or reason",
+  "allStatuses": "All statuses",
+  "new": "New transfer",
+  "empty": "No transfers yet.",
+  "back": "Back",
+  "newTitle": "New warehouse transfer",
+  "newSubtitle": "Stock only moves after a Manager approves the request.",
+  "requested": "Transfer {{no}} sent to a Manager for approval.",
+  "confirmApprove": "Approve {{no}}? The stock will move immediately.",
+  "confirmCancel": "Cancel transfer {{no}}?",
+  "rejectPrompt": "Reason for rejecting:",
+  "status": {
+    "SUBMITTED": "Waiting for approval",
+    "COMPLETED": "Completed",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled"
+  },
+  "cols": {
+    "date": "Date",
+    "transferNo": "Transfer no.",
+    "from": "From",
+    "to": "To",
+    "items": "Items",
+    "createdBy": "Requested by",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "actions": {
+    "view": "View",
+    "approve": "Approve",
+    "reject": "Reject",
+    "cancel": "Cancel"
+  },
+  "form": {
+    "from": "From warehouse",
+    "to": "To warehouse",
+    "selectWarehouse": "Select warehouse",
+    "date": "Transfer date",
+    "reason": "Reason",
+    "items": "Items to move",
+    "searchItems": "Search items in the source warehouse",
+    "item": "Item",
+    "selectItem": "Select item",
+    "batch": "Batch",
+    "selectBatch": "Select batch",
+    "quantity": "Quantity",
+    "quantityUnit": "Quantity ({{unit}})",
+    "remarks": "Remarks",
+    "removeLine": "Remove line",
+    "addItem": "Add another item",
+    "saving": "Sending…",
+    "submit": "Send for approval"
+  },
+  "view": {
+    "reason": "Reason",
+    "requested": "Requested",
+    "decision": "Decision",
+    "decisionNote": "Decision note",
+    "completed": "Stock moved"
+  },
+  "lineCols": {
+    "item": "Item",
+    "batch": "Batch",
+    "quantity": "Quantity",
+    "remarks": "Remarks"
+  }
+}

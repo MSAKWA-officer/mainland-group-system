@@ -54,11 +54,13 @@
     "staff": "Staff",
     "users": "User management",
     "roles": "Roles & permissions",
-    "audit": "Audit log"
+    "audit": "Audit log",
+    "warehouses": "Warehouses",
+    "warehouse-transfers": "Warehouse transfers"
   },
   "password": "Change password",
   "account": "Account",
-    "home": "Home",
+  "home": "Home",
   "mainMenu": "Main menu",
   "mainNav": "Main",
   "breadcrumb": "Breadcrumb",
