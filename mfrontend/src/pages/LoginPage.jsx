@@ -16,7 +16,7 @@ const EyeOffIcon = (p) => (<svg {...icon} {...p}><path d="M17.9 17.9A10.4 10.4 0
 const ShieldIcon = (p) => (<svg {...icon} {...p}><path d="M12 3l8 3v6c0 4.5-3.2 8.2-8 9-4.8-.8-8-4.5-8-9V6l8-3z" /><path d="M9 12l2 2 4-4" /></svg>);
 
 export default function LoginPage() {
-  const { t } = useTranslation('auth');
+  const { t } = useTranslation(['auth', 'nav']);
   const { login } = useAuth();
   const [f, setF] = useState({ username: '', password: '' });
   const [show, setShow] = useState(false);
@@ -30,13 +30,10 @@ export default function LoginPage() {
 
   return (
     <div className="grid min-h-screen bg-mn lg:grid-cols-[1.1fr_1fr]">
-      {/* Logo panel — logo kamili, rangi zake halisi, hakuna overlay */}
-      <aside className="relative hidden flex-col items-center justify-between p-10 lg:flex">
-        <div />
-        <div className="w-full max-w-xs rounded-2xl bg-white p-8 shadow-2xl shadow-black/30">
-          <img src={LOGO} alt="Mainland Group" className="mx-auto w-full max-w-[240px] select-none object-contain" draggable="false" />
-        </div>
-        <div className="flex items-center gap-2 text-xs text-slate-300">
+      {/* Logo panel — logo inajaza upande wote wa kushoto, rangi halisi, hakuna overlay */}
+      <aside className="relative hidden items-center justify-center bg-white p-12 lg:flex">
+        <img src={LOGO} alt="Mainland Group" className="max-h-[78vh] w-full max-w-2xl select-none object-contain" draggable="false" />
+        <div className="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-2 text-xs text-slate-500">
           <ShieldIcon className="h-4 w-4 shrink-0" />
           <span>{t('accessLogged')}</span>
         </div>
@@ -47,8 +44,13 @@ export default function LoginPage() {
         <div className="absolute right-4 top-4 rounded-lg bg-white shadow-sm"><LanguageSwitcher /></div>
         <div className="w-full max-w-md">
           {/* Simu: logo juu ya fomu */}
-          <div className="mx-auto mb-6 flex h-32 w-32 items-center justify-center rounded-2xl bg-white p-3 shadow-xl shadow-black/30 lg:hidden">
+          <div className="mx-auto mb-5 flex h-28 w-28 items-center justify-center rounded-2xl bg-white p-3 shadow-xl shadow-black/30 lg:hidden">
             <img src={LOGO} alt="Mainland Group" className="h-full w-full select-none object-contain" draggable="false" />
+          </div>
+          {/* Heading ya mfumo (sawa na header ya mfumo) */}
+          <div className="mb-6 text-center font-[Arial,Helvetica,sans-serif] text-white">
+            <div className="text-2xl font-bold leading-tight tracking-wide md:text-[28px]">MAINLAND GROUP</div>
+            <div className="mt-1 text-xs uppercase tracking-[0.2em] text-slate-300 md:text-sm">{t('nav:systemName')}</div>
           </div>
           <div className="rounded-2xl border border-line bg-white p-8 shadow-2xl shadow-black/30 sm:p-10">
             <h1 className="text-2xl font-bold tracking-tight text-ink">{t('signIn')}</h1>
