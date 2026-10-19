@@ -5,6 +5,7 @@ const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
 const svc = require('../services/stockDocuments');
 const approvals = require('../services/approvals');
+const wh = require('../services/warehouses');
 
 const creator = { model: User, as: 'creator', attributes: ['id', 'username', 'fullName'] };
 const warehouse = { model: Warehouse, as: 'warehouse', attributes: ['id', 'code', 'name'] };
@@ -36,7 +37,11 @@ module.exports = (type) => {
   return {
     list: async (req, res) => {
       const { status, search, from, to, createdBy, warehouseId, page, limit } = req.query; const where = { type };
-      if (warehouseId) where.warehouseId = warehouseId;
+      if (warehouseId) { await wh.access(req, warehouseId); where.warehouseId = warehouseId; }
+      // A storekeeper / salesperson only sees documents of the warehouses they work in (plus the ones they created themselves).
+      const mine = await wh.scope(req);
+      const and = [];
+      if (mine && !warehouseId) and.push({ [Op.or]: [{ warehouseId: { [Op.in]: mine } }, { createdBy: req.user.id }] });
       if (status) where.status = status;
       if (createdBy) where.createdBy = createdBy;
       if (from || to) where.docDate = { ...(from && { [Op.gte]: from }), ...(to && { [Op.lte]: to }) };
@@ -56,6 +61,7 @@ module.exports = (type) => {
           where[Op.or] = ['docNo', 'partyName', 'reference'].map((f) => ({ [f]: { [Op.iLike]: like(search) } }));
         }
       }
+      if (and.length) where[Op.and] = and;
       const { rows, count } = await StockDocument.findAndCountAll({ where, include: [creator, warehouse], attributes: { include: [[lineCount, 'lineCount']] },
         order: [['createdAt', 'DESC']], limit, offset: (page - 1) * limit });
       // Attach the item lines (item, unit, batch) of this page so the list can show one row per item.
@@ -68,7 +74,13 @@ module.exports = (type) => {
       const data = rows.map((r) => ({ ...r.toJSON(), lines: byDoc[r.id] || [] }));
       res.json({ data, total: count, page, limit });
     },
-    getOne: async (req, res) => res.json(view(await fetch(req.params.id), req)),
+    getOne: async (req, res) => {
+      const d = await fetch(req.params.id);
+      const mine = await wh.scope(req);
+      if (mine && d.createdBy !== req.user.id && !(d.warehouseId && mine.includes(d.warehouseId)))
+        throw new AppError(403, 'NOT_YOUR_WAREHOUSE', 'This document belongs to a warehouse you are not in charge of');
+      res.json(view(d, req));
+    },
     create: async (req, res) => res.status(201).json(view(await fetch((await svc.create(req, type, req.body)).id), req)),
     update: async (req, res) => res.json(view(await fetch((await svc.update(req, type, req.params.id, req.body)).id), req)),
     remove: async (req, res) => { await svc.remove(req, type, req.params.id); res.json({ ok: true }); },

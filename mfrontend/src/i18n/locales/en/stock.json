@@ -1,6 +1,6 @@
 {
   "title": "Stock",
-  "subtitle": "Stock changes only through approved adjustments.",
+  "subtitle": "Stock is tracked per warehouse. Every adjustment changes the stock of the warehouse you choose.",
   "newAdjustment": "+ New Adjustment",
   "tabs": {
     "levels": "Stock levels",
@@ -16,7 +16,10 @@
     "allCategories": "All categories",
     "allLevels": "All levels",
     "searchAdj": "Search document no. or reference",
-    "allStatuses": "All statuses"
+    "allStatuses": "All statuses",
+    "warehouse": "Warehouse",
+    "allWarehouses": "All warehouses",
+    "allMyWarehouses": "All my warehouses"
   },
   "levelsCols": {
     "sku": "SKU",
@@ -36,7 +39,8 @@
     "lines": "Lines",
     "createdBy": "Created by",
     "status": "Status",
-    "actions": "Actions"
+    "actions": "Actions",
+    "warehouse": "Warehouse"
   },
   "empty": {
     "levels": "No stock records found.",
@@ -67,7 +71,9 @@
     "unitCost": "Unit cost",
     "remarks": "Remarks",
     "removeLine": "Remove line",
-    "addAnother": "Add another item"
+    "addAnother": "Add another item",
+    "optionAdjustWh": "{{sku}} — {{name}} ({{qty}} {{unit}} in this warehouse)",
+    "optionNoQty": "{{sku}} — {{name}}"
   },
   "create": {
     "title": "New stock adjustment",
@@ -108,6 +114,19 @@
       "unitCost": "Unit cost",
       "remarks": "Remarks"
     },
-    "deleted": "Adjustment {{docNo}} deleted."
+    "deleted": "Adjustment {{docNo}} deleted.",
+    "warehouse": "Warehouse"
+  },
+  "noWarehouse": "You are not assigned to any warehouse yet. Ask a Manager to assign you.",
+  "showingWarehouse": "Showing the stock of {{name}} only.",
+  "breakdown": {
+    "title": "Where the stock is",
+    "toggle": "Show / hide stock per warehouse"
+  },
+  "reorder": {
+    "edit": "Set reorder level for this warehouse",
+    "prompt": "Reorder level of \"{{item}}\" in this warehouse.\nLeave empty to use the item's default level ({{default}}).",
+    "invalid": "Enter a number of 0 or more.",
+    "customHint": "Set for this warehouse (item default: {{default}})"
   }
 }

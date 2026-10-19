@@ -75,6 +75,7 @@ const create = (req, type, body) => sequelize.transaction(async (t) => {
   const cfg = TYPES[type];
   // Receiving must say which warehouse the goods go into (a storekeeper may only choose one they are in charge of). Other documents without a warehouse use the default one.
   if (type === 'RECEIVING' && !body.warehouseId) throw bad('warehouseId', 'Choose the warehouse that receives the goods');
+  if (type === 'ADJUSTMENT' && !body.warehouseId) throw bad('warehouseId', 'Choose the warehouse whose stock you are adjusting');
   if (body.warehouseId) await wh.access(req, body.warehouseId, t, { active: true });
   const lines = await normalizeLines(type, body.lines, t);
   const [seq] = await sequelize.query("SELECT nextval('stock_doc_seq') AS n", { transaction: t });

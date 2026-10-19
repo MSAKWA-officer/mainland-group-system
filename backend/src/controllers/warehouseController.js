@@ -1,5 +1,5 @@
 const { Op, literal, QueryTypes } = require('sequelize');
-const { sequelize, Warehouse, WarehouseStorekeeper, User, Role, Salesperson, WarehouseStock, Item, Category } = require('../models');
+const { sequelize, Warehouse, WarehouseStorekeeper, User, Role, Salesperson, WarehouseStock, WarehouseItemSetting, Item, Category } = require('../models');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
 const audit = require('../services/audit');
@@ -164,4 +164,23 @@ exports.movements = async (req, res) => {
     FROM warehouse_movements m JOIN items i ON i.id = m.item_id LEFT JOIN stock_batches b ON b.id = m.batch_id LEFT JOIN users u ON u.id = m.performed_by
     WHERE ${W} ORDER BY m.id DESC LIMIT :limit OFFSET :offset`, { replacements: rep, type: QueryTypes.SELECT });
   res.json({ data, total: n, page, limit });
+};
+
+// Sets (or clears) the reorder level of ONE item in ONE warehouse. null = go back to the item's own default level.
+exports.setReorderLevel = async (req, res) => {
+  const { id, itemId } = req.params; const { reorderLevel } = req.body;
+  await sequelize.transaction(async (t) => {
+    const w = await Warehouse.findByPk(id, { transaction: t });
+    if (!w) throw new AppError(404, 'NOT_FOUND', 'Warehouse not found');
+    const item = await Item.findByPk(itemId, { transaction: t });
+    if (!item) throw new AppError(404, 'NOT_FOUND', 'Item not found');
+    const cur = await WarehouseItemSetting.findOne({ where: { warehouseId: id, itemId }, transaction: t });
+    const old = cur ? Number(cur.reorderLevel) : null;
+    if (reorderLevel === null) { if (cur) await cur.destroy({ transaction: t }); }
+    else if (cur) await cur.update({ reorderLevel, updatedBy: req.user.id }, { transaction: t });
+    else await WarehouseItemSetting.create({ warehouseId: id, itemId, reorderLevel, updatedBy: req.user.id }, { transaction: t });
+    await audit.log(req, { action: 'WAREHOUSE_REORDER_LEVEL_SET', entityType: 'Warehouse', entityId: id,
+      oldValues: { warehouse: w.code, item: item.sku, reorderLevel: old }, newValues: { warehouse: w.code, item: item.sku, reorderLevel } }, t);
+  });
+  res.json({ ok: true });
 };

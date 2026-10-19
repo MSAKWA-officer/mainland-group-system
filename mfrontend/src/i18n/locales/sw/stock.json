@@ -1,6 +1,6 @@
 {
   "title": "Bidhaa Stoo",
-  "subtitle": "Stoo hubadilika tu kupitia marekebisho yaliyoidhinishwa.",
+  "subtitle": "Stoo inafuatiliwa kwa kila ghala. Kila marekebisho yanabadilisha stoo ya ghala utakalochagua.",
   "newAdjustment": "+ Marekebisho Mapya",
   "tabs": {
     "levels": "Viwango vya stoo",
@@ -16,7 +16,10 @@
     "allCategories": "Kategoria zote",
     "allLevels": "Viwango vyote",
     "searchAdj": "Tafuta namba ya hati au kumbukumbu",
-    "allStatuses": "Hali zote"
+    "allStatuses": "Hali zote",
+    "warehouse": "Ghala",
+    "allWarehouses": "Maghala yote",
+    "allMyWarehouses": "Maghala yangu yote"
   },
   "levelsCols": {
     "sku": "SKU",
@@ -36,7 +39,8 @@
     "lines": "Mistari",
     "createdBy": "Imeundwa na",
     "status": "Hali",
-    "actions": "Vitendo"
+    "actions": "Vitendo",
+    "warehouse": "Ghala"
   },
   "empty": {
     "levels": "Hakuna rekodi za stoo.",
@@ -67,7 +71,9 @@
     "unitCost": "Gharama ya kipimo",
     "remarks": "Maelezo",
     "removeLine": "Ondoa mstari",
-    "addAnother": "Ongeza bidhaa nyingine"
+    "addAnother": "Ongeza bidhaa nyingine",
+    "optionAdjustWh": "{{sku}} — {{name}} ({{qty}} {{unit}} kwenye ghala hili)",
+    "optionNoQty": "{{sku}} — {{name}}"
   },
   "create": {
     "title": "Marekebisho mapya ya stoo",
@@ -108,6 +114,19 @@
       "unitCost": "Gharama ya kipimo",
       "remarks": "Maelezo"
     },
-    "deleted": "Marekebisho {{docNo}} yamefutwa."
+    "deleted": "Marekebisho {{docNo}} yamefutwa.",
+    "warehouse": "Ghala"
+  },
+  "noWarehouse": "Bado hujapangiwa ghala lolote. Mwombe Meneja akupange.",
+  "showingWarehouse": "Inaonyesha stoo ya {{name}} pekee.",
+  "breakdown": {
+    "title": "Stoo ilipo",
+    "toggle": "Onyesha / ficha stoo kwa kila ghala"
+  },
+  "reorder": {
+    "edit": "Weka kiwango cha kuagiza upya kwa ghala hili",
+    "prompt": "Kiwango cha kuagiza upya cha \"{{item}}\" kwenye ghala hili.\nAcha wazi ili kutumia kiwango cha kawaida cha bidhaa ({{default}}).",
+    "invalid": "Weka namba ya 0 au zaidi.",
+    "customHint": "Imewekwa kwa ghala hili (kiwango cha kawaida: {{default}})"
   }
 }

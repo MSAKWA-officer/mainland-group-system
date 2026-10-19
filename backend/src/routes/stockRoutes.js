@@ -6,7 +6,8 @@ const { authorize } = require('../middleware/auth');
 const c = require('../controllers/stockController');
 
 const listQ = z.object({ search: text(80).optional(), categoryId: uuid.optional(), isActive: bool.optional(),
-  status: z.enum(['in_stock', 'low', 'out']).optional(), ...paging });
+  status: z.enum(['in_stock', 'low', 'out']).optional(),
+  warehouseId: uuid.optional(), ...paging });   // warehouseId: quantities of that warehouse only
 const itemParam = z.object({ itemId: uuid });
 const batchParam = z.object({ batchId: uuid });
 const batchQ = z.object({ includeEmpty: bool.optional(), warehouseId: uuid.optional() });   // warehouseId: only the batches held in that warehouse

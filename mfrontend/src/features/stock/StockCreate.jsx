@@ -5,6 +5,7 @@ import { itemApi, stockApi, errMsg, fieldErrs } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
+import WarehouseField from '../../components/WarehouseField.jsx';
 import { TrashIcon, PlusIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { qty } from './StockList.jsx';
@@ -28,7 +29,7 @@ export function buildPayload(head, lines, canCost, items) {
   };
 }
 
-function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, warehouseId }) {
+function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, warehouseId, whQty }) {
   const { t } = useTranslation('stock');
   const [batches, setBatches] = useState([]);
   useEffect(() => {
@@ -41,6 +42,12 @@ function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, war
   }, [item?.id, item?.trackExpiry, l.direction, warehouseId]); // eslint-disable-line
   const e = (k) => fe[`lines.${i}.${k}`];
   const tracked = item?.trackExpiry;
+  // With a warehouse chosen the quantity shown is that warehouse's stock, not the company total.
+  const optionLabel = (o) => {
+    if (!warehouseId) return t('lines.optionAdjust', { sku: o.sku, name: o.name, qty: qty(o.stock?.quantity), unit: o.unit });
+    if (!whQty || whQty[o.id] === undefined) return t('lines.optionNoQty', { sku: o.sku, name: o.name });
+    return t('lines.optionAdjustWh', { sku: o.sku, name: o.name, qty: qty(whQty[o.id]), unit: o.unit });
+  };
   return (
     <div className="rounded-md border border-line p-4">
       <div className="grid gap-3 sm:grid-cols-4">
@@ -48,7 +55,7 @@ function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, war
           <Field label={t('lines.item')} error={e('itemId')}>
             <select className="input !text-black" required value={l.itemId} onChange={(ev) => set(i, { itemId: ev.target.value, batchId: '', batchNo: '', expiryDate: '' })}>
               <option value="">{t('lines.selectItem')}</option>
-              {options.map((o) => <option key={o.id} value={o.id}>{t('lines.optionAdjust', { sku: o.sku, name: o.name, qty: qty(o.stock?.quantity), unit: o.unit })}</option>)}
+              {options.map((o) => <option key={o.id} value={o.id}>{optionLabel(o)}</option>)}
             </select>
           </Field>
         </div>
@@ -99,6 +106,9 @@ export function LineEditor({ lines, setLines, fe = {}, warehouseId }) {
   const [known, setKnown] = useState({});
   const asked = useRef(new Set());
   const found = useLoad(() => itemApi.list({ limit: 100, isActive: true, search: search || undefined }), [search]);
+  // Quantities of the chosen warehouse for the same items (same search, same 100-item window).
+  const whStock = useLoad(() => (warehouseId ? stockApi.list({ limit: 100, isActive: true, warehouseId, search: search || undefined }) : Promise.resolve(null)), [search, warehouseId]);
+  const whQty = warehouseId && whStock.data ? Object.fromEntries(whStock.data.data.map((r) => [r.itemId, r.quantity])) : null;
   const addKnown = (arr) => setKnown((k) => { const n = { ...k }; arr.forEach((x) => { n[x.id] = x; }); return n; });
   useEffect(() => { if (found.data?.data) addKnown(found.data.data); }, [found.data]);
   // Items already on a line (prefilled or loaded from a saved draft) may not be in the search results.
@@ -122,7 +132,7 @@ export function LineEditor({ lines, setLines, fe = {}, warehouseId }) {
       <Banner>{found.error}</Banner>
       {lines.map((l, i) => (
         <LineRow key={i} l={l} i={i} item={known[l.itemId]} options={options} set={set} remove={remove} fe={fe}
-          canCost={can('items.view_cost')} canRemove={lines.length > 1} warehouseId={warehouseId} />
+          canCost={can('items.view_cost')} canRemove={lines.length > 1} warehouseId={warehouseId} whQty={whQty} />
       ))}
       <button type="button" className="btn-ghost gap-2 !text-black" onClick={() => setLines([...lines, emptyLine()])}><PlusIcon /> {t('lines.addAnother')}</button>
     </div>
@@ -135,7 +145,7 @@ export default function StockCreate() {
   const navigate = useNavigate();
   const { can } = useAuth();
   const [params] = useSearchParams();
-  const [head, setHead] = useState({ docDate: today(), reference: '', reason: '' });
+  const [head, setHead] = useState({ docDate: today(), warehouseId: params.get('warehouseId') || '', reference: '', reason: '' });
   const [lines, setLines] = useState([emptyLine(params.get('itemId') || '')]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const known = useRef({});
@@ -162,10 +172,11 @@ export default function StockCreate() {
         <Banner>{err}</Banner>
         <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
           <Field label={t('create.date')} error={fe.docDate}><input className="input !text-black" type="date" required value={head.docDate} onChange={(e) => setHead({ ...head, docDate: e.target.value })} /></Field>
+          <WarehouseField head={head} setHead={setHead} fe={fe} />
           <Field label={t('create.reference')} error={fe.reference}><input className="input !text-black" maxLength={100} value={head.reference} onChange={(e) => setHead({ ...head, reference: e.target.value })} /></Field>
           <div className="sm:col-span-2"><Field label={t('create.reason')} error={fe.reason}><textarea className="input !text-black" rows={3} required minLength={3} maxLength={1000} value={head.reason} onChange={(e) => setHead({ ...head, reason: e.target.value })} /></Field></div>
         </div>
-        <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} /></div>
+        <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
         <button className="btn-primary" disabled={busy}>{busy ? t('create.saving') : t('create.saveDraft')}</button>
       </form>
     </div>

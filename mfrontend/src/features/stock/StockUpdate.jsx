@@ -5,6 +5,7 @@ import { itemApi, stockApi, errMsg, fieldErrs } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
+import WarehouseField from '../../components/WarehouseField.jsx';
 import useLoad from '../../utils/useLoad';
 import { useDocText } from '../../utils/docText';
 import { LineEditor, buildPayload, emptyLine, today } from './StockCreate.jsx';
@@ -18,13 +19,13 @@ export default function StockUpdate() {
   const navigate = useNavigate();
   const { user, can } = useAuth();
   const doc = useLoad(() => stockApi.getAdjustment(id), [id]);
-  const [head, setHead] = useState({ docDate: today(), reference: '', reason: '' });
+  const [head, setHead] = useState({ docDate: today(), warehouseId: '', reference: '', reason: '' });
   const [lines, setLines] = useState([emptyLine()]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const d = doc.data;
   useEffect(() => {
     if (!d) return;
-    setHead({ docDate: d.docDate, reference: d.reference || '', reason: d.reason || '' });
+    setHead({ docDate: d.docDate, warehouseId: d.warehouseId || '', reference: d.reference || '', reason: d.reason || '' });
     setLines((d.lines || []).map((l) => ({
       itemId: l.itemId, direction: l.direction, quantity: String(l.quantity), unitCost: l.unitCost ?? '',
       batchNo: l.batchNo || '', expiryDate: l.expiryDate || '', batchId: l.batchId || '', remarks: l.remarks || '',
@@ -56,10 +57,11 @@ export default function StockUpdate() {
           <>
             <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
               <Field label={t('create.date')} error={fe.docDate}><input className="input !text-black" type="date" required value={head.docDate} onChange={(e) => setHead({ ...head, docDate: e.target.value })} /></Field>
+              <WarehouseField head={head} setHead={setHead} fe={fe} />
               <Field label={t('create.reference')} error={fe.reference}><input className="input !text-black" maxLength={100} value={head.reference} onChange={(e) => setHead({ ...head, reference: e.target.value })} /></Field>
               <div className="sm:col-span-2"><Field label={t('create.reason')} error={fe.reason}><textarea className="input !text-black" rows={3} required minLength={3} maxLength={1000} value={head.reason} onChange={(e) => setHead({ ...head, reason: e.target.value })} /></Field></div>
             </div>
-            <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} /></div>
+            <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
             <button className="btn-primary" disabled={busy}>{busy ? t('create.saving') : t('update.saveChanges')}</button>
           </>
         )}

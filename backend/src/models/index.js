@@ -38,6 +38,7 @@ const Staff = require('./Staff');
 const Warehouse = require('./Warehouse');
 const WarehouseStorekeeper = require('./WarehouseStorekeeper');
 const WarehouseStock = require('./WarehouseStock');
+const WarehouseItemSetting = require('./WarehouseItemSetting');
 const WarehouseTransfer = require('./WarehouseTransfer');
 const WarehouseTransferLine = require('./WarehouseTransferLine');
 // Phase 4 - Approval workflow
@@ -252,5 +253,5 @@ module.exports = {
   Bank, BankAccount, BankTransaction, CustomerPayment, CustomerPaymentAllocation,
   Expense, Payment,
   Driver, Vehicle, FuelFunding, FuelUsage,
-  Warehouse, WarehouseStorekeeper, WarehouseStock, WarehouseTransfer, WarehouseTransferLine,
+  Warehouse, WarehouseStorekeeper, WarehouseStock, WarehouseItemSetting, WarehouseTransfer, WarehouseTransferLine,
 };

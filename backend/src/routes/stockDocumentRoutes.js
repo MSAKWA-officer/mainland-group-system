@@ -18,7 +18,7 @@ module.exports = (type) => {
   });
   const reason = cfg.reasonRequired ? text(1000).min(3) : text(1000).nullable().optional();
   const head = { docDate: date, partyName: text(150).nullable(), reference: text(100).nullable(), reason, warehouseId: uuid };
-  const required = ['reason', ...(type === 'RECEIVING' ? ['warehouseId'] : [])];   // receiving must name its warehouse
+  const required = ['reason', ...(['RECEIVING', 'ADJUSTMENT'].includes(type) ? ['warehouseId'] : [])];   // receiving and adjustments must name their warehouse
   const createS = z.object({ ...Object.fromEntries(Object.entries(head).map(([k, v]) => [k, required.includes(k) ? v : v.optional()])),
     lines: z.array(line).min(1).max(200) });
   const updateS = createS.partial().refine((o) => Object.keys(o).length, 'Nothing to update');

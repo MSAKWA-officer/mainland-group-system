@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { categoryApi, stockApi, errMsg } from '../../api/index.js';
+import { categoryApi, stockApi, warehouseApi, errMsg } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
@@ -62,24 +62,53 @@ const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px
 const HEAD = `${CELL} bg-white font-semibold uppercase`;
 const al = (i) => (i === 0 ? 'text-left' : 'text-center');
 
-function LevelsTable({ onError }) {
+// Warehouse filter shared by both tabs. Manager / Owner can pick "All warehouses" (company total); everybody else only sees the warehouses
+// they work in, and with a single one it is chosen for them. The API enforces the same rule, this only shapes the dropdown.
+function WarehouseSelect({ warehouses, value, onChange, canAll }) {
+  const { t } = useTranslation('stock');
+  if (!warehouses.length && !canAll) return null;
+  return (
+    <select className="input max-w-xs !text-[14px] !text-[#212121]" value={value} onChange={(e) => onChange(e.target.value)} aria-label={t('filters.warehouse')}>
+      {(canAll || warehouses.length > 1) && <option value="">{canAll ? t('filters.allWarehouses') : t('filters.allMyWarehouses')}</option>}
+      {warehouses.map((w) => <option key={w.id} value={w.id}>{w.code} — {w.name}</option>)}
+    </select>
+  );
+}
+
+function LevelsTable({ onError, warehouseId, warehouses, whControl }) {
   const { t } = useTranslation('stock');
   const { can } = useAuth();
   const navigate = useNavigate();
   const [page, setPage] = useState(1); const [search, setSearch] = useState('');
   const [categoryId, setCategoryId] = useState(''); const [status, setStatus] = useState('');
+  const [open, setOpen] = useState({});
   const cats = useLoad(() => categoryApi.list({ limit: 500 }), []);
-  const list = useLoad(() => stockApi.list({ page, search: search || undefined, categoryId: categoryId || undefined, status: status || undefined }), [page, search, categoryId, status]);
+  const list = useLoad(() => stockApi.list({ page, search: search || undefined, categoryId: categoryId || undefined, status: status || undefined, warehouseId: warehouseId || undefined }), [page, search, categoryId, status, warehouseId]);
+  useEffect(() => { setPage(1); setOpen({}); }, [warehouseId]);
   const rows = list.data?.data || [];
+  const canSetReorder = !!warehouseId && can('warehouses.update');
   const heads = ['sku', 'item', 'category', 'unit', 'inStock', 'reorder', 'level', 'actions'].map((k) => t(`levelsCols.${k}`));
   const level = (r) => (Number(r.quantity) === 0 ? t('level.out') : Number(r.item.reorderLevel) > 0 && Number(r.quantity) <= Number(r.item.reorderLevel) ? t('level.low') : t('level.in'));
   const reset = (set) => (e) => { setPage(1); set(e.target.value); };
+  // Reorder level of this item in the chosen warehouse. Empty answer = go back to the item's own default level.
+  const editReorder = async (r) => {
+    const cur = r.reorderCustom ? String(Number(r.item.reorderLevel)) : '';
+    const ans = window.prompt(t('reorder.prompt', { item: r.item.name, default: qty(r.item.itemReorderLevel) }), cur);
+    if (ans === null) return;
+    const txt = ans.trim().replace(',', '.');
+    const val = txt === '' ? null : Number(txt);
+    if (val !== null && (!Number.isFinite(val) || val < 0)) { onError(t('reorder.invalid')); return; }
+    onError('');
+    try { await warehouseApi.setReorderLevel(warehouseId, r.itemId, val); list.reload(); } catch (x) { onError(errMsg(x)); }
+  };
+  const wname = (warehouses.find((w) => w.id === warehouseId) || {}).name;
   return (
     <>
       <div className="px-4">
         <Banner>{list.error}</Banner>
         <div className="mb-4 flex flex-wrap gap-3">
           <input className="input max-w-xs !text-[14px] !text-[#212121]" placeholder={t('filters.searchLevels')} value={search} onChange={reset(setSearch)} />
+          {whControl}
           <select className="input max-w-xs !text-[14px] !text-[#212121]" value={categoryId} onChange={reset(setCategoryId)}>
             <option value="">{t('filters.allCategories')}</option>
             {(cats.data?.data || []).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -88,29 +117,53 @@ function LevelsTable({ onError }) {
             <option value="">{t('filters.allLevels')}</option><option value="in_stock">{t('level.in')}</option><option value="low">{t('level.low')}</option><option value="out">{t('level.out')}</option>
           </select>
         </div>
+        {list.data?.message && <p className="mb-3 text-[14px]">{t('noWarehouse')}</p>}
+        {wname && <p className="mb-3 text-[14px]">{t('showingWarehouse', { name: wname })}</p>}
       </div>
       <div className="overflow-x-auto px-4">
         <table className="w-full border-collapse bg-white">
           <thead><tr>{heads.map((h, i) => <th key={h} className={`${HEAD} ${al(i)}`}>{h}</th>)}</tr></thead>
           <tbody>
             {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={heads.length}>{t('empty.levels')}</td></tr>}
-            {rows.map((r) => (
-              <tr key={r.itemId} className="bg-white">
-                <td className={`${CELL} whitespace-nowrap text-left`}>{r.item.sku}</td>
-                <td className={`${CELL} text-center`}>{r.item.name}</td>
-                <td className={`${CELL} text-center`}>{r.item.category?.name || '—'}</td>
-                <td className={`${CELL} text-center`}>{r.item.unit}</td>
-                <td className={`${CELL} text-center`}>{qty(r.quantity)}</td>
-                <td className={`${CELL} text-center`}>{qty(r.item.reorderLevel)}</td>
-                <td className={`${CELL} text-center`}><Tag>{level(r)}</Tag></td>
-                <td className={`${CELL} text-center`}>
-                  <div className="flex items-center justify-center gap-1">
-                    {can('items.read') && <IconBtn label={t('rowActions.viewItem')} onClick={() => navigate(`/items/${r.itemId}`)}><EyeIcon /></IconBtn>}
-                    {can('adjustments.create') && <IconBtn label={t('rowActions.adjustStock')} onClick={() => navigate(`/stock/new?itemId=${r.itemId}`)}><SlidersIcon /></IconBtn>}
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {rows.map((r) => {
+              const canOpen = !warehouseId && r.warehouses.length > 0;
+              return (
+                <Fragment key={r.itemId}>
+                  <tr className="bg-white">
+                    <td className={`${CELL} whitespace-nowrap text-left`}>
+                      {canOpen
+                        ? <button type="button" className="mr-2 inline-block w-4 text-left" aria-expanded={!!open[r.itemId]} title={t('breakdown.toggle')} onClick={() => setOpen({ ...open, [r.itemId]: !open[r.itemId] })}>{open[r.itemId] ? '▾' : '▸'}</button>
+                        : <span className="mr-2 inline-block w-4" />}
+                      {r.item.sku}
+                    </td>
+                    <td className={`${CELL} text-center`}>{r.item.name}</td>
+                    <td className={`${CELL} text-center`}>{r.item.category?.name || '—'}</td>
+                    <td className={`${CELL} text-center`}>{r.item.unit}</td>
+                    <td className={`${CELL} text-center`}>{qty(r.quantity)}</td>
+                    <td className={`${CELL} text-center`}>
+                      {qty(r.item.reorderLevel)}
+                      {r.reorderCustom && <span className="ml-1 text-xs opacity-70" title={t('reorder.customHint', { default: qty(r.item.itemReorderLevel) })}>*</span>}
+                      {canSetReorder && <IconBtn label={t('reorder.edit')} onClick={() => editReorder(r)}><PencilIcon /></IconBtn>}
+                    </td>
+                    <td className={`${CELL} text-center`}><Tag>{level(r)}</Tag></td>
+                    <td className={`${CELL} text-center`}>
+                      <div className="flex items-center justify-center gap-1">
+                        {can('items.read') && <IconBtn label={t('rowActions.viewItem')} onClick={() => navigate(`/items/${r.itemId}`)}><EyeIcon /></IconBtn>}
+                        {can('adjustments.create') && <IconBtn label={t('rowActions.adjustStock')} onClick={() => navigate(`/stock/new?itemId=${r.itemId}${warehouseId ? `&warehouseId=${warehouseId}` : ''}`)}><SlidersIcon /></IconBtn>}
+                      </div>
+                    </td>
+                  </tr>
+                  {canOpen && open[r.itemId] && (
+                    <tr className="bg-slate-50">
+                      <td className={`${CELL} text-left`} colSpan={heads.length}>
+                        <span className="font-semibold">{t('breakdown.title')}:</span>{' '}
+                        {r.warehouses.map((w, n) => <span key={w.id}>{n > 0 && ' · '}{w.name} <b>{qty(w.quantity)}</b></span>)}
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -119,19 +172,21 @@ function LevelsTable({ onError }) {
   );
 }
 
-function AdjustmentsTable({ onError, err }) {
+function AdjustmentsTable({ onError, err, warehouseId, whControl }) {
   const { t, status: statusText } = useDocText();
   const { t: ts } = useTranslation('stock');
   const [page, setPage] = useState(1); const [search, setSearch] = useState(''); const [status, setStatus] = useState('');
-  const list = useLoad(() => stockApi.listAdjustments({ page, search: search || undefined, status: status || undefined }), [page, search, status]);
+  const list = useLoad(() => stockApi.listAdjustments({ page, search: search || undefined, status: status || undefined, warehouseId: warehouseId || undefined }), [page, search, status, warehouseId]);
+  useEffect(() => { setPage(1); }, [warehouseId]);
   const rows = list.data?.data || [];
-  const heads = ['docNo', 'date', 'reference', 'reason', 'lines', 'createdBy', 'status', 'actions'].map((k) => ts(`adjCols.${k}`));
+  const heads = ['docNo', 'date', 'warehouse', 'reference', 'reason', 'lines', 'createdBy', 'status', 'actions'].map((k) => ts(`adjCols.${k}`));
   return (
     <>
       <div className="px-4">
         <Banner>{err || list.error}</Banner>
         <div className="mb-4 flex flex-wrap gap-3">
           <input className="input max-w-xs !text-[14px] !text-[#212121]" placeholder={ts('filters.searchAdj')} value={search} onChange={(e) => { setPage(1); setSearch(e.target.value); }} />
+          {whControl}
           <select className="input max-w-xs !text-[14px] !text-[#212121]" value={status} onChange={(e) => { setPage(1); setStatus(e.target.value); }}>
             <option value="">{ts('filters.allStatuses')}</option>
             {Object.keys(STATUS).map((k) => <option key={k} value={k}>{statusText(k)}</option>)}
@@ -147,6 +202,7 @@ function AdjustmentsTable({ onError, err }) {
               <tr key={d.id} className="bg-white">
                 <td className={`${CELL} whitespace-nowrap text-left`}>{d.docNo}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{d.docDate}</td>
+                <td className={`${CELL} text-center`}>{d.warehouse?.name || '—'}</td>
                 <td className={`${CELL} text-center`}>{d.reference || '—'}</td>
                 <td className={`${CELL} text-center`}>{d.reason || '—'}</td>
                 <td className={`${CELL} text-center`}>{d.lineCount ?? 0}</td>
@@ -170,6 +226,13 @@ export default function StockList() {
   const canLevels = can('stock.read'); const canAdj = can('adjustments.read');
   const [tab, setTab] = useState(location.state?.tab || (canLevels ? 'levels' : 'adjustments'));
   const [err, setErr] = useState('');
+  const canAll = can('warehouses.read_all');
+  const [warehouseId, setWarehouseId] = useState('');
+  const whs = useLoad(() => warehouseApi.options(), []);
+  const warehouses = whs.data || [];
+  // A user with one warehouse only: start on it (there is no "all" for them).
+  useEffect(() => { if (!canAll && warehouses.length === 1 && !warehouseId) setWarehouseId(warehouses[0].id); }, [whs.data]); // eslint-disable-line
+  const whControl = <WarehouseSelect warehouses={warehouses} value={warehouseId} onChange={setWarehouseId} canAll={canAll} />;
   const tabBtn = (key, label) => (
     <button type="button" onClick={() => { setErr(''); setTab(key); }}
       className={`border-b-2 px-4 py-2 text-[14px] text-[#212121] ${tab === key ? 'border-black font-semibold' : 'border-transparent hover:border-black/30'}`}>{label}</button>
@@ -188,7 +251,9 @@ export default function StockList() {
         {canLevels && tabBtn('levels', t('tabs.levels'))}
         {canAdj && tabBtn('adjustments', t('tabs.adjustments'))}
       </div>
-      {tab === 'levels' && canLevels ? <LevelsTable onError={setErr} /> : <AdjustmentsTable onError={setErr} err={err} />}
+      {tab === 'levels' && canLevels
+        ? <LevelsTable onError={setErr} warehouseId={warehouseId} warehouses={warehouses} whControl={whControl} />
+        : <AdjustmentsTable onError={setErr} err={err} warehouseId={warehouseId} whControl={whControl} />}
     </div>
   );
 }

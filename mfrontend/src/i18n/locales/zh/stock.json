@@ -1,6 +1,6 @@
 {
   "title": "库存",
-  "subtitle": "库存仅能通过已批准的调整单变更。",
+  "subtitle": "库存按仓库跟踪。每次调整都会改变所选仓库的库存。",
   "newAdjustment": "+ 新建调整单",
   "tabs": {
     "levels": "库存水平",
@@ -16,7 +16,10 @@
     "allCategories": "所有分类",
     "allLevels": "所有水平",
     "searchAdj": "搜索单据编号或参考号",
-    "allStatuses": "所有状态"
+    "allStatuses": "所有状态",
+    "warehouse": "仓库",
+    "allWarehouses": "所有仓库",
+    "allMyWarehouses": "我的所有仓库"
   },
   "levelsCols": {
     "sku": "SKU",
@@ -36,7 +39,8 @@
     "lines": "行数",
     "createdBy": "创建人",
     "status": "状态",
-    "actions": "操作"
+    "actions": "操作",
+    "warehouse": "仓库"
   },
   "empty": {
     "levels": "未找到库存记录。",
@@ -67,7 +71,9 @@
     "unitCost": "单位成本",
     "remarks": "备注",
     "removeLine": "删除此行",
-    "addAnother": "再添加一项商品"
+    "addAnother": "再添加一项商品",
+    "optionAdjustWh": "{{sku}} — {{name}}（本仓库 {{qty}} {{unit}}）",
+    "optionNoQty": "{{sku}} — {{name}}"
   },
   "create": {
     "title": "新建库存调整单",
@@ -108,6 +114,19 @@
       "unitCost": "单位成本",
       "remarks": "备注"
     },
-    "deleted": "调整单 {{docNo}} 已删除。"
+    "deleted": "调整单 {{docNo}} 已删除。",
+    "warehouse": "仓库"
+  },
+  "noWarehouse": "您尚未被分配到任何仓库。请联系经理为您分配。",
+  "showingWarehouse": "仅显示 {{name}} 的库存。",
+  "breakdown": {
+    "title": "库存分布",
+    "toggle": "显示/隐藏各仓库库存"
+  },
+  "reorder": {
+    "edit": "设置此仓库的补货水平",
+    "prompt": "此仓库中“{{item}}”的补货水平。\n留空则使用商品默认水平（{{default}}）。",
+    "invalid": "请输入 0 或更大的数字。",
+    "customHint": "已为此仓库设置（商品默认：{{default}}）"
   }
 }
