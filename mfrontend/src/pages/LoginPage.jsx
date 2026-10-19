@@ -6,7 +6,7 @@ import Banner from '../components/Banner.jsx';
 import LanguageSwitcher from '../components/LanguageSwitcher.jsx';
 
 // Weka logo yako hapa: mfrontend/public/logo.png  (PNG/SVG/WEBP — badilisha jina hapa kama ni tofauti)
-const LOGO = `${import.meta.env.BASE_URL}logo.png`;
+const LOGO = `${import.meta.env.BASE_URL}logo.JPEG}`;
 
 const icon = { fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round', viewBox: '0 0 24 24', 'aria-hidden': true };
 const UserIcon = (p) => (<svg {...icon} {...p}><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7" /></svg>);
