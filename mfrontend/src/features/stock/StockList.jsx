@@ -5,7 +5,7 @@ import { categoryApi, stockApi, warehouseApi, errMsg } from '../../api/index.js'
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
-import { EyeIcon, PencilIcon, TrashIcon, BanIcon, CheckIcon, XIcon, SendIcon, SlidersIcon } from '../../components/Icons.jsx';
+import { EyeIcon, PencilIcon, TrashIcon, BanIcon, CheckIcon, XIcon, SendIcon, SlidersIcon, MoreIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { fmt } from '../../utils/format';
 import { currentLocale } from '../../utils/locale';
@@ -130,12 +130,7 @@ function LevelsTable({ onError, warehouseId, warehouses, whControl }) {
               return (
                 <Fragment key={r.itemId}>
                   <tr className="bg-white">
-                    <td className={`${CELL} whitespace-nowrap text-left`}>
-                      {canOpen
-                        ? <button type="button" className="mr-2 inline-block w-4 text-left" aria-expanded={!!open[r.itemId]} title={t('breakdown.toggle')} onClick={() => setOpen({ ...open, [r.itemId]: !open[r.itemId] })}>{open[r.itemId] ? '▾' : '▸'}</button>
-                        : <span className="mr-2 inline-block w-4" />}
-                      {r.item.sku}
-                    </td>
+                    <td className={`${CELL} whitespace-nowrap text-left`}>{r.item.sku}</td>
                     <td className={`${CELL} text-center`}>{r.item.name}</td>
                     <td className={`${CELL} text-center`}>{r.item.category?.name || '—'}</td>
                     <td className={`${CELL} text-center`}>{r.item.unit}</td>
@@ -150,6 +145,9 @@ function LevelsTable({ onError, warehouseId, warehouses, whControl }) {
                       <div className="flex items-center justify-center gap-1">
                         {can('items.read') && <IconBtn label={t('rowActions.viewItem')} onClick={() => navigate(`/items/${r.itemId}`)}><EyeIcon /></IconBtn>}
                         {can('adjustments.create') && <IconBtn label={t('rowActions.adjustStock')} onClick={() => navigate(`/stock/new?itemId=${r.itemId}${warehouseId ? `&warehouseId=${warehouseId}` : ''}`)}><SlidersIcon /></IconBtn>}
+                        {!warehouseId && (canOpen
+                          ? <IconBtn label={t('breakdown.toggle')} onClick={() => setOpen({ ...open, [r.itemId]: !open[r.itemId] })}><MoreIcon /></IconBtn>
+                          : <span className="inline-block h-8 w-8" />)}
                       </div>
                     </td>
                   </tr>
