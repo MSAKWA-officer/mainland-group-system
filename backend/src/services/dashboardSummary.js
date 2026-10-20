@@ -3,6 +3,7 @@ const { sequelize } = require('../models');
 const { mine } = require('./salesScope');
 const { balanceSql } = require('./banking');
 const customerReports = require('./customerReports');
+const wh = require('./warehouses');
 
 /* Dashboard summary: one block per module, each a list of small figures ("metrics").
    - A metric is only included when the user holds the permission of the page it links to.
@@ -126,6 +127,88 @@ async function inventory(req) {
     if (r.pending > 0) out.push(m('pendingStockDocs', r.pending, 'count', can(req, 'approvals.read') ? '/approvals' : undefined, { tone: 'warn' }));
   }
 
+  return out;
+}
+
+/* ---------- 1b. Warehouses ---------- */
+// Same visibility rules as the Warehouses pages: Manager / Owner (warehouses.read_all) see every warehouse, everybody else only the
+// warehouses they are in charge of (storekeeper) or sell from (salesperson). Figures only - the details stay on the Warehouses pages.
+async function warehouses(req) {
+  const out = [];
+  const mine = await wh.scope(req);                                  // null = every warehouse
+  await when(req, 'warehouses.read', out, async () => {
+    if (mine && !mine.length) return [];
+    const rep = { ids: mine || [] };
+    const sc = mine ? ' AND w.id IN (:ids)' : '';
+    const [w, s, b, per, people] = await Promise.all([
+      one(`SELECT COUNT(*) FILTER (WHERE w.is_active)::int AS active, COUNT(*) FILTER (WHERE NOT w.is_active)::int AS inactive,
+          COUNT(*) FILTER (WHERE w.is_active AND NOT EXISTS (SELECT 1 FROM warehouse_stock s WHERE s.warehouse_id = w.id AND s.quantity > 0))::int AS empty,
+          COUNT(*) FILTER (WHERE w.is_active AND NOT EXISTS (SELECT 1 FROM warehouse_storekeepers k WHERE k.warehouse_id = w.id))::int AS \"noKeeper\"
+        FROM warehouses w WHERE 1 = 1${sc}`, rep),
+      one(`SELECT COALESCE(SUM(s.quantity), 0)::text AS units, COUNT(DISTINCT s.item_id) FILTER (WHERE s.quantity > 0)::int AS items,
+          COALESCE(SUM(s.quantity * i.selling_price), 0)::text AS retail, COALESCE(SUM(s.quantity * i.cost_price), 0)::text AS cost
+        FROM warehouse_stock s JOIN warehouses w ON w.id = s.warehouse_id JOIN items i ON i.id = s.item_id WHERE 1 = 1${sc}`, rep),
+      one(`SELECT COUNT(*)::int AS batches,
+          COALESCE(SUM(wb.quantity) FILTER (WHERE b.expiry_date >= CURRENT_DATE AND b.expiry_date <= CURRENT_DATE + 30), 0)::text AS \"soonUnits\",
+          COALESCE(SUM(wb.quantity) FILTER (WHERE b.expiry_date < CURRENT_DATE), 0)::text AS \"expiredUnits\"
+        FROM warehouse_stock_batches wb JOIN stock_batches b ON b.id = wb.batch_id JOIN warehouses w ON w.id = wb.warehouse_id
+        WHERE wb.quantity > 0${sc}`, rep),
+      q(`SELECT w.id, w.name, COALESCE(SUM(s.quantity), 0)::text AS units FROM warehouses w LEFT JOIN warehouse_stock s ON s.warehouse_id = w.id
+        WHERE w.is_active${sc} GROUP BY w.id, w.name, w.is_default ORDER BY w.is_default DESC, w.name LIMIT 12`, rep),
+      one(`SELECT (SELECT COUNT(DISTINCT k.user_id) FROM warehouse_storekeepers k JOIN warehouses w ON w.id = k.warehouse_id WHERE 1 = 1${sc})::int AS keepers,
+          (SELECT COUNT(*) FROM salespersons sp JOIN warehouses w ON w.id = sp.warehouse_id WHERE sp.is_active${sc})::int AS sellers`, rep),
+    ]);
+    const list = [
+      m('activeWarehouses', w.active, 'count', '/warehouses'),
+      ...(mine ? [] : [m('inactiveWarehouses', w.inactive, 'count', '/warehouses')]),
+      m('emptyWarehouses', w.empty, 'count', '/warehouses', { tone: tone(w.empty, 'warn') }),
+      m('warehouseUnits', qtyText(s.units), 'qty', '/warehouses'),
+      m('warehouseItems', s.items, 'count', '/warehouses'),
+    ];
+    if (can(req, 'stock.read')) list.push(m('warehouseRetailValue', s.retail, 'money', '/warehouses'));
+    if (can(req, 'stock_reports.valuation')) list.push(m('warehouseStockValue', s.cost, 'money', '/warehouses'));
+    list.push(
+      m('warehouseBatches', b.batches, 'count', '/warehouses'),
+      m('warehouseExpiringSoonUnits', qtyText(b.soonUnits), 'qty', '/warehouses', { tone: tone(b.soonUnits, 'warn') }),
+      m('warehouseExpiredUnits', qtyText(b.expiredUnits), 'qty', '/warehouses', { tone: tone(b.expiredUnits, 'bad') }),
+      m('warehouseStorekeepers', people.keepers, 'count', '/warehouses'),
+      m('warehouseSalespersons', people.sellers, 'count', '/warehouses'),
+    );
+    if (!mine) list.push(m('warehousesNoKeeper', w.noKeeper, 'count', '/warehouses', { tone: tone(w.noKeeper, 'warn') }));
+    per.forEach((r) => list.push(m('warehouseUnitsOf', qtyText(r.units), 'qty', `/warehouses/${r.id}`, { name: r.name })));   // one tile per active warehouse
+    return list;
+  });
+
+  // Transfers between warehouses. Visible like the Transfers list: all for read_all, otherwise those of my warehouses or created by me.
+  await when(req, 'warehouse_transfers.read', out, async () => {
+    const all = can(req, 'warehouse_transfers.read_all');
+    const ids = all ? [] : ((mine === null ? await wh.scope(req) : mine) || []);
+    const sc = all ? '' : ` AND (t.created_by = :uid${ids.length ? ' OR t.from_warehouse_id IN (:ids) OR t.to_warehouse_id IN (:ids)' : ''})`;
+    const rep = { uid: req.user.id, ids };
+    const r = await one(`SELECT COUNT(*) FILTER (WHERE t.status = 'SUBMITTED')::int AS submitted,
+        COUNT(*) FILTER (WHERE t.status = 'IN_TRANSIT')::int AS transit,
+        COUNT(*) FILTER (WHERE t.created_at >= ${MONTH})::int AS created,
+        COUNT(*) FILTER (WHERE t.status = 'COMPLETED' AND t.completed_at >= ${MONTH})::int AS done,
+        COUNT(*) FILTER (WHERE t.status = 'RECEIVED_SHORT' AND t.completed_at >= ${MONTH})::int AS short,
+        COUNT(*) FILTER (WHERE t.status = 'NOT_RECEIVED' AND t.completed_at >= ${MONTH})::int AS \"notReceived\",
+        COUNT(*) FILTER (WHERE t.status = 'REJECTED' AND t.updated_at >= ${MONTH})::int AS rejected
+      FROM warehouse_transfers t WHERE 1 = 1${sc}`, rep);
+    const u = await one(`SELECT COALESCE(SUM(COALESCE(l.received_qty, l.quantity)) FILTER (WHERE t.status IN ('COMPLETED', 'RECEIVED_SHORT')), 0)::text AS moved,
+        COALESCE(SUM(l.quantity - COALESCE(l.received_qty, 0)) FILTER (WHERE t.status IN ('RECEIVED_SHORT', 'NOT_RECEIVED')), 0)::text AS missing
+      FROM warehouse_transfer_lines l JOIN warehouse_transfers t ON t.id = l.transfer_id
+      WHERE t.completed_at >= ${MONTH}${sc}`, rep);
+    return [
+      m('transfersAwaitingApproval', r.submitted, 'count', '/warehouse-transfers', { tone: tone(r.submitted, 'warn') }),
+      m('transfersInTransit', r.transit, 'count', '/warehouse-transfers', { tone: tone(r.transit, 'warn') }),
+      m('whTransfersMonth', r.created, 'count', '/warehouse-transfers'),
+      m('transfersReceivedMonth', r.done, 'count', '/warehouse-transfers'),
+      m('transfersShortMonth', r.short, 'count', '/warehouse-transfers', { tone: tone(r.short, 'bad') }),
+      m('transfersNotReceivedMonth', r.notReceived, 'count', '/warehouse-transfers', { tone: tone(r.notReceived, 'bad') }),
+      m('transfersRejectedMonth', r.rejected, 'count', '/warehouse-transfers'),
+      m('transferUnitsMonth', qtyText(u.moved), 'qty', '/warehouse-transfers'),
+      m('transferMissingUnitsMonth', qtyText(u.missing), 'qty', '/warehouse-transfers', { tone: tone(u.missing, 'bad') }),
+    ];
+  });
   return out;
 }
 
@@ -296,7 +379,7 @@ async function admin(req) {
   return out;
 }
 
-const MODULES = [['approvals', approvals], ['inventory', inventory], ['sales', sales], ['efd', efd], ['banking', banking], ['fuel', fuel], ['admin', admin]];
+const MODULES = [['approvals', approvals], ['inventory', inventory], ['warehouses', warehouses], ['sales', sales], ['efd', efd], ['banking', banking], ['fuel', fuel], ['admin', admin]];
 
 async function summary(req, only) {
   const results = await Promise.all(MODULES.filter(([key]) => !only || key === only).map(async ([key, fn]) => {

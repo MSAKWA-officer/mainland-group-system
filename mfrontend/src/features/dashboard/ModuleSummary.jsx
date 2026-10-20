@@ -11,7 +11,7 @@ const show = (m) => (m.kind === 'money' ? fmtMoney(m.value, m.currency) : m.kind
 
 function Tile({ m }) {
   const { t } = useTranslation('dashboard');
-  const label = t(`metrics.${m.key}`, { defaultValue: m.key });
+  const label = t(`metrics.${m.key}`, { defaultValue: m.key, name: m.name });
   const body = (
     <>
       <div className="text-xs text-mn-text">{m.currency && m.kind === 'money' ? `${label} (${m.currency})` : label}</div>
