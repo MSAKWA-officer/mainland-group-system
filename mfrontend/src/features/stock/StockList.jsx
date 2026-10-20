@@ -5,7 +5,7 @@ import { categoryApi, stockApi, warehouseApi, errMsg } from '../../api/index.js'
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
-import { EyeIcon, PencilIcon, TrashIcon, BanIcon, CheckIcon, XIcon, SendIcon, SlidersIcon, MoreIcon } from '../../components/Icons.jsx';
+import { EyeIcon, PencilIcon, TrashIcon, BanIcon, CheckIcon, XIcon, SendIcon, SlidersIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { fmt } from '../../utils/format';
 import { currentLocale } from '../../utils/locale';
@@ -146,8 +146,9 @@ function LevelsTable({ onError, warehouseId, warehouses, whControl }) {
                         {can('items.read') && <IconBtn label={t('rowActions.viewItem')} onClick={() => navigate(`/items/${r.itemId}`)}><EyeIcon /></IconBtn>}
                         {can('adjustments.create') && <IconBtn label={t('rowActions.adjustStock')} onClick={() => navigate(`/stock/new?itemId=${r.itemId}${warehouseId ? `&warehouseId=${warehouseId}` : ''}`)}><SlidersIcon /></IconBtn>}
                         {!warehouseId && (canOpen
-                          ? <IconBtn label={t('breakdown.toggle')} onClick={() => setOpen({ ...open, [r.itemId]: !open[r.itemId] })}><MoreIcon /></IconBtn>
-                          : <span className="inline-block h-8 w-8" />)}
+                          ? <button type="button" title={t('breakdown.toggle')} aria-expanded={!!open[r.itemId]} onClick={() => setOpen({ ...open, [r.itemId]: !open[r.itemId] })}
+                              className="h-8 rounded-md px-2 text-[14px] text-blue-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">{t('rowActions.more', { defaultValue: 'More' })}</button>
+                          : <span className="inline-block h-8 w-[52px]" />)}
                       </div>
                     </td>
                   </tr>
