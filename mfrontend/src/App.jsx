@@ -49,6 +49,7 @@ import DamagedUpdate from './features/damaged/DamagedUpdate.jsx';
 import DamagedView from './features/damaged/DamagedView.jsx';
 import ReportsList from './features/reports/ReportsList.jsx';
 import ReportsView from './features/reports/ReportsView.jsx';
+import WarehouseStatement from './features/reports/WarehouseStatement.jsx';
 import CustomersList from './features/customers/CustomersList.jsx';
 import CustomersCreate from './features/customers/CustomersCreate.jsx';
 import CustomersUpdate from './features/customers/CustomersUpdate.jsx';
@@ -318,6 +319,7 @@ export default function App() {
         <Route path="/salespersons/:id" element={<Guard perm="salespersons.read"><SalespersonsView /></Guard>} />
         <Route path="/salespersons/:id/edit" element={<Guard perm="salespersons.update"><SalespersonsUpdate /></Guard>} />
         <Route path="/reports" element={<Guard perm="stock_reports.read"><ReportsList /></Guard>} />
+        <Route path="/reports/warehouse-statement" element={<Guard perm="stock_reports.read"><WarehouseStatement /></Guard>} />
         <Route path="/reports/:type" element={<Guard perm="stock_reports.read"><ReportsView /></Guard>} />
         <Route path="/staff" element={<Guard perm="staff.read"><StaffList /></Guard>} />
         <Route path="/staff/new" element={<Guard perm="staff.create"><StaffForm /></Guard>} />

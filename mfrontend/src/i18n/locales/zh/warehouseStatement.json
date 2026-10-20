@@ -1,0 +1,56 @@
+{
+  "listTitle": "仓库库存报表",
+  "listDesc": "按产品显示期初数量、入库、出库和账面结存，可查看所有仓库合计或单个仓库，支持下载 Excel 或 PDF。",
+  "title": "仓库库存报表",
+  "subtitle": "按产品显示本期的期初数量、入库、出库和账面结存。",
+  "back": "← 返回报表",
+  "filters": {
+    "warehouse": "仓库",
+    "all": "所有仓库（合计）",
+    "allMine": "我的所有仓库",
+    "from": "开始",
+    "to": "结束"
+  },
+  "buttons": {
+    "excel": "下载 Excel",
+    "pdf": "下载 PDF",
+    "preparing": "正在生成…"
+  },
+  "period": "统计期间",
+  "unit": "单位",
+  "unitMixed": "按产品单位",
+  "warehouseLabel": "仓库",
+  "allCombined": "所有仓库（合计）",
+  "cols": {
+    "code": "产品编码",
+    "name": "产品名称",
+    "monthStart": "月初数量",
+    "periodStart": "期初数量",
+    "inbound": "入库",
+    "factoryDelivery": "工厂发货",
+    "fromVehicle": "来自车辆/仓库",
+    "salesReturn": "销售退货",
+    "otherIn": "其他入库",
+    "outbound": "出库",
+    "toVehicle": "发往车辆/仓库",
+    "salesOut": "销售出库",
+    "damagedOut": "报损出库",
+    "toFactory": "退回工厂",
+    "otherOut": "其他出库",
+    "bookBalance": "账面结存",
+    "physical": "实盘数量",
+    "variance": "盘点差异",
+    "remark": "备注"
+  },
+  "total": "合计",
+  "empty": "此选择下没有产品。",
+  "invalidRange": "开始日期不能晚于结束日期。",
+  "noWarehouse": "您尚未被分配到任何仓库。",
+  "allNote": "下载文件先包含合计报表，然后是每个仓库各一份报表。",
+  "notes": {
+    "formula": "账面结存 = 期初数量 + 入库 − 出库。盘点差异 = 实盘数量 − 账面结存。",
+    "physical": "实盘数量留空：请在 Excel 中填写（差异自动计算），或在盘点时手写在打印的 PDF 上。",
+    "vehicle": "来自车辆/仓库、发往车辆/仓库 = 从其他仓库或车辆收到、或发往其他仓库或车辆的库存（调拨）。",
+    "other": "其他入库/其他出库包含库存调整和过期报废。"
+  }
+}

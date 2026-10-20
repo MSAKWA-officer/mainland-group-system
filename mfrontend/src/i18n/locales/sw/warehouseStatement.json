@@ -1,0 +1,56 @@
+{
+  "listTitle": "Taarifa ya stoo ya ghala",
+  "listDesc": "Idadi ya mwanzo, iliyoingia, iliyotoka na salio la mwisho kwa kila bidhaa, kwa maghala yote kwa pamoja au ghala moja. Pakua kama Excel au PDF.",
+  "title": "Taarifa ya stoo ya ghala",
+  "subtitle": "Kwa kila bidhaa: idadi ya mwanzo, iliyoingia, iliyotoka na salio la vitabuni kwa kipindi.",
+  "back": "← Rudi kwenye ripoti",
+  "filters": {
+    "warehouse": "Ghala",
+    "all": "Maghala yote (kwa pamoja)",
+    "allMine": "Maghala yangu yote",
+    "from": "Kuanzia",
+    "to": "Hadi"
+  },
+  "buttons": {
+    "excel": "Pakua Excel",
+    "pdf": "Pakua PDF",
+    "preparing": "Inaandaa…"
+  },
+  "period": "Kipindi cha takwimu",
+  "unit": "Kipimo",
+  "unitMixed": "Kipimo cha kila bidhaa",
+  "warehouseLabel": "Ghala",
+  "allCombined": "Maghala yote (kwa pamoja)",
+  "cols": {
+    "code": "Msimbo wa bidhaa",
+    "name": "Jina la bidhaa",
+    "monthStart": "Idadi mwanzo wa mwezi",
+    "periodStart": "Idadi mwanzo wa kipindi",
+    "inbound": "Zilizoingia",
+    "factoryDelivery": "Kutoka kiwandani",
+    "fromVehicle": "Kutoka gari/ghala",
+    "salesReturn": "Marejesho ya mauzo",
+    "otherIn": "Nyingine (ndani)",
+    "outbound": "Zilizotoka",
+    "toVehicle": "Kwenda gari/ghala",
+    "salesOut": "Mauzo",
+    "damagedOut": "Zilizoharibika",
+    "toFactory": "Kurudi kiwandani",
+    "otherOut": "Nyingine (nje)",
+    "bookBalance": "Salio la vitabuni",
+    "physical": "Hesabu halisi",
+    "variance": "Tofauti ya stoo",
+    "remark": "Maelezo"
+  },
+  "total": "Jumla",
+  "empty": "Hakuna bidhaa kwa uchaguzi huu.",
+  "invalidRange": "Tarehe ya kuanzia haipaswi kuwa baada ya tarehe ya mwisho.",
+  "noWarehouse": "Bado hujapangiwa ghala lolote.",
+  "allNote": "Faili za kupakua zina taarifa ya pamoja kwanza, kisha taarifa ya kila ghala.",
+  "notes": {
+    "formula": "Salio la vitabuni = Idadi mwanzo wa kipindi + Zilizoingia − Zilizotoka. Tofauti ya stoo = Hesabu halisi − Salio la vitabuni.",
+    "physical": "Hesabu halisi imeachwa wazi: ijaze kwenye faili la Excel (tofauti inahesabiwa yenyewe) au iandike kwenye PDF iliyochapishwa wakati wa kuhesabu stoo.",
+    "vehicle": "Kutoka gari/ghala na Kwenda gari/ghala = stoo iliyopokelewa kutoka au kupelekwa ghala au gari lingine (uhamisho).",
+    "other": "Nyingine (ndani) na Nyingine (nje) zinajumuisha marekebisho ya stoo na bidhaa zilizoisha muda."
+  }
+}

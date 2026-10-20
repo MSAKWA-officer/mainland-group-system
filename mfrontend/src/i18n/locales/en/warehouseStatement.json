@@ -1,0 +1,56 @@
+{
+  "listTitle": "Warehouse inventory statement",
+  "listDesc": "Opening quantity, stock in, stock out and closing balance per product, for all warehouses together or one warehouse. Download as Excel or PDF.",
+  "title": "Warehouse inventory statement",
+  "subtitle": "Per product: opening quantity, what came in, what went out and the book balance for the period.",
+  "back": "← Back to reports",
+  "filters": {
+    "warehouse": "Warehouse",
+    "all": "All warehouses (combined)",
+    "allMine": "All my warehouses",
+    "from": "From",
+    "to": "To"
+  },
+  "buttons": {
+    "excel": "Download Excel",
+    "pdf": "Download PDF",
+    "preparing": "Preparing…"
+  },
+  "period": "Statistical period",
+  "unit": "Unit",
+  "unitMixed": "Per product unit",
+  "warehouseLabel": "Warehouse",
+  "allCombined": "All warehouses (combined)",
+  "cols": {
+    "code": "Product Code",
+    "name": "Product Name",
+    "monthStart": "Month Start Qty",
+    "periodStart": "Period Start Qty",
+    "inbound": "Inbound",
+    "factoryDelivery": "Factory Delivery",
+    "fromVehicle": "From Vehicle",
+    "salesReturn": "Sales Return",
+    "otherIn": "Other In.",
+    "outbound": "Outbound",
+    "toVehicle": "To Vehicle",
+    "salesOut": "Sales Out.",
+    "damagedOut": "Damaged Out.",
+    "toFactory": "To Factory",
+    "otherOut": "Other Out.",
+    "bookBalance": "Book Balance",
+    "physical": "Physical Count",
+    "variance": "Inventory Variance",
+    "remark": "Remark"
+  },
+  "total": "Total",
+  "empty": "No products for this selection.",
+  "invalidRange": "The start date must not be after the end date.",
+  "noWarehouse": "You are not assigned to any warehouse yet.",
+  "allNote": "The downloads contain the combined statement first, then one statement per warehouse.",
+  "notes": {
+    "formula": "Book Balance = Period Start Qty + Inbound − Outbound. Inventory Variance = Physical Count − Book Balance.",
+    "physical": "Physical Count is left empty: fill it in the Excel file (the variance is calculated for you) or write it on the printed PDF during the stock-take.",
+    "vehicle": "From Vehicle / To Vehicle = stock received from / sent to another warehouse or vehicle (transfers).",
+    "other": "Other In. / Other Out. include stock adjustments and expired write-offs."
+  }
+}

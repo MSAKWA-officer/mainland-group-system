@@ -15,6 +15,7 @@ export const money = (v) => (v === undefined || v === null || v === '' ? '—' :
 // The reports that exist. `valuation` means the report needs the stock_reports.valuation permission.
 // The title and description of each report live in i18n/locales/<lang>/reports.json under "defs.<key>".
 export const REPORTS = {
+  'warehouse-statement': {},
   'stock-on-hand': {},
   'low-stock': {},
   expiry: {},
@@ -40,6 +41,7 @@ const al = (i) => (i === 0 ? 'text-left' : 'text-center');
 
 export default function ReportsList() {
   const { t } = useTranslation('reports');
+  const { t: ts } = useTranslation('warehouseStatement');   // title / description of the Warehouse Inventory Statement live in its own file
   const { can } = useAuth();
   const navigate = useNavigate();
   const [days, setDays] = useState(30);
@@ -77,8 +79,8 @@ export default function ReportsList() {
           <tbody>
             {rows.map(([key]) => (
               <tr key={key} className="bg-white">
-                <td className={`${CELL} text-left`}>{t(`defs.${key}.title`)}</td>
-                <td className={`${CELL} text-center`}>{t(`defs.${key}.desc`)}</td>
+                <td className={`${CELL} text-left`}>{key === 'warehouse-statement' ? ts('listTitle') : t(`defs.${key}.title`)}</td>
+                <td className={`${CELL} text-center`}>{key === 'warehouse-statement' ? ts('listDesc') : t(`defs.${key}.desc`)}</td>
                 <td className={`${CELL} text-center`}><div className="flex items-center justify-center gap-1"><IconBtn label={t('list.viewReport')} onClick={() => navigate(`/reports/${key}`)}><EyeIcon /></IconBtn></div></td>
               </tr>
             ))}
