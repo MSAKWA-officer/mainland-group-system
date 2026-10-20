@@ -52,5 +52,19 @@
     "physical": "Physical Count is left empty: fill it in the Excel file (the variance is calculated for you) or write it on the printed PDF during the stock-take.",
     "vehicle": "From Vehicle / To Vehicle = stock received from / sent to another warehouse or vehicle (transfers).",
     "other": "Other In. / Other Out. include stock adjustments and expired write-offs."
+  },
+  "periodType": {
+    "label": "Period",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "custom": "Custom",
+    "previous": "Previous",
+    "next": "Next",
+    "date": "Date",
+    "anyDayOfWeek": "Any day of the week (Mon–Sun)",
+    "monthLabel": "Month",
+    "yearLabel": "Year"
   }
 }

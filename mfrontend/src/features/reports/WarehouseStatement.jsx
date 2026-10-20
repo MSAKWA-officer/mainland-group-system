@@ -7,9 +7,25 @@ import Banner from '../../components/Banner.jsx';
 import useLoad from '../../utils/useLoad';
 import { currentLocale } from '../../utils/locale';
 
-// Local calendar date as YYYY-MM-DD.
-const ymd = (d) => d.toLocaleDateString('en-CA');
-const monthStart = () => { const d = new Date(); return ymd(new Date(d.getFullYear(), d.getMonth(), 1)); };
+// Dates are handled as local calendar days written YYYY-MM-DD.
+const pad = (x) => String(x).padStart(2, '0');
+const fmtD = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parseD = (str) => { const [y, m, d] = str.split('-').map(Number); return new Date(y, m - 1, d); };
+const addDays = (str, k) => { const d = parseD(str); d.setDate(d.getDate() + k); return fmtD(d); };
+const addMonths = (str, k) => { const d = parseD(str); d.setDate(1); d.setMonth(d.getMonth() + k); return fmtD(d); };
+const addYears = (str, k) => { const d = parseD(str); d.setDate(1); d.setFullYear(d.getFullYear() + k); return fmtD(d); };
+const mondayOf = (str) => { const d = parseD(str); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return fmtD(d); };   // weeks run Monday to Sunday
+const TODAY = () => fmtD(new Date());
+// First and last day of the day / week / month / year that contains `anchor`.
+const rangeOf = (kind, anchor) => {
+  const d = parseD(anchor);
+  if (kind === 'day') return [anchor, anchor];
+  if (kind === 'week') { const m = mondayOf(anchor); return [m, addDays(m, 6)]; }
+  if (kind === 'month') return [fmtD(new Date(d.getFullYear(), d.getMonth(), 1)), fmtD(new Date(d.getFullYear(), d.getMonth() + 1, 0))];
+  return [`${d.getFullYear()}-01-01`, `${d.getFullYear()}-12-31`];
+};
+const step = (kind, anchor, k) => (kind === 'day' ? addDays(anchor, k) : kind === 'week' ? addDays(anchor, 7 * k) : kind === 'month' ? addMonths(anchor, k) : addYears(anchor, k));
+const KINDS = ['day', 'week', 'month', 'year', 'custom'];
 const n = (v) => (!v ? '-' : Number(v).toLocaleString(currentLocale(), { maximumFractionDigits: 3 }));
 
 // Column colours follow the paper form. (Full class names, so Tailwind can see them.)
@@ -31,8 +47,20 @@ export default function WarehouseStatement() {
   const { can } = useAuth();
   const canAll = can('warehouses.read_all');
   const [warehouseId, setWarehouseId] = useState('');
-  const [from, setFrom] = useState(monthStart());
-  const [to, setTo] = useState(ymd(new Date()));
+  // Period: a day, a week, a month, a year (all stepped with Previous / Next) or a custom range.
+  const [kind, setKind] = useState('month');
+  const [anchor, setAnchor] = useState(TODAY());
+  const [cFrom, setCFrom] = useState(() => rangeOf('month', TODAY())[0]);
+  const [cTo, setCTo] = useState(TODAY());
+  const today = TODAY();
+  const pick = (a) => setAnchor(a && a > today ? today : a || today);          // never into the future
+  const [pFrom, pTo] = kind === 'custom' ? [cFrom, cTo] : rangeOf(kind, anchor);
+  const from = pFrom;
+  const to = kind === 'custom' || pTo <= today ? pTo : today;                   // the current period stops at today
+  const atLatest = kind !== 'custom' && rangeOf(kind, anchor)[1] >= today;
+  const thisYear = new Date().getFullYear();
+  const years = Array.from({ length: 8 }, (_, i) => thisYear - i);
+  const ay = parseD(anchor).getFullYear(); const am = parseD(anchor).getMonth();
   const [busy, setBusy] = useState('');
   const [err, setErr] = useState('');
   const whs = useLoad(() => warehouseApi.options(), []);
@@ -75,12 +103,48 @@ export default function WarehouseStatement() {
               {warehouses.map((w) => <option key={w.id} value={w.id}>{w.code} — {w.name}</option>)}
             </select>
           </label>
-          <label className="flex flex-col gap-1">{t('filters.from')}
-            <input className="input !text-[14px] !text-[#212121]" type="date" value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} />
-          </label>
-          <label className="flex flex-col gap-1">{t('filters.to')}
-            <input className="input !text-[14px] !text-[#212121]" type="date" value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} />
-          </label>
+          <div className="flex flex-col gap-1">{t('periodType.label')}
+            <div className="flex flex-wrap gap-1">
+              {KINDS.map((k) => (
+                <button key={k} type="button" onClick={() => setKind(k)} aria-pressed={kind === k}
+                  className={kind === k ? 'btn-primary' : 'rounded-md border border-line bg-white px-3 py-1.5 text-[14px] hover:bg-slate-50'}>{t(`periodType.${k}`)}</button>
+              ))}
+            </div>
+          </div>
+          {kind === 'custom' ? (
+            <>
+              <label className="flex flex-col gap-1">{t('filters.from')}
+                <input className="input !text-[14px] !text-[#212121]" type="date" value={cFrom} max={cTo || undefined} onChange={(e) => setCFrom(e.target.value)} />
+              </label>
+              <label className="flex flex-col gap-1">{t('filters.to')}
+                <input className="input !text-[14px] !text-[#212121]" type="date" value={cTo} min={cFrom || undefined} max={today} onChange={(e) => setCTo(e.target.value)} />
+              </label>
+            </>
+          ) : (
+            <div className="flex flex-wrap items-end gap-2">
+              <button type="button" className="rounded-md border border-line bg-white px-3 py-1.5 text-[14px] hover:bg-slate-50" onClick={() => pick(step(kind, anchor, -1))}>‹ {t('periodType.previous')}</button>
+              {(kind === 'day' || kind === 'week') && (
+                <label className="flex flex-col gap-1">{kind === 'day' ? t('periodType.date') : t('periodType.anyDayOfWeek')}
+                  <input className="input !text-[14px] !text-[#212121]" type="date" value={anchor} max={today} onChange={(e) => pick(e.target.value)} />
+                </label>
+              )}
+              {kind === 'month' && (
+                <label className="flex flex-col gap-1">{t('periodType.monthLabel')}
+                  <select className="input !text-[14px] !text-[#212121]" value={am} onChange={(e) => pick(fmtD(new Date(ay, Number(e.target.value), 1)))}>
+                    {Array.from({ length: 12 }, (_, m) => <option key={m} value={m}>{new Date(2000, m, 1).toLocaleString(currentLocale(), { month: 'long' })}</option>)}
+                  </select>
+                </label>
+              )}
+              {(kind === 'month' || kind === 'year') && (
+                <label className="flex flex-col gap-1">{t('periodType.yearLabel')}
+                  <select className="input !text-[14px] !text-[#212121]" value={ay} onChange={(e) => pick(fmtD(new Date(Number(e.target.value), am, 1)))}>
+                    {years.map((y) => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                </label>
+              )}
+              <button type="button" disabled={atLatest} className="rounded-md border border-line bg-white px-3 py-1.5 text-[14px] hover:bg-slate-50 disabled:opacity-40" onClick={() => pick(step(kind, anchor, 1))}>{t('periodType.next')} ›</button>
+            </div>
+          )}
           <div className="flex gap-2">
             <button type="button" className="btn-primary" disabled={badRange || !!busy || !s} onClick={() => download('xlsx')}>{busy === 'xlsx' ? t('buttons.preparing') : t('buttons.excel')}</button>
             <button type="button" className="btn-primary" disabled={badRange || !!busy || !s} onClick={() => download('pdf')}>{busy === 'pdf' ? t('buttons.preparing') : t('buttons.pdf')}</button>

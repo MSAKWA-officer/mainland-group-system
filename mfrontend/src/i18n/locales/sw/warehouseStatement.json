@@ -52,5 +52,19 @@
     "physical": "Hesabu halisi imeachwa wazi: ijaze kwenye faili la Excel (tofauti inahesabiwa yenyewe) au iandike kwenye PDF iliyochapishwa wakati wa kuhesabu stoo.",
     "vehicle": "Kutoka gari/ghala na Kwenda gari/ghala = stoo iliyopokelewa kutoka au kupelekwa ghala au gari lingine (uhamisho).",
     "other": "Nyingine (ndani) na Nyingine (nje) zinajumuisha marekebisho ya stoo na bidhaa zilizoisha muda."
+  },
+  "periodType": {
+    "label": "Kipindi",
+    "day": "Siku",
+    "week": "Wiki",
+    "month": "Mwezi",
+    "year": "Mwaka",
+    "custom": "Maalum",
+    "previous": "Iliyopita",
+    "next": "Inayofuata",
+    "date": "Tarehe",
+    "anyDayOfWeek": "Siku yoyote ya wiki (Jumatatu–Jumapili)",
+    "monthLabel": "Mwezi",
+    "yearLabel": "Mwaka"
   }
 }
