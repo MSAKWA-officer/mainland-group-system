@@ -59,8 +59,8 @@ module.exports = {
     await q.addIndex('warehouse_movements', ['warehouse_id', 'occurred_at']);
     await q.addIndex('warehouse_movements', ['item_id']);
     await q.addIndex('warehouse_movements', ['ref_id']);
-    await sql('CREATE TRIGGER wh_mv_no_change BEFORE UPDATE OR DELETE ON warehouse_movements FOR EACH ROW EXECUTE FUNCTION forbid_change()');
-    await sql('CREATE TRIGGER wh_mv_no_truncate BEFORE TRUNCATE ON warehouse_movements FOR EACH STATEMENT EXECUTE FUNCTION forbid_change()');
+    await sql('CREATE TRIGGER wh_mv_no_change BEFORE UPDATE OR DELETE ON warehouse_movements FOR EACH ROW EXECUTE PROCEDURE forbid_change()');
+    await sql('CREATE TRIGGER wh_mv_no_truncate BEFORE TRUNCATE ON warehouse_movements FOR EACH STATEMENT EXECUTE PROCEDURE forbid_change()');
 
     // Transfer between warehouses. Created by a storekeeper (SUBMITTED), stock moves only when a manager approves (COMPLETED).
     await q.createTable('warehouse_transfers', {
