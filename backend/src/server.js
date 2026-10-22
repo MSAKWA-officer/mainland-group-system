@@ -16,26 +16,25 @@ const app = express();
 
 app.disable('x-powered-by');
 
-// Trust Render's reverse proxy in production
-if (env.isProd) {
-  app.set('trust proxy', 1);
-}
+// cPanel (LiteSpeed/Passenger) sits in front of Node as a reverse proxy
+app.set('trust proxy', 1);
 
 // ---------------------------------------------------------------
-// CORS (must come FIRST, before the HTTPS redirect and everything
-// else, so that preflight OPTIONS requests are answered correctly
+// CORS (must come FIRST so preflight OPTIONS requests are answered
 // and error responses also carry CORS headers)
 // ---------------------------------------------------------------
 
 // Fixed frontend origins
 const allowedOrigins = [
+  'https://www.mbeyamainland.co.tz',
+  'https://mbeyamainland.co.tz',
   'https://mainland-group-system.vercel.app',
   'http://localhost:5173',
 ];
 
-// Extra origins from the CORS_ORIGIN env var on Render (comma separated)
+// Extra origins from the CORS_ORIGIN env var (comma separated, optional)
 if (env.CORS_ORIGIN) {
-  const configuredOrigins = env.CORS_ORIGIN
+  const configuredOrigins = String(env.CORS_ORIGIN)
     .split(',')
     .map((origin) => origin.trim().replace(/\/+$/, '')) // remove trailing slash
     .filter(Boolean);
@@ -47,9 +46,7 @@ if (env.CORS_ORIGIN) {
   }
 }
 
-// Vercel generates a NEW URL for every deployment
-// (e.g. mainland-group-system-k2vgjzefe-allan-msakwas-projects.vercel.app),
-// so allow all preview deployments of this project using a pattern.
+// Vercel preview deployments (optional, harmless to keep)
 const vercelPreviewPattern =
   /^https:\/\/mainland-group-system-[a-z0-9-]+-allan-msakwas-projects\.vercel\.app$/;
 
@@ -74,20 +71,8 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// ---------------------------------------------------------------
-// HTTPS redirect (production only)
-// ---------------------------------------------------------------
-if (env.isProd) {
-  app.use((req, res, next) => {
-    if (req.secure) return next();
-
-    // Never redirect preflight requests, it breaks CORS
-    if (req.method === 'OPTIONS') return next();
-
-    // 308 keeps the HTTP method (POST stays POST)
-    return res.redirect(308, `https://${req.headers.host}${req.originalUrl}`);
-  });
-}
+// NOTE: No HTTPS redirect here. cPanel/LiteSpeed already serves the API
+// over HTTPS, and a redirect inside Node can cause redirect loops.
 
 // Security headers
 app.use(
@@ -98,7 +83,7 @@ app.use(
         frameAncestors: ["'none'"],
       },
     },
-    // API is consumed from another origin (Vercel)
+    // API is consumed from another origin (the frontend domain)
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     hsts: {
       maxAge: 31536000,
@@ -115,7 +100,7 @@ app.use(cookieParser());
 // Request logging
 app.use(morgan(env.isProd ? 'combined' : 'dev'));
 
-// Health check (no rate limit, useful for Render and wake-up pings)
+// Health check (no rate limit)
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
@@ -148,8 +133,9 @@ app.use(errorHandler);
         )
       : http.createServer(app);
 
-  // Bind to 0.0.0.0 so Render can reach the service
-  server.listen(env.PORT, '0.0.0.0', () => {
+  // On cPanel (Passenger), PORT is provided by the environment.
+  // Do not hard-code the port and do not force a host.
+  server.listen(env.PORT, () => {
     console.log(`Mainland API running on port ${env.PORT} (${env.NODE_ENV})`);
     console.log('Allowed CORS origins:', allowedOrigins);
   });
