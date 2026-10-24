@@ -59,7 +59,15 @@
     "saving": "Sending…",
     "submit": "Send for approval",
     "salesperson": "Salesperson",
-    "needsReceiptHint": "The salesperson must confirm receipt after the Manager approves."
+    "needsReceiptHint": "The salesperson must confirm receipt after the Manager approves.",
+    "addToList": "Add to list",
+    "listTitle": "Items added",
+    "listEmpty": "No items added yet.",
+    "noItems": "Add at least one item to the list.",
+    "pickItem": "Select an item first.",
+    "pickBatch": "Select a batch.",
+    "pickQty": "Enter a quantity greater than 0.",
+    "overQty": "Not enough stock. Available: {{available}} {{unit}}."
   },
   "view": {
     "reason": "Reason",

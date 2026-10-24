@@ -59,7 +59,15 @@
     "saving": "Inatuma…",
     "submit": "Tuma kuidhinishwa",
     "salesperson": "Muuzaji",
-    "needsReceiptHint": "Muuzaji lazima athibitishe kupokea baada ya Meneja kuidhinisha."
+    "needsReceiptHint": "Muuzaji lazima athibitishe kupokea baada ya Meneja kuidhinisha.",
+    "addToList": "Ongeza kwenye orodha",
+    "listTitle": "Bidhaa zilizoongezwa",
+    "listEmpty": "Bado hakuna bidhaa zilizoongezwa.",
+    "noItems": "Ongeza angalau bidhaa moja kwenye orodha.",
+    "pickItem": "Chagua bidhaa kwanza.",
+    "pickBatch": "Chagua bechi.",
+    "pickQty": "Weka kiasi kinachozidi 0.",
+    "overQty": "Hakuna stoo ya kutosha. Iliyopo: {{available}} {{unit}}."
   },
   "view": {
     "reason": "Sababu",

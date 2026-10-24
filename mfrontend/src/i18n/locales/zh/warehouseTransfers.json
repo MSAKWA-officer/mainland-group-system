@@ -59,7 +59,15 @@
     "saving": "提交中…",
     "submit": "提交审批",
     "salesperson": "销售员",
-    "needsReceiptHint": "经理批准后，销售员必须确认收货。"
+    "needsReceiptHint": "经理批准后，销售员必须确认收货。",
+    "addToList": "添加到列表",
+    "listTitle": "已添加的商品",
+    "listEmpty": "尚未添加商品。",
+    "noItems": "请至少添加一件商品到列表。",
+    "pickItem": "请先选择商品。",
+    "pickBatch": "请选择批次。",
+    "pickQty": "请输入大于 0 的数量。",
+    "overQty": "库存不足。可用：{{available}} {{unit}}。"
   },
   "view": {
     "reason": "原因",

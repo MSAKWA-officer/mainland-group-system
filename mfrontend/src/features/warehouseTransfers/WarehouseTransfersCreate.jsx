@@ -5,14 +5,16 @@ import { warehouseApi, warehouseTransferApi, errMsg, fieldErrs } from '../../api
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
 import { TrashIcon, PlusIcon } from '../../components/Icons.jsx';
+import { CELL, HEAD, al } from '../../components/TableUi.js';
 import useLoad from '../../utils/useLoad';
 import { qty } from '../stock/StockList.jsx';
 
-const emptyLine = () => ({ itemId: '', batchId: '', quantity: '', remarks: '' });
+const emptyEntry = () => ({ itemId: '', batchId: '', quantity: '' });
 const today = () => new Date().toISOString().slice(0, 10);
+const keyOf = (l) => `${l.itemId}|${l.batchId || ''}`;
 
-// The storekeeper picks the source warehouse (one he is in charge of), the destination, and what to move.
-// Nothing moves yet: a Manager must approve first.
+// The storekeeper picks the source warehouse, the destination, then adds items one by one to a list.
+// The whole list + one remarks box are saved together. Nothing moves yet: a Manager must approve first.
 export default function WarehouseTransfersCreate() {
   const { t } = useTranslation('warehouseTransfers');
   const navigate = useNavigate();
@@ -20,24 +22,44 @@ export default function WarehouseTransfersCreate() {
   const mineW = useLoad(() => warehouseApi.options(), []);
   const allW = useLoad(() => warehouseApi.options({ all: true }), []);
   const [head, setHead] = useState({ fromWarehouseId: sp.get('from') || '', toWarehouseId: '', transferDate: today(), reason: '' });
-  const [lines, setLines] = useState([emptyLine()]);
-  const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
+  const [entry, setEntry] = useState(emptyEntry());   // the item being filled in
+  const [list, setList] = useState([]);                // items already added
+  const [err, setErr] = useState(''); const [entryErr, setEntryErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   useEffect(() => { const m = mineW.data; if (m && !head.fromWarehouseId && m.length === 1) setHead((h) => ({ ...h, fromWarehouseId: m[0].id })); }, [mineW.data]); // eslint-disable-line
   const [search, setSearch] = useState('');
   const stock = useLoad(() => (head.fromWarehouseId ? warehouseApi.stock(head.fromWarehouseId, { limit: 100, ...(search && { search }) }) : Promise.resolve(null)), [head.fromWarehouseId, search]);
   const [known, setKnown] = useState({});
   useEffect(() => { if (stock.data) setKnown((k) => { const n = { ...k }; stock.data.data.forEach((r) => { n[r.itemId] = r; }); return n; }); }, [stock.data]);
   const options = Object.values(known).filter((r) => r.warehouseId === head.fromWarehouseId || r.item);
-  const setLine = (i, p) => setLines(lines.map((l, n) => (n === i ? { ...l, ...p } : l)));
+  const row = known[entry.itemId];
+  const batch = row?.batches?.find((b) => b.id === entry.batchId);
+
+  const addToList = () => {
+    setEntryErr('');
+    if (!row) return setEntryErr(t('form.pickItem'));
+    if (row.item.trackExpiry && !batch) return setEntryErr(t('form.pickBatch'));
+    const q = Number(entry.quantity);
+    if (!(q > 0)) return setEntryErr(t('form.pickQty'));
+    const available = Number(batch ? batch.quantity : row.quantity);
+    const k = keyOf(entry);
+    const already = list.find((l) => keyOf(l) === k);
+    if (q + (already ? already.quantity : 0) > available) return setEntryErr(t('form.overQty', { available: qty(available), unit: row.item.unit }));
+    if (already) setList(list.map((l) => (keyOf(l) === k ? { ...l, quantity: l.quantity + q } : l)));   // same item/batch again: add to the same line
+    else setList([...list, { itemId: row.itemId, batchId: batch?.id || '', quantity: q, item: row.item, batchNo: batch?.batchNo || '', expiryDate: batch?.expiryDate || '', available }]);
+    setEntry(emptyEntry());
+  };
   const submit = async (e) => {
-    e.preventDefault(); setErr(''); setFe({}); setBusy(true);
+    e.preventDefault(); setErr(''); setFe({});
+    if (!list.length) return setErr(t('form.noItems'));
+    setBusy(true);
     try {
       const d = await warehouseTransferApi.create({ ...head, reason: head.reason.trim(),
-        lines: lines.map((l) => ({ itemId: l.itemId, quantity: Number(l.quantity), ...(l.batchId && { batchId: l.batchId }), remarks: l.remarks.trim() || null })) });
+        lines: list.map((l) => ({ itemId: l.itemId, quantity: l.quantity, ...(l.batchId && { batchId: l.batchId }) })) });
       navigate('/warehouse-transfers', { state: { msg: t('requested', { no: d.transferNo }) } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
   };
-  const fromChanged = (v) => { setHead({ ...head, fromWarehouseId: v }); setKnown({}); setLines([emptyLine()]); };
+  const fromChanged = (v) => { setHead({ ...head, fromWarehouseId: v }); setKnown({}); setList([]); setEntry(emptyEntry()); setEntryErr(''); };
+  const onEnter = (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); addToList(); } };
   return (
     <div className="panel overflow-hidden text-black shadow-sm">
       <div className="flex items-center justify-between gap-3 p-6">
@@ -59,40 +81,64 @@ export default function WarehouseTransfersCreate() {
             {(allW.data || []).find((w) => w.id === head.toWarehouseId)?.salespersonNames && <p className="mt-1 text-xs">{t('form.needsReceiptHint')}</p>}
           </Field>
           <Field label={t('form.date')} error={fe.transferDate}><input className="input !text-black" type="date" required value={head.transferDate} onChange={(e) => setHead({ ...head, transferDate: e.target.value })} /></Field>
-          <Field label={t('form.reason')} error={fe.reason}><input className="input !text-black" required minLength={3} maxLength={1000} value={head.reason} onChange={(e) => setHead({ ...head, reason: e.target.value })} /></Field>
         </div>
+
+        {/* 1. fill in one item, then "Add to list" */}
         <div className="max-w-3xl space-y-3">
           <div className="flex flex-wrap items-end justify-between gap-3">
             <h2 className="text-base font-semibold">{t('form.items')}</h2>
-            <input className="input max-w-xs !text-black" placeholder={t('form.searchItems')} value={search} onChange={(e) => setSearch(e.target.value)} disabled={!head.fromWarehouseId} />
+            <input className="input max-w-xs !text-black" placeholder={t('form.searchItems')} value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={(ev) => ev.key === 'Enter' && ev.preventDefault()} disabled={!head.fromWarehouseId} />
           </div>
-          {lines.map((l, i) => {
-            const row = known[l.itemId]; const e = (k) => fe[`lines.${i}.${k}`];
-            return (
-              <div key={i} className="grid gap-3 rounded-md border border-line p-4 sm:grid-cols-4">
-                <div className="sm:col-span-2"><Field label={t('form.item')} error={e('itemId')}>
-                  <select className="input !text-black" required value={l.itemId} onChange={(ev) => setLine(i, { itemId: ev.target.value, batchId: '' })}>
-                    <option value="">{t('form.selectItem')}</option>
-                    {options.map((r) => <option key={r.itemId} value={r.itemId}>{r.item.sku} — {r.item.name} ({qty(r.quantity)} {r.item.unit})</option>)}
-                  </select></Field></div>
-                {row?.item.trackExpiry && (
-                  <Field label={t('form.batch')} error={e('batchId')}>
-                    <select className="input !text-black" required value={l.batchId} onChange={(ev) => setLine(i, { batchId: ev.target.value })}>
-                      <option value="">{t('form.selectBatch')}</option>{row.batches.map((b) => <option key={b.id} value={b.id}>{b.batchNo} ({qty(b.quantity)}, {b.expiryDate})</option>)}
-                    </select></Field>
-                )}
-                <Field label={row ? t('form.quantityUnit', { unit: row.item.unit }) : t('form.quantity')} error={e('quantity')}>
-                  <input className="input !text-black" type="number" required min="0.001" step="0.001" value={l.quantity} onChange={(ev) => setLine(i, { quantity: ev.target.value })} /></Field>
-                <div className="sm:col-span-3"><Field label={t('form.remarks')} error={e('remarks')}><input className="input !text-black" maxLength={255} value={l.remarks} onChange={(ev) => setLine(i, { remarks: ev.target.value })} /></Field></div>
-                <div className="flex items-end justify-end">
-                  {lines.length > 1 && <button type="button" aria-label={t('form.removeLine')} title={t('form.removeLine')} onClick={() => setLines(lines.filter((_, n) => n !== i))} className="inline-flex h-9 w-9 items-center justify-center rounded-md text-red-600 hover:bg-slate-100"><TrashIcon /></button>}
-                </div>
-              </div>
-            );
-          })}
-          <button type="button" className="btn-ghost gap-2 !text-black" onClick={() => setLines([...lines, emptyLine()])}><PlusIcon /> {t('form.addItem')}</button>
+          <div className="grid gap-3 rounded-md border border-line p-4 sm:grid-cols-4">
+            <div className="sm:col-span-2"><Field label={t('form.item')}>
+              <select className="input !text-black" value={entry.itemId} disabled={!head.fromWarehouseId} onChange={(ev) => { setEntry({ itemId: ev.target.value, batchId: '', quantity: '' }); setEntryErr(''); }}>
+                <option value="">{t('form.selectItem')}</option>
+                {options.map((r) => <option key={r.itemId} value={r.itemId}>{r.item.sku} — {r.item.name} ({qty(r.quantity)} {r.item.unit})</option>)}
+              </select></Field></div>
+            {row?.item.trackExpiry && (
+              <Field label={t('form.batch')}>
+                <select className="input !text-black" value={entry.batchId} onChange={(ev) => setEntry({ ...entry, batchId: ev.target.value })}>
+                  <option value="">{t('form.selectBatch')}</option>{row.batches.map((b) => <option key={b.id} value={b.id}>{b.batchNo} ({qty(b.quantity)}, {b.expiryDate})</option>)}
+                </select></Field>
+            )}
+            <Field label={row ? t('form.quantityUnit', { unit: row.item.unit }) : t('form.quantity')}>
+              <input className="input !text-black" type="number" min="0.001" step="0.001" value={entry.quantity} onKeyDown={onEnter} onChange={(ev) => setEntry({ ...entry, quantity: ev.target.value })} /></Field>
+            <div className="flex items-end sm:col-span-4">
+              <button type="button" className="btn-ghost gap-2 !text-black" onClick={addToList} disabled={!head.fromWarehouseId}><PlusIcon /> {t('form.addToList')}</button>
+            </div>
+            {entryErr && <p className="text-sm sm:col-span-4">{entryErr}</p>}
+          </div>
         </div>
-        <button className="btn-primary" disabled={busy}>{busy ? t('form.saving') : t('form.submit')}</button>
+
+        {/* 2. the list of added items */}
+        <div className="max-w-3xl space-y-2">
+          <h2 className="text-base font-semibold">{t('form.listTitle')} ({list.length})</h2>
+          <div className="overflow-x-auto"><table className="w-full border-collapse bg-white">
+            <thead><tr>{['#', 'item', 'batch', 'quantity', ''].map((h, i) => <th key={i} className={`${HEAD} ${al(i)}`}>{h === '#' ? '#' : h ? t(`lineCols.${h}`) : ''}</th>)}</tr></thead>
+            <tbody>
+              {list.length === 0 && <tr><td colSpan={5} className={`${CELL} text-center`}>{t('form.listEmpty')}</td></tr>}
+              {list.map((l, i) => (
+                <tr key={keyOf(l)}>
+                  <td className={`${CELL} text-center`}>{i + 1}</td>
+                  <td className={`${CELL} text-left`}><div>{l.item.name}</div><div className="text-xs">{l.item.sku}</div>{fe[`lines.${i}.quantity`] && <div className="text-xs">{fe[`lines.${i}.quantity`]}</div>}</td>
+                  <td className={`${CELL} text-center`}>{l.batchNo ? `${l.batchNo} (${l.expiryDate})` : '—'}</td>
+                  <td className={`${CELL} text-center`}>{qty(l.quantity)} {l.item.unit}</td>
+                  <td className={`${CELL} text-center`}>
+                    <button type="button" aria-label={t('form.removeLine')} title={t('form.removeLine')} onClick={() => setList(list.filter((_, n) => n !== i))} className="inline-flex h-9 w-9 items-center justify-center rounded-md text-red-600 hover:bg-slate-100"><TrashIcon /></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table></div>
+        </div>
+
+        {/* 3. one remarks box for the whole transfer, then save everything together */}
+        <div className="max-w-3xl">
+          <Field label={t('form.remarks')} error={fe.reason}>
+            <textarea className="input !text-black" rows={3} required minLength={3} maxLength={1000} value={head.reason} onChange={(e) => setHead({ ...head, reason: e.target.value })} />
+          </Field>
+        </div>
+        <button className="btn-primary" disabled={busy || !list.length}>{busy ? t('form.saving') : t('form.submit')}</button>
       </form>
     </div>
   );
