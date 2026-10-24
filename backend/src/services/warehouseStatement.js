@@ -33,7 +33,9 @@ const r3 = (v) => Math.round(Number(v || 0) * 1000) / 1000;
 const sumIf = (types, dir, period) => `COALESCE(SUM(m.quantity) FILTER (WHERE m.direction = '${dir}' AND m.movement_type IN (${types.map((x) => `'${x}'`).join(',')}) AND ${period}), 0)`;
 
 // One statement for the given warehouses (their stock is added together). `ids` must not be empty.
-async function build({ ids, from, to, title, warehouse = null }) {
+// Only the products that belong to the chosen warehouse(s) are listed (a stock row or any movement there), never the whole catalogue.
+// This applies to everybody: for "all warehouses" it is every product found in any of the warehouses the user may see.
+async function build({ ids, from, to, title, warehouse = null, onlyHeld = true }) {
   const period = 'm.occurred_at >= b.ps AND m.occurred_at < b.pe';
   const net = (cond) => `COALESCE(SUM(CASE m.direction WHEN 'IN' THEN m.quantity ELSE -m.quantity END) FILTER (WHERE ${cond}), 0)`;
   const inCols = Object.entries(IN_COLUMNS).map(([k, v]) => `${sumIf(v, 'IN', period)} AS "${k}"`);
@@ -57,6 +59,8 @@ async function build({ ids, from, to, title, warehouse = null }) {
       COALESCE(mv.in_total, 0) AS in_total, COALESCE(mv.out_total, 0) AS out_total,
       ${[...Object.keys(IN_COLUMNS), ...Object.keys(OUT_COLUMNS)].map((k) => `COALESCE(mv."${k}", 0) AS "${k}"`).join(', ')}
     FROM items i LEFT JOIN categories c ON c.id = i.category_id LEFT JOIN cur ON cur.item_id = i.id LEFT JOIN mv ON mv.item_id = i.id
+    ${onlyHeld ? `WHERE EXISTS (SELECT 1 FROM warehouse_stock z WHERE z.item_id = i.id AND z.warehouse_id IN (:ids))
+       OR EXISTS (SELECT 1 FROM warehouse_movements y WHERE y.item_id = i.id AND y.warehouse_id IN (:ids))` : ''}
     ORDER BY c.name NULLS LAST, i.name, i.sku`,
   { replacements: { ids, from, to, tz: TZ }, type: QueryTypes.SELECT });
 
@@ -88,20 +92,20 @@ const empty = (title, from, to, warehouse = null) => ({ title, warehouse, from, 
    `allowed`  = null (user may see every warehouse) or the ids the user is in charge of.
    `warehouseId` given  -> just that warehouse.
    no warehouseId       -> the combined statement first, then one statement per warehouse (only when `each` and there is more than one). */
-async function statements({ allowed, warehouseId, from, to, each }) {
+async function statements({ allowed, warehouseId, from, to, each, onlyHeld = true }) {
   if (warehouseId) {
     const w = await Warehouse.findByPk(warehouseId);
-    return [await build({ ids: [warehouseId], from, to, title: `${w.code} - ${w.name}`, warehouse: { id: w.id, code: w.code, name: w.name } })];
+    return [await build({ ids: [warehouseId], from, to, title: `${w.code} - ${w.name}`, warehouse: { id: w.id, code: w.code, name: w.name }, onlyHeld })];
   }
   const all = await Warehouse.findAll({ order: [['code', 'ASC']] });
   const list = all.filter((w) => !allowed || allowed.includes(w.id));
   if (!list.length) return [empty('All warehouses', from, to)];
   const combined = await build({ ids: list.map((w) => w.id), from, to, title: list.length > 1 ? 'All warehouses' : `${list[0].code} - ${list[0].name}`,
-    warehouse: list.length > 1 ? null : { id: list[0].id, code: list[0].code, name: list[0].name } });
+    warehouse: list.length > 1 ? null : { id: list[0].id, code: list[0].code, name: list[0].name }, onlyHeld });
   if (!each || list.length < 2) return [combined];
   const parts = [];
   for (const w of list) {
-    const s = await build({ ids: [w.id], from, to, title: `${w.code} - ${w.name}`, warehouse: { id: w.id, code: w.code, name: w.name } });
+    const s = await build({ ids: [w.id], from, to, title: `${w.code} - ${w.name}`, warehouse: { id: w.id, code: w.code, name: w.name }, onlyHeld });
     if (w.isActive || s.rows.some((l) => NUM_KEYS.some((k) => l[k] !== 0))) parts.push(s);   // hide inactive warehouses with nothing in them
   }
   return [combined, ...parts];
