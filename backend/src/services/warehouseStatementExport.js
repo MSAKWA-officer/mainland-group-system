@@ -3,7 +3,8 @@ const PDFDocument = require('pdfkit');
 
 /* Writes the Warehouse Inventory Statement in the company's paper format, as Excel (.xlsx) or PDF.
    Both take a list of statements (see warehouseStatement.js): the first sheet / pages are the combined one, then one per warehouse.
-   Physical Count is left empty on purpose: it is typed (Excel) or written (PDF) during the stock-take.
+   Physical Count is filled from the Physical Count page (the latest count inside the period); the Remark shows the count date.
+   A product that was not counted keeps an empty Physical Count: it can still be typed (Excel) or written (PDF) during the stock-take.
    In Excel, Book Balance and Inventory Variance are live formulas, so typing a physical count shows the variance at once. */
 
 // Columns, in order. `key` = field of a statement row, `g` = colour group.
@@ -27,6 +28,8 @@ const COLS = [
   { key: 'remark', head: 'Remark', w: 22, g: 'text' },
 ];
 const FILL = { head: '5B8FC7', title: '4A7EBB', text: 'FFFFFF', grey: 'F2F2F2', in: 'EAF3E8', out: 'FDF2EC', book: 'EDEDED', phys: 'EAF0FA' };
+const counted = (l) => l.physical !== null && l.physical !== undefined;
+const remarkOf = (l) => (counted(l) ? `Counted ${l.countDate}` : '');
 const idx = (key) => COLS.findIndex((c) => c.key === key);
 const IN_FIRST = idx('factoryDelivery'); const IN_LAST = idx('otherIn'); const OUT_FIRST = idx('toVehicle'); const OUT_LAST = idx('otherOut');
 
@@ -94,14 +97,17 @@ async function toExcel(statements) {
         cell.fill = fill(FILL[c.g]); cell.border = box; cell.font = { name: 'Arial', size: 10 };
         if (c.key === 'code' || c.key === 'name') { cell.value = l[c.key]; cell.alignment = { vertical: 'middle' }; return; }
         cell.alignment = { horizontal: 'right', vertical: 'middle' };
-        if (c.key === 'remark') { cell.alignment = { vertical: 'middle' }; return; }
-        if (c.key === 'physical') { cell.numFmt = NUM; return; }
+        if (c.key === 'remark') { cell.alignment = { vertical: 'middle' }; if (counted(l)) cell.value = remarkOf(l); return; }
+        if (c.key === 'physical') { cell.numFmt = NUM; if (counted(l)) cell.value = l.physical; return; }
         cell.numFmt = NUM;
         if (c.key === 'bookBalance') {
           cell.value = { formula: `${col(idx('periodStart'))}${r}+SUM(${col(IN_FIRST)}${r}:${col(IN_LAST)}${r})-SUM(${col(OUT_FIRST)}${r}:${col(OUT_LAST)}${r})`, result: l.bookBalance };
           cell.font = { name: 'Arial', size: 10, bold: true };
         } else if (c.key === 'variance') {
-          cell.value = { formula: `IF(${phys}${r}="","",${phys}${r}-${book}${r})`, result: '' };
+          // Live formula (typing a count updates it). Only when several warehouses were counted partly, the saved difference is written instead.
+          const same = counted(l) && Math.abs((l.physical - l.bookBalance) - l.variance) < 0.0005;
+          if (counted(l) && !same) cell.value = l.variance;
+          else cell.value = { formula: `IF(${phys}${r}="","",${phys}${r}-${book}${r})`, result: counted(l) ? l.variance : '' };
         } else cell.value = l[c.key];
       });
       row.height = 18;
@@ -115,8 +121,8 @@ async function toExcel(statements) {
       if (c.key === 'code') cell.value = 'TOTAL';
       else if (s.rows.length && !['name', 'remark'].includes(c.key)) {
         const rng = `${col(i)}${first}:${col(i)}${lastData}`;
-        if (c.key === 'physical') cell.value = { formula: `IF(COUNT(${rng})=0,"",SUM(${rng}))`, result: '' };
-        else if (c.key === 'variance') cell.value = { formula: `IF(COUNT(${rng})=0,"",SUM(${rng}))`, result: '' };
+        if (c.key === 'physical') cell.value = { formula: `IF(COUNT(${rng})=0,"",SUM(${rng}))`, result: s.totals.physical ?? '' };
+        else if (c.key === 'variance') cell.value = { formula: `IF(COUNT(${rng})=0,"",SUM(${rng}))`, result: s.totals.variance ?? '' };
         else cell.value = { formula: `SUM(${rng})`, result: s.totals[c.key] };
       }
     });
@@ -125,7 +131,7 @@ async function toExcel(statements) {
 
     // Notes
     const nr = tr + 2;
-    ws.getCell(nr, 1).value = 'Book Balance = Period Start Qty + Inbound - Outbound. Inventory Variance = Physical Count - Book Balance (fill in the Physical Count during the stock-take).';
+    ws.getCell(nr, 1).value = 'Book Balance = Period Start Qty + Inbound - Outbound. Inventory Variance = Physical Count - Book Balance. Physical Count = latest count recorded in the period (see the Remark for its date); products not counted can be filled in by hand.';
     ws.getCell(nr + 1, 1).value = `Month Start Qty = quantity at the start of ${s.monthStart}. Other In. / Other Out. include stock adjustments and expired write-offs. Generated ${new Date(s.generatedAt).toISOString().replace('T', ' ').slice(0, 16)} UTC.`;
     [nr, nr + 1].forEach((r) => { ws.getCell(r, 1).font = { name: 'Arial', size: 9, italic: true, color: { argb: 'FF595959' } }; });
   }
@@ -179,7 +185,8 @@ function toPdf(statements) {
     const bodyRow = (l, y, bold) => COLS.forEach((c, i) => {
       const bg = bold ? 'DDE7F3' : FILL[c.g];
       if (c.key === 'code' || c.key === 'name') cell(xs[i], y, widths[i], ROW, color(bg), bold && c.key === 'name' ? '' : l[c.key], { bold });
-      else if (['physical', 'variance', 'remark'].includes(c.key)) cell(xs[i], y, widths[i], ROW, color(bg), '');
+      else if (c.key === 'remark') cell(xs[i], y, widths[i], ROW, color(bg), bold ? '' : remarkOf(l), { size: 6 });
+      else if (c.key === 'physical' || c.key === 'variance') cell(xs[i], y, widths[i], ROW, color(bg), l[c.key] === null || l[c.key] === undefined ? '' : (l[c.key] === 0 ? '0' : num(l[c.key])), { align: 'right', bold });
       else cell(xs[i], y, widths[i], ROW, color(bg), num(l[c.key]), { align: 'right', bold: bold || c.key === 'bookBalance' });
     });
 
@@ -201,7 +208,7 @@ function toPdf(statements) {
     for (let i = range.start; i < range.start + range.count; i += 1) {
       doc.switchToPage(i);
       doc.fillColor('#595959').font('Helvetica-Oblique').fontSize(6.5)
-        .text('Book Balance = Period Start Qty + Inbound - Outbound.   Inventory Variance = Physical Count - Book Balance.   Other In./Other Out. include adjustments and expired write-offs.',
+        .text('Book Balance = Period Start Qty + Inbound - Outbound.   Inventory Variance = Physical Count - Book Balance (Physical Count = latest count in the period).   Other In./Other Out. include adjustments and expired write-offs.',
           M, H - M - 12, { width: W - 80, lineBreak: false })
         .text(`Page ${i + 1} of ${range.count}`, M, H - M - 12, { width: W, align: 'right', lineBreak: false });
     }

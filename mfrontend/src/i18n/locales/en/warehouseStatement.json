@@ -49,7 +49,7 @@
   "allNote": "The downloads contain the combined statement first, then one statement per warehouse.",
   "notes": {
     "formula": "Book Balance = Period Start Qty + Inbound − Outbound. Inventory Variance = Physical Count − Book Balance.",
-    "physical": "Physical Count is left empty: fill it in the Excel file (the variance is calculated for you) or write it on the printed PDF during the stock-take.",
+    "physical": "Physical Count comes from the Physical Count page (the latest count recorded in the period; the Remark shows its date). Products not counted stay empty: fill them in the Excel file or write them on the printed PDF.",
     "vehicle": "From Vehicle / To Vehicle = stock received from / sent to another warehouse or vehicle (transfers).",
     "other": "Other In. / Other Out. include stock adjustments and expired write-offs."
   },
@@ -66,5 +66,7 @@
     "anyDayOfWeek": "Any day of the week (Mon–Sun)",
     "monthLabel": "Month",
     "yearLabel": "Year"
-  }
+  },
+  "countedOn": "Counted {{date}}",
+  "physicalLink": "Open Physical count"
 }

@@ -154,6 +154,9 @@ import WarehousesView from './features/warehouses/WarehousesView.jsx';
 import WarehouseTransfersList from './features/warehouseTransfers/WarehouseTransfersList.jsx';
 import WarehouseTransfersCreate from './features/warehouseTransfers/WarehouseTransfersCreate.jsx';
 import WarehouseTransfersView from './features/warehouseTransfers/WarehouseTransfersView.jsx';
+import PhysicalCountsList from './features/physicalCounts/PhysicalCountsList.jsx';
+import PhysicalCountsCreate from './features/physicalCounts/PhysicalCountsCreate.jsx';
+import PhysicalCountsView from './features/physicalCounts/PhysicalCountsView.jsx';
 import UserList from './features/users/UserList.jsx';
 import UserCreate from './features/users/UserCreate.jsx';
 import UserUpdate from './features/users/UserUpdate.jsx';
@@ -197,6 +200,9 @@ export default function App() {
         <Route path="/warehouse-transfers" element={<Guard perm="warehouse_transfers.read"><WarehouseTransfersList /></Guard>} />
         <Route path="/warehouse-transfers/new" element={<Guard perm="warehouse_transfers.create"><WarehouseTransfersCreate /></Guard>} />
         <Route path="/warehouse-transfers/:id" element={<Guard perm="warehouse_transfers.read"><WarehouseTransfersView /></Guard>} />
+        <Route path="/physical-counts" element={<Guard perm="physical_counts.read"><PhysicalCountsList /></Guard>} />
+        <Route path="/physical-counts/new" element={<Guard perm="physical_counts.create"><PhysicalCountsCreate /></Guard>} />
+        <Route path="/physical-counts/:id" element={<Guard perm="physical_counts.read"><PhysicalCountsView /></Guard>} />
         <Route path="/movements" element={<Guard perm="movements.read"><MovementsList /></Guard>} />
         <Route path="/movements/:id" element={<Guard perm="movements.read"><MovementsView /></Guard>} />
         <Route path="/adjustments" element={<Guard perm="adjustments.read"><AdjustmentsList /></Guard>} />

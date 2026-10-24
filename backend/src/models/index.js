@@ -41,6 +41,8 @@ const WarehouseStock = require('./WarehouseStock');
 const WarehouseItemSetting = require('./WarehouseItemSetting');
 const WarehouseTransfer = require('./WarehouseTransfer');
 const WarehouseTransferLine = require('./WarehouseTransferLine');
+const PhysicalCount = require('./PhysicalCount');
+const PhysicalCountLine = require('./PhysicalCountLine');
 // Phase 4 - Approval workflow
 const OrderWorkflow = require('./OrderWorkflow');
 const OrderWorkflowEvent = require('./OrderWorkflowEvent');
@@ -244,6 +246,14 @@ WarehouseTransferLine.belongsTo(WarehouseTransfer, { as: 'transfer', foreignKey:
 WarehouseTransferLine.belongsTo(Item, { as: 'item', foreignKey: 'itemId' });
 WarehouseTransferLine.belongsTo(StockBatch, { as: 'batch', foreignKey: 'batchId' });
 
+// Physical Count (stock-take)
+PhysicalCount.belongsTo(Warehouse, { as: 'warehouse', foreignKey: 'warehouseId' });
+PhysicalCount.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
+PhysicalCount.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
+PhysicalCount.hasMany(PhysicalCountLine, { as: 'lines', foreignKey: 'countId' });
+PhysicalCountLine.belongsTo(PhysicalCount, { as: 'count', foreignKey: 'countId' });
+PhysicalCountLine.belongsTo(Item, { as: 'item', foreignKey: 'itemId' });
+
 module.exports = {
   sequelize, Sequelize, Role, Permission, RolePermission, User, Session, AuditLog, ApprovalRequest, Notification, Attachment,
   Category, Item, StockLevel, StockBatch, StockDocument, StockDocumentLine, StockMovement,
@@ -254,4 +264,5 @@ module.exports = {
   Expense, Payment,
   Driver, Vehicle, FuelFunding, FuelUsage,
   Warehouse, WarehouseStorekeeper, WarehouseStock, WarehouseItemSetting, WarehouseTransfer, WarehouseTransferLine,
+  PhysicalCount, PhysicalCountLine,
 };

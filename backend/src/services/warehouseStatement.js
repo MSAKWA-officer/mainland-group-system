@@ -9,7 +9,12 @@ const { sequelize, Warehouse } = require('../models');
 
    Which ledger movement types land in which column. Edit HERE if the business wants a different grouping.
    Anything NOT listed (stock adjustments, expired write-offs, new types added later) falls into "Other In" / "Other Out",
-   so Book Balance always equals the real stock. */
+   so Book Balance always equals the real stock.
+
+   Physical Count / Inventory Variance come from the Physical Count page (physical_counts): for each warehouse and product we take the LATEST
+   count (not void) whose count date is inside the period. Several warehouses are added together. Variance = counted - book, where "book" is the
+   quantity of THAT warehouse at the end of the period, and only the warehouses that were counted are compared (an uncounted warehouse never
+   shows up as a false difference). A product that was not counted has no Physical Count (null). */
 const IN_COLUMNS = {
   factoryDelivery: ['RECEIVING'],                       // goods received into the warehouse
   fromVehicle: ['TRANSFER_IN', 'TRANSFER_RETURN'],      // received from another warehouse / vehicle (incl. a short-received transfer coming back)
@@ -31,6 +36,33 @@ const monthStartOf = (d) => `${d.slice(0, 7)}-01`;
 const r3 = (v) => Math.round(Number(v || 0) * 1000) / 1000;
 
 const sumIf = (types, dir, period) => `COALESCE(SUM(m.quantity) FILTER (WHERE m.direction = '${dir}' AND m.movement_type IN (${types.map((x) => `'${x}'`).join(',')}) AND ${period}), 0)`;
+
+// Latest non-void count of every product, per warehouse, inside the period, summed over the chosen warehouses.
+// Returns Map(itemId -> { physical, variance, countDate }). Book per warehouse = its quantity now - its net movement after the period.
+async function countsFor({ ids, from, to }) {
+  const rows = await sequelize.query(`
+    WITH b AS (SELECT (CAST(:to AS date) + 1)::timestamp AT TIME ZONE :tz AS pe),
+    lc AS (
+      SELECT DISTINCT ON (c.warehouse_id, l.item_id) c.warehouse_id, l.item_id, l.counted_qty, c.count_date
+      FROM physical_counts c JOIN physical_count_lines l ON l.count_id = c.id
+      WHERE c.status = 'POSTED' AND c.warehouse_id IN (:ids) AND c.count_date >= CAST(:from AS date) AND c.count_date <= CAST(:to AS date)
+      ORDER BY c.warehouse_id, l.item_id, c.count_date DESC, c.created_at DESC)
+    SELECT lc.item_id AS "itemId", lc.counted_qty AS counted, to_char(lc.count_date, 'YYYY-MM-DD') AS "countDate",
+      COALESCE((SELECT SUM(z.quantity) FROM warehouse_stock z WHERE z.warehouse_id = lc.warehouse_id AND z.item_id = lc.item_id), 0)
+      - COALESCE((SELECT SUM(CASE m.direction WHEN 'IN' THEN m.quantity ELSE -m.quantity END) FROM warehouse_movements m, b
+                  WHERE m.warehouse_id = lc.warehouse_id AND m.item_id = lc.item_id AND m.occurred_at >= b.pe), 0) AS book
+    FROM lc`,
+  { replacements: { ids, from, to, tz: TZ }, type: QueryTypes.SELECT });
+  const by = new Map();
+  for (const r of rows) {
+    const x = by.get(r.itemId) || { physical: 0, variance: 0, countDate: r.countDate };
+    x.physical += Number(r.counted); x.variance += Number(r.counted) - Number(r.book);
+    if (r.countDate > x.countDate) x.countDate = r.countDate;
+    by.set(r.itemId, x);
+  }
+  for (const x of by.values()) { x.physical = r3(x.physical); x.variance = r3(x.variance); }
+  return by;
+}
 
 // One statement for the given warehouses (their stock is added together). `ids` must not be empty.
 // Only the products that belong to the chosen warehouse(s) are listed (a stock row or any movement there), never the whole catalogue.
@@ -64,6 +96,7 @@ async function build({ ids, from, to, title, warehouse = null, onlyHeld = true }
     ORDER BY c.name NULLS LAST, i.name, i.sku`,
   { replacements: { ids, from, to, tz: TZ }, type: QueryTypes.SELECT });
 
+  const counts = await countsFor({ ids, from, to });
   const out = [];
   for (const r of rows) {
     const known = (cols) => Object.keys(cols).reduce((a, k) => a + Number(r[k]), 0);
@@ -76,17 +109,22 @@ async function build({ ids, from, to, title, warehouse = null, onlyHeld = true }
       otherOut: r3(Number(r.out_total) - known(OUT_COLUMNS)),
       bookBalance: r3(Number(r.cur) - Number(r.net_pe)),
     };
+    const cnt = counts.get(r.itemId);                       // null = not counted in this period
+    line.physical = cnt ? cnt.physical : null; line.variance = cnt ? cnt.variance : null; line.countDate = cnt ? cnt.countDate : null;
     // Active products always appear (like the paper form); inactive ones only when something happened to them.
     if (r.isActive || NUM_KEYS.some((k) => line[k] !== 0)) out.push(line);
   }
   const totals = Object.fromEntries(NUM_KEYS.map((k) => [k, r3(out.reduce((a, l) => a + l[k], 0))]));
+  const counted = out.filter((l) => l.physical !== null);
+  totals.physical = counted.length ? r3(counted.reduce((a, l) => a + l.physical, 0)) : null;       // totals of the counted products only
+  totals.variance = counted.length ? r3(counted.reduce((a, l) => a + l.variance, 0)) : null;
   const units = [...new Set(out.map((l) => l.unit).filter(Boolean))];
   return { title, warehouse, from, to, monthStart: monthStartOf(from), unit: units.length === 1 ? units[0] : null,
     generatedAt: new Date().toISOString(), rows: out, totals };
 }
 
 const empty = (title, from, to, warehouse = null) => ({ title, warehouse, from, to, monthStart: monthStartOf(from), unit: null,
-  generatedAt: new Date().toISOString(), rows: [], totals: Object.fromEntries(NUM_KEYS.map((k) => [k, 0])) });
+  generatedAt: new Date().toISOString(), rows: [], totals: { ...Object.fromEntries(NUM_KEYS.map((k) => [k, 0])), physical: null, variance: null } });
 
 /* The statements to produce.
    `allowed`  = null (user may see every warehouse) or the ids the user is in charge of.

@@ -27,6 +27,9 @@ const rangeOf = (kind, anchor) => {
 const step = (kind, anchor, k) => (kind === 'day' ? addDays(anchor, k) : kind === 'week' ? addDays(anchor, 7 * k) : kind === 'month' ? addMonths(anchor, k) : addYears(anchor, k));
 const KINDS = ['day', 'week', 'month', 'year', 'custom'];
 const n = (v) => (!v ? '-' : Number(v).toLocaleString(currentLocale(), { maximumFractionDigits: 3 }));
+// Physical Count / Variance: empty when the product was not counted, a real 0 when it was counted and nothing is there.
+const cnt = (v) => (v === null || v === undefined ? '' : Number(v).toLocaleString(currentLocale(), { maximumFractionDigits: 3 }));
+const sgn = (v) => (v === null || v === undefined ? '' : `${Number(v) > 0 ? '+' : ''}${cnt(v)}`);
 
 // Column colours follow the paper form. (Full class names, so Tailwind can see them.)
 const BG = { text: 'bg-white', grey: 'bg-[#F2F2F2]', in: 'bg-[#EAF3E8]', out: 'bg-[#FDF2EC]', book: 'bg-[#EDEDED]', phys: 'bg-[#EAF0FA]' };
@@ -182,7 +185,9 @@ export default function WarehouseStatement() {
                   <tr key={r.itemId}>
                     {COLS.map((c) => {
                       if (c.key === 'code' || c.key === 'name') return <td key={c.key} className={`${CELL} ${BG[c.g]} whitespace-nowrap`}>{r[c.key]}</td>;
-                      if (['physical', 'variance', 'remark'].includes(c.key)) return <td key={c.key} className={`${CELL} ${BG[c.g]}`} />;
+                      if (c.key === 'physical') return <td key={c.key} className={`${CELL} ${BG[c.g]} text-right font-semibold`}>{cnt(r.physical)}</td>;
+                      if (c.key === 'variance') return <td key={c.key} className={`${CELL} ${BG[c.g]} text-right ${r.variance < 0 ? 'text-red-600' : ''}`}>{sgn(r.variance)}</td>;
+                      if (c.key === 'remark') return <td key={c.key} className={`${CELL} ${BG[c.g]} whitespace-nowrap text-[12px]`}>{r.physical === null || r.physical === undefined ? '' : t('countedOn', { date: r.countDate })}</td>;
                       return <td key={c.key} className={`${CELL} ${BG[c.g]} text-right ${c.key === 'bookBalance' ? 'font-semibold' : ''}`}>{n(r[c.key])}</td>;
                     })}
                   </tr>
@@ -191,7 +196,9 @@ export default function WarehouseStatement() {
                   <tr className="bg-[#DDE7F3] font-semibold">
                     {COLS.map((c) => {
                       if (c.key === 'code') return <td key={c.key} className={CELL}>{t('total')}</td>;
-                      if (['name', 'physical', 'variance', 'remark'].includes(c.key)) return <td key={c.key} className={CELL} />;
+                      if (c.key === 'physical') return <td key={c.key} className={`${CELL} text-right`}>{cnt(s.totals.physical)}</td>;
+                      if (c.key === 'variance') return <td key={c.key} className={`${CELL} text-right`}>{sgn(s.totals.variance)}</td>;
+                      if (['name', 'remark'].includes(c.key)) return <td key={c.key} className={CELL} />;
                       return <td key={c.key} className={`${CELL} text-right`}>{n(s.totals[c.key])}</td>;
                     })}
                   </tr>
@@ -200,7 +207,7 @@ export default function WarehouseStatement() {
             </table>
           </div>
           <ul className="mt-3 list-disc space-y-1 pl-5 text-[12px] text-[#595959]">
-            <li>{t('notes.formula')}</li><li>{t('notes.physical')}</li><li>{t('notes.vehicle')}</li><li>{t('notes.other')}</li>
+            <li>{t('notes.formula')}</li><li>{t('notes.physical')}{can('physical_counts.read') && <> <Link to="/physical-counts" className="underline">{t('physicalLink')}</Link></>}</li><li>{t('notes.vehicle')}</li><li>{t('notes.other')}</li>
           </ul>
         </div>
       )}

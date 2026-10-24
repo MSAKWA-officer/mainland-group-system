@@ -1,0 +1,61 @@
+{
+  "title": "Hesabu halisi ya stoo",
+  "registered": "{{total}} zimesajiliwa",
+  "search": "Tafuta namba ya hesabu au maelezo",
+  "allWarehouses": "Maghala yote",
+  "allStatuses": "Hali zote",
+  "new": "Hesabu mpya",
+  "empty": "Hakuna hesabu halisi bado.",
+  "back": "Rudi",
+  "saved": "Hesabu {{no}} imerekodiwa. Sasa inaonekana kwenye ripoti ya stoo (Warehouse Inventory Statement).",
+  "newTitle": "Hesabu mpya ya stoo",
+  "newSubtitle": "Andika ulichohesabu kando ya kila bidhaa. Kurekodi hesabu hakubadilishi stoo; inaonekana kwenye ripoti ya stoo (Hesabu halisi na Tofauti ya stoo).",
+  "viewTitle": "Hesabu halisi",
+  "voidPrompt": "Sababu ya kubatilisha {{no}}:",
+  "voidedBy": "Imebatilishwa na",
+  "bookNote": "Kitabuni = idadi iliyoonyeshwa na vitabu mwishoni mwa {{date}}. Tofauti = Iliyohesabiwa − Kitabuni (+ ziada, − pungufu).",
+  "status": {
+    "POSTED": "Imerekodiwa",
+    "VOID": "Imebatilishwa"
+  },
+  "cols": {
+    "date": "Tarehe ya hesabu",
+    "countNo": "Namba ya hesabu",
+    "warehouse": "Ghala",
+    "itemsCounted": "Bidhaa zilizohesabiwa",
+    "itemsWithDifference": "Zenye tofauti",
+    "totalDifference": "Tofauti jumla",
+    "createdBy": "Aliyehesabu",
+    "status": "Hali",
+    "actions": "Vitendo"
+  },
+  "lineCols": {
+    "code": "Msimbo",
+    "name": "Bidhaa",
+    "unit": "Kipimo",
+    "book": "Idadi kitabuni",
+    "counted": "Idadi iliyohesabiwa",
+    "difference": "Tofauti"
+  },
+  "actions": {
+    "view": "Angalia",
+    "void": "Batilisha"
+  },
+  "form": {
+    "warehouse": "Ghala",
+    "selectWarehouse": "Chagua ghala",
+    "date": "Tarehe ya hesabu",
+    "note": "Maelezo (si lazima)",
+    "products": "Bidhaa",
+    "counted": "zimehesabiwa",
+    "search": "Tafuta bidhaa",
+    "hint": "Acha wazi bidhaa ambayo haikuhesabiwa. Andika 0 kama imehesabiwa na hakuna kitu.",
+    "pickWarehouse": "Chagua ghala na tarehe ya hesabu ili kupakia bidhaa zake.",
+    "noProducts": "Ghala hili halina bidhaa bado.",
+    "nothingCounted": "Andika idadi iliyohesabiwa ya angalau bidhaa moja.",
+    "badQty": "Idadi iliyohesabiwa lazima iwe 0 au zaidi.",
+    "confirm": "Rekodi hesabu hii kwa bidhaa {{n}}?",
+    "submit": "Rekodi hesabu",
+    "saving": "Inahifadhi…"
+  }
+}

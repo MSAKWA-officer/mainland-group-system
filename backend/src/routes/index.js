@@ -64,6 +64,7 @@ router.use('/transfers', authenticate, require('./transferRoutes'));
 // ---- Warehouses ----
 router.use('/warehouses', authenticate, require('./warehouseRoutes'));
 router.use('/warehouse-transfers', authenticate, require('./warehouseTransferRoutes'));
+router.use('/physical-counts', authenticate, require('./physicalCountRoutes'));
 
 // ---- Phase 6: Fuel ----
 router.use('/drivers', authenticate, require('./driverRoutes'));

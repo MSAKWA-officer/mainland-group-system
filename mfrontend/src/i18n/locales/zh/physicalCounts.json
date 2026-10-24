@@ -1,0 +1,61 @@
+{
+  "title": "实物盘点",
+  "registered": "已登记 {{total}} 条",
+  "search": "搜索盘点单号或备注",
+  "allWarehouses": "所有仓库",
+  "allStatuses": "所有状态",
+  "new": "新建盘点",
+  "empty": "暂无盘点记录。",
+  "back": "返回",
+  "saved": "盘点 {{no}} 已记录，现已显示在仓库库存报表中。",
+  "newTitle": "新建实物盘点",
+  "newSubtitle": "在每个产品旁填写盘点数量。记录盘点不会改变库存；它会显示在库存报表（实盘数量和库存差异）中。",
+  "viewTitle": "实物盘点",
+  "voidPrompt": "作废 {{no}} 的原因：",
+  "voidedBy": "作废人",
+  "bookNote": "账面 = {{date}} 结束时账上的数量。差异 = 盘点数 − 账面数（+ 盘盈，− 盘亏）。",
+  "status": {
+    "POSTED": "已记录",
+    "VOID": "已作废"
+  },
+  "cols": {
+    "date": "盘点日期",
+    "countNo": "盘点单号",
+    "warehouse": "仓库",
+    "itemsCounted": "已盘产品数",
+    "itemsWithDifference": "有差异",
+    "totalDifference": "净差异",
+    "createdBy": "盘点人",
+    "status": "状态",
+    "actions": "操作"
+  },
+  "lineCols": {
+    "code": "产品编码",
+    "name": "产品",
+    "unit": "单位",
+    "book": "账面数量",
+    "counted": "盘点数量",
+    "difference": "差异"
+  },
+  "actions": {
+    "view": "查看",
+    "void": "作废"
+  },
+  "form": {
+    "warehouse": "仓库",
+    "selectWarehouse": "选择仓库",
+    "date": "盘点日期",
+    "note": "备注（可选）",
+    "products": "产品",
+    "counted": "已盘",
+    "search": "搜索产品",
+    "hint": "未盘点的产品请留空；已盘点但没有库存请填 0。",
+    "pickWarehouse": "请选择仓库和盘点日期以加载产品。",
+    "noProducts": "该仓库暂无产品。",
+    "nothingCounted": "请至少填写一个产品的盘点数量。",
+    "badQty": "盘点数量必须大于或等于 0。",
+    "confirm": "为 {{n}} 个产品记录此次盘点？",
+    "submit": "记录盘点",
+    "saving": "保存中…"
+  }
+}

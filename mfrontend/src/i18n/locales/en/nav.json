@@ -56,7 +56,8 @@
     "roles": "Roles & permissions",
     "audit": "Audit log",
     "warehouses": "Warehouses",
-    "warehouse-transfers": "Warehouse transfers"
+    "warehouse-transfers": "Warehouse transfers",
+    "physical-counts": "Physical count"
   },
   "password": "Change password",
   "account": "Account",

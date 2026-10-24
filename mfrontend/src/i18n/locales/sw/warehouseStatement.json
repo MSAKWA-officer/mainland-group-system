@@ -49,7 +49,7 @@
   "allNote": "Faili za kupakua zina taarifa ya pamoja kwanza, kisha taarifa ya kila ghala.",
   "notes": {
     "formula": "Salio la vitabuni = Idadi mwanzo wa kipindi + Zilizoingia − Zilizotoka. Tofauti ya stoo = Hesabu halisi − Salio la vitabuni.",
-    "physical": "Hesabu halisi imeachwa wazi: ijaze kwenye faili la Excel (tofauti inahesabiwa yenyewe) au iandike kwenye PDF iliyochapishwa wakati wa kuhesabu stoo.",
+    "physical": "Hesabu halisi inatoka kwenye ukurasa wa Hesabu halisi (hesabu ya mwisho iliyorekodiwa ndani ya kipindi; Maelezo yanaonyesha tarehe yake). Bidhaa ambazo hazijahesabiwa zinabaki wazi: zijaze kwenye Excel au ziandike kwenye PDF iliyochapishwa.",
     "vehicle": "Kutoka gari/ghala na Kwenda gari/ghala = stoo iliyopokelewa kutoka au kupelekwa ghala au gari lingine (uhamisho).",
     "other": "Nyingine (ndani) na Nyingine (nje) zinajumuisha marekebisho ya stoo na bidhaa zilizoisha muda."
   },
@@ -66,5 +66,7 @@
     "anyDayOfWeek": "Siku yoyote ya wiki (Jumatatu–Jumapili)",
     "monthLabel": "Mwezi",
     "yearLabel": "Mwaka"
-  }
+  },
+  "countedOn": "Imehesabiwa {{date}}",
+  "physicalLink": "Fungua Hesabu halisi ya stoo"
 }

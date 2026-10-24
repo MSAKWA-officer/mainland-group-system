@@ -1,0 +1,61 @@
+{
+  "title": "Physical count",
+  "registered": "{{total}} registered",
+  "search": "Search count no. or note",
+  "allWarehouses": "All warehouses",
+  "allStatuses": "All statuses",
+  "new": "New physical count",
+  "empty": "No physical counts yet.",
+  "back": "Back",
+  "saved": "Physical count {{no}} recorded. It now shows in the Warehouse Inventory Statement.",
+  "newTitle": "New physical count",
+  "newSubtitle": "Type what you counted next to each product. Recording a count does not change stock; it appears in the stock report (Physical Count and Inventory Variance).",
+  "viewTitle": "Physical count",
+  "voidPrompt": "Reason for voiding {{no}}:",
+  "voidedBy": "Voided by",
+  "bookNote": "Book = quantity the books showed at the end of {{date}}. Difference = Counted − Book (+ surplus, − shortage).",
+  "status": {
+    "POSTED": "Recorded",
+    "VOID": "Void"
+  },
+  "cols": {
+    "date": "Count date",
+    "countNo": "Count no.",
+    "warehouse": "Warehouse",
+    "itemsCounted": "Products counted",
+    "itemsWithDifference": "With a difference",
+    "totalDifference": "Net difference",
+    "createdBy": "Counted by",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "lineCols": {
+    "code": "Product code",
+    "name": "Product",
+    "unit": "Unit",
+    "book": "Book qty",
+    "counted": "Counted qty",
+    "difference": "Difference"
+  },
+  "actions": {
+    "view": "View",
+    "void": "Void"
+  },
+  "form": {
+    "warehouse": "Warehouse",
+    "selectWarehouse": "Select warehouse",
+    "date": "Count date",
+    "note": "Note (optional)",
+    "products": "Products",
+    "counted": "counted",
+    "search": "Search products",
+    "hint": "Leave a product empty if it was not counted. Type 0 if it was counted and nothing is there.",
+    "pickWarehouse": "Choose a warehouse and a count date to load its products.",
+    "noProducts": "This warehouse has no products yet.",
+    "nothingCounted": "Type the counted quantity of at least one product.",
+    "badQty": "Counted quantities must be 0 or more.",
+    "confirm": "Record this count for {{n}} product(s)?",
+    "submit": "Record count",
+    "saving": "Saving…"
+  }
+}

@@ -52,3 +52,4 @@ export * as fuelBalanceApi from './fuelBalanceApi';
 export * as fuelReportApi from './fuelReportApi';
 export * as warehouseApi from './warehouseApi';
 export * as warehouseTransferApi from './warehouseTransferApi';
+export * as physicalCountApi from './physicalCountApi';

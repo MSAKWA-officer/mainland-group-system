@@ -56,7 +56,8 @@
     "roles": "Majukumu na ruhusa",
     "audit": "Kumbukumbu za ukaguzi",
     "warehouses": "Maghala",
-    "warehouse-transfers": "Uhamisho wa maghala"
+    "warehouse-transfers": "Uhamisho wa maghala",
+    "physical-counts": "Hesabu halisi ya stoo"
   },
   "password": "Badili nenosiri",
   "account": "Akaunti",
