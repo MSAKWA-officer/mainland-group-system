@@ -56,6 +56,14 @@ const qtyText = (v) => String(v ?? 0);
 
 async function inventory(req) {
   const out = [];
+  // null = Manager / Owner (whole company). Everybody else only sees the warehouses they are in charge of or sell from,
+  // exactly like the Stock, Movements and document pages.
+  const mineW = await wh.scope(req);
+  const sc = { mine: mineW && mineW.length ? mineW : [NONE], uid: req.user.id };
+  // Quantity of every active item inside the user's warehouses (used instead of the company-wide stock_levels).
+  const SCOPED = `FROM (SELECT i.id, i.reorder_level, i.selling_price, i.cost_price,
+      COALESCE((SELECT SUM(x.quantity) FROM warehouse_stock x WHERE x.item_id = i.id AND x.warehouse_id IN (:mine)), 0) AS qty
+    FROM items i WHERE i.is_active) t`;
   // Items: how many exist, how many are sold / tracked
   await when(req, 'items.read', out, async () => {
     const r = await one(`SELECT COUNT(*) FILTER (WHERE is_active)::int AS active, COUNT(*) FILTER (WHERE NOT is_active)::int AS inactive,
@@ -66,13 +74,28 @@ async function inventory(req) {
 
   // Stock on hand: units, items in / out / low, batches, retail value
   await when(req, 'stock.read', out, async () => {
+    if (mineW && !mineW.length) return [];                         // no warehouse assigned yet: nothing to show
     const [lvl, exp] = await Promise.all([
-      one(`SELECT COALESCE(SUM(COALESCE(sl.quantity, 0)), 0)::text AS units,
+      mineW
+        ? one(`SELECT COALESCE(SUM(t.qty), 0)::text AS units,
+             COUNT(*) FILTER (WHERE t.qty > 0)::int AS "inStock",
+             COUNT(*) FILTER (WHERE t.qty <= 0)::int AS "out",
+             COUNT(*) FILTER (WHERE t.qty > 0 AND t.reorder_level > 0 AND t.qty <= t.reorder_level)::int AS low,
+             COALESCE(SUM(t.qty * t.selling_price), 0)::text AS retail ${SCOPED}`, sc)
+        : one(`SELECT COALESCE(SUM(COALESCE(sl.quantity, 0)), 0)::text AS units,
              COUNT(*) FILTER (WHERE COALESCE(sl.quantity, 0) > 0)::int AS "inStock",
              COUNT(*) FILTER (WHERE COALESCE(sl.quantity, 0) <= 0)::int AS "out",
              COUNT(*) FILTER (WHERE COALESCE(sl.quantity, 0) > 0 AND i.reorder_level > 0 AND sl.quantity <= i.reorder_level)::int AS low,
              COALESCE(SUM(COALESCE(sl.quantity, 0) * i.selling_price), 0)::text AS retail ${LEVELS}`),
-      one(`SELECT COUNT(*)::int AS batches, COALESCE(SUM(quantity), 0)::text AS "batchUnits",
+      mineW
+        ? one(`SELECT COUNT(DISTINCT b.id)::int AS batches, COALESCE(SUM(wsb.quantity), 0)::text AS "batchUnits",
+             COUNT(DISTINCT b.id) FILTER (WHERE b.expiry_date < CURRENT_DATE)::int AS expired,
+             COALESCE(SUM(wsb.quantity) FILTER (WHERE b.expiry_date < CURRENT_DATE), 0)::text AS "expiredUnits",
+             COUNT(DISTINCT b.id) FILTER (WHERE b.expiry_date >= CURRENT_DATE AND b.expiry_date <= CURRENT_DATE + 30)::int AS soon,
+             COALESCE(SUM(wsb.quantity) FILTER (WHERE b.expiry_date >= CURRENT_DATE AND b.expiry_date <= CURRENT_DATE + 30), 0)::text AS "soonUnits"
+           FROM warehouse_stock_batches wsb JOIN stock_batches b ON b.id = wsb.batch_id
+           WHERE wsb.quantity > 0 AND wsb.warehouse_id IN (:mine)`, sc)
+        : one(`SELECT COUNT(*)::int AS batches, COALESCE(SUM(quantity), 0)::text AS "batchUnits",
              COUNT(*) FILTER (WHERE expiry_date < CURRENT_DATE)::int AS expired,
              COALESCE(SUM(quantity) FILTER (WHERE expiry_date < CURRENT_DATE), 0)::text AS "expiredUnits",
              COUNT(*) FILTER (WHERE expiry_date >= CURRENT_DATE AND expiry_date <= CURRENT_DATE + 30)::int AS soon,
@@ -93,17 +116,25 @@ async function inventory(req) {
       m('expiredUnits', qtyText(exp.expiredUnits), 'qty', '/stock', { tone: tone(exp.expired, 'bad') }),
     ];
   });
-  await when(req, 'stock_reports.valuation', out, async () => m('stockValue', (await one(
-    'SELECT COALESCE(SUM(COALESCE(sl.quantity, 0) * i.cost_price), 0)::text AS v ' + LEVELS)).v, 'money', '/reports'));
+  await when(req, 'stock_reports.valuation', out, async () => {
+    if (mineW && !mineW.length) return [];
+    const r = mineW ? await one(`SELECT COALESCE(SUM(t.qty * t.cost_price), 0)::text AS v ${SCOPED}`, sc)
+      : await one('SELECT COALESCE(SUM(COALESCE(sl.quantity, 0) * i.cost_price), 0)::text AS v ' + LEVELS);
+    return m('stockValue', r.v, 'money', '/reports');
+  });
 
   // Stock movements: units in / out
   await when(req, 'movements.read', out, async () => {
-    const r = await one(`SELECT COUNT(*) FILTER (WHERE occurred_at::date = CURRENT_DATE)::int AS today,
-        COALESCE(SUM(quantity) FILTER (WHERE direction = 'IN' AND occurred_at::date = CURRENT_DATE), 0)::text AS "inToday",
-        COALESCE(SUM(quantity) FILTER (WHERE direction = 'OUT' AND occurred_at::date = CURRENT_DATE), 0)::text AS "outToday",
-        COALESCE(SUM(quantity) FILTER (WHERE direction = 'IN' AND occurred_at >= ${MONTH}), 0)::text AS "inMonth",
-        COALESCE(SUM(quantity) FILTER (WHERE direction = 'OUT' AND occurred_at >= ${MONTH}), 0)::text AS "outMonth"
-      FROM stock_movements`);
+    // A movement belongs to a stock document; restricted users only see those of their warehouses (or created by themselves).
+    const from = mineW
+      ? `stock_movements m JOIN stock_documents d ON d.id = m.document_id WHERE (d.warehouse_id IN (:mine) OR d.created_by = :uid)`
+      : 'stock_movements m WHERE 1 = 1';
+    const r = await one(`SELECT COUNT(*) FILTER (WHERE m.occurred_at::date = CURRENT_DATE)::int AS today,
+        COALESCE(SUM(m.quantity) FILTER (WHERE m.direction = 'IN' AND m.occurred_at::date = CURRENT_DATE), 0)::text AS "inToday",
+        COALESCE(SUM(m.quantity) FILTER (WHERE m.direction = 'OUT' AND m.occurred_at::date = CURRENT_DATE), 0)::text AS "outToday",
+        COALESCE(SUM(m.quantity) FILTER (WHERE m.direction = 'IN' AND m.occurred_at >= ${MONTH}), 0)::text AS "inMonth",
+        COALESCE(SUM(m.quantity) FILTER (WHERE m.direction = 'OUT' AND m.occurred_at >= ${MONTH}), 0)::text AS "outMonth"
+      FROM ${from}`, sc);
     return [m('movementsToday', r.today, 'count', '/movements'), m('unitsInToday', qtyText(r.inToday), 'qty', '/movements'),
       m('unitsOutToday', qtyText(r.outToday), 'qty', '/movements'), m('unitsInMonth', qtyText(r.inMonth), 'qty', '/movements'),
       m('unitsOutMonth', qtyText(r.outMonth), 'qty', '/movements')];
@@ -119,7 +150,7 @@ async function inventory(req) {
         COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'REJECT_OUT' AND posted_at >= ${MONTH})::int AS rout,
         COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'EXPIRED' AND posted_at >= ${MONTH})::int AS exp,
         COUNT(*) FILTER (WHERE status = 'POSTED' AND type = 'DAMAGED' AND posted_at >= ${MONTH})::int AS dmg
-      FROM stock_documents WHERE type IN (:types)`, { types });
+      FROM stock_documents WHERE type IN (:types)${mineW ? ' AND (warehouse_id IN (:mine) OR created_by = :uid)' : ''}`, { types, ...sc });
     const route = { RECEIVING: '/receiving', ADJUSTMENT: '/adjustments', REJECT_IN: '/reject-in', REJECT_OUT: '/reject-out', EXPIRED: '/expired', DAMAGED: '/damaged' };
     const cnt = { RECEIVING: r.rec, ADJUSTMENT: r.adj, REJECT_IN: r.rin, REJECT_OUT: r.rout, EXPIRED: r.exp, DAMAGED: r.dmg };
     const keys = { RECEIVING: 'receivingsMonth', ADJUSTMENT: 'adjustmentsMonth', REJECT_IN: 'rejectInMonth', REJECT_OUT: 'rejectOutMonth', EXPIRED: 'expiredMonth', DAMAGED: 'damagedMonth' };
