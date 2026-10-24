@@ -5,7 +5,7 @@ import { itemApi, rejectOutApi, errMsg, fieldErrs } from '../../api/index.js';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
 import WarehouseField from '../../components/WarehouseField.jsx';
-import { OutLineEditor, buildOutPayload, emptyOutLine, today } from '../stock/OutLines.jsx';
+import { OutListEditor, buildOutPayload, emptyOutLine, today } from '../stock/OutLines.jsx';
 
 // The header fields are shared with RejectOutUpdate.
 export function HeadFields({ head, setHead, fe }) {
@@ -26,11 +26,14 @@ export default function RejectOutCreate() {
   const { t } = useTranslation('rejectOut');
   const { t: td } = useTranslation('docs');
   const navigate = useNavigate();
+  const { t: ts } = useTranslation('stock');
   const [head, setHead] = useState({ docDate: today(), warehouseId: '', partyName: '', reference: '', reason: '' });
-  const [lines, setLines] = useState([emptyOutLine()]);
+  const [lines, setLines] = useState([]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const submit = async (e) => {
-    e.preventDefault(); setErr(''); setFe({}); setBusy(true);
+    e.preventDefault(); setErr(''); setFe({});
+    if (!lines.length) return setErr(ts('lines.noItems'));
+    setBusy(true);
     try {
       // Look up each chosen item so a batch is sent for items that track expiry.
       const items = {};
@@ -51,8 +54,8 @@ export default function RejectOutCreate() {
       <form onSubmit={submit} className="space-y-6 border-t border-line px-6 py-6">
         <Banner>{err}</Banner>
         <HeadFields head={head} setHead={setHead} fe={fe} />
-        <div className="max-w-3xl"><OutLineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} title={t('form.itemsReturned')} qtyLabel={t('form.qtyReturned')} expiryOnly={false} /></div>
-        <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('create.saveDraft')}</button>
+        <div className="max-w-3xl"><OutListEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} title={t('form.itemsReturned')} qtyLabel={t('form.qtyReturned')} expiryOnly={false} /></div>
+        <button className="btn-primary" disabled={busy || !lines.length}>{busy ? t('saving') : t('create.saveDraft')}</button>
       </form>
     </div>
   );

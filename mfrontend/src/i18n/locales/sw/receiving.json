@@ -53,7 +53,20 @@
     "referenceAutoHint": "Hutengenezwa kiotomatiki unapohifadhi",
     "warehouse": "Ghala",
     "selectWarehouse": "Chagua ghala",
-    "noWarehouse": "Hujapangiwa ghala lolote. Mwombe Meneja akupangie."
+    "noWarehouse": "Hujapangiwa ghala lolote. Mwombe Meneja akupangie.",
+    "addItemTitle": "Ongeza bidhaa",
+    "addToList": "Ongeza kwenye orodha",
+    "listTitle": "Bidhaa zilizopokelewa ({{count}})",
+    "emptyList": "Bado hakuna bidhaa zilizoongezwa. Jaza bidhaa hapo juu kisha bonyeza \"Ongeza kwenye orodha\".",
+    "noItems": "Ongeza angalau bidhaa moja kwenye orodha kabla ya kuhifadhi.",
+    "errItem": "Chagua bidhaa.",
+    "errQty": "Weka kiasi kinachozidi 0.",
+    "errBatch": "Weka namba ya bechi na tarehe ya kuisha muda.",
+    "errDuplicate": "Bidhaa na bechi hii tayari iko kwenye orodha. Ihariri au iondoe kwanza.",
+    "remarksAll": "Maelezo (yanahusu bidhaa zote)",
+    "no": "Na.",
+    "batchDetails": "Bechi / kuisha muda",
+    "edit": "Hariri"
   },
   "view": {
     "date": "Tarehe ya kupokea",

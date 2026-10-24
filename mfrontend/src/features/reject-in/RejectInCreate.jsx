@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
 import WarehouseField from '../../components/WarehouseField.jsx';
-import { TrashIcon, PlusIcon } from '../../components/Icons.jsx';
+import { TrashIcon, PlusIcon, PencilIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { qty } from '../stock/StockList.jsx';
 import { buildPayload, emptyLine, today } from '../receiving/ReceivingCreate.jsx';
@@ -90,6 +90,134 @@ export function LineEditor({ lines, setLines, fe = {} }) {
   );
 }
 
+// Used by the New customer return page only (RejectInUpdate keeps LineEditor above).
+//  1. Pick an item, fill in its details and press "Add to list".  2. Added items pile up in ONE table.
+//  3. ONE remarks box under the table applies to every item; the whole list is saved together by the page's Save button.
+export function ListLineEditor({ lines, setLines, fe = {} }) {
+  const { t } = useTranslation('rejectIn');
+  const { t: ts } = useTranslation('stock');
+  const { can } = useAuth();
+  const canCost = can('items.view_cost');
+  const [search, setSearch] = useState('');
+  const [known, setKnown] = useState({});
+  const [draft, setDraft] = useState(emptyLine());
+  const [draftErr, setDraftErr] = useState('');
+  const [shared, setSharedState] = useState('');
+  const found = useLoad(() => itemApi.list({ limit: 100, isActive: true, search: search || undefined }), [search]);
+  const addKnown = (arr) => setKnown((k) => { const n = { ...k }; arr.forEach((x) => { n[x.id] = x; }); return n; });
+  useEffect(() => { if (found.data?.data) addKnown(found.data.data); }, [found.data]);
+  const dItem = known[draft.itemId];
+  const options = [...(found.data?.data || [])];
+  if (dItem && !options.some((o) => o.id === dItem.id)) options.push(dItem);
+  const patch = (p) => { setDraftErr(''); setDraft((d) => ({ ...d, ...p })); };
+  const key = (x) => `${x.itemId}|${x.batchNo.trim()}|${x.expiryDate}`;
+
+  const addToList = () => {
+    if (!draft.itemId) return setDraftErr(ts('lines.errItem'));
+    if (!(Number(draft.quantity) > 0)) return setDraftErr(ts('lines.errQty'));
+    if (dItem?.trackExpiry && (!draft.batchNo.trim() || !draft.expiryDate)) return setDraftErr(ts('lines.errBatchIn'));
+    if (lines.some((x) => key(x) === key(draft))) return setDraftErr(ts('lines.errDuplicate'));
+    setLines([...lines, { ...draft, remarks: shared }]);
+    setDraft(emptyLine()); setDraftErr('');
+  };
+  const editLine = (i) => { setDraft({ ...lines[i] }); setDraftErr(''); setLines(lines.filter((_, n) => n !== i)); };   // back into the entry box
+  const remove = (i) => setLines(lines.filter((_, n) => n !== i));
+  const setShared = (v) => { setSharedState(v); setLines(lines.map((l) => ({ ...l, remarks: v }))); };
+  const onKey = (e) => {   // Enter in the entry box adds the item instead of saving the whole form
+    if (e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
+    e.preventDefault();
+    if (!e.target.dataset.search) addToList();
+  };
+  const remarksErr = Object.keys(fe).find((k) => /^lines\.\d+\.remarks$/.test(k));
+  const rowErr = (i) => Object.entries(fe).filter(([k]) => k.startsWith(`lines.${i}.`) && !k.endsWith('.remarks')).map(([, v]) => v).join(' ');
+  const th = 'h-[39px] border border-[#e5e7eb] bg-white px-2 py-2 text-left text-[14px] font-semibold uppercase';
+  const td = 'border border-[#e5e7eb] px-2 py-2 align-top text-[14px]';
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-base font-semibold">{t('form.itemsReturned')}</h2>
+      <Banner>{found.error}</Banner>
+
+      {/* 1. Entry box */}
+      <div className="rounded-md border border-line p-4" onKeyDown={onKey}>
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <h3 className="text-sm font-semibold">{ts('lines.addItemTitle')}</h3>
+          <input data-search="1" className="input max-w-xs !text-black" placeholder={t('form.searchItems')} value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-4">
+          <div className="sm:col-span-2">
+            <Field label={t('form.item')}>
+              <select className="input !text-black" value={draft.itemId} onChange={(ev) => patch({ itemId: ev.target.value, batchNo: '', expiryDate: '' })}>
+                <option value="">{t('form.selectItem')}</option>
+                {options.map((o) => <option key={o.id} value={o.id}>{t('form.itemOption', { sku: o.sku, name: o.name, qty: qty(o.stock?.quantity), unit: o.unit })}</option>)}
+              </select>
+            </Field>
+          </div>
+          <Field label={dItem ? t('form.qtyReturnedUnit', { unit: dItem.unit }) : t('form.qtyReturned')}>
+            <input className="input !text-black" type="number" min="0.001" step="0.001" value={draft.quantity} onChange={(ev) => patch({ quantity: ev.target.value })} />
+          </Field>
+          {canCost && (
+            <Field label={t('form.unitCost')}><input className="input !text-black" type="number" min="0" step="0.01" value={draft.unitCost} onChange={(ev) => patch({ unitCost: ev.target.value })} /></Field>
+          )}
+          {dItem?.trackExpiry && (
+            <>
+              <Field label={t('form.batchNo')}><input className="input !text-black" maxLength={60} value={draft.batchNo} onChange={(ev) => patch({ batchNo: ev.target.value })} /></Field>
+              <Field label={t('form.expiryDate')}><input className="input !text-black" type="date" value={draft.expiryDate} onChange={(ev) => patch({ expiryDate: ev.target.value })} /></Field>
+            </>
+          )}
+        </div>
+        {draftErr && <p className="mt-3 text-sm text-danger">{draftErr}</p>}
+        <div className="mt-4"><button type="button" className="btn-primary gap-2" onClick={addToList}><PlusIcon /> {ts('lines.addToList')}</button></div>
+      </div>
+
+      {/* 2. The list of added items */}
+      <div className="space-y-2">
+        <h3 className="text-sm font-semibold">{`${t('form.itemsReturned')} (${lines.length})`}</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-white">
+            <thead>
+              <tr>
+                <th className={`${th} text-center`}>{ts('lines.no')}</th>
+                <th className={th}>{t('form.item')}</th>
+                <th className={th}>{ts('lines.quantity')}</th>
+                <th className={th}>{ts('lines.batchDetails')}</th>
+                {canCost && <th className={th}>{t('form.unitCost')}</th>}
+                <th className={th}><span className="sr-only">{ts('lines.edit')}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {lines.length === 0 && <tr><td className={`${td} text-center`} colSpan={canCost ? 6 : 5}>{ts('lines.emptyList')}</td></tr>}
+              {lines.map((l, i) => {
+                const it = known[l.itemId]; const bad = rowErr(i);
+                return (
+                  <tr key={`${key(l)}-${i}`} className="bg-white">
+                    <td className={`${td} w-10 text-center`}>{i + 1}</td>
+                    <td className={td}>{it ? `${it.sku} — ${it.name}` : '…'}{bad && <p className="mt-1 text-xs text-danger">{bad}</p>}</td>
+                    <td className={td}>{qty(l.quantity)} {it?.unit || ''}</td>
+                    <td className={td}>{it?.trackExpiry ? `${l.batchNo} — ${l.expiryDate}` : <span className="text-slate-400">—</span>}</td>
+                    {canCost && <td className={td}>{l.unitCost !== '' && l.unitCost != null ? l.unitCost : <span className="text-slate-400">—</span>}</td>}
+                    <td className={`${td} w-24 whitespace-nowrap text-center`}>
+                      <button type="button" title={ts('lines.edit')} aria-label={ts('lines.edit')} onClick={() => editLine(i)}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-slate-100"><PencilIcon /></button>
+                      <button type="button" title={t('form.removeLine')} aria-label={t('form.removeLine')} onClick={() => remove(i)}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-red-600 transition hover:bg-slate-100"><TrashIcon /></button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* 3. One remark for the whole list */}
+      <Field label={ts('lines.remarksAll')} error={remarksErr ? fe[remarksErr] : undefined}>
+        <textarea className="input !text-black" rows={2} maxLength={255} value={shared} onChange={(e) => setShared(e.target.value)} />
+      </Field>
+    </div>
+  );
+}
+
 export function HeadFields({ head, setHead, fe }) {
   const { t } = useTranslation('rejectIn');
   const set = (k) => (e) => setHead({ ...head, [k]: e.target.value });
@@ -107,13 +235,16 @@ export function HeadFields({ head, setHead, fe }) {
 export default function RejectInCreate() {
   const { t } = useTranslation('rejectIn');
   const { t: td } = useTranslation('docs');
+  const { t: ts } = useTranslation('stock');
   const navigate = useNavigate();
   const { can } = useAuth();
   const [head, setHead] = useState({ docDate: today(), warehouseId: '', partyName: '', reference: '', reason: '' });
-  const [lines, setLines] = useState([emptyLine()]);
+  const [lines, setLines] = useState([]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const submit = async (e) => {
-    e.preventDefault(); setErr(''); setFe({}); setBusy(true);
+    e.preventDefault(); setErr(''); setFe({});
+    if (!lines.length) return setErr(ts('lines.noItems'));
+    setBusy(true);
     try {
       // Look up each chosen item so batch fields are sent for items that track expiry.
       const items = {};
@@ -134,8 +265,8 @@ export default function RejectInCreate() {
       <form onSubmit={submit} className="space-y-6 border-t border-line px-6 py-6">
         <Banner>{err}</Banner>
         <HeadFields head={head} setHead={setHead} fe={fe} />
-        <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} /></div>
-        <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('create.saveDraft')}</button>
+        <div className="max-w-3xl"><ListLineEditor lines={lines} setLines={setLines} fe={fe} /></div>
+        <button className="btn-primary" disabled={busy || !lines.length}>{busy ? t('saving') : t('create.saveDraft')}</button>
       </form>
     </div>
   );

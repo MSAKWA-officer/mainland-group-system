@@ -53,7 +53,20 @@
     "referenceAutoHint": "Generated automatically when you save",
     "warehouse": "Warehouse",
     "selectWarehouse": "Select warehouse",
-    "noWarehouse": "You are not assigned to any warehouse. Ask a Manager to assign you."
+    "noWarehouse": "You are not assigned to any warehouse. Ask a Manager to assign you.",
+    "addItemTitle": "Add an item",
+    "addToList": "Add to list",
+    "listTitle": "Items received ({{count}})",
+    "emptyList": "No items added yet. Fill in the item above and press \"Add to list\".",
+    "noItems": "Add at least one item to the list before saving.",
+    "errItem": "Select an item.",
+    "errQty": "Enter a quantity greater than 0.",
+    "errBatch": "Enter the batch number and expiry date.",
+    "errDuplicate": "This item and batch is already in the list. Edit or remove it first.",
+    "remarksAll": "Remarks (applies to all items)",
+    "no": "No.",
+    "batchDetails": "Batch / expiry",
+    "edit": "Edit"
   },
   "view": {
     "date": "Date received",

@@ -53,7 +53,20 @@
     "referenceAutoHint": "保存时自动生成",
     "warehouse": "仓库",
     "selectWarehouse": "选择仓库",
-    "noWarehouse": "您尚未被分配到任何仓库，请联系经理分配。"
+    "noWarehouse": "您尚未被分配到任何仓库，请联系经理分配。",
+    "addItemTitle": "添加商品",
+    "addToList": "添加到列表",
+    "listTitle": "收货商品（{{count}}）",
+    "emptyList": "尚未添加商品。请填写上方商品信息并点击“添加到列表”。",
+    "noItems": "保存前请至少添加一件商品。",
+    "errItem": "请选择商品。",
+    "errQty": "请输入大于 0 的数量。",
+    "errBatch": "请输入批次号和有效期。",
+    "errDuplicate": "该商品和批次已在列表中，请先编辑或删除。",
+    "remarksAll": "备注（适用于所有商品）",
+    "no": "序号",
+    "batchDetails": "批次 / 有效期",
+    "edit": "编辑"
   },
   "view": {
     "date": "收货日期",
