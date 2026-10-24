@@ -20,7 +20,7 @@ export default function StockUpdate() {
   const { user, can } = useAuth();
   const doc = useLoad(() => stockApi.getAdjustment(id), [id]);
   const [head, setHead] = useState({ docDate: today(), warehouseId: '', reference: '', reason: '' });
-  const [lines, setLines] = useState([emptyLine()]);
+  const [lines, setLines] = useState([]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const d = doc.data;
   useEffect(() => {
@@ -33,7 +33,9 @@ export default function StockUpdate() {
   }, [d]);
   const editable = d && d.status === 'DRAFT' && d.createdBy === user.id;
   const submit = async (e) => {
-    e.preventDefault(); setErr(''); setFe({}); setBusy(true);
+    e.preventDefault(); setErr(''); setFe({});
+    if (!lines.length) { setErr(t('stock:lines.noItems')); return; }
+    setBusy(true);
     try {
       const items = {};
       await Promise.all([...new Set(lines.map((l) => l.itemId))].map(async (iid) => { items[iid] = d.lines.find((l) => l.itemId === iid)?.item || await itemApi.get(iid); }));

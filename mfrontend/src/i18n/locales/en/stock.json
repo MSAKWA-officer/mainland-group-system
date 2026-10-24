@@ -76,7 +76,18 @@
     "optionNoQty": "{{sku}} — {{name}}",
     "no": "No.",
     "batchDetails": "Batch / expiry",
-    "remarksAll": "Remarks (applies to all items)"
+    "remarksAll": "Remarks (applies to all items)",
+    "addItemTitle": "Add an item",
+    "addToList": "Add to list",
+    "listTitle": "Items in this adjustment ({{count}})",
+    "emptyList": "No items added yet. Fill in the item above and press \"Add to list\".",
+    "edit": "Edit",
+    "noItems": "Add at least one item to the list before saving.",
+    "errItem": "Select an item.",
+    "errQty": "Enter a quantity greater than 0.",
+    "errBatchIn": "Enter the batch number and expiry date.",
+    "errBatchOut": "Select the batch.",
+    "errDuplicate": "This item is already in the list. Edit or remove it first."
   },
   "create": {
     "title": "New stock adjustment",

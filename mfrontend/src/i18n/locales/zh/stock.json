@@ -76,7 +76,18 @@
     "optionNoQty": "{{sku}} — {{name}}",
     "no": "序号",
     "batchDetails": "批次 / 到期",
-    "remarksAll": "备注（适用于所有商品）"
+    "remarksAll": "备注（适用于所有商品）",
+    "addItemTitle": "添加商品",
+    "addToList": "添加到列表",
+    "listTitle": "本次调整的商品（{{count}}）",
+    "emptyList": "尚未添加商品。请填写上方商品信息后点击“添加到列表”。",
+    "edit": "编辑",
+    "noItems": "保存前请至少向列表添加一项商品。",
+    "errItem": "请选择商品。",
+    "errQty": "请输入大于 0 的数量。",
+    "errBatchIn": "请输入批号和到期日期。",
+    "errBatchOut": "请选择批次。",
+    "errDuplicate": "该商品已在列表中，请先编辑或删除。"
   },
   "create": {
     "title": "新建库存调整单",

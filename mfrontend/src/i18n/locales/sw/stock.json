@@ -76,7 +76,18 @@
     "optionNoQty": "{{sku}} — {{name}}",
     "no": "Na.",
     "batchDetails": "Bechi / kuisha muda",
-    "remarksAll": "Maelezo (yanahusu bidhaa zote)"
+    "remarksAll": "Maelezo (yanahusu bidhaa zote)",
+    "addItemTitle": "Ongeza bidhaa",
+    "addToList": "Ongeza kwenye orodha",
+    "listTitle": "Bidhaa zilizo kwenye marekebisho haya ({{count}})",
+    "emptyList": "Hakuna bidhaa iliyoongezwa bado. Jaza bidhaa hapo juu kisha bonyeza \"Ongeza kwenye orodha\".",
+    "edit": "Hariri",
+    "noItems": "Ongeza angalau bidhaa moja kwenye orodha kabla ya kuhifadhi.",
+    "errItem": "Chagua bidhaa.",
+    "errQty": "Weka kiasi kikubwa kuliko 0.",
+    "errBatchIn": "Weka namba ya bechi na tarehe ya kuisha muda.",
+    "errBatchOut": "Chagua bechi.",
+    "errDuplicate": "Bidhaa hii tayari ipo kwenye orodha. Ihariri au iondoe kwanza."
   },
   "create": {
     "title": "Marekebisho mapya ya stoo",

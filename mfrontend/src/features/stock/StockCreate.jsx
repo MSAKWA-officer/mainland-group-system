@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
 import WarehouseField from '../../components/WarehouseField.jsx';
-import { TrashIcon, PlusIcon } from '../../components/Icons.jsx';
+import { TrashIcon, PlusIcon, PencilIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { qty } from './StockList.jsx';
 
@@ -29,94 +29,36 @@ export function buildPayload(head, lines, canCost, items) {
   };
 }
 
-// One table row per item. Remarks are NOT per row: the editor below the table holds ONE remark that is applied to every item.
-function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, warehouseId, whQty }) {
-  const { t } = useTranslation('stock');
-  const [batches, setBatches] = useState([]);
+// "Batch / expiry" text of a row in the list. Adding stock shows the batch typed in; removing stock shows the chosen batch.
+function BatchCell({ l, item, warehouseId }) {
+  const [label, setLabel] = useState('');
   useEffect(() => {
-    if (item?.trackExpiry && l.direction === 'OUT') {       // batches of the chosen warehouse only (company-wide when no warehouse is chosen)
-      stockApi.batches(item.id, warehouseId ? { warehouseId } : undefined).then((list) => {
-        setBatches(list);
-        if (warehouseId && l.batchId && !list.some((b) => b.id === l.batchId)) set(i, { batchId: '' });
-      }).catch(() => setBatches([]));
-    } else setBatches([]);
-  }, [item?.id, item?.trackExpiry, l.direction, warehouseId]); // eslint-disable-line
-  const e = (k) => fe[`lines.${i}.${k}`];
-  const err = (k) => (e(k) ? <p className="mt-1 text-xs text-danger">{e(k)}</p> : null);
-  const tracked = item?.trackExpiry;
-  // With a warehouse chosen the quantity shown is that warehouse's stock, not the company total.
-  const optionLabel = (o) => {
-    if (!warehouseId) return t('lines.optionAdjust', { sku: o.sku, name: o.name, qty: qty(o.stock?.quantity), unit: o.unit });
-    if (!whQty || whQty[o.id] === undefined) return t('lines.optionNoQty', { sku: o.sku, name: o.name });
-    return t('lines.optionAdjustWh', { sku: o.sku, name: o.name, qty: qty(whQty[o.id]), unit: o.unit });
-  };
-  const td = 'border border-[#e5e7eb] px-2 py-2 align-top';
-  return (
-    <tr className="bg-white">
-      <td className={`${td} w-10 text-center`}>{i + 1}</td>
-      <td className={`${td} min-w-[230px]`}>
-        <select className="input !text-black" required aria-label={t('lines.item')} value={l.itemId} onChange={(ev) => set(i, { itemId: ev.target.value, batchId: '', batchNo: '', expiryDate: '' })}>
-          <option value="">{t('lines.selectItem')}</option>
-          {options.map((o) => <option key={o.id} value={o.id}>{optionLabel(o)}</option>)}
-        </select>
-        {err('itemId')}
-      </td>
-      <td className={`${td} min-w-[150px]`}>
-        <select className="input !text-black" aria-label={t('lines.action')} value={l.direction} onChange={(ev) => set(i, { direction: ev.target.value, batchId: '', batchNo: '', expiryDate: '', unitCost: '' })}>
-          <option value="IN">{t('lines.addStock')}</option><option value="OUT">{t('lines.removeStock')}</option>
-        </select>
-        {err('direction')}
-      </td>
-      <td className={`${td} w-32 min-w-[110px]`}>
-        <input className="input !text-black" type="number" required min="0.001" step="0.001" aria-label={t('lines.quantity')} value={l.quantity} onChange={(ev) => set(i, { quantity: ev.target.value })} />
-        {item?.unit && <p className="mt-1 text-xs">{item.unit}</p>}
-        {err('quantity')}
-      </td>
-      <td className={`${td} min-w-[190px]`}>
-        {tracked && l.direction === 'IN' && (
-          <div className="space-y-2">
-            <input className="input !text-black" required maxLength={60} placeholder={t('lines.batchNumber')} aria-label={t('lines.batchNumber')} value={l.batchNo} onChange={(ev) => set(i, { batchNo: ev.target.value })} />
-            {err('batchNo')}
-            <input className="input !text-black" type="date" required aria-label={t('lines.expiryDate')} title={t('lines.expiryDate')} value={l.expiryDate} onChange={(ev) => set(i, { expiryDate: ev.target.value })} />
-            {err('expiryDate')}
-          </div>
-        )}
-        {tracked && l.direction === 'OUT' && (
-          <>
-            <select className="input !text-black" required aria-label={t('lines.batch')} value={l.batchId} onChange={(ev) => set(i, { batchId: ev.target.value })}>
-              <option value="">{t('lines.selectBatch')}</option>
-              {batches.map((b) => <option key={b.id} value={b.id}>{t(b.expired ? 'lines.batchOptionExpired' : 'lines.batchOption', { batchNo: b.batchNo, date: b.expiryDate, qty: qty(b.quantity) })}</option>)}
-            </select>
-            {err('batchId')}
-          </>
-        )}
-        {!tracked && <span className="text-slate-400">—</span>}
-      </td>
-      {canCost && (
-        <td className={`${td} w-32 min-w-[110px]`}>
-          {l.direction === 'IN'
-            ? <><input className="input !text-black" type="number" min="0" step="0.01" aria-label={t('lines.unitCost')} value={l.unitCost} onChange={(ev) => set(i, { unitCost: ev.target.value })} />{err('unitCost')}</>
-            : <span className="text-slate-400">—</span>}
-        </td>
-      )}
-      <td className={`${td} w-12 text-center`}>
-        {canRemove && (
-          <button type="button" title={t('lines.removeLine')} aria-label={t('lines.removeLine')} onClick={() => remove(i)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-red-600 transition hover:bg-slate-100"><TrashIcon /></button>
-        )}
-      </td>
-    </tr>
-  );
+    if (item?.trackExpiry && l.direction === 'OUT' && l.batchId) {
+      stockApi.batches(item.id, warehouseId ? { warehouseId } : undefined)
+        .then((list) => { const b = list.find((x) => x.id === l.batchId); setLabel(b ? `${b.batchNo} — ${b.expiryDate}` : ''); }).catch(() => {});
+    }
+  }, [item?.id, item?.trackExpiry, l.batchId, l.direction, warehouseId]); // eslint-disable-line
+  if (!item?.trackExpiry) return <span className="text-slate-400">—</span>;
+  if (l.direction === 'IN') return <>{l.batchNo} — {l.expiryDate}</>;
+  return <>{label || '…'}</>;
 }
 
-// Shared by StockCreate, StockUpdate and the Adjustments pages: item search, ONE table with a row per item, an add-item button and
-// ONE remarks box for the whole table. The API stores remarks per line, so the single remark is copied to every line; the whole
-// document (all rows) is saved together when the form is submitted.
-export function LineEditor({ lines, setLines, fe = {}, warehouseId }) {
+// Shared by StockCreate, StockUpdate and the Adjustments pages.
+//  1. Pick an item, fill in its details and press "Add to list".
+//  2. Added items pile up in ONE table below (each can be edited or removed).
+//  3. ONE remarks box under the table applies to every item; the whole list is saved together by the page's Save button.
+// `lines` holds only items that were added to the list. The API stores remarks per line, so the single remark is copied to every line.
+export function LineEditor({ lines, setLines, fe = {}, warehouseId, initialItemId = '' }) {
   const { t } = useTranslation('stock');
   const { can } = useAuth();
+  const canCost = can('items.view_cost');
   const [search, setSearch] = useState('');
   const [known, setKnown] = useState({});
+  const [draft, setDraft] = useState(() => emptyLine(initialItemId));
+  const [draftErr, setDraftErr] = useState('');
+  const [batches, setBatches] = useState([]);
+  const [shared, setSharedState] = useState('');
+  const seeded = useRef(false);
   const asked = useRef(new Set());
   const found = useLoad(() => itemApi.list({ limit: 100, isActive: true, search: search || undefined }), [search]);
   // Quantities of the chosen warehouse for the same items (same search, same 100-item window).
@@ -124,52 +66,155 @@ export function LineEditor({ lines, setLines, fe = {}, warehouseId }) {
   const whQty = warehouseId && whStock.data ? Object.fromEntries(whStock.data.data.map((r) => [r.itemId, r.quantity])) : null;
   const addKnown = (arr) => setKnown((k) => { const n = { ...k }; arr.forEach((x) => { n[x.id] = x; }); return n; });
   useEffect(() => { if (found.data?.data) addKnown(found.data.data); }, [found.data]);
-  // Items already on a line (prefilled or loaded from a saved draft) may not be in the search results.
+  // Items on the list (loaded from a saved draft) or in the entry box may not be in the search results.
   useEffect(() => {
-    lines.forEach((l) => {
-      if (l.itemId && !known[l.itemId] && !asked.current.has(l.itemId)) {
-        asked.current.add(l.itemId); itemApi.get(l.itemId).then((x) => addKnown([x])).catch(() => {});
-      }
+    [...lines.map((l) => l.itemId), draft.itemId].forEach((id) => {
+      if (id && !known[id] && !asked.current.has(id)) { asked.current.add(id); itemApi.get(id).then((x) => addKnown([x])).catch(() => {}); }
     });
-  }, [lines, known]);
-  const set = (i, patch) => setLines(lines.map((l, n) => (n === i ? { ...l, ...patch } : l)));
-  const remove = (i) => setLines(lines.filter((_, n) => n !== i));
+  }, [lines, draft.itemId, known]);
+  // A saved draft opened for editing: show its remark in the single remarks box.
+  useEffect(() => { if (!seeded.current && lines.length) { seeded.current = true; setSharedState(lines[0].remarks || ''); } }, [lines]);
+
+  const dItem = known[draft.itemId];
+  const dTracked = dItem?.trackExpiry;
+  useEffect(() => {   // batches of the chosen warehouse (company-wide when no warehouse is chosen) for removing tracked stock
+    if (dTracked && draft.direction === 'OUT') {
+      stockApi.batches(dItem.id, warehouseId ? { warehouseId } : undefined).then((list) => {
+        setBatches(list);
+        if (warehouseId && draft.batchId && !list.some((b) => b.id === draft.batchId)) setDraft((d) => ({ ...d, batchId: '' }));
+      }).catch(() => setBatches([]));
+    } else setBatches([]);
+  }, [dItem?.id, dTracked, draft.direction, warehouseId]); // eslint-disable-line
+
   const options = [...(found.data?.data || [])];
-  lines.forEach((l) => { if (l.itemId && known[l.itemId] && !options.some((o) => o.id === l.itemId)) options.push(known[l.itemId]); });
-  const canCost = can('items.view_cost');
-  const shared = lines[0]?.remarks || '';                                        // the one remark shown for the whole table
-  const setShared = (v) => setLines(lines.map((l) => ({ ...l, remarks: v })));   // typing it updates every line
+  if (dItem && !options.some((o) => o.id === dItem.id)) options.push(dItem);
+  // With a warehouse chosen the quantity shown is that warehouse's stock, not the company total.
+  const optionLabel = (o) => {
+    if (!warehouseId) return t('lines.optionAdjust', { sku: o.sku, name: o.name, qty: qty(o.stock?.quantity), unit: o.unit });
+    if (!whQty || whQty[o.id] === undefined) return t('lines.optionNoQty', { sku: o.sku, name: o.name });
+    return t('lines.optionAdjustWh', { sku: o.sku, name: o.name, qty: qty(whQty[o.id]), unit: o.unit });
+  };
+  const patch = (p) => { setDraftErr(''); setDraft((d) => ({ ...d, ...p })); };
+  const key = (x) => `${x.itemId}|${x.direction}|${x.batchId || x.batchNo || ''}`;
+
+  const addToList = () => {
+    if (!draft.itemId) return setDraftErr(t('lines.errItem'));
+    if (!(Number(draft.quantity) > 0)) return setDraftErr(t('lines.errQty'));
+    if (dTracked && draft.direction === 'IN' && (!draft.batchNo.trim() || !draft.expiryDate)) return setDraftErr(t('lines.errBatchIn'));
+    if (dTracked && draft.direction === 'OUT' && !draft.batchId) return setDraftErr(t('lines.errBatchOut'));
+    if (lines.some((x) => key(x) === key(draft))) return setDraftErr(t('lines.errDuplicate'));
+    setLines([...lines, { ...draft, remarks: shared }]);
+    setDraft({ ...emptyLine(), direction: draft.direction });   // ready for the next item; the action (+ / −) stays as it was
+    setDraftErr('');
+  };
+  const editLine = (i) => { setDraft({ ...lines[i] }); setDraftErr(''); setLines(lines.filter((_, n) => n !== i)); };   // back into the entry box
+  const remove = (i) => setLines(lines.filter((_, n) => n !== i));
+  const setShared = (v) => { seeded.current = true; setSharedState(v); setLines(lines.map((l) => ({ ...l, remarks: v }))); };
+  const onKey = (e) => {   // Enter in the entry box adds the item instead of saving the whole form
+    if (e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
+    e.preventDefault();
+    if (!e.target.dataset.search) addToList();
+  };
   const remarksErr = Object.keys(fe).find((k) => /^lines\.\d+\.remarks$/.test(k));
+  const rowErr = (i) => Object.entries(fe).filter(([k]) => k.startsWith(`lines.${i}.`) && !k.endsWith('.remarks')).map(([, v]) => v).join(' ');
   const th = 'h-[39px] border border-[#e5e7eb] bg-white px-2 py-2 text-left text-[14px] font-semibold uppercase';
+  const td = 'border border-[#e5e7eb] px-2 py-2 align-top text-[14px]';
+
   return (
-    <div className="space-y-3">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <h2 className="text-base font-semibold">{t('lines.itemsToAdjust')}</h2>
-        <input className="input max-w-xs !text-black" placeholder={t('lines.searchItems')} value={search} onChange={(e) => setSearch(e.target.value)} />
-      </div>
+    <div className="space-y-4">
+      <h2 className="text-base font-semibold">{t('lines.itemsToAdjust')}</h2>
       <Banner>{found.error}</Banner>
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse bg-white text-[14px]">
-          <thead>
-            <tr>
-              <th className={`${th} text-center`}>{t('lines.no')}</th>
-              <th className={th}>{t('lines.item')}</th>
-              <th className={th}>{t('lines.action')}</th>
-              <th className={th}>{t('lines.quantity')}</th>
-              <th className={th}>{t('lines.batchDetails')}</th>
-              {canCost && <th className={th}>{t('lines.unitCost')}</th>}
-              <th className={th}><span className="sr-only">{t('lines.removeLine')}</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            {lines.map((l, i) => (
-              <LineRow key={i} l={l} i={i} item={known[l.itemId]} options={options} set={set} remove={remove} fe={fe}
-                canCost={canCost} canRemove={lines.length > 1} warehouseId={warehouseId} whQty={whQty} />
-            ))}
-          </tbody>
-        </table>
+
+      {/* 1. Entry box */}
+      <div className="rounded-md border border-line p-4" onKeyDown={onKey}>
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <h3 className="text-sm font-semibold">{t('lines.addItemTitle')}</h3>
+          <input data-search="1" className="input max-w-xs !text-black" placeholder={t('lines.searchItems')} value={search} onChange={(e) => setSearch(e.target.value)} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-4">
+          <div className="sm:col-span-2">
+            <Field label={t('lines.item')}>
+              <select className="input !text-black" value={draft.itemId} onChange={(ev) => patch({ itemId: ev.target.value, batchId: '', batchNo: '', expiryDate: '' })}>
+                <option value="">{t('lines.selectItem')}</option>
+                {options.map((o) => <option key={o.id} value={o.id}>{optionLabel(o)}</option>)}
+              </select>
+            </Field>
+          </div>
+          <Field label={t('lines.action')}>
+            <select className="input !text-black" value={draft.direction} onChange={(ev) => patch({ direction: ev.target.value, batchId: '', batchNo: '', expiryDate: '', unitCost: '' })}>
+              <option value="IN">{t('lines.addStock')}</option><option value="OUT">{t('lines.removeStock')}</option>
+            </select>
+          </Field>
+          <Field label={dItem ? t('lines.quantityUnit', { label: t('lines.quantity'), unit: dItem.unit }) : t('lines.quantity')}>
+            <input className="input !text-black" type="number" min="0.001" step="0.001" value={draft.quantity} onChange={(ev) => patch({ quantity: ev.target.value })} />
+          </Field>
+          {dTracked && draft.direction === 'IN' && (
+            <>
+              <Field label={t('lines.batchNumber')}><input className="input !text-black" maxLength={60} value={draft.batchNo} onChange={(ev) => patch({ batchNo: ev.target.value })} /></Field>
+              <Field label={t('lines.expiryDate')}><input className="input !text-black" type="date" value={draft.expiryDate} onChange={(ev) => patch({ expiryDate: ev.target.value })} /></Field>
+            </>
+          )}
+          {dTracked && draft.direction === 'OUT' && (
+            <div className="sm:col-span-2">
+              <Field label={t('lines.batch')}>
+                <select className="input !text-black" value={draft.batchId} onChange={(ev) => patch({ batchId: ev.target.value })}>
+                  <option value="">{t('lines.selectBatch')}</option>
+                  {batches.map((b) => <option key={b.id} value={b.id}>{t(b.expired ? 'lines.batchOptionExpired' : 'lines.batchOption', { batchNo: b.batchNo, date: b.expiryDate, qty: qty(b.quantity) })}</option>)}
+                </select>
+              </Field>
+            </div>
+          )}
+          {canCost && draft.direction === 'IN' && (
+            <Field label={t('lines.unitCost')}><input className="input !text-black" type="number" min="0" step="0.01" value={draft.unitCost} onChange={(ev) => patch({ unitCost: ev.target.value })} /></Field>
+          )}
+        </div>
+        {draftErr && <p className="mt-3 text-sm text-danger">{draftErr}</p>}
+        <div className="mt-4"><button type="button" className="btn-primary gap-2" onClick={addToList}><PlusIcon /> {t('lines.addToList')}</button></div>
       </div>
-      <button type="button" className="btn-ghost gap-2 !text-black" onClick={() => setLines([...lines, { ...emptyLine(), remarks: shared }])}><PlusIcon /> {t('lines.addAnother')}</button>
+
+      {/* 2. The list of added items */}
+      <div className="space-y-2">
+        <h3 className="text-sm font-semibold">{t('lines.listTitle', { count: lines.length })}</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse bg-white">
+            <thead>
+              <tr>
+                <th className={`${th} text-center`}>{t('lines.no')}</th>
+                <th className={th}>{t('lines.item')}</th>
+                <th className={th}>{t('lines.action')}</th>
+                <th className={th}>{t('lines.quantity')}</th>
+                <th className={th}>{t('lines.batchDetails')}</th>
+                {canCost && <th className={th}>{t('lines.unitCost')}</th>}
+                <th className={th}><span className="sr-only">{t('lines.edit')}</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              {lines.length === 0 && <tr><td className={`${td} text-center`} colSpan={canCost ? 7 : 6}>{t('lines.emptyList')}</td></tr>}
+              {lines.map((l, i) => {
+                const it = known[l.itemId]; const bad = rowErr(i);
+                return (
+                  <tr key={`${key(l)}-${i}`} className="bg-white">
+                    <td className={`${td} w-10 text-center`}>{i + 1}</td>
+                    <td className={td}>{it ? `${it.sku} — ${it.name}` : '…'}{bad && <p className="mt-1 text-xs text-danger">{bad}</p>}</td>
+                    <td className={td}>{l.direction === 'IN' ? t('lines.addStock') : t('lines.removeStock')}</td>
+                    <td className={td}>{qty(l.quantity)} {it?.unit || ''}</td>
+                    <td className={td}><BatchCell l={l} item={it} warehouseId={warehouseId} /></td>
+                    {canCost && <td className={td}>{l.direction === 'IN' && l.unitCost !== '' && l.unitCost != null ? l.unitCost : <span className="text-slate-400">—</span>}</td>}
+                    <td className={`${td} w-24 whitespace-nowrap text-center`}>
+                      <button type="button" title={t('lines.edit')} aria-label={t('lines.edit')} onClick={() => editLine(i)}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-md transition hover:bg-slate-100"><PencilIcon /></button>
+                      <button type="button" title={t('lines.removeLine')} aria-label={t('lines.removeLine')} onClick={() => remove(i)}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-red-600 transition hover:bg-slate-100"><TrashIcon /></button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* 3. One remark for the whole list */}
       <Field label={t('lines.remarksAll')} error={remarksErr ? fe[remarksErr] : undefined}>
         <textarea className="input !text-black" rows={2} maxLength={255} value={shared} onChange={(e) => setShared(e.target.value)} />
       </Field>
@@ -184,11 +229,13 @@ export default function StockCreate() {
   const { can } = useAuth();
   const [params] = useSearchParams();
   const [head, setHead] = useState({ docDate: today(), warehouseId: params.get('warehouseId') || '', reference: '', reason: '' });
-  const [lines, setLines] = useState([emptyLine(params.get('itemId') || '')]);
+  const [lines, setLines] = useState([]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const known = useRef({});
   const submit = async (e) => {
-    e.preventDefault(); setErr(''); setFe({}); setBusy(true);
+    e.preventDefault(); setErr(''); setFe({});
+    if (!lines.length) { setErr(t('lines.noItems')); return; }
+    setBusy(true);
     try {
       // Tracked items need batch fields; look up the flag for each chosen item.
       const items = {};
@@ -214,7 +261,7 @@ export default function StockCreate() {
           <Field label={t('create.reference')} error={fe.reference}><input className="input !text-black" maxLength={100} value={head.reference} onChange={(e) => setHead({ ...head, reference: e.target.value })} /></Field>
           <div className="sm:col-span-2"><Field label={t('create.reason')} error={fe.reason}><textarea className="input !text-black" rows={3} required minLength={3} maxLength={1000} value={head.reason} onChange={(e) => setHead({ ...head, reason: e.target.value })} /></Field></div>
         </div>
-        <div className="max-w-6xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
+        <div className="max-w-6xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} initialItemId={params.get('itemId') || ''} /></div>
         <button className="btn-primary" disabled={busy}>{busy ? t('create.saving') : t('create.saveDraft')}</button>
       </form>
     </div>

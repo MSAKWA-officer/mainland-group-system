@@ -30,10 +30,12 @@ export default function AdjustmentsCreate() {
   const { can } = useAuth();
   const [params] = useSearchParams();
   const [head, setHead] = useState({ docDate: today(), warehouseId: '', reference: '', reason: '' });
-  const [lines, setLines] = useState([emptyLine(params.get('itemId') || '')]);
+  const [lines, setLines] = useState([]);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const submit = async (e) => {
-    e.preventDefault(); setErr(''); setFe({}); setBusy(true);
+    e.preventDefault(); setErr(''); setFe({});
+    if (!lines.length) { setErr(t('stock:lines.noItems')); return; }
+    setBusy(true);
     try {
       // Look up each chosen item so batch fields are sent for items that track expiry.
       const items = {};
@@ -54,7 +56,7 @@ export default function AdjustmentsCreate() {
       <form onSubmit={submit} className="space-y-6 border-t border-line px-6 py-6">
         <Banner>{err}</Banner>
         <HeadFields head={head} setHead={setHead} fe={fe} />
-        <div className="max-w-6xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
+        <div className="max-w-6xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} initialItemId={params.get('itemId') || ''} /></div>
         <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('saveDraft')}</button>
       </form>
     </div>
