@@ -19,7 +19,7 @@ const GROUPS = [
     ['/receiving', 'Receiving', 'receiving.read'], ['/adjustments', 'Adjustments', 'adjustments.read'],
     ['/reject-in', 'Reject in', 'reject_in.read'], ['/reject-out', 'Reject out', 'reject_out.read'],
     ['/expired', 'Expired', 'expired.read'], ['/damaged', 'Damaged', 'damaged.read'],
-    ['/movements', 'Movements', 'movements.read'], ['/reports', 'Stock reports', 'stock_reports.read'],
+    ['/movements', 'Movements', 'movements.read'], ['/reports', 'Stock reports', ['stock_reports.read', 'stock_reports.statement']],
   ] },
   { key: 'sales', label: 'Sales & Customers', items: [
     ['/customers', 'Customers', 'customers.read'], ['/salespersons', 'Salespersons', 'salespersons.read'],
@@ -193,7 +193,7 @@ export default function Shell({ children }) {
   const itemLabel = (to) => (to === '/password' ? t('nav:password') : t(`nav:items.${slug(to)}`));
   const groupLabel = (key) => (key === 'account' ? t('nav:account') : t(`nav:groups.${key}`));
 
-  const groups = GROUPS.map((g) => ({ ...g, items: g.items.filter(([, , p]) => !p || can(p)) })).filter((g) => g.items.length);
+  const groups = GROUPS.map((g) => ({ ...g, items: g.items.filter(([, , p]) => !p || [].concat(p).some(can)) })).filter((g) => g.items.length);
   const page = locate(pathname);
   const trail = [{ label: t('nav:home'), to: '/' }, ...(page.group ? [{ label: groupLabel(page.group) }] : []), { label: itemLabel(page.to), current: true }];
   const today = new Date().toLocaleDateString(currentLocale(), { day: 'numeric', month: 'long', year: 'numeric' });
@@ -225,7 +225,7 @@ export default function Shell({ children }) {
           <div className="flex h-[46px] shrink-0 items-center px-6 text-[14px] uppercase tracking-wide text-white"
             style={{ background: 'linear-gradient(115deg, #12305a 0 78%, #0c2447 78% 100%)' }}>{t('nav:mainMenu')}</div>
           <nav aria-label={t('nav:mainNav')} className="flex-1 overflow-y-auto border-t border-slate-300">
-            {TOP.filter(([, , p]) => !p || can(p)).map(([to]) => (
+            {TOP.filter(([, , p]) => !p || [].concat(p).some(can)).map(([to]) => (
               <NavLink key={to} to={to} end={to === '/'} className={topLink} onClick={closeDrawer}>
                 <Ico name={to === '/' ? 'grid' : 'badge'} className="opacity-80" /><span>{itemLabel(to)}</span>
               </NavLink>

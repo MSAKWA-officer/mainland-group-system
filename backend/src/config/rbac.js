@@ -19,7 +19,7 @@ const PERMISSIONS = {
   reject_out: ['read', 'create', 'approve'],     // Returns to supplier
   expired: ['read', 'create', 'approve'],        // Expired stock write-off
   damaged: ['read', 'create', 'approve'],        // Damaged stock write-off
-  stock_reports: ['read', 'valuation'],          // valuation = anything showing cost / stock value
+  stock_reports: ['read', 'valuation', 'statement'], // valuation = anything showing cost / stock value; statement = ONLY the Warehouse Inventory Statement (own warehouses)
 
   // ---- Phase 3: Sales & Customers ----
   customers: ['read', 'read_all', 'create', 'update', 'assign', 'deactivate', 'delete'], // read_all = every customer, not only own
@@ -104,6 +104,9 @@ const invManager = [...invView, 'categories.create', 'categories.update', 'items
   'items.view_cost', 'movements.read', 'stock_reports.read', 'stock_reports.valuation',
   ...DOC_MODULES.flatMap((m) => [`${m}.read`, `${m}.create`, `${m}.approve`])];
 
+// A salesperson may open only the Warehouse Inventory Statement (limited to the warehouse they sell from); no other stock report.
+const statementOnly = ['stock_reports.statement'];
+
 const salesSelf = ['customers.read', 'customers.create', 'customers.update', 'sales_orders.read', 'sales_orders.create'];
 const salesManager = ['customers.read', 'customers.read_all', 'customers.create', 'customers.update', 'customers.assign', 'customers.deactivate',
   'salespersons.read', 'salespersons.create', 'salespersons.update', 'salespersons.deactivate', 'salespersons.view_commission',
@@ -163,6 +166,6 @@ const ROLES = {
   MANAGER: { name: 'Manager', level: 70, description: 'Reviews and approves; limited admin',
     permissions: [...common, 'approvals.read_all', 'approvals.approve', 'users.read', 'roles.read', ...invManager, ...salesManager, ...salesV2Manager, ...salesExtraManager, ...workflowManager, ...bankingManager, ...fuelManager, ...fuelUsageManager, ...efdManager, ...warehouseManager] },
   STOREKEEPER: { name: 'Storekeeper', level: 40, description: 'Warehouse and stock control', permissions: [...common, ...invStorekeeper, ...workflowStorekeeper, ...bankingSelf.filter((p) => p.startsWith('expenses.')), ...fuelSelf, ...fuelUsageSelf, ...warehouseStorekeeper] },
-  SALESPERSON: { name: 'Sales Person', level: 30, description: 'Own customers, orders and sales', permissions: [...common, ...invView, ...salesSelf, ...salesV2Self, ...salesExtraSelf, ...workflowSelf, ...bankingSelf, ...warehouseSalesperson] },
+  SALESPERSON: { name: 'Sales Person', level: 30, description: 'Own customers, orders and sales', permissions: [...common, ...invView, ...salesSelf, ...salesV2Self, ...salesExtraSelf, ...workflowSelf, ...bankingSelf, ...warehouseSalesperson, ...statementOnly] },
 };
 module.exports = { PERMISSIONS, ALL, ROLES, INVENTORY_MODULES, SALES_MODULES, SALES_V2_MODULES, SALES_V3_MODULES, SALES_EXTRA_MODULES, STAFF_MODULES, DOC_MODULES, WORKFLOW_MODULES, BANKING_MODULES, BANKING_EXTRA_MODULES, FUEL_MODULES, FUEL_USAGE_MODULES, EFD_MODULES, WAREHOUSE_MODULES };

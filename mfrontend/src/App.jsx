@@ -318,8 +318,8 @@ export default function App() {
         <Route path="/salespersons/new" element={<Guard perm="salespersons.create"><SalespersonsCreate /></Guard>} />
         <Route path="/salespersons/:id" element={<Guard perm="salespersons.read"><SalespersonsView /></Guard>} />
         <Route path="/salespersons/:id/edit" element={<Guard perm="salespersons.update"><SalespersonsUpdate /></Guard>} />
-        <Route path="/reports" element={<Guard perm="stock_reports.read"><ReportsList /></Guard>} />
-        <Route path="/reports/warehouse-statement" element={<Guard perm="stock_reports.read"><WarehouseStatement /></Guard>} />
+        <Route path="/reports" element={<Guard perm={['stock_reports.read', 'stock_reports.statement']}><ReportsList /></Guard>} />
+        <Route path="/reports/warehouse-statement" element={<Guard perm={['stock_reports.read', 'stock_reports.statement']}><WarehouseStatement /></Guard>} />
         <Route path="/reports/:type" element={<Guard perm="stock_reports.read"><ReportsView /></Guard>} />
         <Route path="/staff" element={<Guard perm="staff.read"><StaffList /></Guard>} />
         <Route path="/staff/new" element={<Guard perm="staff.create"><StaffForm /></Guard>} />

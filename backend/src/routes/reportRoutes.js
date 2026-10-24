@@ -14,6 +14,8 @@ const pageQ = z.object({ ...paging });
 const expiryQ = z.object({ days: days.default(30), includeExpired: bool.default('true'), ...paging });
 const movementsQ = z.object({ ...range, groupBy: z.enum(['type', 'item']).default('type'), ...paging });
 const rangeQ = z.object({ ...range });
+// Passes when the user holds ANY of the permissions (authorize() needs all of them).
+const anyOf = (...perms) => (req, res, next) => (perms.some((p) => req.user.permissions.has(p)) ? next() : authorize(perms[0])(req, res, next));
 const statementQ = z.object({ warehouseId: uuid.optional(), ...range });
 const statementExportQ = z.object({ format: z.enum(['xlsx', 'pdf']).default('xlsx'), warehouseId: uuid.optional(), ...range });
 
@@ -24,7 +26,7 @@ router.get('/expiry', authorize('stock_reports.read'), validate(expiryQ, 'query'
 router.get('/movements', authorize('stock_reports.read'), validate(movementsQ, 'query'), ah(c.movements));
 router.get('/write-offs', authorize('stock_reports.read'), validate(rangeQ, 'query'), ah(c.writeOffs));
 // Warehouse Inventory Statement: preview as JSON, download as Excel / PDF (combined + one per warehouse when no warehouse is chosen).
-router.get('/warehouse-statement', authorize('stock_reports.read'), validate(statementQ, 'query'), ah(ws.preview));
-router.get('/warehouse-statement/export', authorize('stock_reports.read'), validate(statementExportQ, 'query'), ah(ws.download));
+router.get('/warehouse-statement', anyOf('stock_reports.read', 'stock_reports.statement'), validate(statementQ, 'query'), ah(ws.preview));
+router.get('/warehouse-statement/export', anyOf('stock_reports.read', 'stock_reports.statement'), validate(statementExportQ, 'query'), ah(ws.download));
 router.get('/valuation', authorize('stock_reports.read', 'stock_reports.valuation'), ah(c.valuation));
 module.exports = router;

@@ -45,9 +45,12 @@ export default function ReportsList() {
   const { can } = useAuth();
   const navigate = useNavigate();
   const [days, setDays] = useState(30);
-  const sum = useLoad(() => reportApi.summary({ days }), [days]);
+  // Users with only `stock_reports.statement` (e.g. a Sales Person) get the Warehouse Inventory Statement and nothing else:
+  // no summary tiles and no other report. The API enforces the same rule.
+  const full = can('stock_reports.read');
+  const sum = useLoad(() => (full ? reportApi.summary({ days }) : Promise.resolve(null)), [days, full]);
   const s = sum.data;
-  const rows = Object.entries(REPORTS).filter(([, r]) => !r.valuation || can('stock_reports.valuation'));
+  const rows = Object.entries(REPORTS).filter(([key, r]) => (full || key === 'warehouse-statement') && (!r.valuation || can('stock_reports.valuation')));
   return (
     <div className="panel overflow-hidden bg-white font-[Arial,Helvetica,sans-serif] text-[14px] text-[#212121] shadow-sm">
       <div className="p-4">
@@ -56,13 +59,13 @@ export default function ReportsList() {
       </div>
       <div className="px-4">
         <Banner>{sum.error}</Banner>
-        <div className="mb-3 flex items-center gap-2 text-[14px]">
+        {full && <div className="mb-3 flex items-center gap-2 text-[14px]">
           <label htmlFor="days">{t('countWithin')}</label>
           <input id="days" className="input w-20 !text-[14px] !text-[#212121]" type="number" min="0" max="365" value={days}
             onChange={(e) => setDays(Math.min(365, Math.max(0, Number(e.target.value) || 0)))} />
           <span>{t('days')}</span>
-        </div>
-        <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        </div>}
+        {full && <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Tile label={t('tiles.activeItems')} value={s ? num(s.activeItems, 0) : '…'} />
           <Tile label={t('tiles.totalUnits')} value={s ? num(s.totalUnits) : '…'} />
           <Tile label={t('tiles.outOfStock')} value={s ? num(s.outOfStock, 0) : '…'} />
@@ -71,7 +74,7 @@ export default function ReportsList() {
           <Tile label={t('tiles.expiringWithin', { days })} value={s ? num(s.expiringSoon, 0) : '…'} />
           <Tile label={t('tiles.pendingApprovals')} value={s ? num(s.pendingApprovals, 0) : '…'} />
           {s && s.stockValue !== undefined && <Tile label={t('tiles.stockValue')} value={money(s.stockValue)} />}
-        </div>
+        </div>}
       </div>
       <div className="overflow-x-auto px-4">
         <table className="w-full border-collapse bg-white">
