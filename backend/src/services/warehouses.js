@@ -16,6 +16,16 @@ const scope = async (req, t) => {
   return [...new Set([...keep, ...sell].map((r) => r.warehouseId).filter(Boolean))];
 };
 
+// Who sees the WHOLE item catalogue and who only the items held in their own warehouse(s).
+//   null  = the whole catalogue (Manager / Owner, and anybody who can create items or receive stock - they must be able to find items
+//           that are not in the warehouse yet).
+//   array = warehouse ids: the user (e.g. a salesperson) sees only items that have stock rows in those warehouses; [] = no warehouse assigned.
+const itemScope = async (req) => {
+  const p = req.user.permissions;
+  if (['warehouses.read_all', 'items.create', 'receiving.create'].some((x) => p.has(x))) return null;
+  return (await scope(req)) || [];
+};
+
 // Loads a warehouse the user may use. { active: true } also requires it to be active (receiving into it, transferring out of it, ...).
 async function access(req, id, t, { active = false } = {}) {
   const w = await Warehouse.findByPk(id, { transaction: t });
@@ -33,4 +43,4 @@ async function activeOne(id, t, field = 'warehouseId') {
   return w;
 }
 
-module.exports = { seesAll, scope, access, activeOne };
+module.exports = { seesAll, scope, itemScope, access, activeOne };

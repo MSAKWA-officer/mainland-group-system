@@ -59,18 +59,21 @@ async function inventory(req) {
   // null = Manager / Owner (whole company). Everybody else only sees the warehouses they are in charge of or sell from,
   // exactly like the Stock, Movements and document pages.
   const mineW = await wh.scope(req);
+  const itemMine = await wh.itemScope(req);                      // salesperson: only the items held in his own warehouse(s)
   const sc = { mine: mineW && mineW.length ? mineW : [NONE], uid: req.user.id };
   // Quantity of every active item inside the user's warehouses (used instead of the company-wide stock_levels).
   const SCOPED = `FROM (SELECT i.id, i.reorder_level, i.selling_price, i.cost_price,
       COALESCE((SELECT SUM(x.quantity) FROM warehouse_stock x WHERE x.item_id = i.id AND x.warehouse_id IN (:mine)), 0) AS qty
-    FROM items i WHERE i.is_active) t`;
+    FROM items i WHERE i.is_active${itemMine ? ' AND EXISTS (SELECT 1 FROM warehouse_stock z WHERE z.item_id = i.id AND z.warehouse_id IN (:mine))' : ''}) t`;
   // Items: how many exist, how many are sold / tracked
   await when(req, 'items.read', out, async () => {
+    if (itemMine && !itemMine.length) return [];
     const r = await one(`SELECT COUNT(*) FILTER (WHERE is_active)::int AS active, COUNT(*) FILTER (WHERE NOT is_active)::int AS inactive,
-        COUNT(*) FILTER (WHERE is_active AND track_expiry)::int AS tracked FROM items`);
+        COUNT(*) FILTER (WHERE is_active AND track_expiry)::int AS tracked FROM items i
+        ${itemMine ? 'WHERE EXISTS (SELECT 1 FROM warehouse_stock z WHERE z.item_id = i.id AND z.warehouse_id IN (:mine))' : ''}`, sc);
     return [m('activeItems', r.active, 'count', '/items'), m('inactiveItems', r.inactive, 'count', '/items'), m('expiryTrackedItems', r.tracked, 'count', '/items')];
   });
-  await when(req, 'categories.read', out, async () => m('categories', (await one('SELECT COUNT(*)::int AS c FROM categories')).c, 'count', '/categories'));
+  await when(req, 'categories.read', out, async () => itemMine ? [] : m('categories', (await one('SELECT COUNT(*)::int AS c FROM categories')).c, 'count', '/categories'));
 
   // Stock on hand: units, items in / out / low, batches, retail value
   await when(req, 'stock.read', out, async () => {

@@ -28,6 +28,8 @@ exports.list = async (req, res) => {
   if (categoryId) { where.push('i.category_id = :categoryId'); rep.categoryId = categoryId; }
   if (isActive !== undefined) { where.push('i.is_active = :isActive'); rep.isActive = isActive; }
   if (search) { where.push('(i.name ILIKE :s OR i.sku ILIKE :s OR i.barcode ILIKE :s)'); rep.s = like(search); }
+  // A salesperson only sees the items that are held in his own warehouse(s) (never the rest of the catalogue).
+  if (mine && await wh.itemScope(req)) { where.push('EXISTS (SELECT 1 FROM warehouse_stock z WHERE z.item_id = i.id AND z.warehouse_id IN (:im))'); rep.im = mine; }
 
   let qtyExpr; let reorderExpr; let joins = '';
   if (warehouseId) {
@@ -74,6 +76,11 @@ exports.getOne = async (req, res) => {
     include: [{ model: Category, as: 'category', attributes: ['id', 'name'] }] }] });
   if (!row) throw new AppError(404, 'NOT_FOUND', 'Item not found');
   const mine = await wh.scope(req);
+  if (mine && await wh.itemScope(req)) {                          // item not held in the user's warehouse(s) = does not exist for them
+    const [held] = mine.length ? await sequelize.query('SELECT 1 AS x FROM warehouse_stock WHERE item_id = :i AND warehouse_id IN (:mine) LIMIT 1',
+      { replacements: { i: row.itemId, mine }, type: QueryTypes.SELECT }) : [];
+    if (!held) throw new AppError(404, 'NOT_FOUND', 'Item not found');
+  }
   const out = row.toJSON();
   const rep = { i: row.itemId, ...(mine && { mine }) };
   const none = mine && !mine.length;
@@ -102,6 +109,15 @@ exports.batches = async (req, res) => {
         WHERE wsb.warehouse_id = :w AND b.item_id = :i ${includeEmpty ? '' : 'AND wsb.quantity > 0'} ORDER BY b.expiry_date ASC`,
       { replacements: { w: warehouseId, i: item.id }, type: QueryTypes.SELECT });
     return res.json(rows.map((b) => ({ ...b, expired: b.expiryDate < t })));
+  }
+  const mineB = await wh.scope(req);
+  if (mineB && await wh.itemScope(req)) {                         // salesperson: only the batches held in his own warehouse(s)
+    const rowsB = mineB.length ? await sequelize.query(
+      `SELECT b.id, b.item_id AS "itemId", b.batch_no AS "batchNo", b.expiry_date AS "expiryDate", SUM(wsb.quantity) AS quantity
+         FROM warehouse_stock_batches wsb JOIN stock_batches b ON b.id = wsb.batch_id
+        WHERE b.item_id = :i AND wsb.warehouse_id IN (:mine) ${includeEmpty ? '' : 'AND wsb.quantity > 0'} GROUP BY b.id ORDER BY b.expiry_date ASC`,
+      { replacements: { i: item.id, mine: mineB }, type: QueryTypes.SELECT }) : [];
+    return res.json(rowsB.map((b) => ({ ...b, expired: b.expiryDate < t })));
   }
   const rows = await StockBatch.findAll({ where: { itemId: item.id, ...(!includeEmpty && { quantity: { [Op.gt]: 0 } }) }, order: [['expiryDate', 'ASC']] });
   res.json(rows.map((b) => ({ ...b.toJSON(), expired: b.expiryDate < t })));

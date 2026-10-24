@@ -1,8 +1,9 @@
-const { Op } = require('sequelize');
+const { Op, QueryTypes } = require('sequelize');
 const { sequelize, Item, Category, StockLevel, StockBatch, StockMovement, StockDocumentLine } = require('../models');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
 const audit = require('../services/audit');
+const wh = require('../services/warehouses');
 
 const canCost = (req) => req.user.permissions.has('items.view_cost');
 const pub = (i, req) => { const o = i.toJSON(); if (!canCost(req)) delete o.costPrice; return o; };
@@ -25,20 +26,45 @@ const activeCategory = async (id, t) => {
   if (!c || !c.isActive) throw new AppError(400, 'BAD_CATEGORY', 'Choose an active category');
 };
 
+// Restricted users (a salesperson) only see items that sit in their own warehouse(s), with the quantity of THOSE warehouses.
+const itemIdsOf = async (mine) => (mine.length
+  ? (await sequelize.query('SELECT DISTINCT item_id FROM warehouse_stock WHERE warehouse_id IN (:mine)', { replacements: { mine }, type: QueryTypes.SELECT })).map((r) => r.item_id)
+  : []);
+const qtyIn = async (ids, mine) => {
+  const by = {};
+  if (!ids.length || !mine.length) return by;
+  (await sequelize.query('SELECT item_id, SUM(quantity)::text AS q FROM warehouse_stock WHERE item_id IN (:ids) AND warehouse_id IN (:mine) GROUP BY item_id',
+    { replacements: { ids, mine }, type: QueryTypes.SELECT })).forEach((r) => { by[r.item_id] = r.q; });
+  return by;
+};
+
 exports.list = async (req, res) => {
   const { search, categoryId, isActive, trackExpiry, page, limit } = req.query; const where = {};
+  const mine = await wh.itemScope(req);                                   // null = whole catalogue
+  if (mine) where.id = { [Op.in]: await itemIdsOf(mine) };
   if (categoryId) where.categoryId = categoryId;
   if (isActive !== undefined) where.isActive = isActive;
   if (trackExpiry !== undefined) where.trackExpiry = trackExpiry;
   if (search) where[Op.or] = ['name', 'sku', 'barcode'].map((f) => ({ [f]: { [Op.iLike]: like(search) } }));
   const { rows, count } = await Item.findAndCountAll({ where, include: inc, distinct: true, order: [['name', 'ASC']], limit, offset: (page - 1) * limit });
-  res.json({ data: rows.map((i) => pub(i, req)), total: count, page, limit });
+  const by = mine ? await qtyIn(rows.map((i) => i.id), mine) : null;
+  res.json({ data: rows.map((i) => { const o = pub(i, req); if (by) o.stock = { quantity: by[i.id] || '0' }; return o; }), total: count, page, limit });
 };
 
 exports.getOne = async (req, res) => {
   const i = await show(req.params.id); if (!i) throw new AppError(404, 'NOT_FOUND', 'Item not found');
   const out = pub(i, req);
-  if (i.trackExpiry) out.batches = await StockBatch.findAll({ where: { itemId: i.id, quantity: { [Op.gt]: 0 } }, order: [['expiryDate', 'ASC']] });
+  const mine = await wh.itemScope(req);
+  if (mine) {                                                             // an item outside the user's warehouse(s) does not exist for them
+    if (!(await itemIdsOf(mine)).includes(i.id)) throw new AppError(404, 'NOT_FOUND', 'Item not found');
+    out.stock = { quantity: (await qtyIn([i.id], mine))[i.id] || '0' };
+  }
+  if (i.trackExpiry) out.batches = mine
+    ? await sequelize.query(`SELECT b.id, b.item_id AS "itemId", b.batch_no AS "batchNo", b.expiry_date AS "expiryDate", SUM(wsb.quantity) AS quantity
+        FROM warehouse_stock_batches wsb JOIN stock_batches b ON b.id = wsb.batch_id
+        WHERE b.item_id = :i AND wsb.quantity > 0 AND wsb.warehouse_id IN (:mine) GROUP BY b.id ORDER BY b.expiry_date`,
+      { replacements: { i: i.id, mine: mine.length ? mine : ['00000000-0000-0000-0000-000000000000'] }, type: QueryTypes.SELECT })
+    : await StockBatch.findAll({ where: { itemId: i.id, quantity: { [Op.gt]: 0 } }, order: [['expiryDate', 'ASC']] });
   res.json(out);
 };
 
