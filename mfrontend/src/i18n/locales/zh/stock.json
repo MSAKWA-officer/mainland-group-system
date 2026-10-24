@@ -73,7 +73,10 @@
     "removeLine": "删除此行",
     "addAnother": "再添加一项商品",
     "optionAdjustWh": "{{sku}} — {{name}}（本仓库 {{qty}} {{unit}}）",
-    "optionNoQty": "{{sku}} — {{name}}"
+    "optionNoQty": "{{sku}} — {{name}}",
+    "no": "序号",
+    "batchDetails": "批次 / 到期",
+    "remarksAll": "备注（适用于所有商品）"
   },
   "create": {
     "title": "新建库存调整单",

@@ -54,7 +54,7 @@ export default function AdjustmentsCreate() {
       <form onSubmit={submit} className="space-y-6 border-t border-line px-6 py-6">
         <Banner>{err}</Banner>
         <HeadFields head={head} setHead={setHead} fe={fe} />
-        <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
+        <div className="max-w-6xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
         <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('saveDraft')}</button>
       </form>
     </div>

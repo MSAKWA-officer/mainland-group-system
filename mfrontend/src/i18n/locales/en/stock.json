@@ -73,7 +73,10 @@
     "removeLine": "Remove line",
     "addAnother": "Add another item",
     "optionAdjustWh": "{{sku}} — {{name}} ({{qty}} {{unit}} in this warehouse)",
-    "optionNoQty": "{{sku}} — {{name}}"
+    "optionNoQty": "{{sku}} — {{name}}",
+    "no": "No.",
+    "batchDetails": "Batch / expiry",
+    "remarksAll": "Remarks (applies to all items)"
   },
   "create": {
     "title": "New stock adjustment",

@@ -29,6 +29,7 @@ export function buildPayload(head, lines, canCost, items) {
   };
 }
 
+// One table row per item. Remarks are NOT per row: the editor below the table holds ONE remark that is applied to every item.
 function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, warehouseId, whQty }) {
   const { t } = useTranslation('stock');
   const [batches, setBatches] = useState([]);
@@ -41,6 +42,7 @@ function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, war
     } else setBatches([]);
   }, [item?.id, item?.trackExpiry, l.direction, warehouseId]); // eslint-disable-line
   const e = (k) => fe[`lines.${i}.${k}`];
+  const err = (k) => (e(k) ? <p className="mt-1 text-xs text-danger">{e(k)}</p> : null);
   const tracked = item?.trackExpiry;
   // With a warehouse chosen the quantity shown is that warehouse's stock, not the company total.
   const optionLabel = (o) => {
@@ -48,57 +50,68 @@ function LineRow({ l, i, item, options, set, remove, fe, canCost, canRemove, war
     if (!whQty || whQty[o.id] === undefined) return t('lines.optionNoQty', { sku: o.sku, name: o.name });
     return t('lines.optionAdjustWh', { sku: o.sku, name: o.name, qty: qty(whQty[o.id]), unit: o.unit });
   };
+  const td = 'border border-[#e5e7eb] px-2 py-2 align-top';
   return (
-    <div className="rounded-md border border-line p-4">
-      <div className="grid gap-3 sm:grid-cols-4">
-        <div className="sm:col-span-2">
-          <Field label={t('lines.item')} error={e('itemId')}>
-            <select className="input !text-black" required value={l.itemId} onChange={(ev) => set(i, { itemId: ev.target.value, batchId: '', batchNo: '', expiryDate: '' })}>
-              <option value="">{t('lines.selectItem')}</option>
-              {options.map((o) => <option key={o.id} value={o.id}>{optionLabel(o)}</option>)}
-            </select>
-          </Field>
-        </div>
-        <Field label={t('lines.action')} error={e('direction')}>
-          <select className="input !text-black" value={l.direction} onChange={(ev) => set(i, { direction: ev.target.value, batchId: '', batchNo: '', expiryDate: '', unitCost: '' })}>
-            <option value="IN">{t('lines.addStock')}</option><option value="OUT">{t('lines.removeStock')}</option>
-          </select>
-        </Field>
-        <Field label={item ? t('lines.quantityUnit', { label: t('lines.quantity'), unit: item.unit }) : t('lines.quantity')} error={e('quantity')}>
-          <input className="input !text-black" type="number" required min="0.001" step="0.001" value={l.quantity} onChange={(ev) => set(i, { quantity: ev.target.value })} />
-        </Field>
+    <tr className="bg-white">
+      <td className={`${td} w-10 text-center`}>{i + 1}</td>
+      <td className={`${td} min-w-[230px]`}>
+        <select className="input !text-black" required aria-label={t('lines.item')} value={l.itemId} onChange={(ev) => set(i, { itemId: ev.target.value, batchId: '', batchNo: '', expiryDate: '' })}>
+          <option value="">{t('lines.selectItem')}</option>
+          {options.map((o) => <option key={o.id} value={o.id}>{optionLabel(o)}</option>)}
+        </select>
+        {err('itemId')}
+      </td>
+      <td className={`${td} min-w-[150px]`}>
+        <select className="input !text-black" aria-label={t('lines.action')} value={l.direction} onChange={(ev) => set(i, { direction: ev.target.value, batchId: '', batchNo: '', expiryDate: '', unitCost: '' })}>
+          <option value="IN">{t('lines.addStock')}</option><option value="OUT">{t('lines.removeStock')}</option>
+        </select>
+        {err('direction')}
+      </td>
+      <td className={`${td} w-32 min-w-[110px]`}>
+        <input className="input !text-black" type="number" required min="0.001" step="0.001" aria-label={t('lines.quantity')} value={l.quantity} onChange={(ev) => set(i, { quantity: ev.target.value })} />
+        {item?.unit && <p className="mt-1 text-xs">{item.unit}</p>}
+        {err('quantity')}
+      </td>
+      <td className={`${td} min-w-[190px]`}>
         {tracked && l.direction === 'IN' && (
-          <>
-            <Field label={t('lines.batchNumber')} error={e('batchNo')}><input className="input !text-black" required maxLength={60} value={l.batchNo} onChange={(ev) => set(i, { batchNo: ev.target.value })} /></Field>
-            <Field label={t('lines.expiryDate')} error={e('expiryDate')}><input className="input !text-black" type="date" required value={l.expiryDate} onChange={(ev) => set(i, { expiryDate: ev.target.value })} /></Field>
-          </>
-        )}
-        {tracked && l.direction === 'OUT' && (
-          <div className="sm:col-span-2">
-            <Field label={t('lines.batch')} error={e('batchId')}>
-              <select className="input !text-black" required value={l.batchId} onChange={(ev) => set(i, { batchId: ev.target.value })}>
-                <option value="">{t('lines.selectBatch')}</option>
-                {batches.map((b) => <option key={b.id} value={b.id}>{t(b.expired ? 'lines.batchOptionExpired' : 'lines.batchOption', { batchNo: b.batchNo, date: b.expiryDate, qty: qty(b.quantity) })}</option>)}
-              </select>
-            </Field>
+          <div className="space-y-2">
+            <input className="input !text-black" required maxLength={60} placeholder={t('lines.batchNumber')} aria-label={t('lines.batchNumber')} value={l.batchNo} onChange={(ev) => set(i, { batchNo: ev.target.value })} />
+            {err('batchNo')}
+            <input className="input !text-black" type="date" required aria-label={t('lines.expiryDate')} title={t('lines.expiryDate')} value={l.expiryDate} onChange={(ev) => set(i, { expiryDate: ev.target.value })} />
+            {err('expiryDate')}
           </div>
         )}
-        {canCost && l.direction === 'IN' && (
-          <Field label={t('lines.unitCost')} error={e('unitCost')}><input className="input !text-black" type="number" min="0" step="0.01" value={l.unitCost} onChange={(ev) => set(i, { unitCost: ev.target.value })} /></Field>
+        {tracked && l.direction === 'OUT' && (
+          <>
+            <select className="input !text-black" required aria-label={t('lines.batch')} value={l.batchId} onChange={(ev) => set(i, { batchId: ev.target.value })}>
+              <option value="">{t('lines.selectBatch')}</option>
+              {batches.map((b) => <option key={b.id} value={b.id}>{t(b.expired ? 'lines.batchOptionExpired' : 'lines.batchOption', { batchNo: b.batchNo, date: b.expiryDate, qty: qty(b.quantity) })}</option>)}
+            </select>
+            {err('batchId')}
+          </>
         )}
-        <div className="sm:col-span-3"><Field label={t('lines.remarks')} error={e('remarks')}><input className="input !text-black" maxLength={255} value={l.remarks} onChange={(ev) => set(i, { remarks: ev.target.value })} /></Field></div>
-        <div className="flex items-end justify-end">
-          {canRemove && (
-            <button type="button" title={t('lines.removeLine')} aria-label={t('lines.removeLine')} onClick={() => remove(i)}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md text-red-600 transition hover:bg-slate-100"><TrashIcon /></button>
-          )}
-        </div>
-      </div>
-    </div>
+        {!tracked && <span className="text-slate-400">—</span>}
+      </td>
+      {canCost && (
+        <td className={`${td} w-32 min-w-[110px]`}>
+          {l.direction === 'IN'
+            ? <><input className="input !text-black" type="number" min="0" step="0.01" aria-label={t('lines.unitCost')} value={l.unitCost} onChange={(ev) => set(i, { unitCost: ev.target.value })} />{err('unitCost')}</>
+            : <span className="text-slate-400">—</span>}
+        </td>
+      )}
+      <td className={`${td} w-12 text-center`}>
+        {canRemove && (
+          <button type="button" title={t('lines.removeLine')} aria-label={t('lines.removeLine')} onClick={() => remove(i)}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-red-600 transition hover:bg-slate-100"><TrashIcon /></button>
+        )}
+      </td>
+    </tr>
   );
 }
 
-// Shared by StockCreate and StockUpdate: item search, one editable card per line, and an add-line button.
+// Shared by StockCreate, StockUpdate and the Adjustments pages: item search, ONE table with a row per item, an add-item button and
+// ONE remarks box for the whole table. The API stores remarks per line, so the single remark is copied to every line; the whole
+// document (all rows) is saved together when the form is submitted.
 export function LineEditor({ lines, setLines, fe = {}, warehouseId }) {
   const { t } = useTranslation('stock');
   const { can } = useAuth();
@@ -123,6 +136,11 @@ export function LineEditor({ lines, setLines, fe = {}, warehouseId }) {
   const remove = (i) => setLines(lines.filter((_, n) => n !== i));
   const options = [...(found.data?.data || [])];
   lines.forEach((l) => { if (l.itemId && known[l.itemId] && !options.some((o) => o.id === l.itemId)) options.push(known[l.itemId]); });
+  const canCost = can('items.view_cost');
+  const shared = lines[0]?.remarks || '';                                        // the one remark shown for the whole table
+  const setShared = (v) => setLines(lines.map((l) => ({ ...l, remarks: v })));   // typing it updates every line
+  const remarksErr = Object.keys(fe).find((k) => /^lines\.\d+\.remarks$/.test(k));
+  const th = 'h-[39px] border border-[#e5e7eb] bg-white px-2 py-2 text-left text-[14px] font-semibold uppercase';
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -130,11 +148,31 @@ export function LineEditor({ lines, setLines, fe = {}, warehouseId }) {
         <input className="input max-w-xs !text-black" placeholder={t('lines.searchItems')} value={search} onChange={(e) => setSearch(e.target.value)} />
       </div>
       <Banner>{found.error}</Banner>
-      {lines.map((l, i) => (
-        <LineRow key={i} l={l} i={i} item={known[l.itemId]} options={options} set={set} remove={remove} fe={fe}
-          canCost={can('items.view_cost')} canRemove={lines.length > 1} warehouseId={warehouseId} whQty={whQty} />
-      ))}
-      <button type="button" className="btn-ghost gap-2 !text-black" onClick={() => setLines([...lines, emptyLine()])}><PlusIcon /> {t('lines.addAnother')}</button>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse bg-white text-[14px]">
+          <thead>
+            <tr>
+              <th className={`${th} text-center`}>{t('lines.no')}</th>
+              <th className={th}>{t('lines.item')}</th>
+              <th className={th}>{t('lines.action')}</th>
+              <th className={th}>{t('lines.quantity')}</th>
+              <th className={th}>{t('lines.batchDetails')}</th>
+              {canCost && <th className={th}>{t('lines.unitCost')}</th>}
+              <th className={th}><span className="sr-only">{t('lines.removeLine')}</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            {lines.map((l, i) => (
+              <LineRow key={i} l={l} i={i} item={known[l.itemId]} options={options} set={set} remove={remove} fe={fe}
+                canCost={canCost} canRemove={lines.length > 1} warehouseId={warehouseId} whQty={whQty} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <button type="button" className="btn-ghost gap-2 !text-black" onClick={() => setLines([...lines, { ...emptyLine(), remarks: shared }])}><PlusIcon /> {t('lines.addAnother')}</button>
+      <Field label={t('lines.remarksAll')} error={remarksErr ? fe[remarksErr] : undefined}>
+        <textarea className="input !text-black" rows={2} maxLength={255} value={shared} onChange={(e) => setShared(e.target.value)} />
+      </Field>
     </div>
   );
 }
@@ -176,7 +214,7 @@ export default function StockCreate() {
           <Field label={t('create.reference')} error={fe.reference}><input className="input !text-black" maxLength={100} value={head.reference} onChange={(e) => setHead({ ...head, reference: e.target.value })} /></Field>
           <div className="sm:col-span-2"><Field label={t('create.reason')} error={fe.reason}><textarea className="input !text-black" rows={3} required minLength={3} maxLength={1000} value={head.reason} onChange={(e) => setHead({ ...head, reason: e.target.value })} /></Field></div>
         </div>
-        <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
+        <div className="max-w-6xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
         <button className="btn-primary" disabled={busy}>{busy ? t('create.saving') : t('create.saveDraft')}</button>
       </form>
     </div>

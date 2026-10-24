@@ -73,7 +73,10 @@
     "removeLine": "Ondoa mstari",
     "addAnother": "Ongeza bidhaa nyingine",
     "optionAdjustWh": "{{sku}} — {{name}} ({{qty}} {{unit}} kwenye ghala hili)",
-    "optionNoQty": "{{sku}} — {{name}}"
+    "optionNoQty": "{{sku}} — {{name}}",
+    "no": "Na.",
+    "batchDetails": "Bechi / kuisha muda",
+    "remarksAll": "Maelezo (yanahusu bidhaa zote)"
   },
   "create": {
     "title": "Marekebisho mapya ya stoo",

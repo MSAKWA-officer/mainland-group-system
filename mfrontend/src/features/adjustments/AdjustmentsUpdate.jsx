@@ -55,7 +55,7 @@ export default function AdjustmentsUpdate() {
         {editable && (
           <>
             <HeadFields head={head} setHead={setHead} fe={fe} />
-            <div className="max-w-3xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
+            <div className="max-w-6xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
             <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('saveChanges')}</button>
           </>
         )}
