@@ -67,8 +67,11 @@
   "stockCols": {
     "item": "Bidhaa",
     "category": "Kategoria",
+    "batch": "Bechi",
     "quantity": "Kiasi",
-    "batches": "Bechi (kiasi, kuisha muda)"
+    "expiry": "Kuisha muda",
+    "total": "Jumla",
+    "expired": "imeisha muda"
   },
   "moveCols": {
     "date": "Tarehe",

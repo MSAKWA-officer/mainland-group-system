@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { warehouseApi } from '../../api/index.js';
@@ -20,7 +20,8 @@ function StockTab({ id }) {
   const { t } = useTranslation('warehouses');
   const [page, setPage] = useState(1); const [search, setSearch] = useState('');
   const q = useLoad(() => warehouseApi.stock(id, { page, ...(search && { search }) }), [id, page, search]);
-  const heads = ['item', 'category', 'quantity', 'batches'];
+  const heads = ['item', 'category', 'batch', 'quantity', 'expiry'];   // batch, quantity and expiry each have their own column
+  const today = new Date().toISOString().slice(0, 10);
   return (
     <div>
       <input type="search" className="input mb-3 max-w-sm" placeholder={t('view.searchItems')} value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
@@ -29,14 +30,32 @@ function StockTab({ id }) {
         <thead><tr>{heads.map((h, i) => <th key={h} className={`${HEAD} ${al(i)}`}>{t(`stockCols.${h}`)}</th>)}</tr></thead>
         <tbody>
           {q.data && q.data.data.length === 0 && <tr><td className={CELL} colSpan={heads.length}>{t('view.noStock')}</td></tr>}
-          {(q.data?.data || []).map((r) => (
-            <tr key={r.itemId}>
-              <td className={`${CELL} text-left`}><div>{r.item.name}</div><div className="text-xs">{r.item.sku}</div></td>
-              <td className={`${CELL} text-center`}>{r.item.category?.name || '—'}</td>
-              <td className={`${CELL} text-center`}>{qty(r.quantity)} {r.item.unit}</td>
-              <td className={`${CELL} text-center`}>{r.batches.length ? r.batches.map((b) => `${b.batchNo} (${qty(b.quantity)}, ${b.expiryDate})`).join('; ') : '—'}</td>
-            </tr>
-          ))}
+          {(q.data?.data || []).map((r) => {
+            // One row per batch (an item without batches has a single row). Item and category are written once and span all its rows.
+            const rows = r.batches.length ? r.batches : [null];
+            return (
+              <Fragment key={r.itemId}>
+                {rows.map((b, n) => (
+                  <tr key={b ? b.id : 'all'}>
+                    {n === 0 && (
+                      <>
+                        <td rowSpan={rows.length} className={`${CELL} text-left`}>
+                          <div>{r.item.name}</div><div className="text-xs">{r.item.sku}</div>
+                          {rows.length > 1 && <div className="mt-1 text-xs">{t('stockCols.total')}: <b>{qty(r.quantity)} {r.item.unit}</b></div>}
+                        </td>
+                        <td rowSpan={rows.length} className={`${CELL} text-center`}>{r.item.category?.name || '—'}</td>
+                      </>
+                    )}
+                    <td className={`${CELL} text-center`}>{b ? b.batchNo : '—'}</td>
+                    <td className={`${CELL} text-center`}>{qty(b ? b.quantity : r.quantity)} {r.item.unit}</td>
+                    <td className={`${CELL} text-center ${b && b.expiryDate < today ? 'text-red-600' : ''}`}>
+                      {b ? <>{b.expiryDate}{b.expiryDate < today && <span className="ml-1 text-xs">({t('stockCols.expired')})</span>}</> : '—'}
+                    </td>
+                  </tr>
+                ))}
+              </Fragment>
+            );
+          })}
         </tbody>
       </table></div>
       {q.data && <Pager page={page} total={q.data.total} limit={q.data.limit} set={setPage} />}

@@ -67,8 +67,11 @@
   "stockCols": {
     "item": "商品",
     "category": "类别",
+    "batch": "批次",
     "quantity": "数量",
-    "batches": "批次（数量，到期日）"
+    "expiry": "到期日",
+    "total": "合计",
+    "expired": "已过期"
   },
   "moveCols": {
     "date": "日期",

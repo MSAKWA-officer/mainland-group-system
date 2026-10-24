@@ -67,8 +67,11 @@
   "stockCols": {
     "item": "Item",
     "category": "Category",
+    "batch": "Batch",
     "quantity": "Quantity",
-    "batches": "Batches (qty, expiry)"
+    "expiry": "Expiry",
+    "total": "Total",
+    "expired": "expired"
   },
   "moveCols": {
     "date": "Date",
