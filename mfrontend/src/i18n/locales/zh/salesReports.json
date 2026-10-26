@@ -29,7 +29,8 @@
     "mYear": "按年",
     "mRange": "日期范围",
     "byYear": "按年",
-    "downloadCsv": "下载 CSV"
+    "downloadCsv": "下载 CSV",
+    "downloadPdf": "打印 PDF"
   },
   "errors": {
     "chooseBoth": "请选择两个日期。",

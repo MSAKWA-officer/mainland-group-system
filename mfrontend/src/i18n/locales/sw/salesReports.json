@@ -29,7 +29,8 @@
     "mYear": "Mwaka",
     "mRange": "Kuanzia–hadi tarehe",
     "byYear": "Kwa mwaka",
-    "downloadCsv": "Pakua CSV"
+    "downloadCsv": "Pakua CSV",
+    "downloadPdf": "Print PDF"
   },
   "errors": {
     "chooseBoth": "Chagua tarehe zote mbili.",

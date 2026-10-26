@@ -5,7 +5,6 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import useLoad from '../../utils/useLoad';
 import { currentLocale } from '../../utils/locale';
-import { CELL, HEAD } from '../../components/TableUi.js';
 import { NOTICE, day, money, tzToday } from '../efdReconciliations/reconUi.jsx';
 
 const TABS = ['detail', 'summary', 'salespersons', 'customers', 'products'];
@@ -14,6 +13,8 @@ const addDays = (d, n) => new Date(Date.parse(`${d}T00:00:00Z`) + n * 86400000).
 const monthEnd = (ym) => { const [y, m] = ym.split('-').map(Number); return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); };
 const span = (a, b) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86400000) + 1;
 const num = (v, max = 0) => Number(v || 0).toLocaleString(currentLocale(), { maximumFractionDigits: max });
+const BODY = 'border border-black bg-white px-2 py-1.5 text-left';
+const shade = (c) => (c.key === 'total' || c.key === 'value' ? '!bg-[#EAF2F8]' : '');
 const clean = (o) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== '' && v != null));
 
 // Sales reports: cash + credit sales that are COMPLETED, calculated live. Company-wide (Owner / Manager); Excel / CSV need sales_reports.export.
@@ -94,6 +95,7 @@ export default function SalesReportsPage() {
         {can('sales_reports.export') && (
           <span className="ml-auto flex gap-2">
             <button type="button" className="btn-primary" disabled={busy || rpt.loading || !d} onClick={() => download('xlsx')}>{busy ? t('toolbar.preparing') : t('toolbar.download')}</button>
+            <button type="button" className="btn-primary" disabled={busy || rpt.loading || !d} onClick={() => download('pdf')}>{t('toolbar.downloadPdf')}</button>
             <button type="button" className="btn-ghost" disabled={busy || rpt.loading || !d} onClick={() => download('csv')}>{t('toolbar.downloadCsv')}</button>
           </span>
         )}
@@ -102,15 +104,17 @@ export default function SalesReportsPage() {
       {(err || rpt.error || dlErr) && <div className={`px-4 ${NOTICE}`}><Banner>{err || rpt.error || dlErr}</Banner></div>}
 
       <div className="overflow-x-auto px-4 pb-4">
+        {/* Same look as the company Excel / PDF template: navy title bar, blue header, black borders, Total column shaded. */}
+        <div className="bg-[#17365D] py-2 text-center text-[16px] font-bold text-white">{d?.reportTitle || t('title')}</div>
         <table className="w-full border-collapse bg-white">
-          <thead><tr>{columns.map((c) => <th key={c.key} className={`${HEAD} ${c.type === 'text' ? 'text-left' : 'text-right'}`}>{head(c)}</th>)}</tr></thead>
+          <thead><tr>{columns.map((c) => <th key={c.key} className="whitespace-nowrap border border-black bg-[#1F4E78] px-2 py-2.5 text-center text-[14px] font-bold text-white">{head(c)}</th>)}</tr></thead>
           <tbody>
-            {rpt.loading && !d && <tr><td className={`${CELL} text-left`} colSpan={9}>{tc('loading')}</td></tr>}
-            {!rpt.loading && d && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={columns.length}>{t('empty')}</td></tr>}
-            {rows.map((r, i) => <tr key={r.itemId || r.customerId || r.salespersonId || r.period || i} className="bg-white">{columns.map((c) => <td key={c.key} className={`${CELL} whitespace-nowrap ${align(c)}`}>{cell(c, r[c.key])}</td>)}</tr>)}
+            {rpt.loading && !d && <tr><td className={BODY} colSpan={9}>{tc('loading')}</td></tr>}
+            {!rpt.loading && d && rows.length === 0 && <tr><td className={BODY} colSpan={columns.length}>{t('empty')}</td></tr>}
+            {rows.map((r, i) => <tr key={r.itemId || r.customerId || r.salespersonId || r.period || i} className="bg-white">{columns.map((c) => <td key={c.key} className={`${BODY} whitespace-nowrap ${align(c)} ${shade(c)}`}>{cell(c, r[c.key])}</td>)}</tr>)}
             {d && rows.length > 0 && (
-              <tr className="bg-slate-100 font-bold">
-                {columns.map((c, i) => <td key={c.key} className={`${CELL} whitespace-nowrap ${align(c)}`}>{i === 0 ? t('total') : (d.totals[c.key] !== undefined ? cell(c, d.totals[c.key]) : '')}</td>)}
+              <tr className="font-bold">
+                {columns.map((c, i) => <td key={c.key} className={`${BODY} whitespace-nowrap ${align(c)} ${shade(c)}`}>{i === 0 ? t('total') : (d.totals[c.key] !== undefined ? cell(c, d.totals[c.key]) : '')}</td>)}
               </tr>
             )}
           </tbody>

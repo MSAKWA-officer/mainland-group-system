@@ -29,7 +29,8 @@
     "mYear": "Year",
     "mRange": "Date range",
     "byYear": "By year",
-    "downloadCsv": "Download CSV"
+    "downloadCsv": "Download CSV",
+    "downloadPdf": "Print PDF"
   },
   "errors": {
     "chooseBoth": "Choose both dates.",

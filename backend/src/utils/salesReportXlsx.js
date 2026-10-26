@@ -3,7 +3,8 @@ const ExcelJS = require('exceljs');
 /* Sales reports as Excel, in the company's "Daily sales report" layout:
    navy title bar, dark-blue header row with filter arrows, bordered rows, the Total column shaded light blue, a TOTAL row at the bottom.
    TOTAL uses SUBTOTAL, so the totals follow the Excel filters. Dates, quantities and amounts are real numbers (not text). */
-const NAVY = 'FF17375E'; const HEAD = 'FF1F4E79'; const SHADE = 'FFE9EFF7'; const TOTAL_ROW = 'FFD9E2F3';
+// Colours taken from the company template: title bar 17365D, header 1F4E78, Total column EAF2F8, black cell borders.
+const NAVY = 'FF17365D'; const HEAD = 'FF1F4E78'; const SHADE = 'FFEAF2F8';
 const SHADED_KEYS = new Set(['total', 'value']);
 const line = { style: 'thin', color: { argb: 'FF000000' } };
 const BOX = { top: line, left: line, bottom: line, right: line };
@@ -51,20 +52,20 @@ async function toXlsx(report) {
   // Row 1: title bar. Row 2: period + sale types.
   ws.mergeCells(1, 1, 1, n);
   const t = ws.getCell(1, 1); t.value = titleOf(report);
-  t.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FFFFFFFF' } }; t.alignment = { horizontal: 'center', vertical: 'middle' }; t.fill = fill(NAVY);
+  t.font = { name: 'Calibri', size: 16, bold: true, color: { argb: 'FFFFFFFF' } }; t.alignment = { horizontal: 'center', vertical: 'middle' }; t.fill = fill(NAVY);
   ws.getRow(1).height = 30;
   const info = ws.getCell(2, 1);
   info.value = `Period: ${dmy(report.from)} to ${dmy(report.to)}     Sales: ${(report.types || []).join(' + ') || '-'}`;
-  info.font = { name: 'Arial', size: 9, italic: true, color: { argb: 'FF404040' } };
+  info.font = { name: 'Calibri', size: 10, italic: true, color: { argb: 'FF404040' } };
   ws.getRow(2).height = 16;
 
   // Row 3: header
   columns.forEach((c, i) => {
     const h = ws.getCell(3, i + 1); h.value = headLabel(c);
-    h.font = { name: 'Arial', size: 10, bold: true, color: { argb: 'FFFFFFFF' } }; h.fill = fill(HEAD); h.border = BOX;
+    h.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } }; h.fill = fill(HEAD); h.border = BOX;
     h.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
   });
-  ws.getRow(3).height = 32;
+  ws.getRow(3).height = 36;
 
   // Data
   const first = 4; const last = first + rows.length - 1;
@@ -72,24 +73,24 @@ async function toXlsx(report) {
     const row = ws.getRow(first + k);
     columns.forEach((c, i) => {
       const cell = row.getCell(i + 1); const v = cellValue(c, r[c.key]);
-      cell.value = v; cell.border = BOX; cell.font = { name: 'Arial', size: 10 };
+      cell.value = v; cell.border = BOX; cell.font = { name: 'Calibri', size: 11 };
       if (SHADED_KEYS.has(c.key)) cell.fill = fill(SHADE);
       if (v instanceof Date) { cell.numFmt = FMT.date; cell.alignment = { horizontal: 'center', vertical: 'middle' }; }
       else if (c.type === 'text') cell.alignment = { vertical: 'middle' };
       else { cell.numFmt = FMT[c.type]; cell.alignment = { horizontal: 'right', vertical: 'middle' }; }
     });
-    row.height = 18;
+    row.height = 20;
   });
 
   if (!rows.length) {
-    ws.mergeCells(first, 1, first, n); const e = ws.getCell(first, 1); e.value = 'No completed sales in this period.'; e.border = BOX; e.font = { name: 'Arial', size: 10, italic: true };
+    ws.mergeCells(first, 1, first, n); const e = ws.getCell(first, 1); e.value = 'No completed sales in this period.'; e.border = BOX; e.font = { name: 'Calibri', size: 11, italic: true };
     return Buffer.from(await wb.xlsx.writeBuffer());
   }
 
   // TOTAL row (follows the filters)
   const tr = ws.getRow(last + 1);
   columns.forEach((c, i) => {
-    const cell = tr.getCell(i + 1); cell.border = BOX; cell.font = { name: 'Arial', size: 10, bold: true }; cell.fill = fill(SHADED_KEYS.has(c.key) ? SHADE : TOTAL_ROW);
+    const cell = tr.getCell(i + 1); cell.border = BOX; cell.font = { name: 'Calibri', size: 11, bold: true }; if (SHADED_KEYS.has(c.key)) cell.fill = fill(SHADE);
     if (i === 0) { cell.value = 'TOTAL'; return; }
     cell.alignment = { horizontal: 'right', vertical: 'middle' };
     if (totals && totals[c.key] !== undefined && c.type !== 'text') {
@@ -101,4 +102,4 @@ async function toXlsx(report) {
   return Buffer.from(await wb.xlsx.writeBuffer());
 }
 
-module.exports = { toXlsx };
+module.exports = { toXlsx, titleOf, headLabel, dmy, SHADED_KEYS };
