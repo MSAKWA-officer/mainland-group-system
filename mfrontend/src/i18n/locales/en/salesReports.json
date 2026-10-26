@@ -2,6 +2,7 @@
   "title": "Sales reports",
   "subtitle": "Completed cash and credit sales, calculated live (voided, cancelled and draft sales are not counted). Total includes VAT after discounts; Outstanding = Total − Paid. Only Owner / Manager see all sales.",
   "tabs": {
+    "detail": "Sales list",
     "summary": "Summary",
     "salespersons": "By salesperson",
     "customers": "By customer",
@@ -20,8 +21,15 @@
     "groupBy": "Group by",
     "byDay": "By day",
     "byMonth": "By month",
-    "download": "Download CSV",
-    "preparing": "Preparing…"
+    "download": "Download Excel",
+    "preparing": "Preparing…",
+    "period": "Period",
+    "mDay": "Day",
+    "mMonth": "Month",
+    "mYear": "Year",
+    "mRange": "Date range",
+    "byYear": "By year",
+    "downloadCsv": "Download CSV"
   },
   "errors": {
     "chooseBoth": "Choose both dates.",
@@ -54,6 +62,16 @@
     "cashValue": "Cash value",
     "creditValue": "Credit value",
     "value": "Value (before VAT)",
-    "avgPrice": "Average price"
-  }
+    "avgPrice": "Average price",
+    "period_year": "Year",
+    "date": "Date",
+    "receiptNo": "Invoice/Receipt No.",
+    "customer": "Customer",
+    "salesperson": "Salesperson",
+    "product": "Product / Description",
+    "qty": "Qty",
+    "unitPrice": "Unit price (TZS)",
+    "discount": "Discount (TZS)"
+  },
+  "detailNote": "Sales list: one row per product sold. Total sale = after discount, before VAT."
 }

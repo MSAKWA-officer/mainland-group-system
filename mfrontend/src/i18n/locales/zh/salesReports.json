@@ -2,6 +2,7 @@
   "title": "销售报表",
   "subtitle": "已完成的现金销售和赊销，实时计算（作废、取消和草稿销售不计入）。合计含增值税并已扣除折扣；未收 = 合计 − 已付。只有 Owner / Manager 能看到全部销售。",
   "tabs": {
+    "detail": "销售明细",
     "summary": "汇总",
     "salespersons": "按销售员",
     "customers": "按客户",
@@ -20,8 +21,15 @@
     "groupBy": "分组",
     "byDay": "按日",
     "byMonth": "按月",
-    "download": "下载 CSV",
-    "preparing": "准备中…"
+    "download": "下载 Excel",
+    "preparing": "准备中…",
+    "period": "期间",
+    "mDay": "按日",
+    "mMonth": "按月",
+    "mYear": "按年",
+    "mRange": "日期范围",
+    "byYear": "按年",
+    "downloadCsv": "下载 CSV"
   },
   "errors": {
     "chooseBoth": "请选择两个日期。",
@@ -54,6 +62,16 @@
     "cashValue": "现金金额",
     "creditValue": "赊销金额",
     "value": "金额（不含增值税）",
-    "avgPrice": "平均单价"
-  }
+    "avgPrice": "平均单价",
+    "period_year": "年份",
+    "date": "日期",
+    "receiptNo": "发票/收据号",
+    "customer": "客户",
+    "salesperson": "销售员",
+    "product": "产品 / 说明",
+    "qty": "数量",
+    "unitPrice": "单价 (TZS)",
+    "discount": "折扣 (TZS)"
+  },
+  "detailNote": "销售明细：每个已售产品一行。销售合计 = 扣除折扣后、不含增值税。"
 }

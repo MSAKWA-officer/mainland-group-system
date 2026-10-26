@@ -8,34 +8,44 @@ import { currentLocale } from '../../utils/locale';
 import { CELL, HEAD } from '../../components/TableUi.js';
 import { NOTICE, day, money, tzToday } from '../efdReconciliations/reconUi.jsx';
 
-const TABS = ['summary', 'salespersons', 'customers', 'products'];
+const TABS = ['detail', 'summary', 'salespersons', 'customers', 'products'];
 const MAX_DAYS = 366;
 const addDays = (d, n) => new Date(Date.parse(`${d}T00:00:00Z`) + n * 86400000).toISOString().slice(0, 10);
+const monthEnd = (ym) => { const [y, m] = ym.split('-').map(Number); return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10); };
 const span = (a, b) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86400000) + 1;
 const num = (v, max = 0) => Number(v || 0).toLocaleString(currentLocale(), { maximumFractionDigits: max });
 const clean = (o) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== '' && v != null));
 
-// Sales reports: cash + credit sales that are COMPLETED, calculated live. Company-wide (Owner / Manager); CSV needs sales_reports.export.
+// Sales reports: cash + credit sales that are COMPLETED, calculated live. Company-wide (Owner / Manager); Excel / CSV need sales_reports.export.
+// Period: one day, one month, one year or a date range. Every tab downloads as Excel in the company layout.
 export default function SalesReportsPage() {
   const { t } = useTranslation('salesReports');
   const { t: tc } = useTranslation('common');
   const { can } = useAuth();
   const today = tzToday();
-  const [tab, setTab] = useState('summary');
-  const [f, setF] = useState({ from: `${today.slice(0, 8)}01`, to: today, saleType: '', salespersonId: '', groupBy: 'day' });
+  const [tab, setTab] = useState('detail');
+  const [mode, setMode] = useState('month');
+  const [f, setF] = useState({ from: `${today.slice(0, 8)}01`, to: monthEnd(today.slice(0, 7)), saleType: '', salespersonId: '', groupBy: 'day' });
   const [busy, setBusy] = useState(false); const [dlErr, setDlErr] = useState('');
   const sps = useLoad(() => (can('salespersons.read') ? salespersonApi.list({ limit: 100 }) : Promise.resolve(null)), []);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const range = (from, to) => setF({ ...f, from, to });
+  const years = Array.from({ length: 6 }, (_, i) => String(Number(today.slice(0, 4)) - i));
+  const applyMode = (m) => {
+    setMode(m);
+    if (m === 'day') setF({ ...f, from: today, to: today });
+    else if (m === 'month') setF({ ...f, from: `${today.slice(0, 8)}01`, to: monthEnd(today.slice(0, 7)) });
+    else if (m === 'year') setF({ ...f, from: `${today.slice(0, 4)}-01-01`, to: `${today.slice(0, 4)}-12-31` });
+  };
 
   const err = !f.from || !f.to ? t('errors.chooseBoth') : f.from > f.to ? t('errors.fromAfterTo') : span(f.from, f.to) > MAX_DAYS ? t('errors.maxDays', { max: MAX_DAYS }) : '';
   const params = clean({ ...f, ...(tab !== 'summary' && { groupBy: '' }) });
   const rpt = useLoad(() => (err ? Promise.resolve(null) : salesReportApi[tab](params)), [tab, JSON.stringify(params), err]);
-  const download = async () => { setBusy(true); setDlErr(''); try { await salesReportApi.download(tab, params); } catch (x) { setDlErr(errMsg(x)); } setBusy(false); };
+  const download = async (format) => { setBusy(true); setDlErr(''); try { await salesReportApi.download(tab, params, format); } catch (x) { setDlErr(errMsg(x)); } setBusy(false); };
 
   const d = rpt.data; const columns = d?.columns || []; const rows = d?.rows || [];
   const head = (c) => (c.key === 'period' ? t(`cols.period_${f.groupBy}`) : t(`cols.${c.key}`, { defaultValue: c.label }));
-  const cell = (c, v) => (c.type === 'money' ? money(v) : c.type === 'count' ? num(v) : c.type === 'qty' ? num(v, 3) : c.key === 'lastSale' || (c.key === 'period' && f.groupBy === 'day') ? (v ? day(v) : '—') : (v || '—'));
+  const cell = (c, v) => (c.type === 'money' ? money(v) : c.type === 'count' ? num(v) : c.type === 'qty' ? num(v, 3) : c.key === 'date' || c.key === 'lastSale' || (c.key === 'period' && f.groupBy === 'day') ? (v ? day(v) : '—') : (v || '—'));
   const align = (c) => (c.type === 'text' ? 'text-left' : 'text-right');
 
   return (
@@ -49,11 +59,25 @@ export default function SalesReportsPage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-3 px-4 pb-4">
-        <label className="flex items-center gap-2">{tc('from')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={f.from} max={f.to || today} onChange={set('from')} /></label>
-        <label className="flex items-center gap-2">{tc('to')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={f.to} min={f.from || undefined} onChange={set('to')} /></label>
-        <button type="button" className="btn-ghost" onClick={() => range(`${today.slice(0, 8)}01`, today)}>{t('toolbar.thisMonth')}</button>
-        <button type="button" className="btn-ghost" onClick={() => range(addDays(today, -29), today)}>{t('toolbar.last30')}</button>
-        <button type="button" className="btn-ghost" onClick={() => range(`${today.slice(0, 4)}-01-01`, today)}>{t('toolbar.thisYear')}</button>
+        <select className="input max-w-[12rem] !text-[14px] !text-[#212121]" aria-label={t('toolbar.period')} value={mode} onChange={(e) => applyMode(e.target.value)}>
+          <option value="day">{t('toolbar.mDay')}</option><option value="month">{t('toolbar.mMonth')}</option><option value="year">{t('toolbar.mYear')}</option><option value="range">{t('toolbar.mRange')}</option>
+        </select>
+        {mode === 'day' && <input type="date" className="input w-auto !text-[14px] !text-[#212121]" aria-label={t('toolbar.mDay')} value={f.from} max={today} onChange={(e) => e.target.value && range(e.target.value, e.target.value)} />}
+        {mode === 'month' && <input type="month" className="input w-auto !text-[14px] !text-[#212121]" aria-label={t('toolbar.mMonth')} value={f.from.slice(0, 7)} max={today.slice(0, 7)} onChange={(e) => e.target.value && range(`${e.target.value}-01`, monthEnd(e.target.value))} />}
+        {mode === 'year' && (
+          <select className="input max-w-[8rem] !text-[14px] !text-[#212121]" aria-label={t('toolbar.mYear')} value={f.from.slice(0, 4)} onChange={(e) => range(`${e.target.value}-01-01`, `${e.target.value}-12-31`)}>
+            {years.map((y) => <option key={y} value={y}>{y}</option>)}
+          </select>
+        )}
+        {mode === 'range' && (
+          <>
+            <label className="flex items-center gap-2">{tc('from')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={f.from} max={f.to || today} onChange={set('from')} /></label>
+            <label className="flex items-center gap-2">{tc('to')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={f.to} min={f.from || undefined} onChange={set('to')} /></label>
+            <button type="button" className="btn-ghost" onClick={() => range(`${today.slice(0, 8)}01`, today)}>{t('toolbar.thisMonth')}</button>
+            <button type="button" className="btn-ghost" onClick={() => range(addDays(today, -29), today)}>{t('toolbar.last30')}</button>
+            <button type="button" className="btn-ghost" onClick={() => range(`${today.slice(0, 4)}-01-01`, today)}>{t('toolbar.thisYear')}</button>
+          </>
+        )}
         <select className="input max-w-[12rem] !text-[14px] !text-[#212121]" aria-label={t('toolbar.type')} value={f.saleType} onChange={set('saleType')}>
           <option value="">{t('toolbar.allTypes')}</option><option value="CASH">{t('toolbar.cash')}</option><option value="CREDIT">{t('toolbar.credit')}</option>
         </select>
@@ -64,11 +88,17 @@ export default function SalesReportsPage() {
         )}
         {tab === 'summary' && (
           <select className="input max-w-[10rem] !text-[14px] !text-[#212121]" aria-label={t('toolbar.groupBy')} value={f.groupBy} onChange={set('groupBy')}>
-            <option value="day">{t('toolbar.byDay')}</option><option value="month">{t('toolbar.byMonth')}</option>
+            <option value="day">{t('toolbar.byDay')}</option><option value="month">{t('toolbar.byMonth')}</option><option value="year">{t('toolbar.byYear')}</option>
           </select>
         )}
-        {can('sales_reports.export') && <button type="button" className="btn-ghost ml-auto" disabled={busy || rpt.loading || !d} onClick={download}>{busy ? t('toolbar.preparing') : t('toolbar.download')}</button>}
+        {can('sales_reports.export') && (
+          <span className="ml-auto flex gap-2">
+            <button type="button" className="btn-primary" disabled={busy || rpt.loading || !d} onClick={() => download('xlsx')}>{busy ? t('toolbar.preparing') : t('toolbar.download')}</button>
+            <button type="button" className="btn-ghost" disabled={busy || rpt.loading || !d} onClick={() => download('csv')}>{t('toolbar.downloadCsv')}</button>
+          </span>
+        )}
       </div>
+      {tab === 'detail' && <p className="px-4 pb-3 text-[13px] text-slate-600">{t('detailNote')}</p>}
       {(err || rpt.error || dlErr) && <div className={`px-4 ${NOTICE}`}><Banner>{err || rpt.error || dlErr}</Banner></div>}
 
       <div className="overflow-x-auto px-4 pb-4">

@@ -2,6 +2,7 @@
   "title": "Ripoti za mauzo",
   "subtitle": "Mauzo ya pesa taslimu na ya mkopo yaliyokamilika, yanahesabiwa papo hapo (mauzo yaliyobatilishwa, yaliyoghairiwa na rasimu hayahesabiwi). Jumla inajumuisha VAT baada ya punguzo; Deni = Jumla − Kilicholipwa. Ni Owner / Manager tu wanaoona mauzo yote.",
   "tabs": {
+    "detail": "Orodha ya mauzo",
     "summary": "Muhtasari",
     "salespersons": "Kwa muuzaji",
     "customers": "Kwa mteja",
@@ -20,8 +21,15 @@
     "groupBy": "Panga kwa",
     "byDay": "Kwa siku",
     "byMonth": "Kwa mwezi",
-    "download": "Pakua CSV",
-    "preparing": "Inaandaa…"
+    "download": "Pakua Excel",
+    "preparing": "Inaandaa…",
+    "period": "Kipindi",
+    "mDay": "Siku",
+    "mMonth": "Mwezi",
+    "mYear": "Mwaka",
+    "mRange": "Kuanzia–hadi tarehe",
+    "byYear": "Kwa mwaka",
+    "downloadCsv": "Pakua CSV"
   },
   "errors": {
     "chooseBoth": "Chagua tarehe zote mbili.",
@@ -54,6 +62,16 @@
     "cashValue": "Thamani ya pesa",
     "creditValue": "Thamani ya mkopo",
     "value": "Thamani (bila VAT)",
-    "avgPrice": "Bei ya wastani"
-  }
+    "avgPrice": "Bei ya wastani",
+    "period_year": "Mwaka",
+    "date": "Tarehe",
+    "receiptNo": "Na. ya Invoice/Risiti",
+    "customer": "Mteja",
+    "salesperson": "Muuzaji",
+    "product": "Bidhaa / Maelezo",
+    "qty": "Idadi",
+    "unitPrice": "Bei ya kipimo (TZS)",
+    "discount": "Punguzo (TZS)"
+  },
+  "detailNote": "Orodha ya mauzo: safu moja kwa kila bidhaa iliyouzwa. Jumla ya mauzo = baada ya punguzo, kabla ya VAT."
 }
