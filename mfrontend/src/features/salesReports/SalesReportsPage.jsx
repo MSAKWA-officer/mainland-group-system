@@ -25,19 +25,14 @@ export default function SalesReportsPage() {
   const { can } = useAuth();
   const today = tzToday();
   const [tab, setTab] = useState('detail');
-  const [mode, setMode] = useState('month');
   const [f, setF] = useState({ from: `${today.slice(0, 8)}01`, to: monthEnd(today.slice(0, 7)), saleType: '', salespersonId: '', groupBy: 'day' });
   const [busy, setBusy] = useState(false); const [dlErr, setDlErr] = useState('');
   const sps = useLoad(() => (can('salespersons.read') ? salespersonApi.list({ limit: 100 }) : Promise.resolve(null)), []);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const range = (from, to) => setF({ ...f, from, to });
   const years = Array.from({ length: 6 }, (_, i) => String(Number(today.slice(0, 4)) - i));
-  const applyMode = (m) => {
-    setMode(m);
-    if (m === 'day') setF({ ...f, from: today, to: today });
-    else if (m === 'month') setF({ ...f, from: `${today.slice(0, 8)}01`, to: monthEnd(today.slice(0, 7)) });
-    else if (m === 'year') setF({ ...f, from: `${today.slice(0, 4)}-01-01`, to: `${today.slice(0, 4)}-12-31` });
-  };
+  const isMonth = f.from.slice(8) === '01' && f.to === monthEnd(f.from.slice(0, 7)) && f.from.slice(0, 7) === f.to.slice(0, 7);
+  const isYear = f.from.slice(5) === '01-01' && f.to === `${f.from.slice(0, 4)}-12-31`;
 
   const err = !f.from || !f.to ? t('errors.chooseBoth') : f.from > f.to ? t('errors.fromAfterTo') : span(f.from, f.to) > MAX_DAYS ? t('errors.maxDays', { max: MAX_DAYS }) : '';
   const params = clean({ ...f, ...(tab !== 'summary' && { groupBy: '' }) });
@@ -60,25 +55,16 @@ export default function SalesReportsPage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-3 px-4 pb-4">
-        <select className="input max-w-[12rem] !text-[14px] !text-[#212121]" aria-label={t('toolbar.period')} value={mode} onChange={(e) => applyMode(e.target.value)}>
-          <option value="day">{t('toolbar.mDay')}</option><option value="month">{t('toolbar.mMonth')}</option><option value="year">{t('toolbar.mYear')}</option><option value="range">{t('toolbar.mRange')}</option>
+        <label className="flex items-center gap-2">{tc('from')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={f.from} max={f.to || undefined} onChange={set('from')} /></label>
+        <label className="flex items-center gap-2">{tc('to')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={f.to} min={f.from || undefined} onChange={set('to')} /></label>
+        <button type="button" className="btn-ghost" onClick={() => range(today, today)}>{t('toolbar.today')}</button>
+        <button type="button" className="btn-ghost" onClick={() => range(`${today.slice(0, 8)}01`, today)}>{t('toolbar.thisMonth')}</button>
+        <button type="button" className="btn-ghost" onClick={() => range(addDays(today, -29), today)}>{t('toolbar.last30')}</button>
+        <button type="button" className="btn-ghost" onClick={() => range(`${today.slice(0, 4)}-01-01`, today)}>{t('toolbar.thisYear')}</button>
+        <input type="month" className="input w-auto !text-[14px] !text-[#212121]" aria-label={t('toolbar.mMonth')} title={t('toolbar.mMonth')} value={isMonth ? f.from.slice(0, 7) : ''} onChange={(e) => e.target.value && range(`${e.target.value}-01`, monthEnd(e.target.value))} />
+        <select className="input max-w-[8rem] !text-[14px] !text-[#212121]" aria-label={t('toolbar.mYear')} value={isYear ? f.from.slice(0, 4) : ''} onChange={(e) => e.target.value && range(`${e.target.value}-01-01`, `${e.target.value}-12-31`)}>
+          <option value="">{t('toolbar.mYear')}</option>{years.map((y) => <option key={y} value={y}>{y}</option>)}
         </select>
-        {mode === 'day' && <input type="date" className="input w-auto !text-[14px] !text-[#212121]" aria-label={t('toolbar.mDay')} value={f.from} max={today} onChange={(e) => e.target.value && range(e.target.value, e.target.value)} />}
-        {mode === 'month' && <input type="month" className="input w-auto !text-[14px] !text-[#212121]" aria-label={t('toolbar.mMonth')} value={f.from.slice(0, 7)} max={today.slice(0, 7)} onChange={(e) => e.target.value && range(`${e.target.value}-01`, monthEnd(e.target.value))} />}
-        {mode === 'year' && (
-          <select className="input max-w-[8rem] !text-[14px] !text-[#212121]" aria-label={t('toolbar.mYear')} value={f.from.slice(0, 4)} onChange={(e) => range(`${e.target.value}-01-01`, `${e.target.value}-12-31`)}>
-            {years.map((y) => <option key={y} value={y}>{y}</option>)}
-          </select>
-        )}
-        {mode === 'range' && (
-          <>
-            <label className="flex items-center gap-2">{tc('from')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={f.from} max={f.to || today} onChange={set('from')} /></label>
-            <label className="flex items-center gap-2">{tc('to')} <input type="date" className="input w-auto !text-[14px] !text-[#212121]" value={f.to} min={f.from || undefined} onChange={set('to')} /></label>
-            <button type="button" className="btn-ghost" onClick={() => range(`${today.slice(0, 8)}01`, today)}>{t('toolbar.thisMonth')}</button>
-            <button type="button" className="btn-ghost" onClick={() => range(addDays(today, -29), today)}>{t('toolbar.last30')}</button>
-            <button type="button" className="btn-ghost" onClick={() => range(`${today.slice(0, 4)}-01-01`, today)}>{t('toolbar.thisYear')}</button>
-          </>
-        )}
         <select className="input max-w-[12rem] !text-[14px] !text-[#212121]" aria-label={t('toolbar.type')} value={f.saleType} onChange={set('saleType')}>
           <option value="">{t('toolbar.allTypes')}</option><option value="CASH">{t('toolbar.cash')}</option><option value="CREDIT">{t('toolbar.credit')}</option>
         </select>

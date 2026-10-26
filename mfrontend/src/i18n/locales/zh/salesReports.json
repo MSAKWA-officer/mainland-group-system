@@ -30,7 +30,8 @@
     "mRange": "日期范围",
     "byYear": "按年",
     "downloadCsv": "下载 CSV",
-    "downloadPdf": "打印 PDF"
+    "downloadPdf": "打印 PDF",
+    "today": "今天"
   },
   "errors": {
     "chooseBoth": "请选择两个日期。",

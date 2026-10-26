@@ -30,7 +30,8 @@
     "mRange": "Date range",
     "byYear": "By year",
     "downloadCsv": "Download CSV",
-    "downloadPdf": "Print PDF"
+    "downloadPdf": "Print PDF",
+    "today": "Today"
   },
   "errors": {
     "chooseBoth": "Choose both dates.",
