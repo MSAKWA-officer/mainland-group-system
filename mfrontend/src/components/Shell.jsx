@@ -1,4 +1,4 @@
-import { SALES_ORDERS } from '../config/features.js';
+import { SALES_ORDERS, DISCOUNTS } from '../config/features.js';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,9 @@ const GROUPS = [
     ['/cash-sales', 'Cash sales', 'cash_sales.read'], ['/credit-sales', 'Credit sales', 'credit_sales.read'],
     ['/customer-balances', 'Customer balance', 'customer_balances.read'], ['/payment-history', 'Payment history', 'payment_history.read'],
     ['/credit-ageing', 'Credit ageing', 'credit_ageing.read'],
-    ['/discounts', 'Discounts', 'discounts.read'], ['/efd-receipts', 'EFD numbers', 'efd_receipts.read'], ['/efd-z-reports', 'Z reports', 'efd_z_reports.read'], ['/efd-reconciliations', 'Daily reconciliation', 'efd_reconciliations.read'], ['/efd-differences', 'Difference detection', 'efd_differences.read'], ['/efd-reports', 'EFD reports', 'efd_reports.read'], ['/efd-devices', 'EFD devices', 'efd_devices.read'],
+    ['/sales-reports', 'Sales reports', 'sales_reports.read'],
+    ...(DISCOUNTS ? [['/discounts', 'Discounts', 'discounts.read']] : []),   // hidden for now (config/features.js)
+    ['/efd-receipts', 'EFD numbers', 'efd_receipts.read'], ['/efd-z-reports', 'Z reports', 'efd_z_reports.read'], ['/efd-reconciliations', 'Daily reconciliation', 'efd_reconciliations.read'], ['/efd-differences', 'Difference detection', 'efd_differences.read'], ['/efd-reports', 'EFD reports', 'efd_reports.read'], ['/efd-devices', 'EFD devices', 'efd_devices.read'],
   ] },
   { key: 'banking', label: 'Banking & Payments', items: [
     ['/banks', 'Banks', 'banks.read'], ['/bank-accounts', 'Bank accounts', 'bank_accounts.read'],

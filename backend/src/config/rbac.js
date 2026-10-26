@@ -27,6 +27,7 @@ const PERMISSIONS = {
   sales_orders: ['read', 'read_all', 'create', 'set_price', 'approve'],                  // set_price = custom price / discount on a line
 
   // ---- Phase 3b: Sales register, cash sales, credit sales ----
+  sales_reports: ['read', 'export'],                                                     // Sales reports page (cash + credit, company-wide). export = download CSV. Managers / Owner
   sales: ['read', 'summary'],                                                            // read-only register of cash + credit sales
   cash_sales: ['read', 'read_all', 'create', 'set_price', 'void'],
   credit_sales: ['read', 'read_all', 'create', 'set_price', 'approve', 'override_limit', 'receive_payment', 'void', 'void_payment'],
@@ -93,6 +94,8 @@ const BANKING_MODULES = ['banks', 'bank_accounts', 'bank_transactions', 'custome
 const BANKING_EXTRA_MODULES = ['expenses', 'payments', 'transfers'];
 const FUEL_MODULES = ['drivers', 'vehicles', 'fuel_funding'];
 const FUEL_USAGE_MODULES = ['fuel_usage', 'fuel_balances', 'fuel_reports'];
+const SALES_REPORT_MODULES = ['sales_reports'];
+const salesReportsManager = ['sales_reports.read', 'sales_reports.export'];
 const EFD_MODULES = ['efd_z_reports', 'efd_reconciliations', 'efd_differences', 'efd_reports'];
 const WAREHOUSE_MODULES = ['warehouses', 'warehouse_transfers'];
 const PHYSICAL_COUNT_MODULES = ['physical_counts'];
@@ -167,8 +170,8 @@ const warehouseManager = ['warehouses.read', 'warehouses.read_all', 'warehouses.
 const ROLES = {
   OWNER: { name: 'Owner', level: 100, description: 'Full executive access', permissions: ALL },
   MANAGER: { name: 'Manager', level: 70, description: 'Reviews and approves; limited admin',
-    permissions: [...common, 'approvals.read_all', 'approvals.approve', 'users.read', 'roles.read', ...invManager, ...salesManager, ...salesV2Manager, ...salesExtraManager, ...workflowManager, ...bankingManager, ...fuelManager, ...fuelUsageManager, ...efdManager, ...warehouseManager] },
+    permissions: [...common, 'approvals.read_all', 'approvals.approve', 'users.read', 'roles.read', ...invManager, ...salesManager, ...salesV2Manager, ...salesExtraManager, ...workflowManager, ...bankingManager, ...fuelManager, ...fuelUsageManager, ...efdManager, ...warehouseManager, ...salesReportsManager] },
   STOREKEEPER: { name: 'Storekeeper', level: 40, description: 'Warehouse and stock control', permissions: [...common, ...invStorekeeper, ...workflowStorekeeper, ...bankingSelf.filter((p) => p.startsWith('expenses.')), ...fuelSelf, ...fuelUsageSelf, ...warehouseStorekeeper] },
   SALESPERSON: { name: 'Sales Person', level: 30, description: 'Own customers, orders and sales', permissions: [...common, ...invView, ...salesSelf, ...salesV2Self, ...salesExtraSelf, ...workflowSelf, ...bankingSelf, ...warehouseSalesperson, ...statementOnly] },
 };
-module.exports = { PERMISSIONS, ALL, ROLES, INVENTORY_MODULES, SALES_MODULES, SALES_V2_MODULES, SALES_V3_MODULES, SALES_EXTRA_MODULES, STAFF_MODULES, DOC_MODULES, WORKFLOW_MODULES, BANKING_MODULES, BANKING_EXTRA_MODULES, FUEL_MODULES, FUEL_USAGE_MODULES, EFD_MODULES, WAREHOUSE_MODULES, PHYSICAL_COUNT_MODULES };
+module.exports = { PERMISSIONS, ALL, ROLES, INVENTORY_MODULES, SALES_MODULES, SALES_V2_MODULES, SALES_V3_MODULES, SALES_EXTRA_MODULES, STAFF_MODULES, DOC_MODULES, WORKFLOW_MODULES, BANKING_MODULES, BANKING_EXTRA_MODULES, FUEL_MODULES, FUEL_USAGE_MODULES, EFD_MODULES, WAREHOUSE_MODULES, PHYSICAL_COUNT_MODULES, SALES_REPORT_MODULES };

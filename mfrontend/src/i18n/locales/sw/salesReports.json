@@ -1,0 +1,59 @@
+{
+  "title": "Ripoti za mauzo",
+  "subtitle": "Mauzo ya pesa taslimu na ya mkopo yaliyokamilika, yanahesabiwa papo hapo (mauzo yaliyobatilishwa, yaliyoghairiwa na rasimu hayahesabiwi). Jumla inajumuisha VAT baada ya punguzo; Deni = Jumla − Kilicholipwa. Ni Owner / Manager tu wanaoona mauzo yote.",
+  "tabs": {
+    "summary": "Muhtasari",
+    "salespersons": "Kwa muuzaji",
+    "customers": "Kwa mteja",
+    "products": "Kwa bidhaa"
+  },
+  "toolbar": {
+    "thisMonth": "Mwezi huu",
+    "last30": "Siku 30 zilizopita",
+    "thisYear": "Mwaka huu",
+    "type": "Aina ya mauzo",
+    "allTypes": "Pesa taslimu na mkopo",
+    "cash": "Mauzo ya pesa taslimu",
+    "credit": "Mauzo ya mkopo",
+    "salesperson": "Muuzaji",
+    "allSalespersons": "Wauzaji wote",
+    "groupBy": "Panga kwa",
+    "byDay": "Kwa siku",
+    "byMonth": "Kwa mwezi",
+    "download": "Pakua CSV",
+    "preparing": "Inaandaa…"
+  },
+  "errors": {
+    "chooseBoth": "Chagua tarehe zote mbili.",
+    "fromAfterTo": "Tarehe ya kuanza ni baada ya tarehe ya mwisho.",
+    "maxDays": "Chagua siku zisizozidi {{max}}."
+  },
+  "empty": "Hakuna mauzo yaliyokamilika katika kipindi hiki.",
+  "total": "Jumla",
+  "cols": {
+    "period_day": "Tarehe",
+    "period_month": "Mwezi",
+    "cashCount": "Mauzo ya pesa",
+    "cashTotal": "Jumla ya pesa",
+    "creditCount": "Mauzo ya mkopo",
+    "creditTotal": "Jumla ya mkopo",
+    "count": "Mauzo",
+    "total": "Jumla",
+    "vat": "VAT",
+    "discounts": "Punguzo",
+    "paid": "Kilicholipwa",
+    "outstanding": "Deni",
+    "code": "Msimbo",
+    "name": "Jina",
+    "net": "Bila VAT",
+    "tin": "TIN",
+    "lastSale": "Mauzo ya mwisho",
+    "sku": "Msimbo",
+    "unit": "Kipimo",
+    "quantity": "Idadi",
+    "cashValue": "Thamani ya pesa",
+    "creditValue": "Thamani ya mkopo",
+    "value": "Thamani (bila VAT)",
+    "avgPrice": "Bei ya wastani"
+  }
+}

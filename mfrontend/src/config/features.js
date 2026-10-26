@@ -1,3 +1,6 @@
-// Frontend feature switch. Sales orders and Order approvals are HIDDEN for now (menu + routes); nothing is deleted.
-// To bring them back build the frontend with  VITE_ENABLE_SALES_ORDERS=true  (mfrontend/.env), and set ENABLE_SALES_ORDERS=true in backend/.env.
-export const SALES_ORDERS = String(import.meta.env.VITE_ENABLE_SALES_ORDERS || '').toLowerCase() === 'true';
+// Frontend feature switches. Hidden features are NOT deleted: only the menu entries and routes are switched off.
+// Sales orders + Order approvals + Sales register : build with VITE_ENABLE_SALES_ORDERS=true (mfrontend/.env), and ENABLE_SALES_ORDERS=true in backend/.env
+// Discounts                                       : build with VITE_ENABLE_DISCOUNTS=true,     and ENABLE_DISCOUNTS=true in backend/.env
+const on = (v) => String(v || '').toLowerCase() === 'true';
+export const SALES_ORDERS = on(import.meta.env.VITE_ENABLE_SALES_ORDERS);
+export const DISCOUNTS = on(import.meta.env.VITE_ENABLE_DISCOUNTS);

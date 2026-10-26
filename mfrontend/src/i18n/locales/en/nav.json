@@ -57,7 +57,8 @@
     "audit": "Audit log",
     "warehouses": "Warehouses",
     "warehouse-transfers": "Warehouse transfers",
-    "physical-counts": "Physical count"
+    "physical-counts": "Physical count",
+    "sales-reports": "Sales reports"
   },
   "password": "Change password",
   "account": "Account",

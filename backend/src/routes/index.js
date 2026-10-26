@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { SALES_ORDERS } = require('../config/features');
+const { SALES_ORDERS, DISCOUNTS } = require('../config/features');
 const { sequelize } = require('../models');
 const { authenticate } = require('../middleware/auth');
 const stockDocs = require('./stockDocumentRoutes');
@@ -35,7 +35,8 @@ router.use('/stock-reports', authenticate, require('./reportRoutes'));
 router.use('/customers', authenticate, require('./customerRoutes'));
 router.use('/salespersons', authenticate, require('./salespersonRoutes'));
 if (SALES_ORDERS) router.use('/sales-orders', authenticate, require('./salesOrderRoutes'));       // hidden for now (config/features.js)
-router.use('/discounts', authenticate, require('./discountRoutes'));
+if (DISCOUNTS) router.use('/discounts', authenticate, require('./discountRoutes'));                 // hidden for now (config/features.js)
+router.use('/sales-reports', authenticate, require('./salesReportRoutes'));
 router.use('/efd-devices', authenticate, require('./efdDeviceRoutes'));
 router.use('/efd-receipts', authenticate, require('./efdReceiptRoutes'));
 

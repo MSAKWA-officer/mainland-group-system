@@ -1,4 +1,4 @@
-import { SALES_ORDERS } from './config/features.js';
+import { SALES_ORDERS, DISCOUNTS } from './config/features.js';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
 import Shell from './components/Shell.jsx';
@@ -76,6 +76,7 @@ import CashSalesView from './features/cashSales/CashSalesView.jsx';
 import DiscountsList from './features/discounts/DiscountsList.jsx';
 import DiscountsView from './features/discounts/DiscountsView.jsx';
 import DiscountForm from './features/discounts/DiscountForm.jsx';
+import SalesReportsPage from './features/salesReports/SalesReportsPage.jsx';
 import EfdReceiptsList from './features/efdReceipts/EfdReceiptsList.jsx';
 import EfdReceiptsCreate from './features/efdReceipts/EfdReceiptsCreate.jsx';
 import EfdReceiptsView from './features/efdReceipts/EfdReceiptsView.jsx';
@@ -252,10 +253,13 @@ export default function App() {
         <Route path="/cash-sales" element={<Guard perm="cash_sales.read"><CashSalesList /></Guard>} />
         <Route path="/cash-sales/new" element={<Guard perm="cash_sales.create"><CashSalesCreate /></Guard>} />
         <Route path="/cash-sales/:id" element={<Guard perm="cash_sales.read"><CashSalesView /></Guard>} />
+        <Route path="/sales-reports" element={<Guard perm="sales_reports.read"><SalesReportsPage /></Guard>} />
+        {DISCOUNTS && <>   {/* hidden for now: set VITE_ENABLE_DISCOUNTS=true to bring back */}
         <Route path="/discounts" element={<Guard perm="discounts.read"><DiscountsList /></Guard>} />
         <Route path="/discounts/new" element={<Guard perm="discounts.create"><DiscountForm /></Guard>} />
         <Route path="/discounts/:id" element={<Guard perm="discounts.read"><DiscountsView /></Guard>} />
         <Route path="/discounts/:id/edit" element={<Guard perm="discounts.update"><DiscountForm /></Guard>} />
+        </>}
         <Route path="/efd-receipts" element={<Guard perm="efd_receipts.read"><EfdReceiptsList /></Guard>} />
         <Route path="/efd-receipts/new" element={<Guard perm="efd_receipts.create"><EfdReceiptsCreate /></Guard>} />
         <Route path="/efd-receipts/:id" element={<Guard perm="efd_receipts.read"><EfdReceiptsView /></Guard>} />

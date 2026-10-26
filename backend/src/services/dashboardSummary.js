@@ -1,5 +1,5 @@
 const { QueryTypes } = require('sequelize');
-const { SALES_ORDERS } = require('../config/features');   // order cards are hidden unless ENABLE_SALES_ORDERS=true
+const { SALES_ORDERS, DISCOUNTS } = require('../config/features');   // order cards are hidden unless ENABLE_SALES_ORDERS=true
 const { sequelize } = require('../models');
 const { mine } = require('./salesScope');
 const { balanceSql } = require('./banking');
@@ -298,7 +298,7 @@ async function sales(req) {
     const { summary: s } = await customerReports.ageing(req, { page: 1, limit: 1, sortBy: 'outstanding', sortDir: 'desc' });
     return m('over90', s.over90, 'money', '/credit-ageing', { tone: tone(s.over90, 'bad') });
   });
-  await when(req, 'discounts.read', out, async () => m('activeDiscounts', (await one(
+  if (DISCOUNTS) await when(req, 'discounts.read', out, async () => m('activeDiscounts', (await one(
     'SELECT COUNT(*)::int AS c FROM discounts WHERE is_active AND (valid_to IS NULL OR valid_to >= CURRENT_DATE)')).c, 'count', '/discounts'));
   return out;
 }

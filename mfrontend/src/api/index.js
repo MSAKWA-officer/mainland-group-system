@@ -37,6 +37,7 @@ export * as efdZReportApi from './efdZReportApi';
 export * as efdReconciliationApi from './efdReconciliationApi';
 export * as efdDifferenceApi from './efdDifferenceApi';
 export * as efdReportApi from './efdReportApi';
+export * as salesReportApi from './salesReportApi';
 export * as bankApi from './bankApi';
 export * as bankAccountApi from './bankAccountApi';
 export * as bankTransactionApi from './bankTransactionApi';

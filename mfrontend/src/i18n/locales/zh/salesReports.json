@@ -1,0 +1,59 @@
+{
+  "title": "销售报表",
+  "subtitle": "已完成的现金销售和赊销，实时计算（作废、取消和草稿销售不计入）。合计含增值税并已扣除折扣；未收 = 合计 − 已付。只有 Owner / Manager 能看到全部销售。",
+  "tabs": {
+    "summary": "汇总",
+    "salespersons": "按销售员",
+    "customers": "按客户",
+    "products": "按产品"
+  },
+  "toolbar": {
+    "thisMonth": "本月",
+    "last30": "最近 30 天",
+    "thisYear": "今年",
+    "type": "销售类型",
+    "allTypes": "现金和赊销",
+    "cash": "现金销售",
+    "credit": "赊销",
+    "salesperson": "销售员",
+    "allSalespersons": "所有销售员",
+    "groupBy": "分组",
+    "byDay": "按日",
+    "byMonth": "按月",
+    "download": "下载 CSV",
+    "preparing": "准备中…"
+  },
+  "errors": {
+    "chooseBoth": "请选择两个日期。",
+    "fromAfterTo": "开始日期晚于结束日期。",
+    "maxDays": "最多选择 {{max}} 天。"
+  },
+  "empty": "此期间没有已完成的销售。",
+  "total": "合计",
+  "cols": {
+    "period_day": "日期",
+    "period_month": "月份",
+    "cashCount": "现金销售",
+    "cashTotal": "现金合计",
+    "creditCount": "赊销",
+    "creditTotal": "赊销合计",
+    "count": "销售数",
+    "total": "合计",
+    "vat": "增值税",
+    "discounts": "折扣",
+    "paid": "已付",
+    "outstanding": "未收",
+    "code": "编码",
+    "name": "名称",
+    "net": "不含增值税",
+    "tin": "TIN",
+    "lastSale": "最近销售",
+    "sku": "编码",
+    "unit": "单位",
+    "quantity": "数量",
+    "cashValue": "现金金额",
+    "creditValue": "赊销金额",
+    "value": "金额（不含增值税）",
+    "avgPrice": "平均单价"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "title": "Sales reports",
+  "subtitle": "Completed cash and credit sales, calculated live (voided, cancelled and draft sales are not counted). Total includes VAT after discounts; Outstanding = Total − Paid. Only Owner / Manager see all sales.",
+  "tabs": {
+    "summary": "Summary",
+    "salespersons": "By salesperson",
+    "customers": "By customer",
+    "products": "By product"
+  },
+  "toolbar": {
+    "thisMonth": "This month",
+    "last30": "Last 30 days",
+    "thisYear": "This year",
+    "type": "Sale type",
+    "allTypes": "Cash and credit",
+    "cash": "Cash sales",
+    "credit": "Credit sales",
+    "salesperson": "Salesperson",
+    "allSalespersons": "All salespersons",
+    "groupBy": "Group by",
+    "byDay": "By day",
+    "byMonth": "By month",
+    "download": "Download CSV",
+    "preparing": "Preparing…"
+  },
+  "errors": {
+    "chooseBoth": "Choose both dates.",
+    "fromAfterTo": "The start date is after the end date.",
+    "maxDays": "Choose at most {{max}} days."
+  },
+  "empty": "No completed sales in this period.",
+  "total": "Total",
+  "cols": {
+    "period_day": "Date",
+    "period_month": "Month",
+    "cashCount": "Cash sales",
+    "cashTotal": "Cash total",
+    "creditCount": "Credit sales",
+    "creditTotal": "Credit total",
+    "count": "Sales",
+    "total": "Total",
+    "vat": "VAT",
+    "discounts": "Discounts",
+    "paid": "Paid",
+    "outstanding": "Outstanding",
+    "code": "Code",
+    "name": "Name",
+    "net": "Net (before VAT)",
+    "tin": "TIN",
+    "lastSale": "Last sale",
+    "sku": "Code",
+    "unit": "Unit",
+    "quantity": "Quantity",
+    "cashValue": "Cash value",
+    "creditValue": "Credit value",
+    "value": "Value (before VAT)",
+    "avgPrice": "Average price"
+  }
+}
