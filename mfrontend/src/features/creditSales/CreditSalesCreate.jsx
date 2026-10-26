@@ -10,12 +10,14 @@ import CreditSalesForm, { EMPTY, problem, todayStr, toBody } from './CreditSales
 
 export default function CreditSalesCreate() {
   const { t } = useTranslation('creditSales');
+  const { t: te } = useTranslation('saleEntry');
   const navigate = useNavigate();
   const { can } = useAuth();
-  const [f, setF] = useState(EMPTY);
+  const [f, setF] = useState(() => ({ ...EMPTY(), lines: [] }));   // bidhaa zinaongezwa kupitia jedwali la chini
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const submit = async (e) => {
     e.preventDefault(); setErr(''); setFe({});
+    if (!f.lines.length) { setErr(te('errNoItems')); return; }
     const p = problem(f, todayStr()); if (p) { setErr(p); return; }
     setBusy(true);
     try {
@@ -34,7 +36,7 @@ export default function CreditSalesCreate() {
       </div>
       <form onSubmit={submit} className="space-y-4 border-t border-line px-6 py-6 [&_.text-danger]:!text-black">
         <div className={NOTICE}><Banner>{err}</Banner></div>
-        <CreditSalesForm f={f} setF={setF} fe={fe} />
+        <CreditSalesForm f={f} setF={setF} fe={fe} entry />
         <button className="btn-primary" disabled={busy}>{busy ? t('create.saving') : t('create.save')}</button>
       </form>
     </div>

@@ -19,7 +19,8 @@
     "items": "Items",
     "total": "Total",
     "status": "Status",
-    "actions": "Actions"
+    "actions": "Actions",
+    "payment": "Payment"
   },
   "emptyFiltered": "No cash sales match your filters.",
   "emptyNone": "No cash sales yet. Use “New cash sale” to make the first one.",
@@ -55,7 +56,16 @@
     "errTendered": "Amount received is less than the total ({{total}}).",
     "errReference": "Enter the payment reference (transaction / receipt number).",
     "doneChange": "Sale completed. Give change: {{change}}.",
-    "done": "Sale completed. Stock has been issued."
+    "done": "Sale completed. Stock has been issued.",
+    "bank": "Bank",
+    "network": "Mobile network",
+    "pickBank": "Select bank",
+    "pickNetwork": "Select network",
+    "other": "Other",
+    "otherBank": "Bank name",
+    "otherNetwork": "Network name",
+    "errBank": "Select the bank used to pay.",
+    "errNetwork": "Select the mobile network used to pay."
   },
   "view": {
     "fallbackTitle": "Cash sale",
@@ -90,6 +100,8 @@
     "receivedAmount": "Received",
     "changeGiven": "Change given",
     "takenBy": "Taken by",
-    "paymentVoided": "Voided: {{reason}}"
+    "paymentVoided": "Voided: {{reason}}",
+    "bank": "Bank",
+    "network": "Mobile network"
   }
 }

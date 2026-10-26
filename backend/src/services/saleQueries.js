@@ -14,6 +14,9 @@ const creator = { model: User, as: 'creator', attributes: ['id', 'username', 'fu
 const approval = { model: ApprovalRequest, as: 'approval', attributes: ['id', 'status', 'decidedBy', 'decidedAt', 'decisionNote'] };
 const stockDoc = { model: StockDocument, as: 'stockDocument', attributes: ['id', 'docNo', 'status', 'postedAt'] };
 const lineCount = literal('(SELECT CAST(COUNT(*) AS int) FROM sale_lines l WHERE l.sale_id = "Sale"."id")');
+// Njia ya malipo ya kwanza ya mauzo (Cash sales list: "Benki · CRDB"). Subquery kama lineCount, kwa hiyo kurasa (limit/offset) hazibadiliki.
+const payMethod = literal('(SELECT p.method FROM sale_payments p WHERE p.sale_id = "Sale"."id" ORDER BY p.created_at ASC LIMIT 1)');
+const payReference = literal('(SELECT p.reference FROM sale_payments p WHERE p.sale_id = "Sale"."id" ORDER BY p.created_at ASC LIMIT 1)');
 // Balance and overdue are worked out by the database so lists can filter and sort on them.
 const balance = literal(`(CASE WHEN "Sale"."sale_type" = 'CREDIT' AND "Sale"."status" = 'COMPLETED' THEN "Sale"."total" - "Sale"."amount_paid" ELSE 0 END)`);
 const overdue = literal(`(CASE WHEN "Sale"."sale_type" = 'CREDIT' AND "Sale"."status" = 'COMPLETED' AND "Sale"."total" > "Sale"."amount_paid" AND "Sale"."due_date" < CURRENT_DATE THEN true ELSE false END)`);
@@ -61,7 +64,7 @@ async function list(req, types, q) {
   if (od) and.push(literal(`${overdue.val} = true`));
   if (search) and.push({ [Op.or]: [{ saleNo: { [Op.iLike]: like(search) } }, { walkInName: { [Op.iLike]: like(search) } }, { '$customer.name$': { [Op.iLike]: like(search) } }] });
   const { rows, count } = await Sale.findAndCountAll({ where: { [Op.and]: and }, include: [customer, salesperson],
-    attributes: { include: [[lineCount, 'lineCount'], ...computed] }, order: [['createdAt', 'DESC']], limit, offset: (page - 1) * limit, subQuery: false });
+    attributes: { include: [[lineCount, 'lineCount'], [payMethod, 'payMethod'], [payReference, 'payReference'], ...computed] }, order: [['createdAt', 'DESC']], limit, offset: (page - 1) * limit, subQuery: false });
   return { data: rows, total: count, page, limit };
 }
 

@@ -19,7 +19,8 @@
     "items": "Bidhaa",
     "total": "Jumla",
     "status": "Hali",
-    "actions": "Vitendo"
+    "actions": "Vitendo",
+    "payment": "Malipo"
   },
   "emptyFiltered": "Hakuna mauzo ya fedha taslimu yanayolingana na vichujio vyako.",
   "emptyNone": "Hakuna mauzo ya fedha taslimu bado. Tumia “Mauzo mapya ya fedha taslimu” kufanya la kwanza.",
@@ -55,7 +56,16 @@
     "errTendered": "Kiasi kilichopokelewa ni pungufu ya jumla ({{total}}).",
     "errReference": "Weka kumbukumbu ya malipo (namba ya muamala / risiti).",
     "doneChange": "Mauzo yamekamilika. Toa chenji: {{change}}.",
-    "done": "Mauzo yamekamilika. Bidhaa zimetolewa stoo."
+    "done": "Mauzo yamekamilika. Bidhaa zimetolewa stoo.",
+    "bank": "Benki",
+    "network": "Mtandao wa simu",
+    "pickBank": "Chagua benki",
+    "pickNetwork": "Chagua mtandao",
+    "other": "Nyingine",
+    "otherBank": "Jina la benki",
+    "otherNetwork": "Jina la mtandao",
+    "errBank": "Chagua benki iliyotumika kulipa.",
+    "errNetwork": "Chagua mtandao wa simu uliotumika kulipa."
   },
   "view": {
     "fallbackTitle": "Mauzo ya fedha taslimu",
@@ -90,6 +100,8 @@
     "receivedAmount": "Kilichopokelewa",
     "changeGiven": "Chenji iliyotolewa",
     "takenBy": "Amepokea",
-    "paymentVoided": "Yamebatilishwa: {{reason}}"
+    "paymentVoided": "Yamebatilishwa: {{reason}}",
+    "bank": "Benki",
+    "network": "Mtandao wa simu"
   }
 }

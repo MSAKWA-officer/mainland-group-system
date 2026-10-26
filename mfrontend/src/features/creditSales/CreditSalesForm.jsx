@@ -5,6 +5,7 @@ import Field from '../../components/Field.jsx';
 import i18n from '../../i18n';
 import useLoad from '../../utils/useLoad';
 import { Lookup, SaleLines, blankLine, estimate, linesBody, linesProblem, n, searchCustomers } from '../sales/saleForm.jsx';
+import SaleItemsEntry from '../sales/SaleItemsEntry.jsx';
 import CreditStatus from './CreditStatus.jsx';
 
 export const EMPTY = () => ({ customer: null, salespersonId: '', dueDate: '', taxRate: '0', notes: '', lines: [blankLine()] });
@@ -34,7 +35,8 @@ export const problem = (f, today) => {
 export const todayStr = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 
 // Form fields shared by CreditSalesCreate and CreditSalesUpdate.
-export default function CreditSalesForm({ f, setF, fe }) {
+// entry = true (CreditSalesCreate): bidhaa huchaguliwa kisha kuongezwa kwenye jedwali. Vinginevyo (CreditSalesUpdate): jedwali la kuhariri kama kawaida.
+export default function CreditSalesForm({ f, setF, fe, entry = false }) {
   const { t } = useTranslation('creditSales');
   const { can } = useAuth();
   const canSetPrice = can('credit_sales.set_price');
@@ -63,7 +65,7 @@ export default function CreditSalesForm({ f, setF, fe }) {
         <Field label={t('form.taxRate')} error={fe.taxRate}><input className="input" type="number" min="0" max="100" step="0.01" value={f.taxRate} onChange={set('taxRate')} /></Field>
         <div className="sm:col-span-2"><Field label={t('form.notes')} error={fe.notes}><textarea className="input" rows={2} maxLength={2000} value={f.notes} onChange={set('notes')} /></Field></div>
       </div>
-      <SaleLines f={f} setF={setF} fe={fe} canSetPrice={canSetPrice} />
+      {entry ? <SaleItemsEntry f={f} setF={setF} fe={fe} canSetPrice={canSetPrice} /> : <SaleLines f={f} setF={setF} fe={fe} canSetPrice={canSetPrice} />}
     </div>
   );
 }

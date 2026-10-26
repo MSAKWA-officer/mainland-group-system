@@ -6,7 +6,8 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import { BanIcon, EyeIcon, PlusIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
-import { NOTICE, Status, customerName, day, money } from '../sales/saleUi.jsx';
+import { splitReference } from '../sales/paymentProviders.js';
+import { METHOD, NOTICE, Status, customerName, day, money } from '../sales/saleUi.jsx';
 
 const IconBtn = ({ label, onClick, tone, children }) => (
   <button type="button" onClick={onClick} title={label} aria-label={label}
@@ -37,7 +38,13 @@ export function RowActions({ r, showView, onChanged, onError }) {
 const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
 const HEAD = `${CELL} bg-white font-semibold uppercase`;
 const al = (i) => (i === 0 ? 'text-left' : 'text-center');
-const COLS = ['saleNo', 'date', 'customer', 'salesperson', 'items', 'total', 'status', 'actions'];
+const COLS = ['saleNo', 'date', 'customer', 'salesperson', 'items', 'total', 'payment', 'status', 'actions'];
+// Njia ya malipo + benki/mtandao (mfano "Benki · CRDB"). payMethod/payReference zinatoka backend (saleQueries.js).
+const payText = (r) => {
+  if (!r.payMethod) return '—';
+  const { provider } = splitReference(r.payMethod, r.payReference);
+  return provider ? `${METHOD[r.payMethod] || r.payMethod} · ${provider}` : (METHOD[r.payMethod] || r.payMethod);
+};
 
 export default function CashSalesList() {
   const { t } = useTranslation('cashSales');
@@ -75,7 +82,7 @@ export default function CashSalesList() {
         <table className="w-full border-collapse bg-white">
           <thead><tr>{COLS.map((k, i) => <th key={k} className={`${HEAD} ${al(i)}`}>{t(`columns.${k}`)}</th>)}</tr></thead>
           <tbody>
-            {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={8}>{q || status || from || to ? t('emptyFiltered') : t('emptyNone')}</td></tr>}
+            {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={9}>{q || status || from || to ? t('emptyFiltered') : t('emptyNone')}</td></tr>}
             {rows.map((r) => (
               <tr key={r.id} className="bg-white">
                 <td className={`${CELL} whitespace-nowrap text-left`}>{r.saleNo}</td>
@@ -84,6 +91,7 @@ export default function CashSalesList() {
                 <td className={`${CELL} text-center`}>{r.salesperson?.fullName || '—'}</td>
                 <td className={`${CELL} text-center`}>{r.lineCount}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{money(r.total)}</td>
+                <td className={`${CELL} text-center`}>{payText(r)}</td>
                 <td className={`${CELL} text-center`}><Status status={r.status} /></td>
                 <td className={`${CELL} text-center`}><div className="flex justify-center"><RowActions r={r} showView onChanged={list.reload} onError={setErr} /></div></td>
               </tr>
