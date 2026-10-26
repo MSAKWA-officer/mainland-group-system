@@ -12,7 +12,7 @@ const zr = require('./efdZReports');
    2. devices     - per device over a period: receipts, VAT, voids, Z reports and reconciled days
    3. monthly     - month by month for one year: sales, VAT, voids, verified Z totals and reconciled days (for VAT returns)
    4. receipts    - the receipt register (searchable, paged; CSV gives every row up to the export limit)
-   5. unreceipted - confirmed orders that still have no live EFD receipt */
+   5. unreceipted - completed sales that still have no live EFD receipt */
 const { cents, str } = core;
 const sgn = zr.sgn;
 const EXPORT_LIMIT = 20000;
@@ -115,10 +115,10 @@ async function monthly({ year, deviceId }) {
 async function receipts(q, { all = false } = {}) {
   const rep = { ...base(q), status: q.status ?? null, search: q.search ? like(q.search) : null };
   const where = `${IN_RANGE(DAY('r.issued_at'))} AND ${DEV('r.device_id')} AND (CAST(:status AS text) IS NULL OR r.status = CAST(:status AS text))
-    AND (CAST(:search AS text) IS NULL OR r.receipt_no ILIKE :search OR r.verification_code ILIKE :search OR o.order_no ILIKE :search OR c.name ILIKE :search)`;
-  const from = `FROM efd_receipts r JOIN efd_devices d ON d.id = r.device_id JOIN sales_orders o ON o.id = r.sales_order_id JOIN customers c ON c.id = o.customer_id`;
+    AND (CAST(:search AS text) IS NULL OR r.receipt_no ILIKE :search OR r.verification_code ILIKE :search OR s.sale_no ILIKE :search OR COALESCE(c.name, s.walk_in_name, '') ILIKE :search)`;
+  const from = `FROM efd_receipts r JOIN efd_devices d ON d.id = r.device_id JOIN sales s ON s.id = r.sale_id LEFT JOIN customers c ON c.id = s.customer_id`;
   const rows = await run(`SELECT r.id, r.receipt_no AS "receiptNo", r.verification_code AS "verificationCode", r.issued_at AS "issuedAt", to_char(${DAY('r.issued_at')}, 'YYYY-MM-DD') AS date,
-      d.serial_no AS "deviceSerial", o.order_no AS "orderNo", c.name AS "customerName", COALESCE(r.customer_tin, '') AS "customerTin",
+      d.serial_no AS "deviceSerial", s.sale_no AS "saleNo", COALESCE(c.name, s.walk_in_name, '') AS "customerName", COALESCE(r.customer_tin, '') AS "customerTin",
       r.amount::text AS amount, r.vat_amount::text AS "vatAmount", (r.amount - r.vat_amount)::text AS net, r.status, r.void_reason AS "voidReason"
     ${from} WHERE ${where} ORDER BY r.issued_at DESC, r.receipt_no DESC LIMIT ${all ? EXPORT_LIMIT : q.limit} ${all ? '' : `OFFSET ${(q.page - 1) * q.limit}`}`, rep);
   const [t] = await run(`SELECT COUNT(*)::int AS total, COUNT(*) FILTER (WHERE r.status = 'ISSUED')::int AS "issuedCount",
@@ -126,23 +126,24 @@ async function receipts(q, { all = false } = {}) {
       COUNT(*) FILTER (WHERE r.status = 'VOIDED')::int AS "voidedCount", COALESCE(SUM(r.amount) FILTER (WHERE r.status = 'VOIDED'), 0)::numeric(20,2)::text AS "voidedAmount"
     ${from} WHERE ${where}`, rep);
   return { report: 'receipts', title: 'EFD receipt register', from: q.from, to: q.to,
-    columns: [['issuedAt', 'Issued at'], ['deviceSerial', 'Device'], ['receiptNo', 'Receipt no'], ['verificationCode', 'Verification code'], ['orderNo', 'Order'], ['customerName', 'Customer'],
+    columns: [['issuedAt', 'Issued at'], ['deviceSerial', 'Device'], ['receiptNo', 'Receipt no'], ['verificationCode', 'Verification code'], ['saleNo', 'Sale'], ['customerName', 'Customer'],
       ['customerTin', 'Customer TIN'], ['amount', 'Gross'], ['vatAmount', 'VAT'], ['net', 'Net'], ['status', 'Status'], ['voidReason', 'Void reason']].map(([key, label]) => ({ key, label })),
     totals: { issuedCount: t.issuedCount, gross: t.gross, vat: t.vat, voidedCount: t.voidedCount, voidedAmount: t.voidedAmount },
     rows, total: t.total, ...(all ? { truncated: t.total > rows.length } : { page: q.page, limit: q.limit }) };
 }
 
-/* 5. Confirmed orders without a live EFD receipt */
+/* 5. Completed sales (cash and credit) without a live EFD receipt */
 async function unreceipted(q) {
   const rep = { from: q.from, to: q.to, tz: zr.TZ, today: await zr.today() };
-  const rows = await run(`SELECT o.id AS "orderId", o.order_no AS "orderNo", to_char(${DAY('o.confirmed_at')}, 'YYYY-MM-DD') AS date, c.name AS "customerName", COALESCE(c.tin, '') AS "customerTin",
-      o.total::text AS total, o.tax_total::text AS "vatAmount", (CAST(:today AS date) - ${DAY('o.confirmed_at')})::int AS "ageDays"
-    FROM sales_orders o JOIN customers c ON c.id = o.customer_id
-    WHERE o.status = 'CONFIRMED' AND o.confirmed_at IS NOT NULL AND ${IN_RANGE(DAY('o.confirmed_at'))}
-      AND NOT EXISTS (SELECT 1 FROM efd_receipts r WHERE r.sales_order_id = o.id AND r.status = 'ISSUED')
-    ORDER BY o.confirmed_at DESC LIMIT ${EXPORT_LIMIT}`, rep);
-  return { report: 'unreceipted', title: 'Confirmed orders without an EFD receipt', from: q.from, to: q.to,
-    columns: [['date', 'Confirmed on'], ['orderNo', 'Order'], ['customerName', 'Customer'], ['customerTin', 'Customer TIN'], ['total', 'Total'], ['vatAmount', 'VAT'], ['ageDays', 'Age (days)']]
+  const rows = await run(`SELECT s.id AS "saleId", s.sale_no AS "saleNo", s.sale_type AS "saleType", to_char(s.sale_date, 'YYYY-MM-DD') AS date,
+      COALESCE(c.name, s.walk_in_name, '') AS "customerName", COALESCE(c.tin, '') AS "customerTin",
+      s.total::text AS total, s.tax_total::text AS "vatAmount", (CAST(:today AS date) - s.sale_date)::int AS "ageDays"
+    FROM sales s LEFT JOIN customers c ON c.id = s.customer_id
+    WHERE s.status = 'COMPLETED' AND ${IN_RANGE('s.sale_date')}
+      AND NOT EXISTS (SELECT 1 FROM efd_receipts r WHERE r.sale_id = s.id AND r.status = 'ISSUED')
+    ORDER BY s.sale_date DESC, s.created_at DESC LIMIT ${EXPORT_LIMIT}`, rep);
+  return { report: 'unreceipted', title: 'Completed sales without an EFD receipt', from: q.from, to: q.to,
+    columns: [['date', 'Sale date'], ['saleNo', 'Sale'], ['customerName', 'Customer'], ['customerTin', 'Customer TIN'], ['total', 'Total'], ['vatAmount', 'VAT'], ['ageDays', 'Age (days)']]
       .map(([key, label]) => ({ key, label })),
     totals: { count: rows.length, total: str(sumC(rows, 'total')), vatAmount: str(sumC(rows, 'vatAmount')) }, rows };
 }

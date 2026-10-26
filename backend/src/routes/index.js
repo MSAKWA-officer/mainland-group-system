@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { SALES_ORDERS } = require('../config/features');
 const { sequelize } = require('../models');
 const { authenticate } = require('../middleware/auth');
 const stockDocs = require('./stockDocumentRoutes');
@@ -33,7 +34,7 @@ router.use('/stock-reports', authenticate, require('./reportRoutes'));
 // ---- Phase 3: Sales & Customers ----
 router.use('/customers', authenticate, require('./customerRoutes'));
 router.use('/salespersons', authenticate, require('./salespersonRoutes'));
-router.use('/sales-orders', authenticate, require('./salesOrderRoutes'));
+if (SALES_ORDERS) router.use('/sales-orders', authenticate, require('./salesOrderRoutes'));       // hidden for now (config/features.js)
 router.use('/discounts', authenticate, require('./discountRoutes'));
 router.use('/efd-devices', authenticate, require('./efdDeviceRoutes'));
 router.use('/efd-receipts', authenticate, require('./efdReceiptRoutes'));
@@ -50,7 +51,7 @@ router.use('/credit-ageing', authenticate, require('./creditAgeingRoutes'));
 router.use('/staff', authenticate, require('./staffRoutes'));
 
 // ---- Phase 4: Approval workflow ----
-router.use('/order-workflow', authenticate, require('./orderWorkflowRoutes'));
+if (SALES_ORDERS) router.use('/order-workflow', authenticate, require('./orderWorkflowRoutes'));   // hidden for now (config/features.js)
 
 // ---- Phase 5: Banking & Payments ----
 router.use('/banks', authenticate, require('./bankRoutes'));

@@ -1,3 +1,4 @@
+import { saleLink, saleCan } from '../../utils/saleLink.js';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -6,7 +7,7 @@ import { CELL, HEAD, al, Empty, Errors, Stat, Toolbar, day, initialPeriod, money
 
 const COLS = ['confirmedOn', 'order', 'customer', 'customerTin', 'total', 'vat', 'age', 'goTo'];
 
-// Confirmed orders that still have no live EFD receipt. Orders do not belong to a device, so there is no device filter.
+// Completed sales (cash and credit) that still have no live EFD receipt. Sales do not belong to a device, so there is no device filter.
 export default function EfdUnreceiptedReport() {
   const { t } = useTranslation('efdReports');
   const { t: tc } = useTranslation('common');
@@ -29,15 +30,15 @@ export default function EfdUnreceiptedReport() {
           {rpt.loading && !rpt.data && <tr><td className={`${CELL} text-left`} colSpan={COLS.length}>{tc('loading')}</td></tr>}
           <Empty cols={COLS.length} rpt={rpt}>{t('unreceipted.empty')}</Empty>
           {rows.map((r) => (
-            <tr key={r.orderId} className="bg-white">
+            <tr key={r.saleId} className="bg-white">
               <td className={`${CELL} whitespace-nowrap text-left`}>{day(r.date)}</td>
-              <td className={`${CELL} whitespace-nowrap text-center`}>{can('sales_orders.read') ? <Link to={`/sales-orders/${r.orderId}`} className="underline">{r.orderNo}</Link> : r.orderNo}</td>
+              <td className={`${CELL} whitespace-nowrap text-center`}>{saleCan(can, r.saleType) ? <Link to={saleLink(r.saleId, r.saleType)} className="underline">{r.saleNo}</Link> : r.saleNo}</td>
               <td className={`${CELL} text-center`}>{r.customerName}</td>
               <td className={`${CELL} whitespace-nowrap text-center`}>{r.customerTin || '—'}</td>
               <td className={`${CELL} whitespace-nowrap text-center`}>{money(r.total)}</td>
               <td className={`${CELL} whitespace-nowrap text-center`}>{money(r.vatAmount)}</td>
               <td className={`${CELL} text-center`}>{r.ageDays >= 2 ? <b className="text-red-600">{r.ageDays}</b> : <span className="text-black">{r.ageDays}</span>}</td>
-              <td className={`${CELL} text-center`}>{can('efd_receipts.create') ? <Link to={`/efd-receipts/new?orderId=${r.orderId}`} className="whitespace-nowrap text-[14px] underline">{t('unreceipted.record')}</Link> : '—'}</td>
+              <td className={`${CELL} text-center`}>{can('efd_receipts.create') ? <Link to={`/efd-receipts/new?saleId=${r.saleId}`} className="whitespace-nowrap text-[14px] underline">{t('unreceipted.record')}</Link> : '—'}</td>
             </tr>
           ))}
         </tbody>

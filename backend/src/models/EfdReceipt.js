@@ -6,7 +6,7 @@ const money = (extra = {}) => ({ type: D.DECIMAL(20, 2), allowNull: false, defau
 
 // Fiscal record. DB triggers block DELETE and any change except ISSUED -> VOIDED.
 const EfdReceipt = sequelize.define('EfdReceipt', {
-  id, deviceId: { type: D.UUID, allowNull: false }, salesOrderId: { type: D.UUID, allowNull: false },
+  id, deviceId: { type: D.UUID, allowNull: false }, salesOrderId: D.UUID, saleId: D.UUID,     // saleId = the cash/credit sale; salesOrderId is only filled on receipts recorded before orders were hidden
   receiptNo: str(40, { allowNull: false }), verificationCode: str(40), issuedAt: D.DATE,
   amount: money(), vatAmount: money(), customerTin: str(30),
   status: str(10, { allowNull: false, defaultValue: 'ISSUED' }),

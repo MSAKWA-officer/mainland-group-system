@@ -1,3 +1,4 @@
+import { SALES_ORDERS } from '../config/features.js';
 import { useEffect, useRef, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -24,8 +25,7 @@ const GROUPS = [
   ] },
   { key: 'sales', label: 'Sales & Customers', items: [
     ['/customers', 'Customers', 'customers.read'], ['/salespersons', 'Salespersons', 'salespersons.read'],
-    ['/sales-orders', 'Sales orders', 'sales_orders.read'], ['/order-workflow', 'Order approvals', 'order_workflow.read'],
-    ['/sales', 'Sales', 'sales.read'],
+    ...(SALES_ORDERS ? [['/sales-orders', 'Sales orders', 'sales_orders.read'], ['/order-workflow', 'Order approvals', 'order_workflow.read'], ['/sales', 'Sales', 'sales.read']] : []),   // hidden for now (config/features.js)
     ['/cash-sales', 'Cash sales', 'cash_sales.read'], ['/credit-sales', 'Credit sales', 'credit_sales.read'],
     ['/customer-balances', 'Customer balance', 'customer_balances.read'], ['/payment-history', 'Payment history', 'payment_history.read'],
     ['/credit-ageing', 'Credit ageing', 'credit_ageing.read'],

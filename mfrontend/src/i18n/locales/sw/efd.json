@@ -23,19 +23,22 @@
     "receipts": "Risiti"
   },
   "receipt": {
-    "status": { "ISSUED": "Imetolewa", "VOIDED": "Imebatilishwa" },
+    "status": {
+      "ISSUED": "Imetolewa",
+      "VOIDED": "Imebatilishwa"
+    },
     "list": {
       "title": "Namba za EFD",
       "subtitle": "Risiti {{total}} zimerekodiwa",
       "record": "Rekodi Namba ya EFD",
-      "search": "Tafuta namba ya risiti, msimbo wa uthibitisho au oda",
+      "search": "Tafuta namba ya risiti, msimbo wa uthibitisho au namba ya mauzo",
       "searchAria": "Tafuta risiti",
       "emptyFiltered": "Hakuna risiti zinazolingana na vichujio vyako.",
-      "emptyNone": "Bado hakuna namba za EFD zilizorekodiwa. Tumia “Rekodi Namba ya EFD” baada ya oda kuthibitishwa.",
+      "emptyNone": "Bado hakuna namba za EFD zilizorekodiwa. Tumia “Rekodi Namba ya EFD” baada ya mauzo ya pesa taslimu au mkopo kukamilika.",
       "columns": {
         "receiptNo": "Namba ya risiti",
         "verification": "Uthibitisho",
-        "order": "Oda",
+        "order": "Mauzo",
         "device": "Kifaa",
         "amount": "Kiasi",
         "vat": "VAT",
@@ -51,14 +54,14 @@
     },
     "create": {
       "title": "Rekodi namba ya EFD",
-      "intro": "Weka namba ya risiti iliyochapishwa na kifaa cha EFD kwa oda iliyothibitishwa. Kiasi na VAT vinanakiliwa kutoka kwenye oda.",
-      "order": "Oda ya mauzo iliyothibitishwa",
-      "orderPlaceholder": "Chagua oda",
+      "intro": "Weka namba ya risiti iliyochapishwa na kifaa cha EFD kwa mauzo ya pesa taslimu au mkopo yaliyokamilika. Kiasi na VAT vinanakiliwa kutoka kwenye mauzo.",
+      "order": "Mauzo yaliyokamilika (pesa taslimu au mkopo)",
+      "orderPlaceholder": "Chagua mauzo",
       "receiptNo": "Namba ya risiti",
       "receiptNoTitle": "Herufi, tarakimu na - tu",
       "verification": "Msimbo wa uthibitisho (si lazima)",
       "issuedAt": "Ilitolewa lini (si lazima, chaguo-msingi ni sasa)",
-      "orderTotal": "Jumla ya oda itakayorekodiwa:",
+      "orderTotal": "Jumla ya mauzo itakayorekodiwa:",
       "submit": "Rekodi namba ya EFD",
       "saved": "Namba ya EFD imerekodiwa."
     },
@@ -67,7 +70,7 @@
       "fallbackTitle": "Risiti ya EFD",
       "receiptNo": "Namba ya risiti",
       "verification": "Msimbo wa uthibitisho",
-      "order": "Oda ya mauzo",
+      "order": "Mauzo",
       "device": "Kifaa",
       "customerTin": "TIN ya mteja",
       "amount": "Kiasi",
@@ -175,7 +178,11 @@
     }
   },
   "recon": {
-    "status": { "OPEN": "Wazi", "RECONCILED": "Imesuluhishwa", "VOIDED": "Imebatilishwa" },
+    "status": {
+      "OPEN": "Wazi",
+      "RECONCILED": "Imesuluhishwa",
+      "VOIDED": "Imebatilishwa"
+    },
     "figures": {
       "zReport": "Ripoti ya Z",
       "system": "Mfumo (risiti za EFD)",
@@ -184,7 +191,7 @@
       "gross": "Jumla kuu",
       "vat": "VAT",
       "voidedSystem": "Risiti zilizobatilishwa (mfumo)",
-      "unreceipted": "Oda zilizothibitishwa zisizo na risiti ya EFD"
+      "unreceipted": "Mauzo yaliyokamilika bila risiti ya EFD"
     },
     "list": {
       "title": "Usuluhishi wa kila siku",
@@ -263,7 +270,7 @@
       "compareTitle": "Ripoti ya Z dhidi ya mfumo",
       "compareHelp": "Tofauti = ripoti ya Z toa risiti za EFD zilizorekodiwa kwenye mfumo kwa kifaa na siku hii. Namba hizi ni picha ya wakati huo; tumia Onyesha upya wakati usuluhishi uko wazi ili kuzisoma tena.",
       "diffBanner": "Siku hii ina tofauti. Kagua risiti zilizo hapa chini kabla ya kuidhinisha.",
-      "diffBannerUnreceipted": "Siku hii ina tofauti na oda zilizothibitishwa zisizo na risiti ya EFD. Kagua risiti zilizo hapa chini kabla ya kuidhinisha.",
+      "diffBannerUnreceipted": "Siku hii ina tofauti na mauzo yaliyokamilika bila risiti ya EFD. Kagua risiti zilizo hapa chini kabla ya kuidhinisha.",
       "signTitle": "Idhinisha",
       "zNotVerified": "Ripoti ya Z ni {{status}}. Lazima ithibitishwe na mtu mwingine kabla siku hii haijasuluhishwa.",
       "mine": "Wewe ndiye ulianzisha usuluhishi huu, kwa hiyo mtu mwingine lazima auidhinishe.",

@@ -1,3 +1,4 @@
+import { saleLink, saleCan } from '../../utils/saleLink.js';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
@@ -32,10 +33,10 @@ export const findingMessage = (x, t) => {
     case 'Z_MISMATCH': return t('messages.Z_MISMATCH', { ...base, report: r.reportNo });
     case 'Z_NUMBER_GAP': return t('messages.Z_NUMBER_GAP', { ...base, prev: String(Number(x.expected?.zNumber) - 1), z: x.actual?.zNumber, missing });
     case 'UNRECEIPTED_ORDER': {
-      const customer = /^Order \S+ \((.*)\) was confirmed on /.exec(x.message || '')?.[1];   // only the server text carries the customer name
-      return customer ? t('messages.UNRECEIPTED_ORDER', { ...base, order: r.orderNo, customer }) : t('messages.UNRECEIPTED_ORDER_NO_CUSTOMER', { ...base, order: r.orderNo });
+      const customer = /^Sale \S+ \((.*)\) was completed on /.exec(x.message || '')?.[1];   // only the server text carries the customer name
+      return customer ? t('messages.UNRECEIPTED_ORDER', { ...base, order: r.saleNo, customer }) : t('messages.UNRECEIPTED_ORDER_NO_CUSTOMER', { ...base, order: r.saleNo });
     }
-    case 'RECEIPT_AMOUNT_MISMATCH': return t('messages.RECEIPT_AMOUNT_MISMATCH', { ...base, receipt: r.receiptNo, order: r.orderNo });
+    case 'RECEIPT_AMOUNT_MISMATCH': return t('messages.RECEIPT_AMOUNT_MISMATCH', { ...base, receipt: r.receiptNo, order: r.saleNo });
     case 'RECEIPT_NUMBER_GAP': return t('messages.RECEIPT_NUMBER_GAP', { ...base, prev: x.expected?.receiptNo, receipt: x.actual?.receiptNo, missing });
     case 'RECON_MISSING': return t('messages.RECON_MISSING', { ...base, report: r.reportNo });
     case 'Z_PENDING_OLD': return t('messages.Z_PENDING_OLD', { ...base, report: r.reportNo, days: x.ageDays });
@@ -74,8 +75,8 @@ export function Next({ x }) {
   if (r.zReportId && can('efd_z_reports.read')) links.push(<L key="z" to={`/efd-z-reports/${r.zReportId}`}>{t('links.zReport', { no: r.reportNo })}</L>);
   if (r.reconId && can('efd_reconciliations.read')) links.push(<L key="c" to={`/efd-reconciliations/${r.reconId}`}>{r.reconNo}</L>);
   if (r.receiptId && can('efd_receipts.read')) links.push(<L key="r" to={`/efd-receipts/${r.receiptId}`}>{t('links.receipt', { no: r.receiptNo })}</L>);
-  if (r.orderId && can('sales_orders.read')) links.push(<L key="o" to={`/sales-orders/${r.orderId}`}>{t('links.order', { no: r.orderNo })}</L>);
-  if (r.orderId && x.type === 'UNRECEIPTED_ORDER' && can('efd_receipts.create')) links.push(<L key="n" to={`/efd-receipts/new?orderId=${r.orderId}`}>{t('links.recordEfd')}</L>);
+  if (r.saleId && saleCan(can, r.saleType)) links.push(<L key="o" to={saleLink(r.saleId, r.saleType)}>{t('links.order', { no: r.saleNo })}</L>);
+  if (r.saleId && x.type === 'UNRECEIPTED_ORDER' && can('efd_receipts.create')) links.push(<L key="n" to={`/efd-receipts/new?saleId=${r.saleId}`}>{t('links.recordEfd')}</L>);
   if (x.type === 'Z_MISSING' && x.deviceId && can('efd_z_reports.create')) links.push(<L key="zn" to={`/efd-z-reports/new?deviceId=${x.deviceId}`}>{t('links.recordZ')}</L>);
   if (x.type === 'RECON_MISSING' && x.deviceId && can('efd_reconciliations.create')) links.push(<L key="rn" to={`/efd-reconciliations/new?deviceId=${x.deviceId}&date=${x.date}`}>{t('links.startRecon')}</L>);
   if (!links.length) return <span>—</span>;

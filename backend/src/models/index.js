@@ -115,6 +115,8 @@ SalesOrderLine.belongsTo(Discount, { as: 'discount', foreignKey: 'discountId' })
 EfdDevice.hasMany(EfdReceipt, { as: 'receipts', foreignKey: 'deviceId' });
 EfdReceipt.belongsTo(EfdDevice, { as: 'device', foreignKey: 'deviceId' });
 EfdReceipt.belongsTo(SalesOrder, { as: 'order', foreignKey: 'salesOrderId' });
+EfdReceipt.belongsTo(Sale, { as: 'sale', foreignKey: 'saleId' });
+Sale.hasMany(EfdReceipt, { as: 'efdReceipts', foreignKey: 'saleId' });
 SalesOrder.hasMany(EfdReceipt, { as: 'efdReceipts', foreignKey: 'salesOrderId' });
 EfdReceipt.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
 EfdReceipt.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });

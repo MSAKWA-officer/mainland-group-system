@@ -23,19 +23,22 @@
     "receipts": "Receipts"
   },
   "receipt": {
-    "status": { "ISSUED": "Issued", "VOIDED": "Voided" },
+    "status": {
+      "ISSUED": "Issued",
+      "VOIDED": "Voided"
+    },
     "list": {
       "title": "EFD numbers",
       "subtitle": "{{total}} receipts recorded",
       "record": "Record EFD Number",
-      "search": "Search receipt no, verification code or order",
+      "search": "Search receipt no, verification code or sale no.",
       "searchAria": "Search receipts",
       "emptyFiltered": "No receipts match your filters.",
-      "emptyNone": "No EFD numbers recorded yet. Use “Record EFD Number” after an order is confirmed.",
+      "emptyNone": "No EFD numbers recorded yet. Use “Record EFD Number” after a cash or credit sale is completed.",
       "columns": {
         "receiptNo": "Receipt no",
         "verification": "Verification",
-        "order": "Order",
+        "order": "Sale",
         "device": "Device",
         "amount": "Amount",
         "vat": "VAT",
@@ -51,14 +54,14 @@
     },
     "create": {
       "title": "Record EFD number",
-      "intro": "Enter the receipt number printed by the EFD device for a confirmed order. The amount and VAT are copied from the order.",
-      "order": "Confirmed sales order",
-      "orderPlaceholder": "Choose an order",
+      "intro": "Enter the receipt number printed by the EFD device for a completed cash or credit sale. The amount and VAT are copied from the sale.",
+      "order": "Completed sale (cash or credit)",
+      "orderPlaceholder": "Choose a sale",
       "receiptNo": "Receipt number",
       "receiptNoTitle": "Letters, digits and - only",
       "verification": "Verification code (optional)",
       "issuedAt": "Issued at (optional, defaults to now)",
-      "orderTotal": "Order total to be recorded:",
+      "orderTotal": "Sale total to be recorded:",
       "submit": "Record EFD number",
       "saved": "EFD number recorded."
     },
@@ -67,7 +70,7 @@
       "fallbackTitle": "EFD receipt",
       "receiptNo": "Receipt number",
       "verification": "Verification code",
-      "order": "Sales order",
+      "order": "Sale",
       "device": "Device",
       "customerTin": "Customer TIN",
       "amount": "Amount",
@@ -175,7 +178,11 @@
     }
   },
   "recon": {
-    "status": { "OPEN": "Open", "RECONCILED": "Reconciled", "VOIDED": "Voided" },
+    "status": {
+      "OPEN": "Open",
+      "RECONCILED": "Reconciled",
+      "VOIDED": "Voided"
+    },
     "figures": {
       "zReport": "Z report",
       "system": "System (EFD receipts)",
@@ -184,7 +191,7 @@
       "gross": "Gross",
       "vat": "VAT",
       "voidedSystem": "Voided receipts (system)",
-      "unreceipted": "Confirmed orders without an EFD receipt"
+      "unreceipted": "Completed sales without an EFD receipt"
     },
     "list": {
       "title": "Daily reconciliation",
@@ -263,7 +270,7 @@
       "compareTitle": "Z report vs system",
       "compareHelp": "Difference = Z report minus the EFD receipts recorded in the system for this device and day. These figures are a snapshot; use Refresh while the reconciliation is open to re-read them.",
       "diffBanner": "This day has a difference. Check the receipts below before signing off.",
-      "diffBannerUnreceipted": "This day has a difference and confirmed orders without an EFD receipt. Check the receipts below before signing off.",
+      "diffBannerUnreceipted": "This day has a difference and completed sales without an EFD receipt. Check the receipts below before signing off.",
       "signTitle": "Sign off",
       "zNotVerified": "The Z report is {{status}}. It must be verified by another person before this day can be reconciled.",
       "mine": "You started this reconciliation, so someone else must sign it off.",

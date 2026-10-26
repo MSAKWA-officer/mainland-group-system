@@ -112,7 +112,7 @@ exports.remove = async (req, res) => {
   res.json({ ok: true });
 };
 
-// Monthly performance: confirmed orders, net sales (after discount, before tax), target attainment and commission.
+// Monthly performance: completed sales (cash + credit; the key keeps its old name confirmedOrders), net sales (after discount, before tax), target attainment and commission.
 exports.summary = async (req, res) => {
   const sp = req.params.id ? await find(req.params.id) : await mine(req);
   if (!sp) throw new AppError(404, 'NOT_FOUND', 'Salesperson not found');
@@ -120,10 +120,10 @@ exports.summary = async (req, res) => {
   const month = req.query.month || new Date().toISOString().slice(0, 7);
   const [r] = (await sequelize.query(`SELECT CAST(COUNT(*) AS int) AS "confirmedOrders", COALESCE(SUM(total), 0) AS "grossTotal",
       COALESCE(SUM(total - tax_total), 0) AS "netSales"
-    FROM sales_orders WHERE salesperson_id = :id AND status = 'CONFIRMED'
-      AND confirmed_at >= CAST(:m || '-01' AS date) AND confirmed_at < CAST(:m || '-01' AS date) + interval '1 month'`, { replacements: { id: sp.id, m: month } }))[0];
+    FROM sales WHERE salesperson_id = :id AND status = 'COMPLETED'
+      AND sale_date >= CAST(:m || '-01' AS date) AND sale_date < CAST(:m || '-01' AS date) + interval '1 month'`, { replacements: { id: sp.id, m: month } }))[0];
   const [x] = (await sequelize.query(`SELECT
-      (SELECT CAST(COUNT(*) AS int) FROM sales_orders WHERE salesperson_id = :id AND status = 'SUBMITTED') AS "pendingOrders",
+      (SELECT CAST(COUNT(*) AS int) FROM sales WHERE salesperson_id = :id AND status = 'SUBMITTED') AS "pendingOrders",
       (SELECT CAST(COUNT(*) AS int) FROM customers WHERE salesperson_id = :id AND is_active) AS "activeCustomers"`, { replacements: { id: sp.id } }))[0];
   const out = { salespersonId: sp.id, code: sp.code, fullName: sp.fullName, month, ...r, ...x };
   if (canPay(req) || own) {

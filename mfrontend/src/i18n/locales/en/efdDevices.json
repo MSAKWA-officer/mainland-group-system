@@ -43,7 +43,7 @@
   },
   "create": {
     "title": "New EFD device",
-    "sub": "Register a fiscal device so its receipt numbers can be recorded against orders.",
+    "sub": "Register a fiscal device so its receipt numbers can be recorded against sales.",
     "submit": "Save device",
     "saved": "Device registered."
   },

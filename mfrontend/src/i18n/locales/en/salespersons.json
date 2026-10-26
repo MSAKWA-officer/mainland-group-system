@@ -80,7 +80,7 @@
     "title": "Monthly performance",
     "subtitle": "Confirmed orders only. Net sales are after discount and before tax.",
     "monthAria": "Month",
-    "confirmedOrders": "Confirmed orders",
+    "confirmedOrders": "Completed sales",
     "netSales": "Net sales",
     "grossTotal": "Gross total",
     "pendingApproval": "Pending approval",

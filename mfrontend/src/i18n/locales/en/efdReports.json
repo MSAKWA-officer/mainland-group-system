@@ -7,7 +7,7 @@
     "devices": "By device",
     "monthly": "Month by month",
     "receipts": "Receipt register",
-    "unreceipted": "Orders without receipt"
+    "unreceipted": "Sales without receipt"
   },
   "toolbar": {
     "thisMonth": "This month",
@@ -33,7 +33,7 @@
     "net": "Net",
     "voided": "Voided receipts",
     "tin": "TIN",
-    "order": "Order",
+    "order": "Sale",
     "customer": "Customer",
     "total": "Total",
     "zReport": "Z report",
@@ -106,7 +106,7 @@
   },
   "receipts": {
     "issued": "Issued receipts",
-    "search": "Search receipt no, code, order, customer",
+    "search": "Search receipt no, code, sale, customer",
     "searchAria": "Search receipts",
     "empty": "No receipts match.",
     "columns": {
@@ -114,7 +114,7 @@
       "device": "Device",
       "receiptNo": "Receipt no",
       "verification": "Verification",
-      "order": "Order",
+      "order": "Sale",
       "customer": "Customer",
       "gross": "Gross",
       "vat": "VAT",
@@ -123,12 +123,12 @@
     }
   },
   "unreceipted": {
-    "orders": "Orders without a receipt",
-    "empty": "Every confirmed order in this period has an EFD receipt.",
+    "orders": "Sales without a receipt",
+    "empty": "Every completed sale in this period has an EFD receipt.",
     "record": "Record EFD number",
     "columns": {
       "confirmedOn": "Confirmed on",
-      "order": "Order",
+      "order": "Sale",
       "customer": "Customer",
       "customerTin": "Customer TIN",
       "total": "Total",

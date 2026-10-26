@@ -1,4 +1,5 @@
 const { QueryTypes } = require('sequelize');
+const { SALES_ORDERS } = require('../config/features');   // order cards are hidden unless ENABLE_SALES_ORDERS=true
 const { sequelize } = require('../models');
 const { mine } = require('./salesScope');
 const { balanceSql } = require('./banking');
@@ -259,7 +260,7 @@ async function sales(req) {
   });
   await when(req, 'salespersons.read', out, async () => m('activeSalespersons', (await one(
     'SELECT COUNT(*)::int AS c FROM salespersons WHERE is_active')).c, 'count', '/salespersons'));
-  await when(req, 'sales_orders.read', out, async () => {
+  if (SALES_ORDERS) await when(req, 'sales_orders.read', out, async () => {
     const o = own('sales_orders.read_all', 'o');
     const r = await one(`SELECT COUNT(*) FILTER (WHERE status = 'DRAFT')::int AS draft, COUNT(*) FILTER (WHERE status = 'SUBMITTED')::int AS submitted,
         COUNT(*) FILTER (WHERE status = 'CONFIRMED' AND confirmed_at >= ${MONTH})::int AS confirmed
@@ -267,7 +268,7 @@ async function sales(req) {
     return [m('ordersDraft', r.draft, 'count', '/sales-orders'), m('ordersSubmitted', r.submitted, 'count', '/sales-orders', { tone: tone(r.submitted, 'warn') }),
       m('ordersConfirmedMonth', r.confirmed, 'count', '/sales-orders')];
   });
-  await when(req, 'order_workflow.read', out, async () => {
+  if (SALES_ORDERS) await when(req, 'order_workflow.read', out, async () => {
     const all = can(req, 'order_workflow.read_all');
     const r = await one(`SELECT COUNT(*) FILTER (WHERE status = 'AWAITING_STOREKEEPER')::int AS sk, COUNT(*) FILTER (WHERE status = 'AWAITING_MANAGER')::int AS mg,
         COUNT(*) FILTER (WHERE status = 'RETURNED')::int AS ret FROM order_workflows`);

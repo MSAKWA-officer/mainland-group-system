@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { efdDeviceApi, efdReceiptApi, errMsg, fieldErrs, salesOrderApi } from '../../api/index.js';
+import { efdDeviceApi, efdReceiptApi, errMsg, fieldErrs } from '../../api/index.js';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
 import Picker from '../../components/Picker.jsx';
@@ -9,26 +9,26 @@ import { ArrowLeftIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { NOTICE, money } from './EfdReceiptsList.jsx';
 
-const asOption = (o) => ({ id: o.id, label: `${o.orderNo} · ${o.customer?.name || ''} · ${money(o.total)}`, total: o.total, orderNo: o.orderNo });
-// Only CONFIRMED orders can get an EFD number; the server checks this again.
-const loadOrders = (s) => salesOrderApi.list({ status: 'CONFIRMED', limit: 25, ...(s && { search: s }) }).then((r) => r.data.map(asOption));
+const asOption = (o) => ({ id: o.id, label: `${o.saleNo} · ${o.customerName || 'Walk-in'} · ${money(o.total)}`, total: o.total, saleNo: o.saleNo });
+// Only COMPLETED cash / credit sales without an EFD number are offered; the server checks this again.
+const loadSales = (s) => efdReceiptApi.eligibleSales(s ? { search: s } : {}).then((r) => r.data.map(asOption));
 
 export default function EfdReceiptsCreate() {
   const { t } = useTranslation('efd');
   const navigate = useNavigate();
-  const [params] = useSearchParams();                    // /efd-receipts/new?orderId=… pre-selects the order
+  const [params] = useSearchParams();                    // /efd-receipts/new?saleId=… pre-selects the sale
   const devs = useLoad(() => efdDeviceApi.list({ isActive: 'true', limit: 100 }), []);
-  const [f, setF] = useState({ deviceId: '', order: null, receiptNo: '', verificationCode: '', issuedAt: '' });
+  const [f, setF] = useState({ deviceId: '', sale: null, receiptNo: '', verificationCode: '', issuedAt: '' });
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
-  const preId = params.get('orderId');
-  useEffect(() => { if (preId) salesOrderApi.get(preId).then((o) => setF((p) => ({ ...p, order: asOption(o) }))).catch(() => {}); }, [preId]);
+  const preId = params.get('saleId');
+  useEffect(() => { if (preId) efdReceiptApi.eligibleSales({ id: preId }).then((r) => r.data[0] && setF((p) => ({ ...p, sale: asOption(r.data[0]) }))).catch(() => {}); }, [preId]);
   const devices = devs.data?.data || [];
   useEffect(() => { if (devices.length === 1) setF((p) => (p.deviceId ? p : { ...p, deviceId: devices[0].id })); }, [devices.length]); // eslint-disable-line
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const submit = async (e) => {
     e.preventDefault(); setErr(''); setFe({}); setBusy(true);
     try {
-      const r = await efdReceiptApi.create({ deviceId: f.deviceId, salesOrderId: f.order.id, receiptNo: f.receiptNo.trim(),
+      const r = await efdReceiptApi.create({ deviceId: f.deviceId, saleId: f.sale.id, receiptNo: f.receiptNo.trim(),
         verificationCode: f.verificationCode.trim() || null, ...(f.issuedAt && { issuedAt: new Date(f.issuedAt).toISOString() }) });
       navigate(`/efd-receipts/${r.id}`, { state: { msg: t('receipt.create.saved') } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
@@ -45,8 +45,8 @@ export default function EfdReceiptsCreate() {
       <form onSubmit={submit} className="space-y-4 border-t border-line px-6 py-6 [&_.text-danger]:!text-black">
         <div className={NOTICE}><Banner>{err || devs.error}</Banner></div>
         <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
-          <div className="sm:col-span-2"><Field label={t('receipt.create.order')} error={fe.salesOrderId}>
-            <Picker value={f.order?.id} selected={f.order} load={loadOrders} onPick={(o) => setF({ ...f, order: o })} placeholder={t('receipt.create.orderPlaceholder')} required />
+          <div className="sm:col-span-2"><Field label={t('receipt.create.order')} error={fe.saleId}>
+            <Picker value={f.sale?.id} selected={f.sale} load={loadSales} onPick={(o) => setF({ ...f, sale: o })} placeholder={t('receipt.create.orderPlaceholder')} required />
           </Field></div>
           <div className="sm:col-span-2"><Field label={t('shared.device')} error={fe.deviceId}>
             <select className="input" required value={f.deviceId} onChange={set('deviceId')}>
@@ -58,9 +58,9 @@ export default function EfdReceiptsCreate() {
           <div className="sm:col-span-2"><Field label={t('receipt.create.issuedAt')} error={fe.issuedAt}>
             <input className="input max-w-xs" type="datetime-local" value={f.issuedAt} onChange={set('issuedAt')} />
           </Field></div>
-          {f.order && <p className="text-sm sm:col-span-2">{t('receipt.create.orderTotal')} <b>{money(f.order.total)}</b></p>}
+          {f.sale && <p className="text-sm sm:col-span-2">{t('receipt.create.orderTotal')} <b>{money(f.sale.total)}</b></p>}
         </div>
-        <button className="btn-primary" disabled={busy || !f.order}>{busy ? t('shared.saving') : t('receipt.create.submit')}</button>
+        <button className="btn-primary" disabled={busy || !f.sale}>{busy ? t('shared.saving') : t('receipt.create.submit')}</button>
       </form>
     </div>
   );

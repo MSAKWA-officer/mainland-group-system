@@ -80,7 +80,7 @@
     "title": "月度业绩",
     "subtitle": "仅统计已确认订单。净销售额为折扣后、税前金额。",
     "monthAria": "月份",
-    "confirmedOrders": "已确认订单",
+    "confirmedOrders": "已完成销售",
     "netSales": "净销售额",
     "grossTotal": "总金额",
     "pendingApproval": "待审批",

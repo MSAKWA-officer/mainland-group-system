@@ -38,7 +38,7 @@ async function lock(req, id, t) {
   return z;
 }
 
-/* What the system recorded for one device on one trading day (EFD receipts), plus confirmed orders of that day that still have no live receipt.
+/* What the system recorded for one device on one trading day (EFD receipts), plus completed sales (cash and credit) of that day that still have no live receipt.
    Shared with the reconciliation service. Money is returned as text. */
 async function systemTotals(deviceId, date, t) {
   const rep = { d: deviceId, date, tz: TZ };
@@ -47,9 +47,9 @@ async function systemTotals(deviceId, date, t) {
       COALESCE(SUM(vat_amount) FILTER (WHERE status = 'ISSUED'), 0)::text AS vat,
       COUNT(*) FILTER (WHERE status = 'VOIDED')::int AS "voidedCount", COALESCE(SUM(amount) FILTER (WHERE status = 'VOIDED'), 0)::text AS "voidedAmount"
     FROM efd_receipts WHERE device_id = :d AND CAST(issued_at AT TIME ZONE :tz AS date) = CAST(:date AS date)`, { replacements: rep, transaction: t, type: QueryTypes.SELECT });
-  const [u] = await sequelize.query(`SELECT COUNT(*)::int AS "count", COALESCE(SUM(o.total), 0)::text AS amount FROM sales_orders o
-    WHERE o.status = 'CONFIRMED' AND CAST(o.confirmed_at AT TIME ZONE :tz AS date) = CAST(:date AS date)
-      AND NOT EXISTS (SELECT 1 FROM efd_receipts r WHERE r.sales_order_id = o.id AND r.status = 'ISSUED')`, { replacements: rep, transaction: t, type: QueryTypes.SELECT });
+  const [u] = await sequelize.query(`SELECT COUNT(*)::int AS "count", COALESCE(SUM(s.total), 0)::text AS amount FROM sales s
+    WHERE s.status = 'COMPLETED' AND s.sale_date = CAST(:date AS date)
+      AND NOT EXISTS (SELECT 1 FROM efd_receipts r WHERE r.sale_id = s.id AND r.status = 'ISSUED')`, { replacements: rep, transaction: t, type: QueryTypes.SELECT });
   return { ...r, unreceiptedCount: u.count, unreceiptedAmount: u.amount };
 }
 

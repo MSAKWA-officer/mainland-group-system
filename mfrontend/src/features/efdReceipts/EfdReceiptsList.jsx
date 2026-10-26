@@ -1,3 +1,4 @@
+import { saleLink, saleCan } from '../../utils/saleLink.js';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -113,7 +114,7 @@ export default function EfdReceiptsList() {
               <tr key={r.id} className="bg-white">
                 <td className={`${CELL} whitespace-nowrap text-left`}>{r.receiptNo}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{r.verificationCode || '—'}</td>
-                <td className={`${CELL} whitespace-nowrap text-center`}>{r.order && (can('sales_orders.read') ? <Link to={`/sales-orders/${r.order.id}`} className="text-black underline">{r.order.orderNo}</Link> : r.order.orderNo)}</td>
+                <td className={`${CELL} whitespace-nowrap text-center`}>{r.sale && (saleCan(can, r.sale.saleType) ? <Link to={saleLink(r.sale.id, r.sale.saleType)} className="text-black underline">{r.sale.saleNo}</Link> : r.sale.saleNo)}</td>
                 <td className={`${CELL} text-center`}>{r.device?.name}<div className="text-xs">{r.device?.serialNo}</div></td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{money(r.amount)}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{money(r.vatAmount)}</td>

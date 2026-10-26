@@ -9,7 +9,7 @@ const zr = require('./efdZReports');
 /* EFD daily reconciliation = for ONE device and ONE trading day, compare
      (a) the Z report recorded from the device printout, with
      (b) the EFD receipts the system recorded on that device that day.
-   Difference = Z report minus system (gross, VAT, receipt count). Also shown: receipts voided that day, and confirmed orders of that day that still have no EFD receipt (all devices).
+   Difference = Z report minus system (gross, VAT, receipt count). Also shown: receipts voided that day, and completed sales of that day that still have no EFD receipt (all devices). (The columns keep the old name unreceipted_orders_*.)
    - Flow: OPEN -> RECONCILED. OPEN / RECONCILED -> VOIDED. Figures are always calculated by the server; the client only chooses the device and the day.
    - efd_reconciliations.create starts one (needs a PENDING or VERIFIED Z report for that device and day) and may refresh an OPEN one.
    - efd_reconciliations.reconcile signs it off: the Z report must be VERIFIED, the figures are re-read and must still match what was reviewed, and any difference
@@ -168,7 +168,7 @@ async function getOne(req, id) {
   const out = r.toJSON();
   out.hasDifference = hasDifference(out);
   // The receipts behind the snapshot, so a difference can be traced to individual receipt numbers.
-  out.receipts = await sequelize.query(`SELECT id, receipt_no AS "receiptNo", issued_at AS "issuedAt", amount, vat_amount AS "vatAmount", status, sales_order_id AS "salesOrderId"
+  out.receipts = await sequelize.query(`SELECT id, receipt_no AS "receiptNo", issued_at AS "issuedAt", amount, vat_amount AS "vatAmount", status, sale_id AS "saleId"
     FROM efd_receipts WHERE device_id = :d AND CAST(issued_at AT TIME ZONE :tz AS date) = CAST(:date AS date) ORDER BY issued_at LIMIT 500`,
   { replacements: { d: r.deviceId, date: r.reconDate, tz: TZ }, type: QueryTypes.SELECT });
   return out;

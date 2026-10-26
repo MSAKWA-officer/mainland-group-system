@@ -10,8 +10,8 @@ const zr = require('./efdZReports');
      Z_MISSING              receipts exist for a device on a past day but no Z report was recorded ................ HIGH
      Z_MISMATCH             Z report gross / VAT / receipt count differs from the receipts in the system ........... HIGH (gross or VAT) / MEDIUM (count only)
      Z_NUMBER_GAP           the device's Z counter jumped (e.g. Z 41 then Z 44): Z reports are missing ............. HIGH
-     UNRECEIPTED_ORDER      a confirmed order has no live EFD receipt (2+ days old HIGH, 1 day MEDIUM, today LOW) .... see left
-     RECEIPT_AMOUNT_MISMATCH a live receipt's amount / VAT differs from its (frozen) order ......................... HIGH
+     UNRECEIPTED_ORDER      a completed sale has no live EFD receipt (2+ days old HIGH, 1 day MEDIUM, today LOW) .... see left
+     RECEIPT_AMOUNT_MISMATCH a live receipt's amount / VAT differs from its (frozen) sale ......................... HIGH
      RECEIPT_NUMBER_GAP     receipt numbers of a device skip a number (e.g. ...0105 then ...0108) ................. MEDIUM
      RECON_MISSING          a past day has a Z report but no reconciliation ......................................... MEDIUM
      Z_PENDING_OLD          a Z report is still waiting for verification after 2+ days ............................. LOW
@@ -24,8 +24,8 @@ const TYPES = {
   Z_MISSING: 'No Z report for a day with receipts',
   Z_MISMATCH: 'Z report differs from the system receipts',
   Z_NUMBER_GAP: 'Z report numbers skipped',
-  UNRECEIPTED_ORDER: 'Confirmed order without an EFD receipt',
-  RECEIPT_AMOUNT_MISMATCH: 'Receipt differs from its order',
+  UNRECEIPTED_ORDER: 'Completed sale without an EFD receipt',   // the code keeps its old name; it now means a sale
+  RECEIPT_AMOUNT_MISMATCH: 'Receipt differs from its sale',
   RECEIPT_NUMBER_GAP: 'Receipt numbers skipped',
   RECON_MISSING: 'Day not reconciled',
   Z_PENDING_OLD: 'Z report waiting for verification',
@@ -112,38 +112,38 @@ async function zNumberGap(rep) {
   });
 }
 
-// Orders have no device, so this rule is skipped when the scan is limited to one device.
+// Sales have no device, so this rule is skipped when the scan is limited to one device.
+// (The rule code keeps its old name UNRECEIPTED_ORDER; it now looks at completed cash and credit sales.)
 async function unreceiptedOrders(rep) {
   if (rep.dev) return [];
-  const rows = await run(`SELECT o.id AS "orderId", o.order_no AS "orderNo", o.total::text AS total, c.name AS "customerName",
-      to_char(CAST(o.confirmed_at AT TIME ZONE :tz AS date), 'YYYY-MM-DD') AS date
-    FROM sales_orders o JOIN customers c ON c.id = o.customer_id
-    WHERE o.status = 'CONFIRMED' AND o.confirmed_at IS NOT NULL
-      AND CAST(o.confirmed_at AT TIME ZONE :tz AS date) BETWEEN CAST(:from AS date) AND CAST(:to AS date)
-      AND NOT EXISTS (SELECT 1 FROM efd_receipts r WHERE r.sales_order_id = o.id AND r.status = 'ISSUED')
-    ORDER BY o.confirmed_at DESC LIMIT ${CAP}`, rep);
+  const rows = await run(`SELECT s.id AS "saleId", s.sale_no AS "saleNo", s.sale_type AS "saleType", s.total::text AS total,
+      COALESCE(c.name, s.walk_in_name, '') AS "customerName", to_char(s.sale_date, 'YYYY-MM-DD') AS date
+    FROM sales s LEFT JOIN customers c ON c.id = s.customer_id
+    WHERE s.status = 'COMPLETED' AND s.sale_date BETWEEN CAST(:from AS date) AND CAST(:to AS date)
+      AND NOT EXISTS (SELECT 1 FROM efd_receipts r WHERE r.sale_id = s.id AND r.status = 'ISSUED')
+    ORDER BY s.sale_date DESC, s.created_at DESC LIMIT ${CAP}`, rep);
   return rows.map((r) => {
     const age = dayDiff(rep.today, r.date);
-    return f('UNRECEIPTED_ORDER', age >= 2 ? 'HIGH' : age === 1 ? 'MEDIUM' : 'LOW', { ...r, ref: r.orderNo }, {
-      message: `Order ${r.orderNo} (${r.customerName}) was confirmed on ${r.date} and still has no EFD receipt`,
-      expected: null, actual: { grossAmount: r.total }, difference: null, ageDays: age, refs: { orderId: r.orderId, orderNo: r.orderNo },
+    return f('UNRECEIPTED_ORDER', age >= 2 ? 'HIGH' : age === 1 ? 'MEDIUM' : 'LOW', { ...r, ref: r.saleNo }, {
+      message: `Sale ${r.saleNo} (${r.customerName}) was completed on ${r.date} and still has no EFD receipt`,
+      expected: null, actual: { grossAmount: r.total }, difference: null, ageDays: age, refs: { saleId: r.saleId, saleNo: r.saleNo, saleType: r.saleType },
     });
   });
 }
 
 async function receiptAmountMismatch(rep) {
-  const rows = await run(`SELECT r.id AS "receiptId", r.receipt_no AS "receiptNo", r.device_id AS "deviceId", d.serial_no AS "deviceSerial", o.id AS "orderId", o.order_no AS "orderNo",
+  const rows = await run(`SELECT r.id AS "receiptId", r.receipt_no AS "receiptNo", r.device_id AS "deviceId", d.serial_no AS "deviceSerial", s.id AS "saleId", s.sale_no AS "saleNo", s.sale_type AS "saleType",
       to_char(CAST(r.issued_at AT TIME ZONE :tz AS date), 'YYYY-MM-DD') AS date,
-      r.amount::text AS "rAmount", r.vat_amount::text AS "rVat", o.total::text AS "oTotal", o.tax_total::text AS "oVat"
-    FROM efd_receipts r JOIN sales_orders o ON o.id = r.sales_order_id JOIN efd_devices d ON d.id = r.device_id
+      r.amount::text AS "rAmount", r.vat_amount::text AS "rVat", s.total::text AS "oTotal", s.tax_total::text AS "oVat"
+    FROM efd_receipts r JOIN sales s ON s.id = r.sale_id JOIN efd_devices d ON d.id = r.device_id
     WHERE r.status = 'ISSUED' AND CAST(r.issued_at AT TIME ZONE :tz AS date) BETWEEN CAST(:from AS date) AND CAST(:to AS date)
-      AND (CAST(:dev AS uuid) IS NULL OR r.device_id = CAST(:dev AS uuid)) AND (r.amount <> o.total OR r.vat_amount <> o.tax_total)
+      AND (CAST(:dev AS uuid) IS NULL OR r.device_id = CAST(:dev AS uuid)) AND (r.amount <> s.total OR r.vat_amount <> s.tax_total)
     ORDER BY r.issued_at DESC LIMIT ${CAP}`, rep);
   return rows.map((r) => f('RECEIPT_AMOUNT_MISMATCH', 'HIGH', { ...r, ref: r.receiptNo }, {
-    message: `Receipt ${r.receiptNo} (${r.deviceSerial}) does not match order ${r.orderNo}`,
+    message: `Receipt ${r.receiptNo} (${r.deviceSerial}) does not match sale ${r.saleNo}`,
     expected: { grossAmount: r.oTotal, vatAmount: r.oVat }, actual: { grossAmount: r.rAmount, vatAmount: r.rVat },
     difference: { grossAmount: sgn(cents(r.rAmount) - cents(r.oTotal)), vatAmount: sgn(cents(r.rVat) - cents(r.oVat)) },
-    refs: { receiptId: r.receiptId, receiptNo: r.receiptNo, orderId: r.orderId, orderNo: r.orderNo },
+    refs: { receiptId: r.receiptId, receiptNo: r.receiptNo, saleId: r.saleId, saleNo: r.saleNo, saleType: r.saleType },
   }));
 }
 

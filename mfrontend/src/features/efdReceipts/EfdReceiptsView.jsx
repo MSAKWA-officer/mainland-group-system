@@ -1,3 +1,4 @@
+import { saleLink, saleCan } from '../../utils/saleLink.js';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useParams } from 'react-router-dom';
@@ -41,8 +42,8 @@ export default function EfdReceiptsView() {
           <dl className="max-w-3xl">
             <Row label={t('receipt.view.receiptNo')}>{r.receiptNo}</Row>
             <Row label={t('receipt.view.verification')}>{r.verificationCode}</Row>
-            <Row label={t('receipt.view.order')}>{r.order && (can('sales_orders.read')
-              ? <Link to={`/sales-orders/${r.order.id}`} className="text-black underline">{r.order.orderNo}</Link> : r.order.orderNo)}</Row>
+            <Row label={t('receipt.view.order')}>{r.sale && (saleCan(can, r.sale.saleType)
+              ? <Link to={saleLink(r.sale.id, r.sale.saleType)} className="text-black underline">{r.sale.saleNo}</Link> : r.sale.saleNo)}</Row>
             <Row label={t('receipt.view.device')}>{r.device && (can('efd_devices.read')
               ? <Link to={`/efd-devices/${r.device.id}`} className="text-black underline">{r.device.name} ({r.device.serialNo})</Link> : `${r.device.name} (${r.device.serialNo})`)}</Row>
             <Row label={t('shared.sellerTin')}>{r.device?.tin}</Row>

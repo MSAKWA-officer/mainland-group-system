@@ -7,7 +7,7 @@
     "devices": "Kwa kifaa",
     "monthly": "Mwezi kwa mwezi",
     "receipts": "Rejista ya risiti",
-    "unreceipted": "Oda zisizo na risiti"
+    "unreceipted": "Mauzo bila risiti"
   },
   "toolbar": {
     "thisMonth": "Mwezi huu",
@@ -33,7 +33,7 @@
     "net": "Halisi",
     "voided": "Risiti zilizobatilishwa",
     "tin": "TIN",
-    "order": "Oda",
+    "order": "Mauzo",
     "customer": "Mteja",
     "total": "Jumla",
     "zReport": "Ripoti ya Z",
@@ -106,7 +106,7 @@
   },
   "receipts": {
     "issued": "Risiti zilizotolewa",
-    "search": "Tafuta namba ya risiti, msimbo, oda, mteja",
+    "search": "Tafuta namba ya risiti, msimbo, mauzo, mteja",
     "searchAria": "Tafuta risiti",
     "empty": "Hakuna risiti zinazolingana.",
     "columns": {
@@ -114,7 +114,7 @@
       "device": "Kifaa",
       "receiptNo": "Namba ya risiti",
       "verification": "Uthibitisho",
-      "order": "Oda",
+      "order": "Mauzo",
       "customer": "Mteja",
       "gross": "Jumla kuu",
       "vat": "VAT",
@@ -123,12 +123,12 @@
     }
   },
   "unreceipted": {
-    "orders": "Oda zisizo na risiti",
-    "empty": "Kila oda iliyothibitishwa katika kipindi hiki ina risiti ya EFD.",
+    "orders": "Mauzo bila risiti",
+    "empty": "Kila mauzo yaliyokamilika katika kipindi hiki yana risiti ya EFD.",
     "record": "Rekodi namba ya EFD",
     "columns": {
       "confirmedOn": "Ilithibitishwa",
-      "order": "Oda",
+      "order": "Mauzo",
       "customer": "Mteja",
       "customerTin": "TIN ya mteja",
       "total": "Jumla",

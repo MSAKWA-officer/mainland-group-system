@@ -49,7 +49,7 @@ export default function EfdReceiptRegister({ devices }) {
                 <td className={`${CELL} whitespace-nowrap text-center`}>{r.deviceSerial}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{can('efd_receipts.read') ? <Link to={`/efd-receipts/${r.id}`} className="underline">{r.receiptNo}</Link> : r.receiptNo}</td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{r.verificationCode || '—'}</td>
-                <td className={`${CELL} whitespace-nowrap text-center`}>{r.orderNo}</td>
+                <td className={`${CELL} whitespace-nowrap text-center`}>{r.saleNo}</td>
                 <td className={`${CELL} text-center`}>{r.customerName}{r.customerTin && <div className="text-xs">{t('w.tinLine', { tin: r.customerTin })}</div>}</td>
                 <td className={num}>{money(r.amount)}</td><td className={num}>{money(r.vatAmount)}</td><td className={num}>{money(r.net)}</td>
                 <td className={`${CELL} text-center`}><span className="inline-flex items-center gap-2"><span className={`h-2 w-2 rounded-full ${dead ? 'bg-red-500' : 'bg-emerald-600'}`} />{te(`receipt.status.${r.status}`, { defaultValue: r.status })}</span>{dead && r.voidReason && <div className="text-xs">{r.voidReason}</div>}</td>

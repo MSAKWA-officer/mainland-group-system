@@ -23,19 +23,22 @@
     "receipts": "收据"
   },
   "receipt": {
-    "status": { "ISSUED": "已开具", "VOIDED": "已作废" },
+    "status": {
+      "ISSUED": "已开具",
+      "VOIDED": "已作废"
+    },
     "list": {
       "title": "EFD 编号",
       "subtitle": "已记录 {{total}} 张收据",
       "record": "记录 EFD 编号",
-      "search": "搜索收据号、验证码或订单",
+      "search": "搜索收据号、验证码或销售单号",
       "searchAria": "搜索收据",
       "emptyFiltered": "没有符合筛选条件的收据。",
-      "emptyNone": "尚未记录任何 EFD 编号。订单确认后请使用“记录 EFD 编号”。",
+      "emptyNone": "尚未记录任何 EFD 编号。现金或赊销完成后请使用“记录 EFD 编号”。",
       "columns": {
         "receiptNo": "收据号",
         "verification": "验证码",
-        "order": "订单",
+        "order": "销售",
         "device": "设备",
         "amount": "金额",
         "vat": "增值税",
@@ -51,14 +54,14 @@
     },
     "create": {
       "title": "记录 EFD 编号",
-      "intro": "请输入 EFD 设备为已确认订单打印的收据号。金额和增值税将从订单中复制。",
-      "order": "已确认的销售订单",
-      "orderPlaceholder": "选择订单",
+      "intro": "请输入 EFD 设备为已完成的现金或赊销打印的收据号。金额和增值税将从销售单中复制。",
+      "order": "已完成的销售（现金或赊销）",
+      "orderPlaceholder": "选择销售",
       "receiptNo": "收据号",
       "receiptNoTitle": "仅限字母、数字和 -",
       "verification": "验证码（可选）",
       "issuedAt": "开具时间（可选，默认为现在）",
-      "orderTotal": "将记录的订单总额：",
+      "orderTotal": "将记录的销售总额：",
       "submit": "记录 EFD 编号",
       "saved": "EFD 编号已记录。"
     },
@@ -67,7 +70,7 @@
       "fallbackTitle": "EFD 收据",
       "receiptNo": "收据号",
       "verification": "验证码",
-      "order": "销售订单",
+      "order": "销售",
       "device": "设备",
       "customerTin": "客户 TIN",
       "amount": "金额",
@@ -175,7 +178,11 @@
     }
   },
   "recon": {
-    "status": { "OPEN": "进行中", "RECONCILED": "已对账", "VOIDED": "已作废" },
+    "status": {
+      "OPEN": "进行中",
+      "RECONCILED": "已对账",
+      "VOIDED": "已作废"
+    },
     "figures": {
       "zReport": "Z 报告",
       "system": "系统（EFD 收据）",
@@ -184,7 +191,7 @@
       "gross": "总额",
       "vat": "增值税",
       "voidedSystem": "作废收据（系统）",
-      "unreceipted": "已确认但没有 EFD 收据的订单"
+      "unreceipted": "已完成但没有 EFD 收据的销售"
     },
     "list": {
       "title": "每日对账",
@@ -263,7 +270,7 @@
       "compareTitle": "Z 报告与系统对比",
       "compareHelp": "差异 = Z 报告减去系统中为该设备该日记录的 EFD 收据。这些数据为快照；对账进行中时可使用“刷新”重新读取。",
       "diffBanner": "该日存在差异。签核前请检查下方的收据。",
-      "diffBannerUnreceipted": "该日存在差异，且有已确认但没有 EFD 收据的订单。签核前请检查下方的收据。",
+      "diffBannerUnreceipted": "该日存在差异，且有已完成但没有 EFD 收据的销售。签核前请检查下方的收据。",
       "signTitle": "签核",
       "zNotVerified": "Z 报告{{status}}。必须由另一人核实后，才能对该日进行对账。",
       "mine": "此对账由您发起，因此必须由其他人签核。",

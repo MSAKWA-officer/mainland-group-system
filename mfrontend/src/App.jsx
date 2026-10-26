@@ -1,3 +1,4 @@
+import { SALES_ORDERS } from './config/features.js';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './context/AuthContext.jsx';
 import Shell from './components/Shell.jsx';
@@ -229,12 +230,14 @@ export default function App() {
         <Route path="/customers/new" element={<Guard perm="customers.create"><CustomersCreate /></Guard>} />
         <Route path="/customers/:id" element={<Guard perm="customers.read"><CustomersView /></Guard>} />
         <Route path="/customers/:id/edit" element={<Guard perm="customers.update"><CustomersUpdate /></Guard>} />
+        {SALES_ORDERS && <>   {/* hidden for now: set VITE_ENABLE_SALES_ORDERS=true to bring back */}
         <Route path="/sales-orders" element={<Guard perm="sales_orders.read"><SalesOrdersList /></Guard>} />
         <Route path="/sales-orders/new" element={<Guard perm="sales_orders.create"><SalesOrdersCreate /></Guard>} />
         <Route path="/sales-orders/:id" element={<Guard perm="sales_orders.read"><SalesOrdersView /></Guard>} />
         <Route path="/sales-orders/:id/edit" element={<Guard perm="sales_orders.create"><SalesOrdersUpdate /></Guard>} />
         <Route path="/order-workflow" element={<Guard perm="order_workflow.read"><OrderWorkflowList /></Guard>} />
         <Route path="/order-workflow/:id" element={<Guard perm="order_workflow.read"><OrderWorkflowView /></Guard>} />
+        </>}
         <Route path="/credit-sales" element={<Guard perm="credit_sales.read"><CreditSalesList /></Guard>} />
         <Route path="/credit-sales/new" element={<Guard perm="credit_sales.create"><CreditSalesCreate /></Guard>} />
         <Route path="/credit-sales/receivables" element={<Guard perm="credit_sales.read"><ReceivablesList /></Guard>} />
@@ -318,8 +321,10 @@ export default function App() {
         <Route path="/fuel-reports/:type" element={<Guard perm="fuel_reports.read"><FuelReportsView /></Guard>} />
         <Route path="/fuel-reports/:type/edit" element={<Guard perm="fuel_reports.read"><FuelReportsUpdate /></Guard>} />
         <Route path="/reconciliation" element={<Guard perm="bank_transactions.reconcile"><ReconciliationPage /></Guard>} />
+        {SALES_ORDERS && <>   {/* hidden for now: set VITE_ENABLE_SALES_ORDERS=true to bring back */}
         <Route path="/sales" element={<Guard perm="sales.read"><SalesList /></Guard>} />
         <Route path="/sales/:id" element={<Guard perm="sales.read"><SalesView /></Guard>} />
+        </>}
         <Route path="/salespersons" element={<Guard perm="salespersons.read"><SalespersonsList /></Guard>} />
         <Route path="/salespersons/new" element={<Guard perm="salespersons.create"><SalespersonsCreate /></Guard>} />
         <Route path="/salespersons/:id" element={<Guard perm="salespersons.read"><SalespersonsView /></Guard>} />
