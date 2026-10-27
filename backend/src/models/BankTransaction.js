@@ -10,7 +10,7 @@ const BankTransaction = sequelize.define('BankTransaction', {
   type: str(20, { allowNull: false }), direction: str(6, { allowNull: false }),
   amount: { type: D.DECIMAL(20, 2), allowNull: false }, txnDate: { type: D.DATEONLY, allowNull: false },
   reference: str(100), description: str(255), counterparty: str(150),
-  transferGroupId: D.UUID, customerPaymentId: D.UUID, paymentId: D.UUID, fuelFundingId: D.UUID,
+  transferGroupId: D.UUID, customerPaymentId: D.UUID, paymentId: D.UUID, fuelFundingId: D.UUID, salePaymentId: D.UUID,
   status: str(8, { allowNull: false, defaultValue: 'POSTED' }),
   isReconciled: { type: D.BOOLEAN, allowNull: false, defaultValue: false }, reconciledAt: D.DATE, reconciledBy: D.UUID,
   voidedAt: D.DATE, voidedBy: D.UUID, voidReason: D.TEXT,

@@ -157,11 +157,14 @@ const receivePayment = (req, id, body) => sequelize.transaction(async (t) => {
   const account = await paymentAccounts.resolve(body.method, body.bankAccountId, t);          // BANK / CARD / MOBILE_MONEY must name a registered account
   const p = await SalePayment.create({ receiptNo: `RCP-${core.year()}-${core.pad(await core.nextNo('sale_receipt_seq', t))}`, saleId: s.id, amount: str(amount),
     method: body.method, bankAccountId: account?.id ?? null, reference: body.reference ?? null, paidOn, notes: body.notes ?? null, receivedBy: req.user.id }, { transaction: t });
+  // Money received into a bank / mobile money account is posted to its ledger, so the account balance goes up.
+  const customer = s.customerId ? await Customer.findByPk(s.customerId, { attributes: ['name'], transaction: t }) : null;
+  const bankTxn = account ? await paymentAccounts.postReceipt(req, account, { amount: str(amount), txnDate: paidOn, reference: body.reference, sale: s, payment: p, counterparty: customer?.name }, t) : null;
   const paid = str(cents(s.amountPaid) + amount);
   const old = snap(s);
   await s.update({ amountPaid: paid, paymentStatus: core.paymentStatus(s.total, paid) }, { transaction: t });
   await audit.log(req, { action: 'CREDIT_PAYMENT_RECEIVED', entityType: 'Sale', entityId: s.id, oldValues: old,
-    newValues: { ...snap(s), receiptNo: p.receiptNo, amount: p.amount, method: p.method, bankAccountId: account?.id ?? null } }, t);
+    newValues: { ...snap(s), receiptNo: p.receiptNo, amount: p.amount, method: p.method, bankAccountId: account?.id ?? null, bankTxnNo: bankTxn?.txnNo ?? null } }, t);
   return { sale: s, payment: p };
 });
 
@@ -176,6 +179,7 @@ const voidPayment = (req, id, paymentId, reason) => sequelize.transaction(async 
   if (await CustomerPaymentAllocation.count({ where: { salePaymentId: p.id }, transaction: t }))
     throw new AppError(409, 'LINKED', 'This payment was received through Customer Payments. Void the customer payment instead.');
   const old = snap(s);
+  await paymentAccounts.voidReceipts(req, [p.id], `Sale ${s.saleNo} payment ${p.receiptNo} voided: ${reason}`, t);     // takes the money back out of the account
   await p.update({ voidedAt: new Date(), voidedBy: req.user.id, voidReason: reason }, { transaction: t });
   const paid = str(cents(s.amountPaid) - cents(p.amount));
   await s.update({ amountPaid: paid, paymentStatus: core.paymentStatus(s.total, paid) }, { transaction: t });

@@ -1,5 +1,5 @@
-const { sequelize, Sale, SaleLine, SalePayment, BankAccount } = require('../models');
-const banking = require('./banking');
+const { sequelize, Sale, SaleLine, SalePayment } = require('../models');
+const paymentAccounts = require('./paymentAccounts');
 const audit = require('./audit');
 const core = require('./saleCore');
 const { AppError } = require('../utils/errors');
@@ -19,16 +19,8 @@ const create = (req, body) => sequelize.transaction(async (t) => {
 
   // Payment: the customer pays the full amount. For CASH the tendered amount may be higher (change is returned).
   const { method, reference, bankAccountId } = body.payment;
-  // BANK / CARD must use a registered bank account, MOBILE_MONEY a registered mobile money account (Bank accounts module).
-  let account = null;
-  if (['BANK', 'CARD', 'MOBILE_MONEY'].includes(method)) {
-    if (!bankAccountId) throw bad('payment.bankAccountId', 'Choose the bank or mobile money account');
-    account = await BankAccount.findByPk(bankAccountId, { transaction: t });
-    if (!account) throw bad('payment.bankAccountId', 'Account not found');
-    if (!account.isActive) throw bad('payment.bankAccountId', 'This account is inactive');
-    if (account.currency !== banking.BASE_CURRENCY) throw bad('payment.bankAccountId', `Only ${banking.BASE_CURRENCY} accounts can be used`);
-    if ((method === 'MOBILE_MONEY') !== (account.accountType === 'MOBILE_MONEY')) throw bad('payment.bankAccountId', method === 'MOBILE_MONEY' ? 'Choose a mobile money account' : 'Choose a bank account, not a mobile money account');
-  }
+  // BANK / CARD must use a registered bank account, MOBILE_MONEY a registered mobile money account (Bank accounts module). The account is locked for posting.
+  const account = await paymentAccounts.resolve(method, bankAccountId, t, 'payment.bankAccountId');
   let tendered = null;
   if (method === 'CASH') {
     tendered = body.payment.amountTendered ?? Number(tot.total);
@@ -41,11 +33,13 @@ const create = (req, body) => sequelize.transaction(async (t) => {
     salespersonId: salesperson?.id ?? null, status: 'DRAFT', notes: body.notes ?? null, taxRate, ...tot, createdBy: req.user.id }, { transaction: t });
   const lines = await SaleLine.bulkCreate(rows.map((r) => ({ ...r, saleId: sale.id })), { transaction: t });
   const { doc, stockLines } = await core.issueStock(t, req, sale, lines, customer?.name || body.walkInName || 'Walk-in customer');
-  await SalePayment.create({ receiptNo: `RCP-${core.year()}-${core.pad(await core.nextNo('sale_receipt_seq', t))}`, saleId: sale.id,
+  const payment = await SalePayment.create({ receiptNo: `RCP-${core.year()}-${core.pad(await core.nextNo('sale_receipt_seq', t))}`, saleId: sale.id,
     amount: tot.total, tendered, method, reference: reference ?? null, bankAccountId: account?.id ?? null, receivedBy: req.user.id }, { transaction: t });
+  // The full sale amount goes into the chosen account's ledger, so its balance increases (not the cash tendered: change is only returned for CASH).
+  const bankTxn = account ? await paymentAccounts.postReceipt(req, account, { amount: tot.total, reference, sale, payment, counterparty: customer?.name || body.walkInName || 'Walk-in customer' }, t) : null;
   await sale.update({ status: 'COMPLETED', completedAt: new Date(), amountPaid: tot.total, paymentStatus: 'PAID', stockDocumentId: doc.id }, { transaction: t });
   await audit.log(req, { action: 'CASH_SALE_COMPLETED', entityType: 'Sale', entityId: sale.id,
-    newValues: { ...snap(sale), method, bankAccountId: account?.id ?? null, lines: rows.length, stockDocument: doc.docNo, stockLines } }, t);
+    newValues: { ...snap(sale), method, bankAccountId: account?.id ?? null, bankTxnNo: bankTxn?.txnNo ?? null, lines: rows.length, stockDocument: doc.docNo, stockLines } }, t);
   return sale;
 });
 
@@ -56,6 +50,9 @@ const void_ = (req, id, reason) => sequelize.transaction(async (t) => {
   if (sale.salesOrderId) throw new AppError(409, 'FROM_ORDER', 'This sale was created from a sales order. Cancel the sales order instead; it will void this sale and return the stock.');
   if (!reason || reason.trim().length < 3) throw bad('reason', 'A reason is required to void a sale');
   const old = snap(sale);
+  // Take the money back out of the bank / mobile money account first (stops the void if that row is reconciled or the account would go below zero).
+  const paid = await SalePayment.findAll({ where: { saleId: sale.id, voidedAt: null }, attributes: ['id'], transaction: t });
+  await paymentAccounts.voidReceipts(req, paid.map((x) => x.id), `Cash sale ${sale.saleNo} voided: ${reason}`, t);
   const doc = await core.restock(t, req, sale, reason);
   await SalePayment.update({ voidedAt: new Date(), voidedBy: req.user.id, voidReason: `Sale voided: ${reason}`.slice(0, 500) },
     { where: { saleId: sale.id, voidedAt: null }, transaction: t });

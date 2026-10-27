@@ -45,7 +45,7 @@ async function balanceCents(account, t) {
 
 /* ---------- post one ledger row (caller already holds the account lock inside transaction t) ---------- */
 async function post(req, a, t) {
-  const { account, type, amount, txnDate, reference, description, counterparty, transferGroupId, customerPaymentId, paymentId, fuelFundingId } = a;
+  const { account, type, amount, txnDate, reference, description, counterparty, transferGroupId, customerPaymentId, paymentId, fuelFundingId, salePaymentId } = a;
   if (!account.isActive) throw new AppError(409, 'ACCOUNT_INACTIVE', `Bank account ${label(account)} is inactive`);
   const amt = cents(amount);
   if (amt <= 0n) throw bad('amount', 'Amount must be greater than 0');
@@ -61,7 +61,7 @@ async function post(req, a, t) {
   const txn = await BankTransaction.create({
     txnNo: `BTX-${core.year()}-${core.pad(await core.nextNo('bank_txn_seq', t))}`, bankAccountId: account.id, type, direction, amount: str(amt), txnDate: date,
     reference: reference ?? null, description: description ?? null, counterparty: counterparty ?? null,
-    transferGroupId: transferGroupId ?? null, customerPaymentId: customerPaymentId ?? null, paymentId: paymentId ?? null, fuelFundingId: fuelFundingId ?? null, status: 'POSTED', createdBy: req.user.id,
+    transferGroupId: transferGroupId ?? null, customerPaymentId: customerPaymentId ?? null, paymentId: paymentId ?? null, fuelFundingId: fuelFundingId ?? null, salePaymentId: salePaymentId ?? null, status: 'POSTED', createdBy: req.user.id,
   }, { transaction: t });
   await audit.log(req, { action: 'BANK_TRANSACTION_POSTED', entityType: 'BankTransaction', entityId: txn.id, newValues: snap(txn) }, t);
   return txn;
@@ -111,6 +111,7 @@ const voidTransaction = (req, id, reason) => sequelize.transaction(async (t) => 
   if (!peek) throw new AppError(404, 'NOT_FOUND', 'Bank transaction not found');
   if (peek.customerPaymentId) throw new AppError(409, 'LINKED', 'This transaction came from a customer payment. Void the customer payment instead.');
   if (peek.paymentId) throw new AppError(409, 'LINKED', 'This transaction came from a payment. Void the payment instead.');
+  if (peek.salePaymentId) throw new AppError(409, 'LINKED', 'This transaction came from a sale payment. Void the sale payment (or the sale) instead.');
   if (peek.fuelFundingId) throw new AppError(409, 'LINKED', 'This transaction came from a fuel funding. Void the fuel funding instead.');
   const legs = peek.transferGroupId
     ? await BankTransaction.findAll({ where: { transferGroupId: peek.transferGroupId }, attributes: ['id', 'bankAccountId'], transaction: t })
