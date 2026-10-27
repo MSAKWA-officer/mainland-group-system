@@ -142,6 +142,15 @@
     "recorded": "Payment recorded.",
     "errAmount": "Enter an amount greater than 0.",
     "errTooMuch": "Amount is more than the balance ({{balance}}).",
-    "errReference": "Enter the payment reference (transaction / receipt number)."
+    "errReference": "Enter the payment reference (transaction / receipt number).",
+    "bank": "Bank account",
+    "network": "Mobile money account",
+    "pickBank": "Select bank / account",
+    "pickNetwork": "Select network / account",
+    "errBank": "Select the bank account that received the payment.",
+    "errNetwork": "Select the mobile money account that received the payment.",
+    "noBanks": "No bank account is registered.",
+    "noNetworks": "No mobile money account is registered.",
+    "registerAccount": "Register an account"
   }
 }

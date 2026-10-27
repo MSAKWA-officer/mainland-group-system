@@ -9,6 +9,7 @@ import { ArrowLeftIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { fmt } from '../../utils/format';
 import { METHOD, NOTICE, PayStatus, Status, day, money } from '../sales/saleUi.jsx';
+import { ACCOUNT_KIND, accountLabel, accountsFor, splitReference } from '../sales/paymentProviders.js';
 import { todayStr } from './CreditSalesForm.jsx';
 import CreditStatus from './CreditStatus.jsx';
 import { RowActions } from './CreditSalesList.jsx';
@@ -19,10 +20,17 @@ const Row = ({ label, children }) => (
   </div>
 );
 
+// Akaunti iliyosajiliwa ya malipo (mfano "CRDB — Mainland Ltd (0150…)"), au jina la zamani lililokuwa kwenye reference.
+const payAccount = (p) => (p.bankAccount ? accountLabel(p.bankAccount) : splitReference(p.method, p.reference).provider);
+
 // Record money received against the sale. The amount may not exceed the balance (the API checks too).
 function PaymentForm({ sale, balance, onDone, onError }) {
   const { t } = useTranslation('creditSales');
-  const [f, setF] = useState({ amount: String(balance), method: 'CASH', reference: '', paidOn: todayStr(), notes: '' });
+  const { can } = useAuth();
+  const [f, setF] = useState({ amount: String(balance), method: 'CASH', bankAccountId: '', reference: '', paidOn: todayStr(), notes: '' });
+  const kind = ACCOUNT_KIND[f.method];                        // 'bank' | 'network' | undefined
+  const accounts = useLoad(() => creditSaleApi.paymentAccounts(), []);
+  const choices = accountsFor(f.method, accounts.data?.data);
   const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const submit = async (e) => {
@@ -30,10 +38,11 @@ function PaymentForm({ sale, balance, onDone, onError }) {
     const amount = Number(f.amount);
     if (!(amount > 0)) { onError(t('pay.errAmount')); return; }
     if (amount > balance + 0.0001) { onError(t('pay.errTooMuch', { balance: money(balance) })); return; }
+    if (kind && !f.bankAccountId) { onError(t(kind === 'bank' ? 'pay.errBank' : 'pay.errNetwork')); return; }
     if (f.method !== 'CASH' && !f.reference.trim()) { onError(t('pay.errReference')); return; }
     setBusy(true);
     try {
-      await creditSaleApi.receivePayment(sale.id, { amount, method: f.method, paidOn: f.paidOn || null, reference: f.reference.trim() || null, notes: f.notes.trim() || null });
+      await creditSaleApi.receivePayment(sale.id, { amount, method: f.method, ...(kind && { bankAccountId: f.bankAccountId }), paidOn: f.paidOn || null, reference: f.reference.trim() || null, notes: f.notes.trim() || null });
       setF({ ...f, amount: '', reference: '', notes: '' }); onDone(t('pay.recorded'));
     } catch (x) { onError(errMsg(x)); setFe(fieldErrs(x)); } finally { setBusy(false); }
   };
@@ -45,7 +54,18 @@ function PaymentForm({ sale, balance, onDone, onError }) {
           <div className="flex gap-2"><input className="input" type="number" min="0" step="0.01" value={f.amount} onChange={set('amount')} />
             <button type="button" className="btn-ghost whitespace-nowrap" onClick={() => setF({ ...f, amount: String(balance) })}>{t('pay.fullBalance')}</button></div>
         </Field>
-        <Field label={t('pay.method')} error={fe.method}><select className="input" value={f.method} onChange={set('method')}>{Object.entries(METHOD).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field>
+        <Field label={t('pay.method')} error={fe.method}><select className="input" value={f.method} onChange={(e) => setF({ ...f, method: e.target.value, bankAccountId: '' })}>{Object.entries(METHOD).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field>
+        {kind && (
+          <Field label={t(kind === 'bank' ? 'pay.bank' : 'pay.network')} error={fe.bankAccountId}>
+            <select className="input" value={f.bankAccountId} onChange={set('bankAccountId')} disabled={accounts.loading}>
+              <option value="">{t(kind === 'bank' ? 'pay.pickBank' : 'pay.pickNetwork')}</option>
+              {choices.map((a) => <option key={a.id} value={a.id}>{accountLabel(a)}</option>)}
+            </select>
+            {!accounts.loading && choices.length === 0 && (
+              <p className="mt-1 text-xs text-black">{t(kind === 'bank' ? 'pay.noBanks' : 'pay.noNetworks')}{can('bank_accounts.create') && <> <Link to="/bank-accounts/new" className="underline">{t('pay.registerAccount')}</Link></>}</p>
+            )}
+          </Field>
+        )}
         <Field label={f.method === 'CASH' ? t('pay.referenceOptional') : t('pay.reference')} error={fe.reference}><input className="input" maxLength={100} value={f.reference} onChange={set('reference')} placeholder={t('pay.referencePh')} /></Field>
         <Field label={t('pay.paidOn')} error={fe.paidOn}><input className="input" type="date" min={sale.saleDate} max={todayStr()} value={f.paidOn} onChange={set('paidOn')} /></Field>
         <div className="sm:col-span-2"><Field label={t('pay.notes')} error={fe.notes}><input className="input" maxLength={1000} value={f.notes} onChange={set('notes')} /></Field></div>
@@ -149,8 +169,8 @@ export default function CreditSalesView() {
                     <tr key={p.id} className={`odd:bg-slate-50/60 ${p.voidedAt ? 'line-through decoration-slate-400' : ''}`}>
                       <td className="td whitespace-nowrap px-3 text-black">{p.receiptNo}</td>
                       <td className="td whitespace-nowrap px-3 text-black">{day(p.paidOn)}</td>
-                      <td className="td px-3 text-black">{METHOD[p.method] || p.method}</td>
-                      <td className="td px-3 text-black">{p.reference || '—'}</td>
+                      <td className="td px-3 text-black">{METHOD[p.method] || p.method}{payAccount(p) && <div className="text-xs">{payAccount(p)}</div>}</td>
+                      <td className="td px-3 text-black">{splitReference(p.method, p.reference).ref || '—'}</td>
                       <td className="td px-3 text-black">{p.receiver?.fullName}</td>
                       <td className="td px-3 text-right text-black">{money(p.amount)}</td>
                       <td className="td px-3 text-black" title={p.voidReason || undefined}>{p.voidedAt ? t('view.voidedState') : t('view.valid')}</td>

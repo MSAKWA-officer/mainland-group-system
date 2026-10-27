@@ -26,13 +26,16 @@ const noteS = z.object({ note: text(500).optional() });
 const voidS = z.object({ reason: text(500).min(3, 'Give a reason') });
 const paymentS = z.object({
   amount: decimal(2).refine((n) => n > 0 && n <= 999999999999, 'Amount must be greater than 0'),
-  method: z.enum(['CASH', 'MOBILE_MONEY', 'BANK', 'CARD', 'CHEQUE']), reference: opt(text(100)), paidOn: opt(date), notes: opt(text(1000)),
-}).refine((p) => p.method === 'CASH' || p.reference, { message: 'A payment reference is required for this method', path: ['reference'] });
+  method: z.enum(['CASH', 'MOBILE_MONEY', 'BANK', 'CARD', 'CHEQUE']), bankAccountId: opt(uuid), reference: opt(text(100)), paidOn: opt(date), notes: opt(text(1000)),
+}).refine((p) => p.method === 'CASH' || p.reference, { message: 'A payment reference is required for this method', path: ['reference'] })
+  .refine((p) => !NEEDS_ACCOUNT.includes(p.method) || p.bankAccountId, { message: 'Choose the bank or mobile money account', path: ['bankAccountId'] });
+const NEEDS_ACCOUNT = ['BANK', 'CARD', 'MOBILE_MONEY'];
 const payParams = z.object({ id: uuid, paymentId: uuid });
 const custParam = z.object({ customerId: uuid });
 
 // Fixed paths first, so they are never read as /:id
 router.get('/receivables', authorize('credit_sales.read'), ah(c.receivables));
+router.get('/payment-accounts', authorize('credit_sales.receive_payment'), ah(c.paymentAccounts));          // accounts to choose when receiving a payment
 router.get('/credit-status/:customerId', authorize('credit_sales.read'), validate(custParam, 'params'), ah(c.creditStatus));
 
 router.get('/', authorize('credit_sales.read'), validate(listQ, 'query'), ah(c.list));

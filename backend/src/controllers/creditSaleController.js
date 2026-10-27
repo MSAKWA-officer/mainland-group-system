@@ -6,6 +6,8 @@ const svc = require('../services/creditSales');
 const approvals = require('../services/approvals');
 const { canSee, canAll, mine } = require('../services/salesScope');
 
+const paymentAccounts = require('../services/paymentAccounts');
+
 const only = ['CREDIT'];
 const fetch = (req, id) => q.fetch(req, id, only);
 const waiting = async (req, id) => {
@@ -14,6 +16,7 @@ const waiting = async (req, id) => {
   return s;
 };
 
+exports.paymentAccounts = async (req, res) => res.json({ data: await paymentAccounts.list() });
 exports.list = async (req, res) => res.json(await q.list(req, only, req.query));
 exports.getOne = async (req, res) => res.json(await fetch(req, req.params.id));
 exports.create = async (req, res) => res.status(201).json(await fetch(req, (await svc.create(req, req.body)).id));

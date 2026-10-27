@@ -142,6 +142,15 @@
     "recorded": "付款已记录。",
     "errAmount": "请输入大于 0 的金额。",
     "errTooMuch": "金额超过余额（{{balance}}）。",
-    "errReference": "请输入付款凭证号（交易号 / 收据号）。"
+    "errReference": "请输入付款凭证号（交易号 / 收据号）。",
+    "bank": "银行账户",
+    "network": "移动支付账户",
+    "pickBank": "选择银行 / 账户",
+    "pickNetwork": "选择网络 / 账户",
+    "errBank": "请选择收款的银行账户。",
+    "errNetwork": "请选择收款的移动支付账户。",
+    "noBanks": "尚未登记银行账户。",
+    "noNetworks": "尚未登记移动支付账户。",
+    "registerAccount": "登记账户"
   }
 }

@@ -142,6 +142,15 @@
     "recorded": "Malipo yamerekodiwa.",
     "errAmount": "Weka kiasi kinachozidi 0.",
     "errTooMuch": "Kiasi ni zaidi ya salio ({{balance}}).",
-    "errReference": "Weka kumbukumbu ya malipo (namba ya muamala / risiti)."
+    "errReference": "Weka kumbukumbu ya malipo (namba ya muamala / risiti).",
+    "bank": "Akaunti ya benki",
+    "network": "Akaunti ya pesa ya simu",
+    "pickBank": "Chagua benki / akaunti",
+    "pickNetwork": "Chagua mtandao / akaunti",
+    "errBank": "Chagua akaunti ya benki iliyopokea malipo.",
+    "errNetwork": "Chagua akaunti ya pesa ya simu iliyopokea malipo.",
+    "noBanks": "Hakuna akaunti ya benki iliyosajiliwa.",
+    "noNetworks": "Hakuna akaunti ya pesa ya simu iliyosajiliwa.",
+    "registerAccount": "Sajili akaunti"
   }
 }

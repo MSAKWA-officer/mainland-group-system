@@ -12,10 +12,12 @@ export const approve = (id, note) => api.post(`/credit-sales/${id}/approve`, { n
 export const reject = (id, note) => api.post(`/credit-sales/${id}/reject`, { note }).then((r) => r.data);
 // Voiding a completed sale puts the stock back. Only possible while nothing is paid on it. A reason is required.
 export const voidSale = (id, reason) => api.post(`/credit-sales/${id}/void`, { reason }).then((r) => r.data);
-// Payments (receipts). body: { amount, method, reference?, paidOn?, notes? }
+// Payments (receipts). body: { amount, method, bankAccountId? (required for BANK / CARD / MOBILE_MONEY), reference?, paidOn?, notes? }
 export const receivePayment = (id, body) => api.post(`/credit-sales/${id}/payments`, body).then((r) => r.data);
 export const voidPayment = (id, paymentId, reason) => api.post(`/credit-sales/${id}/payments/${paymentId}/void`, { reason }).then((r) => r.data);
 // Credit position of a customer: limit, outstanding, overdue, available.
 export const creditStatus = (customerId) => api.get(`/credit-sales/credit-status/${customerId}`).then((r) => r.data);
 // What each customer owes, by age.
 export const receivables = () => api.get('/credit-sales/receivables').then((r) => r.data);
+// Active bank / mobile money accounts registered in Bank accounts, for choosing where a payment was received. No balances. Needs credit_sales.receive_payment.
+export const paymentAccounts = () => api.get('/credit-sales/payment-accounts').then((r) => r.data);

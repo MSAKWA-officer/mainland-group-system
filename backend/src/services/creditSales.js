@@ -1,5 +1,6 @@
 const { sequelize, Sale, SaleLine, SalePayment, Customer, Salesperson, Item, CustomerPaymentAllocation } = require('../models');
 const approvals = require('./approvals');
+const paymentAccounts = require('./paymentAccounts');
 const audit = require('./audit');
 const core = require('./saleCore');
 const { AppError } = require('../utils/errors');
@@ -153,13 +154,14 @@ const receivePayment = (req, id, body) => sequelize.transaction(async (t) => {
   const paidOn = body.paidOn ?? today;
   if (paidOn > today) throw bad('paidOn', 'Payment date cannot be in the future');
   if (paidOn < s.saleDate) throw bad('paidOn', 'Payment date cannot be before the sale date');
+  const account = await paymentAccounts.resolve(body.method, body.bankAccountId, t);          // BANK / CARD / MOBILE_MONEY must name a registered account
   const p = await SalePayment.create({ receiptNo: `RCP-${core.year()}-${core.pad(await core.nextNo('sale_receipt_seq', t))}`, saleId: s.id, amount: str(amount),
-    method: body.method, reference: body.reference ?? null, paidOn, notes: body.notes ?? null, receivedBy: req.user.id }, { transaction: t });
+    method: body.method, bankAccountId: account?.id ?? null, reference: body.reference ?? null, paidOn, notes: body.notes ?? null, receivedBy: req.user.id }, { transaction: t });
   const paid = str(cents(s.amountPaid) + amount);
   const old = snap(s);
   await s.update({ amountPaid: paid, paymentStatus: core.paymentStatus(s.total, paid) }, { transaction: t });
   await audit.log(req, { action: 'CREDIT_PAYMENT_RECEIVED', entityType: 'Sale', entityId: s.id, oldValues: old,
-    newValues: { ...snap(s), receiptNo: p.receiptNo, amount: p.amount, method: p.method } }, t);
+    newValues: { ...snap(s), receiptNo: p.receiptNo, amount: p.amount, method: p.method, bankAccountId: account?.id ?? null } }, t);
   return { sale: s, payment: p };
 });
 
