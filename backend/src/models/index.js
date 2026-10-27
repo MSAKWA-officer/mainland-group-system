@@ -137,6 +137,7 @@ SaleLine.belongsTo(Item, { as: 'item', foreignKey: 'itemId' });
 Sale.hasMany(SalePayment, { as: 'payments', foreignKey: 'saleId' });
 SalePayment.belongsTo(Sale, { as: 'sale', foreignKey: 'saleId' });
 SalePayment.belongsTo(User, { as: 'receiver', foreignKey: 'receivedBy' });
+SalePayment.belongsTo(BankAccount, { as: 'bankAccount', foreignKey: 'bankAccountId' });
 
 // Staff register association
 Staff.belongsTo(User, { as: 'user', foreignKey: 'userId' });

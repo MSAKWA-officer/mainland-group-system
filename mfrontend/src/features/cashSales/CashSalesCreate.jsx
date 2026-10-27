@@ -9,11 +9,11 @@ import { ArrowLeftIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { Lookup, estimate, linesBody, linesProblem, n, searchCustomers } from '../sales/saleForm.jsx';
 import SaleItemsEntry from '../sales/SaleItemsEntry.jsx';
-import { MAX_PROVIDER, MAX_REF, OTHER, PROVIDER_KIND, joinReference, providerList } from '../sales/paymentProviders.js';
+import { ACCOUNT_KIND, accountLabel, accountsFor } from '../sales/paymentProviders.js';
 import { METHOD, NOTICE, money } from '../sales/saleUi.jsx';
 
-// lines huanza tupu: bidhaa zinaongezwa kupitia SaleItemsEntry. provider = benki/mtandao uliochaguliwa (au OTHER + providerOther).
-const EMPTY = () => ({ customer: null, walkInName: '', walkInPhone: '', salespersonId: '', taxRate: '0', notes: '', lines: [], method: 'CASH', tendered: '', reference: '', provider: '', providerOther: '' });
+// lines huanza tupu: bidhaa zinaongezwa kupitia SaleItemsEntry. bankAccountId = akaunti ya benki / pesa ya simu iliyosajiliwa (Bank accounts).
+const EMPTY = () => ({ customer: null, walkInName: '', walkInPhone: '', salespersonId: '', taxRate: '0', notes: '', lines: [], method: 'CASH', tendered: '', reference: '', bankAccountId: '' });
 
 // Counter sale: pick items, take the payment, save. The sale is completed and the stock is issued in one step (no draft, no approval).
 export default function CashSalesCreate() {
@@ -27,12 +27,12 @@ export default function CashSalesCreate() {
   const [f, setF] = useState(EMPTY);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
-  const setMethod = (e) => setF({ ...f, method: e.target.value, provider: '', providerOther: '' });   // benki/mtandao huchaguliwa upya njia ikibadilika
+  const setMethod = (e) => setF({ ...f, method: e.target.value, bankAccountId: '' });   // akaunti huchaguliwa upya njia ikibadilika
   const est = estimate(f);
   const cashPay = f.method === 'CASH';
-  const kind = PROVIDER_KIND[f.method];                       // 'bank' | 'network' | undefined
-  const providers = providerList(f.method);
-  const providerName = f.provider === OTHER ? f.providerOther.trim() : f.provider;
+  const kind = ACCOUNT_KIND[f.method];                        // 'bank' | 'network' | undefined
+  const accounts = useLoad(() => cashSaleApi.paymentAccounts(), []);
+  const choices = accountsFor(f.method, accounts.data?.data);
   const tendered = f.tendered === '' ? est.total : n(f.tendered);
   const change = Math.round((tendered - est.total) * 100) / 100;
 
@@ -41,7 +41,7 @@ export default function CashSalesCreate() {
     const p = linesProblem(f); if (p) return p;
     if (!(est.total > 0)) return t('create.errTotal');
     if (cashPay && change < 0) return t('create.errTendered', { total: money(est.total) });
-    if (kind && !providerName) return t(kind === 'bank' ? 'create.errBank' : 'create.errNetwork');
+    if (kind && !f.bankAccountId) return t(kind === 'bank' ? 'create.errBank' : 'create.errNetwork');
     if (!cashPay && !f.reference.trim()) return t('create.errReference');
     return '';
   };
@@ -54,7 +54,7 @@ export default function CashSalesCreate() {
         ...(f.customer ? { customerId: f.customer.id } : { walkInName: f.walkInName.trim() || null, walkInPhone: f.walkInPhone.trim() || null }),
         ...(canPick && f.salespersonId && { salespersonId: f.salespersonId }),
         notes: f.notes.trim() || null, taxRate: n(f.taxRate), lines: linesBody(f, canSetPrice),
-        payment: { method: f.method, ...(cashPay && f.tendered !== '' && { amountTendered: n(f.tendered) }), ...(f.reference.trim() && { reference: kind ? joinReference(providerName, f.reference.trim()) : f.reference.trim() }) },
+        payment: { method: f.method, ...(cashPay && f.tendered !== '' && { amountTendered: n(f.tendered) }), ...(kind && { bankAccountId: f.bankAccountId }), ...(f.reference.trim() && { reference: f.reference.trim() }) },
       };
       const s = await cashSaleApi.create(body);
       navigate(`/cash-sales/${s.id}`, { state: { msg: cashPay && change > 0 ? t('create.doneChange', { change: money(change) }) : t('create.done') } });
@@ -103,23 +103,22 @@ export default function CashSalesCreate() {
               <select className="input" value={f.method} onChange={setMethod}>{Object.entries(METHOD).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
             </Field>
             {kind && (
-              <Field label={t(kind === 'bank' ? 'create.bank' : 'create.network')}>
-                <select className="input" value={f.provider} onChange={set('provider')} aria-label={t(kind === 'bank' ? 'create.bank' : 'create.network')}>
+              <Field label={t(kind === 'bank' ? 'create.bank' : 'create.network')} error={fe['payment.bankAccountId']}>
+                <select className="input" value={f.bankAccountId} onChange={set('bankAccountId')} disabled={accounts.loading}>
                   <option value="">{t(kind === 'bank' ? 'create.pickBank' : 'create.pickNetwork')}</option>
-                  {providers.map((p) => <option key={p} value={p}>{p}</option>)}
-                  <option value={OTHER}>{t('create.other')}</option>
+                  {choices.map((a) => <option key={a.id} value={a.id}>{accountLabel(a)}</option>)}
                 </select>
+                {!accounts.loading && choices.length === 0 && (
+                  <p className="mt-1 text-xs text-black">{t(kind === 'bank' ? 'create.noBanks' : 'create.noNetworks')}{can('bank_accounts.create') && <> <Link to="/bank-accounts/new" className="underline">{t('create.registerAccount')}</Link></>}</p>
+                )}
               </Field>
-            )}
-            {kind && f.provider === OTHER && (
-              <Field label={t(kind === 'bank' ? 'create.otherBank' : 'create.otherNetwork')}><input className="input" maxLength={MAX_PROVIDER} value={f.providerOther} onChange={set('providerOther')} /></Field>
             )}
             {cashPay ? (
               <Field label={t('create.received')} error={fe['payment.amountTendered']}>
                 <input className="input" type="number" min="0" step="0.01" placeholder={money(est.total)} value={f.tendered} onChange={set('tendered')} />
               </Field>
             ) : (
-              <Field label={t('create.reference')} error={fe['payment.reference']}><input className="input" maxLength={MAX_REF} value={f.reference} onChange={set('reference')} placeholder={t('create.referencePh')} /></Field>
+              <Field label={t('create.reference')} error={fe['payment.reference']}><input className="input" maxLength={100} value={f.reference} onChange={set('reference')} placeholder={t('create.referencePh')} /></Field>
             )}
             <div className="self-end pb-2 text-sm">
               <div>{t('create.toPay')} <b>{money(est.total)}</b></div>

@@ -8,7 +8,7 @@ import { ArrowLeftIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { fmt } from '../../utils/format';
 import { METHOD, NOTICE, Status, customerName, day, money } from '../sales/saleUi.jsx';
-import { PROVIDER_KIND, splitReference } from '../sales/paymentProviders.js';
+import { ACCOUNT_KIND, accountLabel, splitReference } from '../sales/paymentProviders.js';
 import { RowActions } from './CashSalesList.jsx';
 
 const Row = ({ label, children }) => (
@@ -85,7 +85,7 @@ export default function CashSalesView() {
               <dl className="max-w-3xl">
                 <Row label={t('view.receiptNo')}>{pay.receiptNo}</Row>
                 <Row label={t('view.method')}>{METHOD[pay.method] || pay.method}</Row>
-                {split.provider && <Row label={t(PROVIDER_KIND[pay.method] === 'bank' ? 'view.bank' : 'view.network')}>{split.provider}</Row>}
+                {(pay.bankAccount || split.provider) && <Row label={t(ACCOUNT_KIND[pay.method] === 'network' ? 'view.network' : 'view.bank')}>{pay.bankAccount ? accountLabel(pay.bankAccount) : split.provider}</Row>}
                 <Row label={t('view.reference')}>{split.ref}</Row>
                 <Row label={t('view.amount')}>{money(pay.amount)}</Row>
                 {pay.tendered != null && <><Row label={t('view.receivedAmount')}>{money(pay.tendered)}</Row><Row label={t('view.changeGiven')}>{money(change)}</Row></>}

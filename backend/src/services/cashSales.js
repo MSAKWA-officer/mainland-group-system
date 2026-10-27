@@ -1,4 +1,5 @@
-const { sequelize, Sale, SaleLine, SalePayment } = require('../models');
+const { sequelize, Sale, SaleLine, SalePayment, BankAccount } = require('../models');
+const banking = require('./banking');
 const audit = require('./audit');
 const core = require('./saleCore');
 const { AppError } = require('../utils/errors');
@@ -17,7 +18,17 @@ const create = (req, body) => sequelize.transaction(async (t) => {
   if (total <= 0n) throw bad('lines', 'The sale total must be greater than zero');
 
   // Payment: the customer pays the full amount. For CASH the tendered amount may be higher (change is returned).
-  const { method, reference } = body.payment;
+  const { method, reference, bankAccountId } = body.payment;
+  // BANK / CARD must use a registered bank account, MOBILE_MONEY a registered mobile money account (Bank accounts module).
+  let account = null;
+  if (['BANK', 'CARD', 'MOBILE_MONEY'].includes(method)) {
+    if (!bankAccountId) throw bad('payment.bankAccountId', 'Choose the bank or mobile money account');
+    account = await BankAccount.findByPk(bankAccountId, { transaction: t });
+    if (!account) throw bad('payment.bankAccountId', 'Account not found');
+    if (!account.isActive) throw bad('payment.bankAccountId', 'This account is inactive');
+    if (account.currency !== banking.BASE_CURRENCY) throw bad('payment.bankAccountId', `Only ${banking.BASE_CURRENCY} accounts can be used`);
+    if ((method === 'MOBILE_MONEY') !== (account.accountType === 'MOBILE_MONEY')) throw bad('payment.bankAccountId', method === 'MOBILE_MONEY' ? 'Choose a mobile money account' : 'Choose a bank account, not a mobile money account');
+  }
   let tendered = null;
   if (method === 'CASH') {
     tendered = body.payment.amountTendered ?? Number(tot.total);
@@ -31,10 +42,10 @@ const create = (req, body) => sequelize.transaction(async (t) => {
   const lines = await SaleLine.bulkCreate(rows.map((r) => ({ ...r, saleId: sale.id })), { transaction: t });
   const { doc, stockLines } = await core.issueStock(t, req, sale, lines, customer?.name || body.walkInName || 'Walk-in customer');
   await SalePayment.create({ receiptNo: `RCP-${core.year()}-${core.pad(await core.nextNo('sale_receipt_seq', t))}`, saleId: sale.id,
-    amount: tot.total, tendered, method, reference: reference ?? null, receivedBy: req.user.id }, { transaction: t });
+    amount: tot.total, tendered, method, reference: reference ?? null, bankAccountId: account?.id ?? null, receivedBy: req.user.id }, { transaction: t });
   await sale.update({ status: 'COMPLETED', completedAt: new Date(), amountPaid: tot.total, paymentStatus: 'PAID', stockDocumentId: doc.id }, { transaction: t });
   await audit.log(req, { action: 'CASH_SALE_COMPLETED', entityType: 'Sale', entityId: sale.id,
-    newValues: { ...snap(sale), method, lines: rows.length, stockDocument: doc.docNo, stockLines } }, t);
+    newValues: { ...snap(sale), method, bankAccountId: account?.id ?? null, lines: rows.length, stockDocument: doc.docNo, stockLines } }, t);
   return sale;
 });
 

@@ -39,10 +39,10 @@ const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px
 const HEAD = `${CELL} bg-white font-semibold uppercase`;
 const al = (i) => (i === 0 ? 'text-left' : 'text-center');
 const COLS = ['saleNo', 'date', 'customer', 'salesperson', 'items', 'total', 'payment', 'status', 'actions'];
-// Njia ya malipo + benki/mtandao (mfano "Benki · CRDB"). payMethod/payReference zinatoka backend (saleQueries.js).
+// Njia ya malipo + akaunti iliyosajiliwa (mfano "Benki · CRDB · Mainland Ltd"). payMethod/payAccount zinatoka backend (saleQueries.js).
 const payText = (r) => {
   if (!r.payMethod) return '—';
-  const { provider } = splitReference(r.payMethod, r.payReference);
+  const provider = r.payAccount || splitReference(r.payMethod, r.payReference).provider;   // akaunti iliyosajiliwa, au jina la zamani
   return provider ? `${METHOD[r.payMethod] || r.payMethod} · ${provider}` : (METHOD[r.payMethod] || r.payMethod);
 };
 
