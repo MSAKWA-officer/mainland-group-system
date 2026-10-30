@@ -3,6 +3,7 @@ const sequelize = require('../config/sequelize');
 const { StockLevel, Item, Category, StockBatch } = require('../models');
 const { AppError } = require('../utils/errors');
 const wh = require('../services/warehouses');
+const stockDocs = require('../services/stockDocuments');
 const { like } = require('../utils/schemas');
 
 // Item fields visible in stock screens. Cost price is never exposed here (see stock_reports.valuation).
@@ -171,4 +172,34 @@ exports.expiryBatch = async (req, res) => {
   const where = await holders([b.id]);
   res.json({ ...b.toJSON(), warehouses: where[b.id] || [], dateReceived: recv[0]?.docDate || String(b.createdAt.toISOString()).slice(0, 10), status: statusOf(b.expiryDate, 30), daysToExpiry: days,
     receipts: recv, writeOffs });
+};
+
+/* Delete an EXPIRED batch: takes the batch's remaining stock out of the warehouse(s) that hold it, ALL IN ONE TRANSACTION.
+   - body.warehouseId (optional): remove it from that one warehouse only. Without it, from every warehouse the user is allowed to work in
+     (Manager / Owner = all of them, a storekeeper = his own).
+   - The quantity taken from each warehouse is read from the warehouse's own batch row inside the transaction, so it is always exactly what that
+     warehouse holds, and if anything fails nothing is removed (no half-deleted batch).
+   - One EXPIRED write-off document is posted per warehouse, so stock ledgers, reports and the audit trail stay correct. */
+exports.writeOffExpiredBatch = async (req, res) => {
+  const { warehouseId } = req.body || {};
+  const docs = await sequelize.transaction(async (t) => {
+    const b = await StockBatch.findByPk(req.params.batchId, { transaction: t });
+    if (!b) throw new AppError(404, 'NOT_FOUND', 'Batch not found');
+    if (b.expiryDate >= today()) throw new AppError(409, 'NOT_EXPIRED', `Batch ${b.batchNo} expires on ${b.expiryDate} - it is not expired yet`);
+    await Item.findByPk(b.itemId, { transaction: t, lock: t.LOCK.UPDATE });          // same lock order as posting (item first), so no deadlocks
+    let rows = await sequelize.query(
+      `SELECT warehouse_id AS "warehouseId", quantity FROM warehouse_stock_batches
+        WHERE batch_id = :b AND quantity > 0 ${warehouseId ? 'AND warehouse_id = :w' : ''} ORDER BY warehouse_id FOR UPDATE`,
+      { replacements: { b: b.id, ...(warehouseId && { w: warehouseId }) }, type: QueryTypes.SELECT, transaction: t });
+    const mine = await wh.scope(req, t);
+    if (mine) rows = rows.filter((r) => mine.includes(r.warehouseId));              // a storekeeper only clears his own warehouse(s)
+    if (!rows.length) throw new AppError(409, 'NOTHING_TO_WRITE_OFF', warehouseId ? 'This batch has no stock left in that warehouse' : 'This batch has no stock left in your warehouse(s)');
+    const out = [];
+    for (const r of rows) {
+      out.push(await stockDocs.createIn(req, 'EXPIRED', { docDate: today(), warehouseId: r.warehouseId, reference: null, reason: 'Expired stock deleted',
+        lines: [{ itemId: b.itemId, batchId: b.id, quantity: Number(r.quantity), remarks: null }] }, t));
+    }
+    return out;
+  });
+  res.status(201).json({ data: docs.map((d) => ({ id: d.id, docNo: d.docNo, warehouseId: d.warehouseId, status: d.status })) });
 };

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { expiredApi, stockApi, errMsg } from '../../api/index.js';
+import { stockApi, errMsg } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
@@ -37,18 +37,9 @@ export function BatchActions({ b, showView, onChanged, onError, afterDelete }) {
     const name = `${b.item?.name} / ${b.batchNo}`;
     if (!window.confirm(t('batches.confirmDelete', { name, qty: qty(b.quantity), defaultValue: `Delete expired stock ${name}? The remaining ${qty(b.quantity)} will be removed from stock.` }))) return;
     onError('');
-    // A batch can be spread over several warehouses (e.g. ROOM 001 and ROOM 3) and a write-off takes stock out of ONE warehouse,
-    // so one write-off is posted per warehouse holding the batch, each for the quantity that warehouse really has.
-    const holders = (b.warehouses || []).filter((w) => Number(w.quantity) > 0);
-    const docDate = new Date().toISOString().slice(0, 10);
-    const one = (warehouseId, quantity) => expiredApi.create({ docDate, ...(warehouseId && { warehouseId }), reference: null, reason: null,
-      lines: [{ itemId: b.itemId, batchId: b.id, quantity: Number(quantity), remarks: null }] });
-    try {
-      let last;
-      if (holders.length) for (const w of holders) last = await one(w.id, w.quantity);
-      else last = await one(null, b.quantity);                          // no warehouse breakdown: default warehouse, as before
-      (afterDelete || onChanged)?.(last);
-    } catch (x) { onError(errMsg(x)); onChanged?.(); }                    // refresh: warehouses already written off are shown as done
+    // One request: the server removes the batch from EVERY warehouse that holds it, in a single transaction (all or nothing).
+    try { const r = await stockApi.writeOffExpiredBatch(b.id); (afterDelete || onChanged)?.(r); }
+    catch (x) { onError(errMsg(x)); onChanged?.(); }
   };
   return (
     <div className="flex items-center justify-center gap-1">

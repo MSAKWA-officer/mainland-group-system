@@ -212,4 +212,4 @@ for (const cfg of Object.values(TYPES)) {
   });
 }
 
-module.exports = { TYPES, create, update, submit, cancel, remove, reverse, correct };
+module.exports = { TYPES, create, createIn, update, submit, cancel, remove, reverse, correct };
