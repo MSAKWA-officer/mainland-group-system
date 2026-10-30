@@ -24,7 +24,22 @@
     "REJECT_OUT": "Reject out",
     "EXPIRED": "Expired",
     "DAMAGED": "Damaged",
-    "CASH_SALE": "Cash sale"
+    "CASH_SALE": "Cash sale",
+    "CREDIT_SALE": "Credit sale",
+    "WAREHOUSE_TRANSFER": "Warehouse transfer",
+    "SALES_ORDER": "Sales order",
+    "APPROVAL": "Approval request",
+    "CUSTOMER": "Customer",
+    "ITEM": "Item",
+    "CATEGORY": "Category",
+    "BANK": "Bank",
+    "BANK_ACCOUNT": "Bank account",
+    "DRIVER": "Driver",
+    "VEHICLE": "Vehicle",
+    "STAFF": "Staff",
+    "SALESPERSON": "Salesperson",
+    "DISCOUNT": "Discount",
+    "EFD_DEVICE": "EFD device"
   },
   "from": "From"
 }

@@ -24,7 +24,22 @@
     "REJECT_OUT": "退货出库",
     "EXPIRED": "过期",
     "DAMAGED": "损坏",
-    "CASH_SALE": "现金销售"
+    "CASH_SALE": "现金销售",
+    "CREDIT_SALE": "赊销",
+    "WAREHOUSE_TRANSFER": "仓库调拨",
+    "SALES_ORDER": "销售订单",
+    "APPROVAL": "审批申请",
+    "CUSTOMER": "客户",
+    "ITEM": "商品",
+    "CATEGORY": "分类",
+    "BANK": "银行",
+    "BANK_ACCOUNT": "银行账户",
+    "DRIVER": "司机",
+    "VEHICLE": "车辆",
+    "STAFF": "员工",
+    "SALESPERSON": "销售员",
+    "DISCOUNT": "折扣",
+    "EFD_DEVICE": "EFD设备"
   },
   "from": "开始"
 }

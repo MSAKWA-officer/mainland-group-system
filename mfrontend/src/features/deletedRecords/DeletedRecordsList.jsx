@@ -9,7 +9,8 @@ import { fmt } from '../../utils/format';
 const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
 const HEAD = `${CELL} bg-white font-semibold uppercase`;
 const FIELD = 'input !text-[14px] !text-[#212121]';
-const TYPES = ['RECEIVING', 'ADJUSTMENT', 'REJECT_IN', 'REJECT_OUT', 'EXPIRED', 'DAMAGED', 'CASH_SALE'];
+const TYPES = ['RECEIVING', 'ADJUSTMENT', 'REJECT_IN', 'REJECT_OUT', 'EXPIRED', 'DAMAGED', 'CASH_SALE',
+  'CREDIT_SALE', 'WAREHOUSE_TRANSFER', 'SALES_ORDER', 'APPROVAL', 'CUSTOMER', 'ITEM', 'CATEGORY', 'BANK', 'BANK_ACCOUNT', 'DRIVER', 'VEHICLE', 'STAFF', 'SALESPERSON', 'DISCOUNT', 'EFD_DEVICE'];
 const EMPTY = { type: '', search: '', from: '', to: '' };
 
 // Owner-only. Everything users deleted stays in the database for audit; this page is where the Owner can see it.

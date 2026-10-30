@@ -24,7 +24,22 @@
     "REJECT_OUT": "Kukataa kutoka",
     "EXPIRED": "Zilizoexpire",
     "DAMAGED": "Zilizoharibika",
-    "CASH_SALE": "Mauzo ya fedha taslimu"
+    "CASH_SALE": "Mauzo ya fedha taslimu",
+    "CREDIT_SALE": "Mauzo ya mkopo",
+    "WAREHOUSE_TRANSFER": "Uhamisho wa bohari",
+    "SALES_ORDER": "Oda ya mauzo",
+    "APPROVAL": "Ombi la idhini",
+    "CUSTOMER": "Mteja",
+    "ITEM": "Bidhaa",
+    "CATEGORY": "Kundi la bidhaa",
+    "BANK": "Benki",
+    "BANK_ACCOUNT": "Akaunti ya benki",
+    "DRIVER": "Dereva",
+    "VEHICLE": "Gari",
+    "STAFF": "Mfanyakazi",
+    "SALESPERSON": "Muuzaji",
+    "DISCOUNT": "Punguzo",
+    "EFD_DEVICE": "Kifaa cha EFD"
   },
   "from": "Kuanzia"
 }
