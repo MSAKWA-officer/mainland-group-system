@@ -20,7 +20,7 @@ export function RowActions({ d, showView, onChanged, onError, afterDelete }) {
   const navigate = useNavigate();
   const mine = d.createdBy === user.id;
   const posted = canCorrectDoc(d, user, can, 'receiving');                       // POSTED: Delete = reverse the stock, Edit = correct
-  const reversePosted = useReversePosted({ api: receivingApi, onChanged: afterDelete || onChanged, onError });
+  const reversePosted = useReversePosted({ api: receivingApi, onChanged: afterDelete || onChanged, onError, askReason: false });
   const run = async (fn) => { onError(''); try { await fn(); onChanged?.(); } catch (x) { onError(errMsg(x)); } };
   const act = (action, body) => run(() => receivingApi.act(d.id, action, body));
   const remove = async () => {
@@ -65,7 +65,7 @@ function ListActions({ d, onChanged, onError }) {
   const navigate = useNavigate();
   const mine = d.createdBy === user.id;
   const posted = canCorrectDoc(d, user, can, 'receiving');                       // POSTED: Delete = reverse the stock, Edit = correct
-  const reversePosted = useReversePosted({ api: receivingApi, onChanged: onChanged, onError });
+  const reversePosted = useReversePosted({ api: receivingApi, onChanged: onChanged, onError, askReason: false });
   const canEdit = (mine && d.status === 'DRAFT') || posted;
   const canDelete = can('receiving.create') && (mine || user.role === 'OWNER') && ['DRAFT', 'CANCELLED', 'REJECTED'].includes(d.status) || posted;
   const remove = async () => {

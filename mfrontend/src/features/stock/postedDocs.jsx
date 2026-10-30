@@ -10,12 +10,18 @@ export const canCorrectDoc = (d, user, can, module) =>
   d?.status === 'POSTED' && can(`${module}.create`) && (d.createdBy === user.id || can(`${module}.approve`) || user.role === 'OWNER');
 
 // Returns reverse(d): asks for the reason, calls api.reverse(id, { reason }) and refreshes. Errors (e.g. "stock already used") go to onError.
-export function useReversePosted({ api, onChanged, onError }) {
+export function useReversePosted({ api, onChanged, onError, askReason = true }) {
   const { t } = useTranslation('correction');
   return async (d) => {
-    const reason = window.prompt(t('reversePrompt', { docNo: d.docNo || d.transferNo || d.saleNo }));
-    if (reason === null) return;
-    if (reason.trim().length < 3) { onError(t('reasonRequired')); return; }
+    let reason;
+    if (askReason) {
+      reason = window.prompt(t('reversePrompt', { docNo: d.docNo || d.transferNo || d.saleNo }));
+      if (reason === null) return;
+      if (reason.trim().length < 3) { onError(t('reasonRequired')); return; }
+    } else {                                                 // one click + confirm: the reason is recorded automatically in the audit trail
+      if (!window.confirm(t('deleteConfirm', { docNo: d.docNo, defaultValue: `Delete ${d.docNo}? The stock it added will be removed from the warehouse.` }))) return;
+      reason = 'Deleted by user';
+    }
     onError('');
     try { await api.reverse(d.id, { reason: reason.trim() }); onChanged?.(); } catch (x) { onError(errMsg(x)); }
   };

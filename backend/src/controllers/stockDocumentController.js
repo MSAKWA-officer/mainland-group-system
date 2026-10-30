@@ -43,6 +43,7 @@ module.exports = (type) => {
       const and = [];
       if (mine && !warehouseId) and.push({ [Op.or]: [{ warehouseId: { [Op.in]: mine } }, { createdBy: req.user.id }] });
       if (status) where.status = status;
+      else where.status = { [Op.ne]: 'VOIDED' };                // deleted (reversed) documents leave the list; ask for status=VOIDED to see them
       if (createdBy) where.createdBy = createdBy;
       if (from || to) where.docDate = { ...(from && { [Op.gte]: from }), ...(to && { [Op.lte]: to }) };
       if (search) {
