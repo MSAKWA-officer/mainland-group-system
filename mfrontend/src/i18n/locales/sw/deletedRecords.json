@@ -1,0 +1,30 @@
+{
+  "title": "Rekodi zilizofutwa",
+  "subtitle": "{{total}} zimefutwa ndani ya siku 30 zilizopita. Baada ya siku 30 rekodi inatoka kwenye orodha hii yenyewe (inabaki kwenye audit log). Ukurasa huu unaonekana na Owner pekee.",
+  "search": "Tafuta namba, mtumiaji, bohari au sababu",
+  "type": "Aina",
+  "allTypes": "Aina zote",
+  "to": "Hadi",
+  "filter": "Chuja",
+  "reset": "Futa vichujio",
+  "empty": "Hakuna rekodi zilizofutwa.",
+  "heads": {
+    "docNo": "Namba",
+    "type": "Aina",
+    "date": "Tarehe",
+    "warehouse": "Bohari",
+    "deletedBy": "Alifuta",
+    "deletedAt": "Tarehe ya kufuta",
+    "reason": "Sababu"
+  },
+  "types": {
+    "RECEIVING": "Mapokezi",
+    "ADJUSTMENT": "Marekebisho",
+    "REJECT_IN": "Kukataa kuingia",
+    "REJECT_OUT": "Kukataa kutoka",
+    "EXPIRED": "Zilizoexpire",
+    "DAMAGED": "Zilizoharibika",
+    "CASH_SALE": "Mauzo ya fedha taslimu"
+  },
+  "from": "Kuanzia"
+}

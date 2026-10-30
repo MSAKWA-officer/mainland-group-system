@@ -165,6 +165,7 @@ import UserUpdate from './features/users/UserUpdate.jsx';
 import UserView from './features/users/UserView.jsx';
 import RolesPage from './pages/RolesPage.jsx';
 import AuditPage from './pages/AuditPage.jsx';
+import DeletedRecordsPage from './pages/DeletedRecordsPage.jsx';
 
 export default function App() {
   const { user, ready } = useAuth();
@@ -347,6 +348,7 @@ export default function App() {
         <Route path="/users/:id/edit" element={<Guard perm="users.update"><UserUpdate /></Guard>} />
         <Route path="/roles" element={<Guard perm="roles.read"><RolesPage /></Guard>} />
         <Route path="/audit" element={<Guard perm="audit.read"><AuditPage /></Guard>} />
+        <Route path="/deleted-records" element={<Guard perm="deleted_records.read"><DeletedRecordsPage /></Guard>} />
         <Route path="/password" element={<ChangePasswordPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

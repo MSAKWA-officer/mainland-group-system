@@ -3,6 +3,7 @@ export * as authApi from './authApi';
 export * as userApi from './userApi';
 export * as roleApi from './roleApi';
 export * as auditApi from './auditApi';
+export * as deletedRecordApi from './deletedRecordApi';
 export * as approvalApi from './approvalApi';
 export * as notificationApi from './notificationApi';
 export * as monitoringApi from './monitoringApi';

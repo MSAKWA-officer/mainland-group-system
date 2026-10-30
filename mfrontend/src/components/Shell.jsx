@@ -44,7 +44,7 @@ const GROUPS = [
     ['/fuel-usage', 'Fuel usage', 'fuel_usage.read'], ['/fuel-balances', 'Fuel balances', 'fuel_balances.read'], ['/fuel-reports', 'Fuel reports', 'fuel_reports.read'],
   ] },
   { key: 'admin', label: 'Administration', items: [
-    ['/staff', 'Staff', 'staff.read'], ['/users', 'User management', 'users.read'], ['/roles', 'Roles & permissions', 'roles.read'], ['/audit', 'Audit log', 'audit.read'],
+    ['/staff', 'Staff', 'staff.read'], ['/users', 'User management', 'users.read'], ['/roles', 'Roles & permissions', 'roles.read'], ['/audit', 'Audit log', 'audit.read'], ['/deleted-records', 'Deleted records', 'deleted_records.read'],
   ] },
 ];
 

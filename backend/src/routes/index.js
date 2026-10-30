@@ -12,6 +12,7 @@ router.use('/auth', require('./authRoutes'));                                   
 router.use('/users', authenticate, require('./userRoutes'));
 router.use('/rbac', authenticate, require('./roleRoutes'));
 router.use('/audit-logs', authenticate, require('./auditRoutes'));
+router.use('/deleted-records', authenticate, require('./deletedRecordRoutes'));       // Owner-only list of deleted (voided) records
 router.use('/approvals', authenticate, require('./approvalRoutes'));
 router.use('/notifications', authenticate, require('./notificationRoutes'));
 router.use('/files', authenticate, require('./fileRoutes'));

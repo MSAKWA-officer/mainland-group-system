@@ -3,6 +3,7 @@ const PERMISSIONS = {
   users: ['read', 'create', 'update', 'deactivate', 'reset_password'],
   roles: ['read', 'manage'],
   audit: ['read', 'verify'],
+  deleted_records: ['read'],            // Owner-only page listing everything users deleted (who, when, why)
   approvals: ['read', 'read_all', 'create', 'approve'],
   files: ['upload', 'read'],
   notifications: ['read'],

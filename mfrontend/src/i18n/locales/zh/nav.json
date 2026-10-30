@@ -58,7 +58,8 @@
     "warehouses": "仓库",
     "warehouse-transfers": "仓库调拨",
     "physical-counts": "实物盘点",
-    "sales-reports": "销售报表"
+    "sales-reports": "销售报表",
+    "deleted-records": "已删除记录"
   },
   "password": "修改密码",
   "account": "账户",

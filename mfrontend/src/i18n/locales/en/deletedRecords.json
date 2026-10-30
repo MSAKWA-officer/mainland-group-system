@@ -1,0 +1,30 @@
+{
+  "title": "Deleted records",
+  "subtitle": "{{total}} deleted in the last 30 days. After 30 days a record leaves this list automatically (it stays in the audit log). Only the Owner can see this page.",
+  "search": "Search number, user, warehouse or reason",
+  "type": "Type",
+  "allTypes": "All types",
+  "to": "To",
+  "filter": "Filter",
+  "reset": "Reset",
+  "empty": "No deleted records.",
+  "heads": {
+    "docNo": "Number",
+    "type": "Type",
+    "date": "Date",
+    "warehouse": "Warehouse",
+    "deletedBy": "Deleted by",
+    "deletedAt": "Deleted on",
+    "reason": "Reason"
+  },
+  "types": {
+    "RECEIVING": "Receiving",
+    "ADJUSTMENT": "Adjustment",
+    "REJECT_IN": "Reject in",
+    "REJECT_OUT": "Reject out",
+    "EXPIRED": "Expired",
+    "DAMAGED": "Damaged",
+    "CASH_SALE": "Cash sale"
+  },
+  "from": "From"
+}

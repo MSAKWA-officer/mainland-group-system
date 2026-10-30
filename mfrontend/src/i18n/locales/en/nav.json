@@ -58,7 +58,8 @@
     "warehouses": "Warehouses",
     "warehouse-transfers": "Warehouse transfers",
     "physical-counts": "Physical count",
-    "sales-reports": "Sales reports"
+    "sales-reports": "Sales reports",
+    "deleted-records": "Deleted records"
   },
   "password": "Change password",
   "account": "Account",

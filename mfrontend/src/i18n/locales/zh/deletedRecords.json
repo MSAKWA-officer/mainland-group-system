@@ -1,0 +1,30 @@
+{
+  "title": "已删除记录",
+  "subtitle": "最近 30 天内共 {{total}} 条已删除。30 天后记录会自动从此列表消失（仍保留在审计日志中）。仅所有者可查看此页面。",
+  "search": "搜索编号、用户、仓库或原因",
+  "type": "类型",
+  "allTypes": "所有类型",
+  "to": "结束",
+  "filter": "筛选",
+  "reset": "重置",
+  "empty": "没有已删除的记录。",
+  "heads": {
+    "docNo": "编号",
+    "type": "类型",
+    "date": "日期",
+    "warehouse": "仓库",
+    "deletedBy": "删除人",
+    "deletedAt": "删除时间",
+    "reason": "原因"
+  },
+  "types": {
+    "RECEIVING": "收货",
+    "ADJUSTMENT": "调整",
+    "REJECT_IN": "退货入库",
+    "REJECT_OUT": "退货出库",
+    "EXPIRED": "过期",
+    "DAMAGED": "损坏",
+    "CASH_SALE": "现金销售"
+  },
+  "from": "开始"
+}
