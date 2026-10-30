@@ -21,6 +21,7 @@ const money = (v) => Number(v).toLocaleString(currentLocale(), { minimumFraction
 
 export default function ReceivingView() {
   const { t } = useTranslation('receiving');
+  const { t: tcr } = useTranslation('correction');
   const { t: tc } = useTranslation('common');
   const docs = useDocText();
   const { id } = useParams();
@@ -55,6 +56,7 @@ export default function ReceivingView() {
             <Row label={t('view.warehouse')}>{d.warehouse ? `${d.warehouse.code} — ${d.warehouse.name}` : ''}</Row>
             <Row label={t('view.supplier')}>{d.partyName}</Row>
             <Row label={t('view.reference')}>{d.reference}</Row>
+            {d.status === 'VOIDED' && <Row label={tcr('voidedLabel')}>{tcr('voidedNotice', { reason: d.voidReason })}</Row>}
             <Row label={t('view.notes')}>{d.reason}</Row>
             <Row label={t('view.created')}>{fmt(d.createdAt)}</Row>
             {d.submittedAt && <Row label={t('view.submitted')}>{fmt(d.submittedAt)}</Row>}

@@ -120,4 +120,39 @@ async function post(t, doc, lines, userId) {
   const warehouseId = await resolveWarehouse(t, doc.warehouseId);
   for (const line of lines) await postLine(t, doc, line, userId, today, warehouseId);
 }
-module.exports = { post, resolveWarehouse, batchesIn, warehouseMove };
+
+/* Reverses a POSTED document: every movement it made is undone with the opposite movement (same item, batch and warehouse), written as NEW ledger rows
+   (the ledgers are append-only). Taking stock back out is guarded exactly like any other OUT, so a receiving whose goods were already sold or moved
+   cannot be reversed until that stock is back. Weighted-average cost set by a receiving is not recalculated. */
+async function reverse(t, doc, userId, reason) {
+  const moves = await run(t, `SELECT item_id AS "itemId", batch_id AS "batchId", direction, quantity, unit_cost AS "unitCost", line_id AS "lineId"
+    FROM stock_movements WHERE document_id = :d AND COALESCE(note, '') NOT LIKE 'Reversal %' ORDER BY item_id, occurred_at, id`, { d: doc.id });
+  if (!moves.length) throw fail(409, 'NOTHING_TO_REVERSE', 'This document has no stock movements to reverse');
+  const [w] = await run(t, "SELECT warehouse_id AS \"warehouseId\" FROM warehouse_movements WHERE ref_type = 'StockDocument' AND ref_id = :d LIMIT 1", { d: doc.id });
+  const warehouseId = w ? w.warehouseId : await resolveWarehouse(t, doc.warehouseId);
+  const note = `Reversal ${doc.docNo}: ${reason}`.slice(0, 255);
+  for (const m of moves) {
+    const item = await Item.findByPk(m.itemId, { transaction: t, lock: t.LOCK.UPDATE });
+    const label = item ? `${item.sku} - ${item.name}` : m.itemId;
+    const q = m.quantity; const dir = m.direction === 'IN' ? 'OUT' : 'IN';
+    let after;
+    if (dir === 'OUT') {                                                     // undoing an increase: that stock must still be here
+      if (m.batchId) {
+        const okB = await run(t, 'UPDATE stock_batches SET quantity = quantity - CAST(:q AS numeric), updated_at = NOW() WHERE id = :b AND quantity >= CAST(:q AS numeric) RETURNING quantity', { q, b: m.batchId });
+        if (!okB.length) throw fail(409, 'STOCK_ALREADY_USED', `Cannot reverse: the received batch of ${label} has already been used (sold, moved or written off)`);
+      }
+      const ok = await run(t, 'UPDATE stock_levels SET quantity = quantity - CAST(:q AS numeric), updated_at = NOW() WHERE item_id = :i AND quantity >= CAST(:q AS numeric) RETURNING quantity', { q, i: m.itemId });
+      if (!ok.length) throw fail(409, 'STOCK_ALREADY_USED', `Cannot reverse: ${label} from this document has already been used (sold, moved or written off)`);
+      after = ok[0].quantity;
+    } else {                                                                 // undoing a decrease: the stock comes back
+      if (m.batchId) await run(t, 'UPDATE stock_batches SET quantity = quantity + CAST(:q AS numeric), updated_at = NOW() WHERE id = :b', { q, b: m.batchId });
+      [{ quantity: after }] = await run(t, 'UPDATE stock_levels SET quantity = quantity + CAST(:q AS numeric), updated_at = NOW() WHERE item_id = :i RETURNING quantity', { q, i: m.itemId });
+    }
+    await warehouseMove(t, { warehouseId, itemId: m.itemId, batchId: m.batchId, direction: dir, quantity: q, label, movementType: doc.type,
+      refType: 'StockDocument', refId: doc.id, userId, note });
+    await StockMovement.create({ itemId: m.itemId, batchId: m.batchId, documentId: doc.id, lineId: m.lineId, movementType: doc.type, direction: dir,
+      quantity: q, balanceAfter: after, unitCost: m.unitCost ?? null, performedBy: userId, occurredAt: new Date(), note }, { transaction: t });
+  }
+  return moves.length;
+}
+module.exports = { post, reverse, resolveWarehouse, batchesIn, warehouseMove };

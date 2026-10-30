@@ -142,7 +142,7 @@ const remove = (req, id) => sequelize.transaction(async (t) => {
 });
 
 /* ---------- payments (receipts) ---------- */
-const receivePayment = (req, id, body) => sequelize.transaction(async (t) => {
+const receiveIn = async (req, id, body, t) => {
   const s = await load(id, t);
   if (s.status !== 'COMPLETED') throw new AppError(409, 'BAD_STATE', `Payments can only be recorded on a completed sale (this one is ${s.status})`);
   const balance = cents(s.total) - cents(s.amountPaid);
@@ -166,9 +166,10 @@ const receivePayment = (req, id, body) => sequelize.transaction(async (t) => {
   await audit.log(req, { action: 'CREDIT_PAYMENT_RECEIVED', entityType: 'Sale', entityId: s.id, oldValues: old,
     newValues: { ...snap(s), receiptNo: p.receiptNo, amount: p.amount, method: p.method, bankAccountId: account?.id ?? null, bankTxnNo: bankTxn?.txnNo ?? null } }, t);
   return { sale: s, payment: p };
-});
+};
+const receivePayment = (req, id, body) => sequelize.transaction((t) => receiveIn(req, id, body, t));
 
-const voidPayment = (req, id, paymentId, reason) => sequelize.transaction(async (t) => {
+const voidPaymentIn = async (req, id, paymentId, reason, t) => {
   const s = await load(id, t);
   if (s.status !== 'COMPLETED') throw new AppError(409, 'BAD_STATE', `Cannot change payments of a sale that is ${s.status}`);
   if (!reason || reason.trim().length < 3) throw bad('reason', 'A reason is required to void a payment');
@@ -186,6 +187,14 @@ const voidPayment = (req, id, paymentId, reason) => sequelize.transaction(async 
   await audit.log(req, { action: 'CREDIT_PAYMENT_VOIDED', entityType: 'Sale', entityId: s.id, oldValues: old,
     newValues: { ...snap(s), receiptNo: p.receiptNo, amount: p.amount }, reason }, t);
   return { sale: s, payment: p };
+};
+const voidPayment = (req, id, paymentId, reason) => sequelize.transaction((t) => voidPaymentIn(req, id, paymentId, reason, t));
+
+// EDIT of a payment = CORRECTION: the wrong payment is voided (the money leaves the bank / mobile money account) and the corrected one is received, in ONE transaction.
+const correctPayment = (req, id, paymentId, body) => sequelize.transaction(async (t) => {
+  const { changeReason, ...data } = body;
+  await voidPaymentIn(req, id, paymentId, `Corrected: ${changeReason}`, t);
+  return receiveIn(req, id, data, t);
 });
 
 // Void a COMPLETED credit sale: only while nothing is paid on it (void the payments first). Puts the stock back.
@@ -233,5 +242,5 @@ const closeSale = (status, action) => async (r, ctx) => {
 approvals.register(TYPE, { label: 'Credit sale', approvePermission: 'credit_sales.approve',
   execute: completeSale, onReject: closeSale('REJECTED', 'CREDIT_SALE_REJECTED'), onCancel: closeSale('CANCELLED', 'CREDIT_SALE_CANCELLED') });
 
-module.exports = { create, update, submit, cancel, remove, receivePayment, voidPayment, void: voidSale, position: async (c) => publicPosition(await position(c)),
+module.exports = { create, update, submit, cancel, remove, receivePayment, voidPayment, correctPayment, void: voidSale, position: async (c) => publicPosition(await position(c)),
   internal: { position, exceeds } };   // used by services/salesOrders.js when an approved credit order becomes a credit sale

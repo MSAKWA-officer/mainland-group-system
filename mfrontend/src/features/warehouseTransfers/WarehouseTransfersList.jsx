@@ -5,7 +5,8 @@ import { warehouseTransferApi, errMsg } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
-import { EyeIcon, CheckIcon, XIcon, BanIcon, UserCheckIcon, XCircleIcon } from '../../components/Icons.jsx';
+import { EyeIcon, CheckIcon, XIcon, BanIcon, UserCheckIcon, XCircleIcon, TrashIcon } from '../../components/Icons.jsx';
+import { useReversePosted } from '../stock/postedDocs.jsx';
 import useLoad from '../../utils/useLoad';
 import { CELL, HEAD, al } from '../../components/TableUi.js';
 import { IconBtn, Tag, qty } from '../stock/StockList.jsx';
@@ -15,8 +16,11 @@ import { IconBtn, Tag, qty } from '../stock/StockList.jsx';
 // there (the view page has the quantities form). Used by the list and by the view page; hideReceive hides the receive buttons where that form is shown.
 export function RowActions({ d, showView, hideReceive, onChanged, onError }) {
   const { t } = useTranslation('warehouseTransfers');
+  const { t: tc } = useTranslation('correction');
   const { user, can } = useAuth();
   const navigate = useNavigate();
+  const reverse = useReversePosted({ api: warehouseTransferApi, onChanged, onError });     // delete a transfer that already moved stock
+  const moved = ['IN_TRANSIT', 'COMPLETED', 'RECEIVED_SHORT', 'NOT_RECEIVED'].includes(d.status);
   const mine = d.createdBy === user.id; const waiting = d.status === 'SUBMITTED'; const inTransit = d.status === 'IN_TRANSIT';
   const run = async (action, body) => { onError(''); try { await warehouseTransferApi.act(d.id, action, body); onChanged?.(); } catch (x) { onError(errMsg(x)); } };
   return (
@@ -26,6 +30,7 @@ export function RowActions({ d, showView, hideReceive, onChanged, onError }) {
       {waiting && !mine && can('warehouse_transfers.approve') && <IconBtn label={t('actions.reject')} danger onClick={() => { const note = window.prompt(t('rejectPrompt')); if (note && note.trim()) run('reject', { note: note.trim() }); }}><XIcon /></IconBtn>}
       {inTransit && !hideReceive && can('warehouse_transfers.receive') && <IconBtn label={t('actions.receive')} onClick={() => { if (window.confirm(t('confirmReceive', { no: d.transferNo }))) run('receive', { outcome: 'FULL' }); }}><UserCheckIcon /></IconBtn>}
       {inTransit && !hideReceive && can('warehouse_transfers.receive') && <IconBtn label={t('actions.problem')} danger onClick={() => navigate(`/warehouse-transfers/${d.id}`)}><XCircleIcon /></IconBtn>}
+      {moved && can('warehouse_transfers.approve') && <IconBtn label={tc('delete')} danger onClick={() => reverse(d)}><TrashIcon /></IconBtn>}
       {waiting && mine && <IconBtn label={t('actions.cancel')} danger onClick={() => { if (window.confirm(t('confirmCancel', { no: d.transferNo }))) run('cancel'); }}><BanIcon /></IconBtn>}
     </div>
   );
@@ -55,7 +60,7 @@ export default function WarehouseTransfersList() {
           <input type="search" className="input max-w-sm !text-[14px]" placeholder={t('search')} value={input} onChange={(e) => setInput(e.target.value)} />
           <select className="input max-w-[12rem] !text-[14px]" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
             <option value="">{t('allStatuses')}</option>
-            {['SUBMITTED', 'IN_TRANSIT', 'COMPLETED', 'RECEIVED_SHORT', 'NOT_RECEIVED', 'REJECTED', 'CANCELLED'].map((s) => <option key={s} value={s}>{t(`status.${s}`)}</option>)}
+            {['SUBMITTED', 'IN_TRANSIT', 'COMPLETED', 'RECEIVED_SHORT', 'NOT_RECEIVED', 'REJECTED', 'CANCELLED', 'VOIDED'].map((s) => <option key={s} value={s}>{t(`status.${s}`)}</option>)}
           </select>
         </div>
       </div>

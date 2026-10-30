@@ -33,5 +33,6 @@ router.get('/payment-accounts', authorize('cash_sales.create'), ah(c.paymentAcco
 router.get('/', authorize('cash_sales.read'), validate(listQ, 'query'), ah(c.list));
 router.post('/', authorize('cash_sales.create'), validate(createS), ah(c.create));
 router.get('/:id', authorize('cash_sales.read'), validate(idParam, 'params'), ah(c.getOne));
+router.post('/:id/correct', authorize('cash_sales.void'), validate(idParam, 'params'), validate(createS.extend({ changeReason: text(500).min(3, 'Say what you are correcting') })), ah(c.correct));   // edit = void + record the corrected sale
 router.post('/:id/void', authorize('cash_sales.void'), validate(idParam, 'params'), validate(voidS), ah(c.void));
 module.exports = router;

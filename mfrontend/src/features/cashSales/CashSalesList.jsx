@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { cashSaleApi, errMsg } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
-import { BanIcon, EyeIcon, PlusIcon } from '../../components/Icons.jsx';
+import { BanIcon, EyeIcon, PlusIcon, PencilIcon, TrashIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { splitReference } from '../sales/paymentProviders.js';
 import { METHOD, NOTICE, Status, customerName, day, money } from '../sales/saleUi.jsx';
@@ -28,7 +28,8 @@ export function RowActions({ r, showView, onChanged, onError }) {
   return (
     <div className="flex items-center gap-2">
       {showView && <IconBtn label={t('actions.view')} tone="border-blue-200 text-blue-600 hover:bg-blue-50" onClick={() => navigate(`/cash-sales/${r.id}`)}><EyeIcon /></IconBtn>}
-      {r.status === 'COMPLETED' && can('cash_sales.void') && <IconBtn label={t('actions.void')} tone="border-red-200 text-red-600 hover:bg-red-50" onClick={doVoid}><BanIcon /></IconBtn>}
+      {r.status === 'COMPLETED' && can('cash_sales.void') && <IconBtn label={t('actions.edit')} tone="border-blue-200 text-blue-600 hover:bg-blue-50" onClick={() => navigate(`/cash-sales/${r.id}/edit`)}><PencilIcon /></IconBtn>}
+      {r.status === 'COMPLETED' && can('cash_sales.void') && <IconBtn label={t('actions.void')} tone="border-red-200 text-red-600 hover:bg-red-50" onClick={doVoid}><TrashIcon /></IconBtn>}
     </div>
   );
 }

@@ -19,7 +19,8 @@
     "CANCELLED": "已取消",
     "IN_TRANSIT": "运输中",
     "RECEIVED_SHORT": "短收",
-    "NOT_RECEIVED": "未收到"
+    "NOT_RECEIVED": "未收到",
+    "VOIDED": "已作废"
   },
   "cols": {
     "date": "日期",

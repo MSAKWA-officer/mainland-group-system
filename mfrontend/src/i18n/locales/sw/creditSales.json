@@ -37,7 +37,7 @@
     "cancel": "Ghairi",
     "approve": "Idhinisha",
     "reject": "Kataa",
-    "void": "Batilisha mauzo",
+    "void": "Futa mauzo",
     "delete": "Futa",
     "cancelConfirm": "Ghairi {{no}}?",
     "approveConfirm": "Idhinisha {{no}}? Bidhaa zitatolewa stoo na {{amount}} zitaongezwa kwenye salio la mteja.",
@@ -123,9 +123,10 @@
     "state": "Hali",
     "valid": "Halali",
     "voidedState": "Yamebatilishwa",
-    "void": "Batilisha",
+    "void": "Futa",
     "voidPaymentPrompt": "Sababu ya kubatilisha risiti {{receipt}} ({{amount}})?",
-    "paymentVoided": "Malipo yamebatilishwa."
+    "paymentVoided": "Malipo yamebatilishwa.",
+    "editPayment": "Hariri"
   },
   "pay": {
     "title": "Pokea malipo",

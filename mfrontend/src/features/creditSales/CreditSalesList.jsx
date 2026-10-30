@@ -42,7 +42,7 @@ export function RowActions({ r, showView, onChanged, onError, afterDelete }) {
     mine && ['DRAFT', 'SUBMITTED'].includes(r.status) && can('credit_sales.create') && ['cancel', TONES.cancel, cancel, <BanIcon />],
     !mine && r.status === 'SUBMITTED' && can('credit_sales.approve') && ['approve', TONES.approve, approve, <CheckCircleIcon />],
     !mine && r.status === 'SUBMITTED' && can('credit_sales.approve') && ['reject', TONES.reject, reject, <XCircleIcon />],
-    r.status === 'COMPLETED' && Number(r.amountPaid) === 0 && can('credit_sales.void') && ['void', TONES.reject, doVoid, <BanIcon />],
+    r.status === 'COMPLETED' && Number(r.amountPaid) === 0 && can('credit_sales.void') && ['void', TONES.reject, doVoid, <TrashIcon />],
     (mine || user.role === 'OWNER') && ['DRAFT', 'CANCELLED', 'REJECTED'].includes(r.status) && !r.stockDocumentId && can('credit_sales.create') && ['delete', TONES.del, remove, <TrashIcon />],
   ].filter(Boolean);
   return <div className="flex items-center gap-2">{items.map(([key, tone, fn, icon]) => <IconBtn key={key} label={t(`actions.${key}`)} tone={tone} onClick={fn}>{icon}</IconBtn>)}</div>;

@@ -16,5 +16,6 @@ router.get('/sheet', authorize('physical_counts.create'), validate(sheetQ, 'quer
 router.get('/', authorize('physical_counts.read'), validate(listQ, 'query'), ah(c.list));
 router.post('/', authorize('physical_counts.create'), validate(createS), ah(c.create));
 router.get('/:id', authorize('physical_counts.read'), validate(idParam, 'params'), ah(c.getOne));
+router.post('/:id/correct', authorize('physical_counts.void'), validate(idParam, 'params'), validate(createS.extend({ changeReason: text(500).min(3, 'Say what you are correcting') })), ah(c.correct));   // edit = void + re-enter
 router.post('/:id/void', authorize('physical_counts.void'), validate(idParam, 'params'), validate(voidS), ah(c.void));
 module.exports = router;

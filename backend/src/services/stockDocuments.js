@@ -71,7 +71,8 @@ const postNow = async (req, doc, t) => {
     newValues: { docNo: doc.docNo, type: doc.type, lines: lines.length } }, t);
 };
 
-const create = (req, type, body) => sequelize.transaction(async (t) => {
+// createIn / reverseIn run inside the caller's transaction, so a correction (reverse + create) is ONE atomic unit.
+const createIn = async (req, type, body, t) => {
   const cfg = TYPES[type];
   // Receiving must say which warehouse the goods go into (a storekeeper may only choose one they are in charge of). Other documents without a warehouse use the default one.
   if (type === 'RECEIVING' && !body.warehouseId) throw bad('warehouseId', 'Choose the warehouse that receives the goods');
@@ -89,7 +90,8 @@ const create = (req, type, body) => sequelize.transaction(async (t) => {
   await audit.log(req, { action: 'STOCK_DOC_CREATED', entityType: 'StockDocument', entityId: doc.id, newValues: snapshot(doc, lines.length) }, t);
   if (cfg.autoPost) await postNow(req, doc, t);              // no approval: stock is increased right away, in this same transaction
   return doc;
-});
+};
+const create = (req, type, body) => sequelize.transaction((t) => createIn(req, type, body, t));
 
 const update = (req, type, id, body) => sequelize.transaction(async (t) => {
   const doc = await loadDoc(id, type, t);
@@ -159,6 +161,34 @@ const remove = (req, type, id) => sequelize.transaction(async (t) => {
   await audit.log(req, { action: 'STOCK_DOC_DELETED', entityType: 'StockDocument', entityId: id, oldValues: old }, t);
 });
 
+/* DELETE of a POSTED document = REVERSE. The stock goes back through opposite ledger rows, the document stays (status VOIDED) with who / when / why.
+   Allowed for the creator, for anybody who approves this document type (Manager) and for the Owner. A reason is always required. */
+const reverseIn = async (req, type, id, reason, t) => {
+  const cfg = TYPES[type];
+  const doc = await loadDoc(id, type, t);
+  if (!reason || reason.trim().length < 3) throw bad('reason', 'A reason is required');
+  if (doc.status !== 'POSTED') throw new AppError(409, 'BAD_STATE', `Only a posted document can be reversed (this one is ${doc.status}). Draft, cancelled and rejected documents are deleted instead.`);
+  if (doc.createdBy !== req.user.id && !req.user.permissions.has(`${cfg.module}.approve`) && req.user.role !== 'OWNER')
+    throw new AppError(403, 'FORBIDDEN', 'Only the creator, a Manager or the Owner can delete a posted document');
+  if (doc.warehouseId) await wh.access(req, doc.warehouseId, t);
+  const old = snapshot(doc);
+  const moved = await ledger.reverse(t, doc, req.user.id, reason.trim());
+  await doc.update({ status: 'VOIDED', voidedAt: new Date(), voidedBy: req.user.id, voidReason: reason.trim() }, { transaction: t });
+  await audit.log(req, { action: 'STOCK_DOC_REVERSED', entityType: 'StockDocument', entityId: doc.id, oldValues: old, newValues: { ...snapshot(doc), movementsReversed: moved }, reason: reason.trim() }, t);
+  return doc;
+};
+const reverse = (req, type, id, reason) => sequelize.transaction((t) => reverseIn(req, type, id, reason, t));
+
+// EDIT of a POSTED document = CORRECTION: the old document is reversed and the corrected one is posted, in ONE transaction. If either fails, nothing changes.
+const correct = (req, type, id, body) => sequelize.transaction(async (t) => {
+  const { changeReason, ...data } = body;
+  const old = await reverseIn(req, type, id, `Corrected: ${changeReason}`, t);
+  const fresh = await createIn(req, type, data, t);
+  await old.update({ replacedById: fresh.id }, { transaction: t });
+  await audit.log(req, { action: 'STOCK_DOC_CORRECTED', entityType: 'StockDocument', entityId: fresh.id, oldValues: { docNo: old.docNo }, newValues: { docNo: fresh.docNo, replaces: old.docNo }, reason: changeReason }, t);
+  return fresh;
+});
+
 /* ---- approval hooks: called by services/approvals.js inside its transaction ---- */
 const postDocument = async (r, ctx) => {
   const t = ctx.transaction;
@@ -182,4 +212,4 @@ for (const cfg of Object.values(TYPES)) {
   });
 }
 
-module.exports = { TYPES, create, update, submit, cancel, remove };
+module.exports = { TYPES, create, update, submit, cancel, remove, reverse, correct };

@@ -5,7 +5,7 @@ import { physicalCountApi, warehouseApi, errMsg } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Pager from '../../components/Pager.jsx';
-import { EyeIcon, BanIcon } from '../../components/Icons.jsx';
+import { EyeIcon, BanIcon, PencilIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { CELL, HEAD, al } from '../../components/TableUi.js';
 import { IconBtn, Tag, qty } from '../stock/StockList.jsx';
@@ -17,6 +17,7 @@ export const diff = (v) => { const n = Number(v || 0); return n > 0 ? `+${qty(n)
 
 export default function PhysicalCountsList() {
   const { t } = useTranslation('physicalCounts');
+  const { t: tcr } = useTranslation('correction');
   const { can } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,6 +72,7 @@ export default function PhysicalCountsList() {
                 <td className={`${CELL} text-center`}>
                   <div className="flex items-center justify-center gap-1">
                     <IconBtn label={t('actions.view')} onClick={() => navigate(`/physical-counts/${d.id}`)}><EyeIcon /></IconBtn>
+                    {d.status === 'POSTED' && can('physical_counts.void') && can('physical_counts.create') && <IconBtn label={tcr('editCountTitle')} onClick={() => navigate(`/physical-counts/${d.id}/edit`)}><PencilIcon /></IconBtn>}
                     {d.status === 'POSTED' && can('physical_counts.void') && <IconBtn label={t('actions.void')} danger onClick={() => voidIt(d)}><BanIcon /></IconBtn>}
                   </div>
                 </td>

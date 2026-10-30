@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { stockApi } from '../../api/index.js';
+import { expiredApi, stockApi } from '../../api/index.js';
+import { useAuth } from '../../context/AuthContext.jsx';
+import { PencilIcon, TrashIcon } from '../../components/Icons.jsx';
+import { useReversePosted } from '../stock/postedDocs.jsx';
 import Banner from '../../components/Banner.jsx';
 import useLoad from '../../utils/useLoad';
 import { fmt } from '../../utils/format';
 import { useDocText } from '../../utils/docText';
-import { qty } from '../stock/StockList.jsx';
+import { IconBtn, qty } from '../stock/StockList.jsx';
 import { BatchActions, CELL, HEAD, al, TONE, useBatchText } from './ExpiredList.jsx';
 
 const Row = ({ label, children, tone }) => (
@@ -40,8 +43,11 @@ export default function ExpiredView() {
   const { id } = useParams();
   const location = useLocation();
   const [err, setErr] = useState('');
+  const { can } = useAuth();
+  const navigate = useNavigate();
   const q = useLoad(() => stockApi.expiryBatch(id), [id]);
   const b = q.data;
+  const reverse = useReversePosted({ api: expiredApi, onChanged: q.reload, onError: setErr });     // delete a posted write-off: the quantity goes back into stock
   const L = (k, d) => t(`batches.cols.${k}`, { defaultValue: d });
   const V = (k, d) => t(`batches.view.${k}`, { defaultValue: d });
   return (
@@ -76,8 +82,14 @@ export default function ExpiredView() {
             heads={[V('docNo', 'Document no.'), V('date', 'Date'), V('supplier', 'Supplier'), V('reference', 'Reference'), V('notes', 'Notes'), V('qtyReceived', 'Quantity received'), V('receivedBy', 'Received by')]}
             rows={b.receipts.map((r) => [r.docNo, r.docDate, r.partyName, r.reference, r.notes, qty(r.quantity), r.receivedBy])} />
           <Table title={V('writeOffs', 'Expired write-offs')}
-            heads={[V('docNo', 'Document no.'), V('date', 'Date'), V('reference', 'Reference'), V('notes', 'Notes'), V('qtyWrittenOff', 'Quantity written off'), V('createdBy', 'Created by'), L('status', 'Status')]}
-            rows={b.writeOffs.map((w) => [w.docNo, w.docDate, w.reference, w.notes, qty(w.quantity), w.createdBy, doc.status(w.status)])} />
+            heads={[V('docNo', 'Document no.'), V('date', 'Date'), V('reference', 'Reference'), V('notes', 'Notes'), V('qtyWrittenOff', 'Quantity written off'), V('createdBy', 'Created by'), L('status', 'Status'), doc.t('actions.title', { defaultValue: 'Actions' })]}
+            rows={b.writeOffs.map((w) => [w.docNo, w.docDate, w.reference, w.notes, qty(w.quantity), w.createdBy, doc.status(w.status),
+              w.status === 'POSTED' && can('expired.create') ? (
+                <div className="flex items-center justify-center gap-1">
+                  <IconBtn label={doc.t('actions.edit')} onClick={() => navigate(`/expired/${w.id}/edit`)}><PencilIcon /></IconBtn>
+                  <IconBtn label={doc.t('actions.delete')} danger onClick={() => reverse(w)}><TrashIcon /></IconBtn>
+                </div>
+              ) : null])} />
           <div className="mt-4 pb-2">
             <BatchActions b={b} onChanged={q.reload} onError={setErr} afterDelete={q.reload} />
           </div>

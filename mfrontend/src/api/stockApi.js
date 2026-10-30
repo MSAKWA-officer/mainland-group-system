@@ -16,3 +16,6 @@ export const updateAdjustment = (id, body) => api.patch(`/stock-adjustments/${id
 export const removeAdjustment = (id) => api.delete(`/stock-adjustments/${id}`).then((r) => r.data);
 // action: submit | cancel | approve | reject
 export const actAdjustment = (id, action, body) => api.post(`/stock-adjustments/${id}/${action}`, body).then((r) => r.data);
+// Delete / edit a POSTED adjustment (reverse / correct) — see receivingApi.
+export const reverseAdjustment = (id, body) => api.post(`/stock-adjustments/${id}/reverse`, body).then((r) => r.data);
+export const correctAdjustment = (id, body) => api.post(`/stock-adjustments/${id}/correct`, body).then((r) => r.data);

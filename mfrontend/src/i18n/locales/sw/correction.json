@@ -1,0 +1,22 @@
+{
+  "reversePrompt": "Futa {{docNo}}? Stoo itarudishwa kama ilivyokuwa na nyaraka itabaki ikionyesha \"Imefutwa\". Andika sababu ya kuifuta:",
+  "reasonRequired": "Sababu inahitajika (angalau herufi 3).",
+  "postedNotice": "Nyaraka hii tayari imewekwa kwenye stoo. Ukihifadhi, nyaraka ya zamani itafutwa (stoo irudishwe) na nyaraka sahihi itawekwa mara moja. Kitu kikishindikana, hakuna kitakachobadilika.",
+  "changeReason": "Kwa nini unabadilisha? (sababu ya marekebisho)",
+  "correctSaved": "Marekebisho yamehifadhiwa. Nyaraka mpya {{docNo}} imewekwa.",
+  "voidedNotice": "Nyaraka hii imefutwa (sababu: {{reason}}). Stoo ilirudishwa.",
+  "replacedBy": "Imebadilishwa na",
+  "delete": "Futa",
+  "editCountTitle": "Hariri hesabu ya stoo",
+  "editCountSubtitle": "Marekebisho ya {{no}}: hesabu ya zamani itafutwa na hii sahihi itarekodiwa.",
+  "countNotice": "Hesabu hii tayari imerekodiwa. Ukihifadhi, hesabu ya zamani itafutwa na hii sahihi itarekodiwa mara moja. Hesabu haibadilishi stoo.",
+  "editSaleTitle": "Hariri mauzo ya fedha taslimu",
+  "editSaleSubtitle": "Marekebisho ya {{no}}: mauzo ya zamani yatafutwa (bidhaa na pesa zirudi) na haya sahihi yarekodiwe.",
+  "saleNotice": "Mauzo haya yamekamilika tayari. Ukihifadhi, mauzo ya zamani yatafutwa (stoo irudishwe na malipo yaondolewe kwenye akaunti) na haya sahihi yarekodiwe mara moja. Kitu kikishindikana, hakuna kitakachobadilika.",
+  "editPaymentTitle": "Hariri malipo",
+  "paymentNotice": "Ukihifadhi, malipo ya zamani yatafutwa (pesa iondolewe kwenye akaunti) na haya sahihi yapokelewe mara moja.",
+  "paymentCorrected": "Malipo yamerekebishwa. Malipo ya zamani yamefutwa na haya sahihi yamepokelewa.",
+  "saveCorrection": "Hifadhi marekebisho",
+  "cancel": "Ghairi",
+  "voidedLabel": "Imefutwa"
+}

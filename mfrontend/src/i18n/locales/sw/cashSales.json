@@ -26,8 +26,9 @@
   "emptyNone": "Hakuna mauzo ya fedha taslimu bado. Tumia “Mauzo mapya ya fedha taslimu” kufanya la kwanza.",
   "actions": {
     "view": "Tazama",
-    "void": "Batilisha mauzo",
-    "voidPrompt": "Sababu ya kubatilisha {{no}}? Bidhaa zitarudishwa stoo na malipo yatawekwa kuwa yamebatilishwa."
+    "void": "Futa mauzo (stoo irudishwe)",
+    "voidPrompt": "Sababu ya kubatilisha {{no}}? Bidhaa zitarudishwa stoo na malipo yatawekwa kuwa yamebatilishwa.",
+    "edit": "Hariri mauzo"
   },
   "create": {
     "subtitle": "Mteja analipa kikamilifu sasa. Kuhifadhi kunakamilisha mauzo na kutoa bidhaa stoo mara moja.",

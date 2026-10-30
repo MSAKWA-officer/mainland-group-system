@@ -37,7 +37,7 @@
     "cancel": "取消",
     "approve": "批准",
     "reject": "驳回",
-    "void": "作废销售",
+    "void": "删除销售",
     "delete": "删除",
     "cancelConfirm": "确定取消 {{no}}？",
     "approveConfirm": "批准 {{no}}？将出库，并把 {{amount}} 计入客户欠款。",
@@ -123,9 +123,10 @@
     "state": "状态",
     "valid": "有效",
     "voidedState": "已作废",
-    "void": "作废",
+    "void": "删除",
     "voidPaymentPrompt": "请填写作废收据 {{receipt}}（{{amount}}）的原因？",
-    "paymentVoided": "付款已作废。"
+    "paymentVoided": "付款已作废。",
+    "editPayment": "编辑"
   },
   "pay": {
     "title": "收款",

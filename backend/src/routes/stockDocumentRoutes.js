@@ -22,15 +22,19 @@ module.exports = (type) => {
   const createS = z.object({ ...Object.fromEntries(Object.entries(head).map(([k, v]) => [k, required.includes(k) ? v : v.optional()])),
     lines: z.array(line).min(1).max(200) });
   const updateS = createS.partial().refine((o) => Object.keys(o).length, 'Nothing to update');
-  const listQ = z.object({ status: z.enum(['DRAFT', 'SUBMITTED', 'POSTED', 'REJECTED', 'CANCELLED']).optional(), search: text(80).optional(),
+  const listQ = z.object({ status: z.enum(['DRAFT', 'SUBMITTED', 'POSTED', 'REJECTED', 'CANCELLED', 'VOIDED']).optional(), search: text(80).optional(),
     from: date.optional(), to: date.optional(), createdBy: uuid.optional(), warehouseId: uuid.optional(), ...paging });
   const note = z.object({ note: text(500).optional() });
+  const reverseS = z.object({ reason: text(500).min(3, 'A reason is required') });
+  const correctS = createS.extend({ changeReason: text(500).min(3, 'Say what you are correcting') });   // full corrected document + why
 
   router.get('/', authorize(`${m}.read`), validate(listQ, 'query'), ah(c.list));
   router.post('/', authorize(`${m}.create`), validate(createS), ah(c.create));
   router.get('/:id', authorize(`${m}.read`), validate(idParam, 'params'), ah(c.getOne));
   router.patch('/:id', authorize(`${m}.create`), validate(idParam, 'params'), validate(updateS), ah(c.update));
   router.delete('/:id', authorize(`${m}.create`), validate(idParam, 'params'), ah(c.remove));
+  router.post('/:id/reverse', authorize(`${m}.create`), validate(idParam, 'params'), validate(reverseS), ah(c.reverse));          // delete a POSTED document (stock goes back)
+  router.post('/:id/correct', authorize(`${m}.create`), validate(idParam, 'params'), validate(correctS), ah(c.correct));          // edit a POSTED document (reverse + post the corrected one)
   router.post('/:id/submit', authorize(`${m}.create`), validate(idParam, 'params'), ah(c.submit));
   router.post('/:id/cancel', authorize(`${m}.create`), validate(idParam, 'params'), ah(c.cancel));
   router.post('/:id/approve', authorize(`${m}.approve`), validate(idParam, 'params'), validate(note), ah(c.approve));

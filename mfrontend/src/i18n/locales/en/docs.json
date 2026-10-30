@@ -4,7 +4,8 @@
     "SUBMITTED": "Submitted",
     "POSTED": "Posted",
     "REJECTED": "Rejected",
-    "CANCELLED": "Cancelled"
+    "CANCELLED": "Cancelled",
+    "VOIDED": "Voided"
   },
   "direction": {
     "IN": "Add (+)",
@@ -17,7 +18,8 @@
     "cancel": "Cancel",
     "approve": "Approve",
     "reject": "Reject",
-    "delete": "Delete"
+    "delete": "Delete",
+    "title": "Actions"
   },
   "rejectPrompt": "Reason for rejecting:",
   "confirmDelete": "Delete document {{docNo}}? The deletion is kept in the audit log.",

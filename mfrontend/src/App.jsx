@@ -204,6 +204,7 @@ export default function App() {
         <Route path="/warehouse-transfers/:id" element={<Guard perm="warehouse_transfers.read"><WarehouseTransfersView /></Guard>} />
         <Route path="/physical-counts" element={<Guard perm="physical_counts.read"><PhysicalCountsList /></Guard>} />
         <Route path="/physical-counts/new" element={<Guard perm="physical_counts.create"><PhysicalCountsCreate /></Guard>} />
+        <Route path="/physical-counts/:id/edit" element={<Guard perm="physical_counts.void"><PhysicalCountsCreate /></Guard>} />
         <Route path="/physical-counts/:id" element={<Guard perm="physical_counts.read"><PhysicalCountsView /></Guard>} />
         <Route path="/movements" element={<Guard perm="movements.read"><MovementsList /></Guard>} />
         <Route path="/movements/:id" element={<Guard perm="movements.read"><MovementsView /></Guard>} />
@@ -252,6 +253,7 @@ export default function App() {
         <Route path="/credit-sales/:id/edit" element={<Guard perm="credit_sales.create"><CreditSalesUpdate /></Guard>} />
         <Route path="/cash-sales" element={<Guard perm="cash_sales.read"><CashSalesList /></Guard>} />
         <Route path="/cash-sales/new" element={<Guard perm="cash_sales.create"><CashSalesCreate /></Guard>} />
+        <Route path="/cash-sales/:id/edit" element={<Guard perm="cash_sales.void"><CashSalesCreate /></Guard>} />
         <Route path="/cash-sales/:id" element={<Guard perm="cash_sales.read"><CashSalesView /></Guard>} />
         <Route path="/sales-reports" element={<Guard perm="sales_reports.read"><SalesReportsPage /></Guard>} />
         {DISCOUNTS && <>   {/* hidden for now: set VITE_ENABLE_DISCOUNTS=true to bring back */}

@@ -24,11 +24,14 @@ const listQ = z.object({ status: z.enum(['DRAFT', 'SUBMITTED', 'COMPLETED', 'REJ
 const cancelS = z.object({ reason: text(500).optional() });
 const noteS = z.object({ note: text(500).optional() });
 const voidS = z.object({ reason: text(500).min(3, 'Give a reason') });
-const paymentS = z.object({
+const paymentBase = z.object({
   amount: decimal(2).refine((n) => n > 0 && n <= 999999999999, 'Amount must be greater than 0'),
   method: z.enum(['CASH', 'MOBILE_MONEY', 'BANK', 'CARD', 'CHEQUE']), bankAccountId: opt(uuid), reference: opt(text(100)), paidOn: opt(date), notes: opt(text(1000)),
-}).refine((p) => p.method === 'CASH' || p.reference, { message: 'A payment reference is required for this method', path: ['reference'] })
+});
+const paymentRules = (s) => s.refine((p) => p.method === 'CASH' || p.reference, { message: 'A payment reference is required for this method', path: ['reference'] })
   .refine((p) => !NEEDS_ACCOUNT.includes(p.method) || p.bankAccountId, { message: 'Choose the bank or mobile money account', path: ['bankAccountId'] });
+const paymentS = paymentRules(paymentBase);
+const correctPaymentS = paymentRules(paymentBase.extend({ changeReason: text(500).min(3, 'Say what you are correcting') }));   // corrected payment + why
 const NEEDS_ACCOUNT = ['BANK', 'CARD', 'MOBILE_MONEY'];
 const payParams = z.object({ id: uuid, paymentId: uuid });
 const custParam = z.object({ customerId: uuid });
@@ -50,5 +53,6 @@ router.post('/:id/approve', authorize('credit_sales.approve'), validate(idParam,
 router.post('/:id/reject', authorize('credit_sales.approve'), validate(idParam, 'params'), validate(noteS), ah(c.reject));
 router.post('/:id/void', authorize('credit_sales.void'), validate(idParam, 'params'), validate(voidS), ah(c.void));
 router.post('/:id/payments', authorize('credit_sales.receive_payment'), validate(idParam, 'params'), validate(paymentS), ah(c.receivePayment));
+router.post('/:id/payments/:paymentId/correct', authorize('credit_sales.void_payment'), validate(payParams, 'params'), validate(correctPaymentS), ah(c.correctPayment));   // edit a payment = void + receive the corrected one
 router.post('/:id/payments/:paymentId/void', authorize('credit_sales.void_payment'), validate(payParams, 'params'), validate(voidS), ah(c.voidPayment));
 module.exports = router;

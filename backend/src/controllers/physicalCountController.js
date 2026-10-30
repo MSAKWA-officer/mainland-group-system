@@ -43,6 +43,7 @@ exports.list = async (req, res) => {
 };
 exports.getOne = async (req, res) => res.json(withTotals(await fetch(req, req.params.id)));
 exports.create = async (req, res) => res.status(201).json(withTotals(await fetch(req, (await svc.create(req, req.body)).id)));
+exports.correct = async (req, res) => { await fetch(req, req.params.id); res.json(withTotals(await fetch(req, (await svc.correct(req, req.params.id, req.body)).id))); };
 exports.void = async (req, res) => { await fetch(req, req.params.id); await svc.voidCount(req, req.params.id, req.body.reason); res.json(withTotals(await fetch(req, req.params.id))); };
 
 // The entry sheet: every product of the warehouse with its book quantity at the end of the chosen day (default today).

@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { cashSaleApi, errMsg, fieldErrs, salespersonApi } from '../../api/index.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import Banner from '../../components/Banner.jsx';
 import Field from '../../components/Field.jsx';
 import { ArrowLeftIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
-import { Lookup, estimate, linesBody, linesProblem, n, searchCustomers } from '../sales/saleForm.jsx';
+import { Lookup, blankLine, estimate, linesBody, linesProblem, n, searchCustomers } from '../sales/saleForm.jsx';
 import SaleItemsEntry from '../sales/SaleItemsEntry.jsx';
+import { CorrectionReason } from '../stock/postedDocs.jsx';
 import { ACCOUNT_KIND, accountLabel, accountsFor } from '../sales/paymentProviders.js';
 import { METHOD, NOTICE, money } from '../sales/saleUi.jsx';
 
@@ -19,6 +20,11 @@ const EMPTY = () => ({ customer: null, walkInName: '', walkInPhone: '', salesper
 export default function CashSalesCreate() {
   const { t } = useTranslation('cashSales');
   const { t: te } = useTranslation('saleEntry');
+  const { t: tcr } = useTranslation('correction');
+  const { id } = useParams();                                  // /cash-sales/:id/edit = correct a sale (the wrong sale is voided, the corrected one recorded)
+  const editing = !!id;
+  const old = useLoad(() => (editing ? cashSaleApi.get(id) : Promise.resolve(null)), [id]);
+  const [changeReason, setChangeReason] = useState('');
   const navigate = useNavigate();
   const { can } = useAuth();
   const canSetPrice = can('cash_sales.set_price');
@@ -26,6 +32,13 @@ export default function CashSalesCreate() {
   const sps = useLoad(() => (canPick ? salespersonApi.list({ isActive: 'true', limit: 100 }) : Promise.resolve(null)), [canPick]);
   const [f, setF] = useState(EMPTY);
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
+  useEffect(() => {                                           // fill the form with the sale being corrected
+    const o = old.data; if (!o) return;
+    const pay = (o.payments || []).find((x) => !x.voidedAt) || (o.payments || [])[0] || {};
+    setF({ customer: o.customer || null, walkInName: o.walkInName || '', walkInPhone: o.walkInPhone || '', salespersonId: o.salespersonId || '', taxRate: String(Number(o.taxRate || 0)), notes: o.notes || '',
+      lines: (o.lines || []).map((l) => ({ ...blankLine(), item: { id: l.itemId, sku: l.sku, name: l.itemName, unit: l.unit }, quantity: String(Number(l.quantity)), unitPrice: String(Number(l.unitPrice)), discountPercent: String(Number(l.discountPercent)) })),
+      method: pay.method || 'CASH', tendered: '', reference: pay.reference || '', bankAccountId: pay.bankAccountId || '' });
+  }, [old.data]);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const setMethod = (e) => setF({ ...f, method: e.target.value, bankAccountId: '' });   // akaunti huchaguliwa upya njia ikibadilika
   const est = estimate(f);
@@ -43,6 +56,7 @@ export default function CashSalesCreate() {
     if (cashPay && change < 0) return t('create.errTendered', { total: money(est.total) });
     if (kind && !f.bankAccountId) return t(kind === 'bank' ? 'create.errBank' : 'create.errNetwork');
     if (!cashPay && !f.reference.trim()) return t('create.errReference');
+    if (editing && changeReason.trim().length < 3) return tcr('reasonRequired');
     return '';
   };
   const submit = async (e) => {
@@ -56,7 +70,7 @@ export default function CashSalesCreate() {
         notes: f.notes.trim() || null, taxRate: n(f.taxRate), lines: linesBody(f, canSetPrice),
         payment: { method: f.method, ...(cashPay && f.tendered !== '' && { amountTendered: n(f.tendered) }), ...(kind && { bankAccountId: f.bankAccountId }), ...(f.reference.trim() && { reference: f.reference.trim() }) },
       };
-      const s = await cashSaleApi.create(body);
+      const s = editing ? await cashSaleApi.correct(id, { ...body, changeReason: changeReason.trim() }) : await cashSaleApi.create(body);
       navigate(`/cash-sales/${s.id}`, { state: { msg: cashPay && change > 0 ? t('create.doneChange', { change: money(change) }) : t('create.done') } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
   };
@@ -64,13 +78,13 @@ export default function CashSalesCreate() {
     <div className="panel overflow-hidden text-black shadow-sm">
       <div className="flex items-center justify-between gap-3 p-6">
         <div>
-          <h1 className="text-2xl font-semibold">{t('new')}</h1>
-          <p className="mt-1 text-sm">{t('create.subtitle')}</p>
+          <h1 className="text-2xl font-semibold">{editing ? tcr('editSaleTitle') : t('new')}</h1>
+          <p className="mt-1 text-sm">{editing ? tcr('editSaleSubtitle', { no: old.data?.saleNo || '' }) : t('create.subtitle')}</p>
         </div>
         <Link to="/cash-sales" className="inline-flex items-center gap-2 text-sm text-black hover:underline"><ArrowLeftIcon />{t('create.back')}</Link>
       </div>
       <form onSubmit={submit} className="space-y-6 border-t border-line px-6 py-6 [&_.text-danger]:!text-black">
-        <div className={NOTICE}><Banner>{err}</Banner></div>
+        <div className={NOTICE}><Banner>{err || old.error}</Banner></div>
 
         <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
@@ -127,6 +141,7 @@ export default function CashSalesCreate() {
           </div>
         </div>
 
+        {editing && <CorrectionReason value={changeReason} onChange={setChangeReason} text={tcr('saleNotice')} />}
         <button className="btn-primary" disabled={busy}>{busy ? t('create.saving') : est.total > 0 ? t('create.completeAmount', { amount: money(est.total) }) : t('create.complete')}</button>
       </form>
     </div>

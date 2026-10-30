@@ -168,4 +168,31 @@ const close = (status, action) => async (r, ctx) => {
 approvals.register(TYPE, { label: 'Warehouse transfer', approvePermission: 'warehouse_transfers.approve', execute,
   onReject: close('REJECTED', 'WAREHOUSE_TRANSFER_REJECTED'), onCancel: close('CANCELLED', 'WAREHOUSE_TRANSFER_CANCELLED') });
 
-module.exports = { create, cancel, receive };
+/* DELETE of a transfer that already moved stock (IN_TRANSIT / COMPLETED / RECEIVED_SHORT / NOT_RECEIVED) = REVERSE.
+   Every warehouse movement of the transfer is undone with the opposite movement (new ledger rows), so the goods go back to where they were and the transfer
+   stays as VOIDED with who / when / why. Stock that already left the destination warehouse (sold, moved on) stops the reversal. Only a Manager who can approve
+   transfers may do it. A transfer still waiting for approval is cancelled / rejected instead. */
+const reverse = (req, id, reason) => sequelize.transaction(async (t) => {
+  const tr = await WarehouseTransfer.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
+  if (!tr) throw new AppError(404, 'NOT_FOUND', 'Transfer not found');
+  if (!reason || reason.trim().length < 3) throw bad('reason', 'A reason is required');
+  if (!['IN_TRANSIT', 'COMPLETED', 'RECEIVED_SHORT', 'NOT_RECEIVED'].includes(tr.status))
+    throw new AppError(409, 'BAD_STATE', tr.status === 'SUBMITTED' ? 'This transfer is still waiting for approval: cancel or reject it instead' : `A ${tr.status} transfer cannot be reversed`);
+  const moves = await sequelize.query(`SELECT warehouse_id AS "warehouseId", item_id AS "itemId", batch_id AS "batchId", direction, quantity
+    FROM warehouse_movements WHERE ref_type = 'WarehouseTransfer' AND ref_id = :id AND COALESCE(note, '') NOT LIKE 'Reversal %' ORDER BY item_id, occurred_at, id`, { replacements: { id: tr.id }, type: QueryTypes.SELECT, transaction: t });
+  if (!moves.length) throw new AppError(409, 'NOTHING_TO_REVERSE', 'This transfer has no stock movements to reverse');
+  const items = new Map((await Item.findAll({ where: { id: [...new Set(moves.map((m) => m.itemId))] }, order: [['id', 'ASC']], transaction: t, lock: t.LOCK.UPDATE })).map((i) => [i.id, i]));
+  const old = snap(tr);
+  for (const m of moves) {
+    const dir = m.direction === 'IN' ? 'OUT' : 'IN';
+    await ledger.warehouseMove(t, { warehouseId: m.warehouseId, itemId: m.itemId, batchId: m.batchId, quantity: m.quantity, direction: dir, label: label(items.get(m.itemId)),
+      movementType: dir === 'IN' ? 'TRANSFER_RETURN' : 'TRANSFER_OUT', refType: 'WarehouseTransfer', refId: tr.id, userId: req.user.id,
+      note: `Reversal ${tr.transferNo}: ${reason.trim()}`.slice(0, 255) });          // an OUT is guarded: fails if the goods are no longer in that warehouse
+  }
+  await tr.update({ status: 'VOIDED', voidedAt: new Date(), voidedBy: req.user.id, voidReason: reason.trim().slice(0, 500) }, { transaction: t });
+  await audit.log(req, { action: 'WAREHOUSE_TRANSFER_REVERSED', entityType: 'WarehouseTransfer', entityId: tr.id, oldValues: old, newValues: { ...snap(tr), movementsReversed: moves.length }, reason: reason.trim() }, t);
+  await notify([tr.createdBy], { title: 'Transfer reversed', body: `${tr.transferNo} was reversed by ${req.user.fullName}: ${reason.trim()}`, link: `/warehouse-transfers/${tr.id}` }, t);
+  return tr;
+});
+
+module.exports = { create, cancel, receive, reverse };

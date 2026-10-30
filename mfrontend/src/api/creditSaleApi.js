@@ -21,3 +21,5 @@ export const creditStatus = (customerId) => api.get(`/credit-sales/credit-status
 export const receivables = () => api.get('/credit-sales/receivables').then((r) => r.data);
 // Active bank / mobile money accounts registered in Bank accounts, for choosing where a payment was received. No balances. Needs credit_sales.receive_payment.
 export const paymentAccounts = () => api.get('/credit-sales/payment-accounts').then((r) => r.data);
+// Edit a received payment: the wrong payment is voided and this corrected one is received, in one step. body: payment body + changeReason.
+export const correctPayment = (id, paymentId, body) => api.post(`/credit-sales/${id}/payments/${paymentId}/correct`, body).then((r) => r.data);

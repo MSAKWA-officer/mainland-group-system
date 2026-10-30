@@ -26,8 +26,9 @@
   "emptyNone": "No cash sales yet. Use “New cash sale” to make the first one.",
   "actions": {
     "view": "View",
-    "void": "Void sale",
-    "voidPrompt": "Reason for voiding {{no}}? The stock will be returned and the payment marked void."
+    "void": "Delete sale (stock goes back)",
+    "voidPrompt": "Reason for voiding {{no}}? The stock will be returned and the payment marked void.",
+    "edit": "Edit sale"
   },
   "create": {
     "subtitle": "The customer pays in full now. Saving completes the sale and issues the stock immediately.",

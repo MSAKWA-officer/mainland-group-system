@@ -49,6 +49,7 @@ exports.list = async (req, res) => {
 exports.getOne = async (req, res) => res.json(await fetch(req, req.params.id));
 exports.create = async (req, res) => res.status(201).json(await fetch(req, (await svc.create(req, req.body)).id));
 exports.cancel = async (req, res) => { await svc.cancel(req, req.params.id); res.json(await fetch(req, req.params.id)); };
+exports.reverse = async (req, res) => { await svc.reverse(req, req.params.id, req.body.reason); res.json(await fetch(req, req.params.id)); };
 exports.receive = async (req, res) => { await svc.receive(req, req.params.id, req.body); res.json(await fetch(req, req.params.id)); };
 exports.approve = async (req, res) => {
   const tr = await waiting(req, req.params.id);

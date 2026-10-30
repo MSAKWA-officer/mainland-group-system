@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { physicalCountApi, warehouseApi, errMsg, fieldErrs } from '../../api/index.js';
 import Banner from '../../components/Banner.jsx';
@@ -8,6 +8,7 @@ import useLoad from '../../utils/useLoad';
 import { CELL, HEAD, al } from '../../components/TableUi.js';
 import { qty } from '../stock/StockList.jsx';
 import { diff } from './PhysicalCountsList.jsx';
+import { CorrectionReason } from '../stock/postedDocs.jsx';
 
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 
@@ -15,13 +16,24 @@ const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(
 // A product left empty is "not counted" (it is simply not saved). Recording a count never changes stock; the Warehouse Inventory Statement reads it.
 export default function PhysicalCountsCreate() {
   const { t } = useTranslation('physicalCounts');
+  const { t: tcr } = useTranslation('correction');
   const navigate = useNavigate();
+  const { id } = useParams();                                  // /physical-counts/:id/edit = correct a count (the wrong one is voided, this one recorded)
+  const editing = !!id;
+  const old = useLoad(() => (editing ? physicalCountApi.get(id) : Promise.resolve(null)), [id]);
+  const [changeReason, setChangeReason] = useState('');
   const whs = useLoad(() => warehouseApi.options(), []);
   const [head, setHead] = useState({ warehouseId: '', countDate: today(), note: '' });
   const [counted, setCounted] = useState({});      // itemId -> typed text
   const [filter, setFilter] = useState('');
   const [err, setErr] = useState(''); const [fe, setFe] = useState({}); const [busy, setBusy] = useState(false);
   useEffect(() => { const m = whs.data; if (m && !head.warehouseId && m.length === 1) setHead((h) => ({ ...h, warehouseId: m[0].id })); }, [whs.data]); // eslint-disable-line
+
+  useEffect(() => {
+    const c = old.data; if (!c) return;
+    setHead({ warehouseId: c.warehouseId, countDate: c.countDate, note: c.note || '' });
+    setCounted(Object.fromEntries((c.lines || []).map((l) => [l.itemId, String(Number(l.countedQty))])));
+  }, [old.data]);
 
   const ready = !!head.warehouseId && !!head.countDate && head.countDate <= today();
   const sheet = useLoad(() => (ready ? physicalCountApi.sheet({ warehouseId: head.warehouseId, date: head.countDate }) : Promise.resolve(null)), [head.warehouseId, head.countDate]);
@@ -38,11 +50,13 @@ export default function PhysicalCountsCreate() {
     e.preventDefault(); setErr(''); setFe({});
     if (!filled.length) return setErr(t('form.nothingCounted'));
     if (filled.some((r) => !(Number(counted[r.itemId]) >= 0))) return setErr(t('form.badQty'));
+    if (editing && changeReason.trim().length < 3) return setErr(tcr('reasonRequired'));
     if (!window.confirm(t('form.confirm', { n: filled.length }))) return;
     setBusy(true);
     try {
-      const d = await physicalCountApi.create({ warehouseId: head.warehouseId, countDate: head.countDate, note: head.note.trim() || null,
-        lines: filled.map((r) => ({ itemId: r.itemId, countedQty: Number(counted[r.itemId]) })) });
+      const body = { warehouseId: head.warehouseId, countDate: head.countDate, note: head.note.trim() || null,
+        lines: filled.map((r) => ({ itemId: r.itemId, countedQty: Number(counted[r.itemId]) })) };
+      const d = editing ? await physicalCountApi.correct(id, { ...body, changeReason: changeReason.trim() }) : await physicalCountApi.create(body);
       navigate(`/physical-counts/${d.id}`, { state: { msg: t('saved', { no: d.countNo }) } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
   };
@@ -50,11 +64,11 @@ export default function PhysicalCountsCreate() {
   return (
     <div className="panel overflow-hidden text-black shadow-sm">
       <div className="flex items-center justify-between gap-3 p-6">
-        <div><h1 className="text-2xl font-semibold">{t('newTitle')}</h1><p className="mt-1 text-sm">{t('newSubtitle')}</p></div>
+        <div><h1 className="text-2xl font-semibold">{editing ? tcr('editCountTitle') : t('newTitle')}</h1><p className="mt-1 text-sm">{editing ? tcr('editCountSubtitle', { no: old.data?.countNo || '' }) : t('newSubtitle')}</p></div>
         <Link to="/physical-counts" className="text-sm hover:underline">{t('back')}</Link>
       </div>
       <form onSubmit={submit} className="space-y-6 border-t border-line px-6 py-6 [&_.text-danger]:!text-black">
-        <div className="[&>div]:!text-black"><Banner>{err || whs.error || sheet.error}</Banner></div>
+        <div className="[&>div]:!text-black"><Banner>{err || whs.error || sheet.error || old.error}</Banner></div>
         <div className="grid max-w-3xl gap-4 sm:grid-cols-2">
           <Field label={t('form.warehouse')} error={fe.warehouseId}>
             <select className="input !text-black" required value={head.warehouseId} onChange={(e) => changeHead({ warehouseId: e.target.value })}>
@@ -99,6 +113,7 @@ export default function PhysicalCountsCreate() {
             </tbody>
           </table></div>
         </div>
+        {editing && <CorrectionReason value={changeReason} onChange={setChangeReason} text={tcr('countNotice')} />}
         <button className="btn-primary" disabled={busy || !filled.length}>{busy ? t('form.saving') : t('form.submit')}</button>
       </form>
     </div>

@@ -84,6 +84,8 @@ module.exports = (type) => {
     create: async (req, res) => res.status(201).json(view(await fetch((await svc.create(req, type, req.body)).id), req)),
     update: async (req, res) => res.json(view(await fetch((await svc.update(req, type, req.params.id, req.body)).id), req)),
     remove: async (req, res) => { await svc.remove(req, type, req.params.id); res.json({ ok: true }); },
+    reverse: async (req, res) => { await svc.reverse(req, type, req.params.id, req.body.reason); res.json(view(await fetch(req.params.id), req)); },
+    correct: async (req, res) => res.json(view(await fetch((await svc.correct(req, type, req.params.id, req.body)).id), req)),
     submit: async (req, res) => res.json(view(await fetch((await svc.submit(req, type, req.params.id)).id), req)),
     cancel: async (req, res) => res.json(view(await fetch((await svc.cancel(req, type, req.params.id)).id), req)),
     approve: async (req, res) => {

@@ -10,9 +10,10 @@ import useLoad from '../../utils/useLoad';
 import { fmt } from '../../utils/format';
 import { currentLocale } from '../../utils/locale';
 import { useDocText } from '../../utils/docText';
+import { canCorrectDoc, useReversePosted } from '../stock/postedDocs.jsx';
 
 export const qty = (v) => (v === undefined || v === null || v === '' ? '0' : Number(v).toLocaleString(currentLocale(), { maximumFractionDigits: 3 }));
-export const STATUS = { DRAFT: 'Draft', SUBMITTED: 'Submitted', POSTED: 'Posted', REJECTED: 'Rejected', CANCELLED: 'Cancelled' };
+export const STATUS = { DRAFT: 'Draft', SUBMITTED: 'Submitted', POSTED: 'Posted', REJECTED: 'Rejected', CANCELLED: 'Cancelled', VOIDED: 'Voided' };
 export const Tag = ({ children }) => <span className="inline-block rounded border border-black/30 px-2 py-0.5 text-xs">{children}</span>;
 
 // Icon-only action button. title + aria-label keep the meaning available on hover and for screen readers.
@@ -33,18 +34,21 @@ export function RowActions({ d, showView, onChanged, onError, afterDelete }) {
   const { user, can } = useAuth();
   const navigate = useNavigate();
   const mine = d.createdBy === user.id;
+  const posted = canCorrectDoc(d, user, can, 'adjustments');                       // POSTED: Delete = reverse the stock, Edit = correct
+  const reversePosted = useReversePosted({ api: { reverse: (id, b) => stockApi.reverseAdjustment(id, b) }, onChanged: afterDelete || onChanged, onError });
   const run = async (fn) => { onError(''); try { await fn(); onChanged?.(); } catch (x) { onError(errMsg(x)); } };
   const act = (action, body) => run(() => stockApi.actAdjustment(d.id, action, body));
   const remove = async () => {
+    if (posted) return reversePosted(d);
     if (!window.confirm(t('confirmDelete', { docNo: d.docNo }))) return;
     onError('');
     try { await stockApi.removeAdjustment(d.id); (afterDelete || onChanged)?.(); } catch (x) { onError(errMsg(x)); }
   };
-  const canDelete = can('adjustments.create') && (mine || user.role === 'OWNER') && ['DRAFT', 'CANCELLED', 'REJECTED'].includes(d.status);
+  const canDelete = can('adjustments.create') && (mine || user.role === 'OWNER') && ['DRAFT', 'CANCELLED', 'REJECTED'].includes(d.status) || posted;
   return (
     <div className="flex items-center gap-1">
       {showView && <IconBtn label={t('actions.view')} onClick={() => navigate(`/stock/${d.id}`)}><EyeIcon /></IconBtn>}
-      {mine && d.status === 'DRAFT' && <IconBtn label={t('actions.edit')} onClick={() => navigate(`/stock/${d.id}/edit`)}><PencilIcon /></IconBtn>}
+      {((mine && d.status === 'DRAFT') || posted) && <IconBtn label={t('actions.edit')} onClick={() => navigate(`/stock/${d.id}/edit`)}><PencilIcon /></IconBtn>}
       {mine && d.status === 'DRAFT' && <IconBtn label={t('actions.submit')} onClick={() => act('submit')}><SendIcon /></IconBtn>}
       {mine && ['DRAFT', 'SUBMITTED'].includes(d.status) && <IconBtn label={t('actions.cancel')} onClick={() => act('cancel')}><BanIcon /></IconBtn>}
       {!mine && d.status === 'SUBMITTED' && can('adjustments.approve') && <IconBtn label={t('actions.approve')} onClick={() => act('approve', {})}><CheckIcon /></IconBtn>}

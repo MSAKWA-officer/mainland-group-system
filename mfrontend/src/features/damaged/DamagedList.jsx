@@ -9,6 +9,7 @@ import { EyeIcon, PencilIcon, TrashIcon, BanIcon, CheckIcon, XIcon, SendIcon } f
 import useLoad from '../../utils/useLoad';
 import { IconBtn, Tag } from '../stock/StockList.jsx';
 import { useDocText } from '../../utils/docText';
+import { canCorrectDoc, useReversePosted } from '../stock/postedDocs.jsx';
 
 // Icon actions for one write-off document. Used by this list and by DamagedView.
 // Rules mirror the API: only the creator edits / submits / cancels, approvers never act on their own document,
@@ -18,18 +19,21 @@ export function RowActions({ d, showView, onChanged, onError, afterDelete }) {
   const { user, can } = useAuth();
   const navigate = useNavigate();
   const mine = d.createdBy === user.id;
+  const posted = canCorrectDoc(d, user, can, 'damaged');                       // POSTED: Delete = reverse the stock, Edit = correct
+  const reversePosted = useReversePosted({ api: damagedApi, onChanged: afterDelete || onChanged, onError });
   const run = async (fn) => { onError(''); try { await fn(); onChanged?.(); } catch (x) { onError(errMsg(x)); } };
   const act = (action, body) => run(() => damagedApi.act(d.id, action, body));
   const remove = async () => {
+    if (posted) return reversePosted(d);
     if (!window.confirm(t('confirmDelete', { docNo: d.docNo }))) return;
     onError('');
     try { await damagedApi.remove(d.id); (afterDelete || onChanged)?.(); } catch (x) { onError(errMsg(x)); }
   };
-  const canDelete = can('damaged.create') && (mine || user.role === 'OWNER') && ['DRAFT', 'CANCELLED', 'REJECTED'].includes(d.status);
+  const canDelete = can('damaged.create') && (mine || user.role === 'OWNER') && ['DRAFT', 'CANCELLED', 'REJECTED'].includes(d.status) || posted;
   return (
     <div className="flex items-center gap-1">
       {showView && <IconBtn label={t('actions.view')} onClick={() => navigate(`/damaged/${d.id}`)}><EyeIcon /></IconBtn>}
-      {mine && d.status === 'DRAFT' && <IconBtn label={t('actions.edit')} onClick={() => navigate(`/damaged/${d.id}/edit`)}><PencilIcon /></IconBtn>}
+      {((mine && d.status === 'DRAFT') || posted) && <IconBtn label={t('actions.edit')} onClick={() => navigate(`/damaged/${d.id}/edit`)}><PencilIcon /></IconBtn>}
       {mine && d.status === 'DRAFT' && <IconBtn label={t('actions.submit')} onClick={() => act('submit')}><SendIcon /></IconBtn>}
       {mine && ['DRAFT', 'SUBMITTED'].includes(d.status) && <IconBtn label={t('actions.cancel')} onClick={() => act('cancel')}><BanIcon /></IconBtn>}
       {!mine && d.status === 'SUBMITTED' && can('damaged.approve') && <IconBtn label={t('actions.approve')} onClick={() => act('approve', {})}><CheckIcon /></IconBtn>}

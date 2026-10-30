@@ -1,0 +1,22 @@
+{
+  "reversePrompt": "Delete {{docNo}}? The stock will be put back as it was and the document stays listed as \"Voided\". Enter the reason for deleting it:",
+  "reasonRequired": "A reason is required (at least 3 characters).",
+  "postedNotice": "This document is already posted to stock. Saving will delete the old document (the stock goes back) and post the corrected one right away. If anything fails, nothing changes.",
+  "changeReason": "Why are you changing it? (reason for the correction)",
+  "correctSaved": "Correction saved. New document {{docNo}} was posted.",
+  "voidedNotice": "This document was deleted (reason: {{reason}}). The stock was put back.",
+  "replacedBy": "Replaced by",
+  "delete": "Delete",
+  "editCountTitle": "Edit stock count",
+  "editCountSubtitle": "Correcting {{no}}: the old count is voided and the corrected one is recorded.",
+  "countNotice": "This count is already recorded. Saving will void the old count and record the corrected one right away. A count never changes stock.",
+  "editSaleTitle": "Edit cash sale",
+  "editSaleSubtitle": "Correcting {{no}}: the old sale is voided (stock and money go back) and the corrected one is recorded.",
+  "saleNotice": "This sale is already completed. Saving will void the old sale (the stock goes back and the payment leaves the account) and record the corrected one right away. If anything fails, nothing changes.",
+  "editPaymentTitle": "Edit payment",
+  "paymentNotice": "Saving will void the old payment (the money leaves the account) and receive the corrected one right away.",
+  "paymentCorrected": "Payment corrected. The old payment was voided and the corrected one received.",
+  "saveCorrection": "Save correction",
+  "cancel": "Cancel",
+  "voidedLabel": "Voided"
+}

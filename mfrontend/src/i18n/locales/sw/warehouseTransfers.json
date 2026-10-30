@@ -19,7 +19,8 @@
     "CANCELLED": "Umeghairiwa",
     "IN_TRANSIT": "Njiani",
     "RECEIVED_SHORT": "Imepokelewa pungufu",
-    "NOT_RECEIVED": "Haijapokelewa"
+    "NOT_RECEIVED": "Haijapokelewa",
+    "VOIDED": "Imefutwa"
   },
   "cols": {
     "date": "Tarehe",

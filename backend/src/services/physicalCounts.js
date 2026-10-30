@@ -33,7 +33,7 @@ async function sheet(warehouseId, date, t) {
 
 const snap = (c) => ({ countNo: c.countNo, warehouseId: c.warehouseId, countDate: c.countDate, status: c.status, note: c.note });
 
-const create = (req, body) => sequelize.transaction(async (t) => {
+const createIn = async (req, body, t) => {
   const w = await wh.access(req, body.warehouseId, t, { active: true });   // only a warehouse you are in charge of
   if (body.countDate > todayLocal()) throw bad('countDate', 'The count date cannot be in the future');
   const book = new Map((await sheet(w.id, body.countDate, t)).map((r) => [r.itemId, r]));
@@ -52,10 +52,11 @@ const create = (req, body) => sequelize.transaction(async (t) => {
   await PhysicalCountLine.bulkCreate(lines.map((l) => ({ ...l, countId: c.id })), { transaction: t });
   await audit.log(req, { action: 'PHYSICAL_COUNT_RECORDED', entityType: 'PhysicalCount', entityId: c.id, newValues: { ...snap(c), lines: lines.length } }, t);
   return c;
-});
+};
+const create = (req, body) => sequelize.transaction((t) => createIn(req, body, t));
 
 // A count that was entered wrongly. The reason is kept; the statement stops using it at once.
-const voidCount = (req, id, reason) => sequelize.transaction(async (t) => {
+const voidIn = async (req, id, reason, t) => {
   const c = await PhysicalCount.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
   if (!c) throw new AppError(404, 'NOT_FOUND', 'Physical count not found');
   await wh.access(req, c.warehouseId, t);
@@ -64,6 +65,14 @@ const voidCount = (req, id, reason) => sequelize.transaction(async (t) => {
   await c.update({ status: 'VOID', voidedBy: req.user.id, voidedAt: new Date(), voidReason: reason }, { transaction: t });
   await audit.log(req, { action: 'PHYSICAL_COUNT_VOIDED', entityType: 'PhysicalCount', entityId: c.id, oldValues: old, newValues: snap(c), reason }, t);
   return c;
+};
+const voidCount = (req, id, reason) => sequelize.transaction((t) => voidIn(req, id, reason, t));
+
+// EDIT = the wrong count is voided and the corrected one is recorded, in ONE transaction (a count never changes stock, so nothing else moves).
+const correct = (req, id, body) => sequelize.transaction(async (t) => {
+  const { changeReason, ...data } = body;
+  await voidIn(req, id, `Corrected: ${changeReason}`, t);
+  return createIn(req, data, t);
 });
 
-module.exports = { sheet, create, voidCount };
+module.exports = { sheet, create, voidCount, correct };

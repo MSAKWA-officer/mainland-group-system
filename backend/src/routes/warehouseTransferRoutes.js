@@ -8,7 +8,7 @@ const c = require('../controllers/warehouseTransferController');
 const line = z.object({ itemId: uuid, quantity, batchId: uuid.nullable().optional(), remarks: text(255).nullable().optional() });
 const createS = z.object({ fromWarehouseId: uuid, toWarehouseId: uuid, transferDate: date.optional(), reason: text(1000).min(3, 'A reason is required'),
   lines: z.array(line).min(1).max(200) });
-const listQ = z.object({ status: z.enum(['SUBMITTED', 'IN_TRANSIT', 'COMPLETED', 'RECEIVED_SHORT', 'NOT_RECEIVED', 'REJECTED', 'CANCELLED']).optional(), search: text(80).optional(), warehouseId: uuid.optional(),
+const listQ = z.object({ status: z.enum(['SUBMITTED', 'IN_TRANSIT', 'COMPLETED', 'RECEIVED_SHORT', 'NOT_RECEIVED', 'REJECTED', 'CANCELLED', 'VOIDED']).optional(), search: text(80).optional(), warehouseId: uuid.optional(),
   from: date.optional(), to: date.optional(), ...paging });
 const note = z.object({ note: text(500).optional() });
 // outcome FULL (default) | SHORT (lines[].receivedQty, a note is required) | NONE (nothing arrived, a note is required)
@@ -20,6 +20,7 @@ router.post('/', authorize('warehouse_transfers.create'), validate(createS), ah(
 router.get('/:id', authorize('warehouse_transfers.read'), validate(idParam, 'params'), ah(c.getOne));
 router.post('/:id/cancel', authorize('warehouse_transfers.create'), validate(idParam, 'params'), ah(c.cancel));
 router.post('/:id/receive', authorize('warehouse_transfers.receive'), validate(idParam, 'params'), validate(receiveS), ah(c.receive));
+router.post('/:id/reverse', authorize('warehouse_transfers.approve'), validate(idParam, 'params'), validate(z.object({ reason: text(500).min(3, 'A reason is required') })), ah(c.reverse));   // delete a transfer that already moved stock
 router.post('/:id/approve', authorize('warehouse_transfers.approve'), validate(idParam, 'params'), validate(note), ah(c.approve));
 router.post('/:id/reject', authorize('warehouse_transfers.approve'), validate(idParam, 'params'), validate(note), ah(c.reject));
 module.exports = router;

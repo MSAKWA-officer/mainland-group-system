@@ -11,5 +11,6 @@ const StockDocument = sequelize.define('StockDocument', {
   docDate: D.DATEONLY,                       // DB default is CURRENT_DATE
   partyName: str(150), reference: str(100), reason: D.TEXT, approvalId: D.UUID, warehouseId: D.UUID,
   createdBy: { type: D.UUID, allowNull: false }, submittedAt: D.DATE, postedAt: D.DATE,
+  voidedAt: D.DATE, voidedBy: D.UUID, voidReason: D.TEXT, replacedById: D.UUID,   // set when a posted document is reversed / corrected
 }, { tableName: 'stock_documents' });
 module.exports = StockDocument;

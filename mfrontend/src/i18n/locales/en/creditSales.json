@@ -37,7 +37,7 @@
     "cancel": "Cancel",
     "approve": "Approve",
     "reject": "Reject",
-    "void": "Void sale",
+    "void": "Delete sale",
     "delete": "Delete",
     "cancelConfirm": "Cancel {{no}}?",
     "approveConfirm": "Approve {{no}}? Stock will be issued and {{amount}} will be added to the customer’s balance.",
@@ -123,9 +123,10 @@
     "state": "State",
     "valid": "Valid",
     "voidedState": "Voided",
-    "void": "Void",
+    "void": "Delete",
     "voidPaymentPrompt": "Reason for voiding receipt {{receipt}} ({{amount}})?",
-    "paymentVoided": "Payment voided."
+    "paymentVoided": "Payment voided.",
+    "editPayment": "Edit"
   },
   "pay": {
     "title": "Receive payment",

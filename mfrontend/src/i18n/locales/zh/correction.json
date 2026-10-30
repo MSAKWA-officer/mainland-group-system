@@ -1,0 +1,22 @@
+{
+  "reversePrompt": "删除 {{docNo}}？库存将恢复原状，单据保留并显示为“已作废”。请输入删除原因：",
+  "reasonRequired": "必须填写原因（至少 3 个字符）。",
+  "postedNotice": "此单据已过账到库存。保存后，旧单据将被作废（库存恢复），并立即过账更正后的单据。如有失败，一切保持不变。",
+  "changeReason": "为什么要修改？（更正原因）",
+  "correctSaved": "更正已保存。新单据 {{docNo}} 已过账。",
+  "voidedNotice": "此单据已被删除（原因：{{reason}}）。库存已恢复。",
+  "replacedBy": "已被替换为",
+  "delete": "删除",
+  "editCountTitle": "编辑盘点",
+  "editCountSubtitle": "更正 {{no}}：旧盘点将作废，并记录更正后的盘点。",
+  "countNotice": "此盘点已记录。保存后，旧盘点将作废，并立即记录更正后的盘点。盘点不会改变库存。",
+  "editSaleTitle": "编辑现金销售",
+  "editSaleSubtitle": "更正 {{no}}：旧销售将作废（库存和款项退回），并记录更正后的销售。",
+  "saleNotice": "此销售已完成。保存后，旧销售将作废（库存恢复，付款从账户扣回），并立即记录更正后的销售。如有失败，一切保持不变。",
+  "editPaymentTitle": "编辑付款",
+  "paymentNotice": "保存后，旧付款将作废（款项从账户扣回），并立即收取更正后的付款。",
+  "paymentCorrected": "付款已更正。旧付款已作废，更正后的付款已收取。",
+  "saveCorrection": "保存更正",
+  "cancel": "取消",
+  "voidedLabel": "已作废"
+}

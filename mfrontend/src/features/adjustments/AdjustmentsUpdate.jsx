@@ -8,6 +8,7 @@ import useLoad from '../../utils/useLoad';
 import { useDocText } from '../../utils/docText';
 import { LineEditor, buildPayload, emptyLine, today } from '../stock/StockCreate.jsx';
 import { HeadFields } from './AdjustmentsCreate.jsx';
+import { CorrectionReason, canCorrectDoc } from '../stock/postedDocs.jsx';
 
 // Only a DRAFT can be edited, and only by the person who created it (the API enforces both).
 export default function AdjustmentsUpdate() {
@@ -30,7 +31,10 @@ export default function AdjustmentsUpdate() {
       batchNo: l.batchNo || '', expiryDate: l.expiryDate || '', batchId: l.batchId || '', remarks: l.remarks || '',
     })));
   }, [d]);
-  const editable = d && d.status === 'DRAFT' && d.createdBy === user.id;
+  const posted = d?.status === 'POSTED';                      // a posted document is corrected: the old one is reversed and the new one posted
+  const [changeReason, setChangeReason] = useState('');
+  const { t: tcr } = useTranslation('correction');
+  const editable = d && ((d.status === 'DRAFT' && d.createdBy === user.id) || canCorrectDoc(d, user, can, 'adjustments'));
   const submit = async (e) => {
     e.preventDefault(); setErr(''); setFe({});
     if (!lines.length) { setErr(t('stock:lines.noItems')); return; }
@@ -38,6 +42,12 @@ export default function AdjustmentsUpdate() {
     try {
       const items = {};
       await Promise.all([...new Set(lines.map((l) => l.itemId))].map(async (iid) => { items[iid] = d.lines.find((l) => l.itemId === iid)?.item || await itemApi.get(iid); }));
+      if (posted) {                                           // edit of a POSTED document: reverse the old one and post this corrected one
+        if (changeReason.trim().length < 3) { setErr(tcr('reasonRequired')); setBusy(false); return; }
+        const nd = await adjustmentApi.correct(id, { ...buildPayload(head, lines, can('items.view_cost'), items), changeReason: changeReason.trim() });
+        navigate(`/adjustments/${nd.id}`, { state: { msg: tcr('correctSaved', { docNo: nd.docNo }) } });
+        return;
+      }
       await adjustmentApi.update(id, buildPayload(head, lines, can('items.view_cost'), items));
       navigate(`/adjustments/${id}`, { state: { msg: t('draftUpdated') } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
@@ -58,6 +68,7 @@ export default function AdjustmentsUpdate() {
           <>
             <HeadFields head={head} setHead={setHead} fe={fe} />
             <div className="max-w-6xl"><LineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} /></div>
+            {posted && <CorrectionReason value={changeReason} onChange={setChangeReason} />}
             <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('saveChanges')}</button>
           </>
         )}

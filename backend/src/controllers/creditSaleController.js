@@ -41,6 +41,11 @@ exports.receivePayment = async (req, res) => {
   const r = await svc.receivePayment(req, req.params.id, req.body);
   res.status(201).json({ payment: r.payment, sale: await fetch(req, req.params.id) });
 };
+exports.correctPayment = async (req, res) => {
+  await fetch(req, req.params.id);
+  await svc.correctPayment(req, req.params.id, req.params.paymentId, req.body);
+  res.json(await fetch(req, req.params.id));
+};
 exports.voidPayment = async (req, res) => {
   await fetch(req, req.params.id);
   await svc.voidPayment(req, req.params.id, req.params.paymentId, req.body.reason);

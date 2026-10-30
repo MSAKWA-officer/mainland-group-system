@@ -9,7 +9,7 @@ const { AppError } = require('../utils/errors');
    A completed cash sale is never edited or deleted. A mistake is fixed with VOID, which puts the stock back (reversing ledger entry). */
 const { bad, snap } = core;
 
-const create = (req, body) => sequelize.transaction(async (t) => {
+const createIn = async (req, body, t) => {
   const { customer, salesperson } = await core.resolveParties(req, 'CASH', body, t);
   const rows = await core.normalizeLines(req, 'CASH', body.lines, t);
   const taxRate = body.taxRate ?? 0;
@@ -41,9 +41,10 @@ const create = (req, body) => sequelize.transaction(async (t) => {
   await audit.log(req, { action: 'CASH_SALE_COMPLETED', entityType: 'Sale', entityId: sale.id,
     newValues: { ...snap(sale), method, bankAccountId: account?.id ?? null, bankTxnNo: bankTxn?.txnNo ?? null, lines: rows.length, stockDocument: doc.docNo, stockLines } }, t);
   return sale;
-});
+};
+const create = (req, body) => sequelize.transaction((t) => createIn(req, body, t));
 
-const void_ = (req, id, reason) => sequelize.transaction(async (t) => {
+const voidIn = async (req, id, reason, t) => {
   const sale = await Sale.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
   if (!sale || sale.saleType !== 'CASH') throw new AppError(404, 'NOT_FOUND', 'Cash sale not found');
   if (sale.status !== 'COMPLETED') throw new AppError(409, 'BAD_STATE', `Cannot void a sale that is ${sale.status}`);
@@ -60,6 +61,17 @@ const void_ = (req, id, reason) => sequelize.transaction(async (t) => {
   await audit.log(req, { action: 'CASH_SALE_VOIDED', entityType: 'Sale', entityId: sale.id, oldValues: old,
     newValues: { ...snap(sale), restockDocument: doc.docNo }, reason }, t);
   return sale;
+};
+const void_ = (req, id, reason) => sequelize.transaction((t) => voidIn(req, id, reason, t));
+
+// EDIT of a completed cash sale = CORRECTION: the wrong sale is voided (stock and money go back) and the corrected sale is recorded, in ONE transaction.
+// If the corrected sale cannot be made (e.g. not enough stock), nothing changes and the original sale stays as it was.
+const correct = (req, id, body) => sequelize.transaction(async (t) => {
+  const { changeReason, ...data } = body;
+  const old = await voidIn(req, id, `Corrected: ${changeReason}`, t);
+  const fresh = await createIn(req, data, t);
+  await audit.log(req, { action: 'CASH_SALE_CORRECTED', entityType: 'Sale', entityId: fresh.id, oldValues: { saleNo: old.saleNo }, newValues: { saleNo: fresh.saleNo, replaces: old.saleNo }, reason: changeReason }, t);
+  return fresh;
 });
 
-module.exports = { create, void: void_ };
+module.exports = { create, void: void_, correct };

@@ -9,6 +9,7 @@ import { ArrowLeftIcon } from '../../components/Icons.jsx';
 import useLoad from '../../utils/useLoad';
 import { fmt } from '../../utils/format';
 import { METHOD, NOTICE, PayStatus, Status, day, money } from '../sales/saleUi.jsx';
+import { CorrectionReason } from '../stock/postedDocs.jsx';
 import { ACCOUNT_KIND, accountLabel, accountsFor, splitReference } from '../sales/paymentProviders.js';
 import { todayStr } from './CreditSalesForm.jsx';
 import CreditStatus from './CreditStatus.jsx';
@@ -24,10 +25,16 @@ const Row = ({ label, children }) => (
 const payAccount = (p) => (p.bankAccount ? accountLabel(p.bankAccount) : splitReference(p.method, p.reference).provider);
 
 // Record money received against the sale. The amount may not exceed the balance (the API checks too).
-function PaymentForm({ sale, balance, onDone, onError }) {
+// payment = an existing payment being corrected (the old one is voided and this one received, in one step); balance then already includes the old amount.
+function PaymentForm({ sale, balance, payment, onCancel, onDone, onError }) {
   const { t } = useTranslation('creditSales');
+  const { t: tcr } = useTranslation('correction');
   const { can } = useAuth();
-  const [f, setF] = useState({ amount: String(balance), method: 'CASH', bankAccountId: '', reference: '', paidOn: todayStr(), notes: '' });
+  const editing = !!payment;
+  const [changeReason, setChangeReason] = useState('');
+  const [f, setF] = useState(editing
+    ? { amount: String(Number(payment.amount)), method: payment.method, bankAccountId: payment.bankAccountId || '', reference: splitReference(payment.method, payment.reference).ref || '', paidOn: payment.paidOn || todayStr(), notes: payment.notes || '' }
+    : { amount: String(balance), method: 'CASH', bankAccountId: '', reference: '', paidOn: todayStr(), notes: '' });
   const kind = ACCOUNT_KIND[f.method];                        // 'bank' | 'network' | undefined
   const accounts = useLoad(() => creditSaleApi.paymentAccounts(), []);
   const choices = accountsFor(f.method, accounts.data?.data);
@@ -40,15 +47,19 @@ function PaymentForm({ sale, balance, onDone, onError }) {
     if (amount > balance + 0.0001) { onError(t('pay.errTooMuch', { balance: money(balance) })); return; }
     if (kind && !f.bankAccountId) { onError(t(kind === 'bank' ? 'pay.errBank' : 'pay.errNetwork')); return; }
     if (f.method !== 'CASH' && !f.reference.trim()) { onError(t('pay.errReference')); return; }
+    if (editing && changeReason.trim().length < 3) { onError(tcr('reasonRequired')); return; }
     setBusy(true);
     try {
-      await creditSaleApi.receivePayment(sale.id, { amount, method: f.method, ...(kind && { bankAccountId: f.bankAccountId }), paidOn: f.paidOn || null, reference: f.reference.trim() || null, notes: f.notes.trim() || null });
-      setF({ ...f, amount: '', reference: '', notes: '' }); onDone(t('pay.recorded'));
+      const body = { amount, method: f.method, ...(kind && { bankAccountId: f.bankAccountId }), paidOn: f.paidOn || null, reference: f.reference.trim() || null, notes: f.notes.trim() || null };
+      if (editing) await creditSaleApi.correctPayment(sale.id, payment.id, { ...body, changeReason: changeReason.trim() });
+      else await creditSaleApi.receivePayment(sale.id, body);
+      if (!editing) setF({ ...f, amount: '', reference: '', notes: '' });
+      onDone(editing ? tcr('paymentCorrected') : t('pay.recorded'));
     } catch (x) { onError(errMsg(x)); setFe(fieldErrs(x)); } finally { setBusy(false); }
   };
   return (
     <form onSubmit={submit} className="mt-3 max-w-3xl rounded-md border border-line p-4 [&_.text-danger]:!text-black">
-      <h3 className="mb-3 text-sm font-semibold">{t('pay.title')}</h3>
+      <h3 className="mb-3 text-sm font-semibold">{editing ? `${tcr('editPaymentTitle')} ${payment.receiptNo}` : t('pay.title')}</h3>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label={t('pay.amountBalance', { balance: money(balance) })} error={fe.amount}>
           <div className="flex gap-2"><input className="input" type="number" min="0" step="0.01" value={f.amount} onChange={set('amount')} />
@@ -70,7 +81,11 @@ function PaymentForm({ sale, balance, onDone, onError }) {
         <Field label={t('pay.paidOn')} error={fe.paidOn}><input className="input" type="date" min={sale.saleDate} max={todayStr()} value={f.paidOn} onChange={set('paidOn')} /></Field>
         <div className="sm:col-span-2"><Field label={t('pay.notes')} error={fe.notes}><input className="input" maxLength={1000} value={f.notes} onChange={set('notes')} /></Field></div>
       </div>
-      <button className="btn-primary mt-4" disabled={busy}>{busy ? t('pay.saving') : t('pay.record')}</button>
+      {editing && <div className="mt-4"><CorrectionReason value={changeReason} onChange={setChangeReason} text={tcr('paymentNotice')} /></div>}
+      <div className="mt-4 flex items-center gap-3">
+        <button className="btn-primary" disabled={busy}>{busy ? t('pay.saving') : (editing ? tcr('saveCorrection') : t('pay.record'))}</button>
+        {editing && <button type="button" className="btn-ghost" onClick={onCancel}>{tcr('cancel')}</button>}
+      </div>
     </form>
   );
 }
@@ -82,6 +97,7 @@ export default function CreditSalesView() {
   const location = useLocation();
   const { can } = useAuth();
   const [err, setErr] = useState(''); const [ok, setOk] = useState('');
+  const [editPay, setEditPay] = useState(null);                  // payment being corrected
   const q = useLoad(() => creditSaleApi.get(id), [id]);
   const r = q.data;
   const completed = r?.status === 'COMPLETED';
@@ -174,13 +190,16 @@ export default function CreditSalesView() {
                       <td className="td px-3 text-black">{p.receiver?.fullName}</td>
                       <td className="td px-3 text-right text-black">{money(p.amount)}</td>
                       <td className="td px-3 text-black" title={p.voidReason || undefined}>{p.voidedAt ? t('view.voidedState') : t('view.valid')}</td>
-                      <td className="td px-3">{!p.voidedAt && completed && can('credit_sales.void_payment') && <button type="button" className="text-sm text-red-600 underline" onClick={() => voidPayment(p)}>{t('view.void')}</button>}</td>
+                      <td className="td whitespace-nowrap px-3">{!p.voidedAt && completed && can('credit_sales.void_payment') && (<>
+                        <button type="button" className="mr-3 text-sm text-blue-600 underline" onClick={() => setEditPay(p)}>{t('view.editPayment')}</button>
+                        <button type="button" className="text-sm text-red-600 underline" onClick={() => voidPayment(p)}>{t('view.void')}</button></>)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            {completed && balance > 0 && can('credit_sales.receive_payment') && <PaymentForm sale={r} balance={balance} onError={(m) => { setErr(m); if (m) setOk(''); }} onDone={(m) => { setOk(m); setErr(''); q.reload(); }} />}
+            {editPay && <PaymentForm key={editPay.id} sale={r} payment={editPay} balance={balance + Number(editPay.amount)} onCancel={() => setEditPay(null)} onError={(m) => { setErr(m); if (m) setOk(''); }} onDone={(m) => { setEditPay(null); setOk(m); setErr(''); q.reload(); }} />}
+            {!editPay && completed && balance > 0 && can('credit_sales.receive_payment') && <PaymentForm sale={r} balance={balance} onError={(m) => { setErr(m); if (m) setOk(''); }} onDone={(m) => { setOk(m); setErr(''); q.reload(); }} />}
           </>)}
 
           <div className="mt-4 pb-2">

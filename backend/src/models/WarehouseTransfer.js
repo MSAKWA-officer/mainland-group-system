@@ -9,5 +9,6 @@ const WarehouseTransfer = sequelize.define('WarehouseTransfer', {
   status: str(12, { allowNull: false, defaultValue: 'SUBMITTED' }), transferDate: D.DATEONLY,   // DB default is CURRENT_DATE
   reason: D.TEXT, approvalId: D.UUID, createdBy: { type: D.UUID, allowNull: false }, submittedAt: D.DATE, completedAt: D.DATE,
   requiresReceipt: { type: D.BOOLEAN, allowNull: false, defaultValue: false }, approvedAt: D.DATE, receivedBy: D.UUID, receivedAt: D.DATE, receiveNote: str(500),
+  voidedAt: D.DATE, voidedBy: D.UUID, voidReason: str(500),
 }, { tableName: 'warehouse_transfers' });
 module.exports = WarehouseTransfer;

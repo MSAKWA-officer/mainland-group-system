@@ -20,6 +20,7 @@ const Row = ({ label, children }) => (
 
 export default function AdjustmentsView() {
   const { t } = useTranslation('adjustments');
+  const { t: tcr } = useTranslation('correction');
   const { t: tc } = useTranslation('common');
   const docs = useDocText();
   const { id } = useParams();
@@ -47,6 +48,7 @@ export default function AdjustmentsView() {
             <Row label={t('view.date')}>{d.docDate}</Row>
             <Row label={t('view.warehouse')}>{d.warehouse?.name}</Row>
             <Row label={t('view.reference')}>{d.reference}</Row>
+            {d.status === 'VOIDED' && <Row label={tcr('voidedLabel')}>{tcr('voidedNotice', { reason: d.voidReason })}</Row>}
             <Row label={t('view.reason')}>{d.reason}</Row>
             <Row label={t('view.createdBy')}>{d.creator?.fullName}</Row>
             <Row label={t('view.created')}>{fmt(d.createdAt)}</Row>

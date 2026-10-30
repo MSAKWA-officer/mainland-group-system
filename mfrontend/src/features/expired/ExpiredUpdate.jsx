@@ -32,6 +32,12 @@ export default function ExpiredUpdate() {
     try {
       const items = {};
       await Promise.all([...new Set(lines.map((l) => l.itemId))].map(async (iid) => { items[iid] = d.lines.find((l) => l.itemId === iid)?.item || await itemApi.get(iid); }));
+      if (posted) {                                           // edit of a POSTED document: reverse the old one and post this corrected one
+        if (changeReason.trim().length < 3) { setErr(tcr('reasonRequired')); setBusy(false); return; }
+        const nd = await expiredApi.correct(id, { ...buildOutPayload(head, lines, items, false), changeReason: changeReason.trim() });
+        navigate(`/expired/${nd.id}`, { state: { msg: tcr('correctSaved', { docNo: nd.docNo }) } });
+        return;
+      }
       await expiredApi.update(id, buildOutPayload(head, lines, items, false));
       navigate(`/expired/${id}`, { state: { msg: t('edit.draftUpdated') } });
     } catch (x) { setErr(errMsg(x)); setFe(fieldErrs(x)); setBusy(false); }
@@ -52,6 +58,7 @@ export default function ExpiredUpdate() {
           <>
             <HeadFields head={head} setHead={setHead} fe={fe} />
             <div className="max-w-3xl"><OutLineEditor lines={lines} setLines={setLines} fe={fe} warehouseId={head.warehouseId} title={t('form.items')} qtyLabel={t('form.qty')} expiryOnly={true} /></div>
+            {posted && <CorrectionReason value={changeReason} onChange={setChangeReason} />}
             <button className="btn-primary" disabled={busy}>{busy ? t('saving') : t('edit.saveChanges')}</button>
           </>
         )}

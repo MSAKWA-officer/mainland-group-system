@@ -19,7 +19,8 @@
     "CANCELLED": "Cancelled",
     "IN_TRANSIT": "On the way",
     "RECEIVED_SHORT": "Received short",
-    "NOT_RECEIVED": "Not received"
+    "NOT_RECEIVED": "Not received",
+    "VOIDED": "Voided"
   },
   "cols": {
     "date": "Date",

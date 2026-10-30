@@ -20,6 +20,7 @@ const Row = ({ label, children }) => (
 
 export default function RejectInView() {
   const { t } = useTranslation('rejectIn');
+  const { t: tcr } = useTranslation('correction');
   const { status: statusText } = useDocText();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ export default function RejectInView() {
             <Row label={t('view.warehouse')}>{d.warehouse?.name}</Row>
             <Row label={t('view.party')}>{d.partyName}</Row>
             <Row label={t('view.reference')}>{d.reference}</Row>
+            {d.status === 'VOIDED' && <Row label={tcr('voidedLabel')}>{tcr('voidedNotice', { reason: d.voidReason })}</Row>}
             <Row label={t('view.reason')}>{d.reason}</Row>
             <Row label={t('view.createdBy')}>{d.creator?.fullName}</Row>
             <Row label={t('view.created')}>{fmt(d.createdAt)}</Row>

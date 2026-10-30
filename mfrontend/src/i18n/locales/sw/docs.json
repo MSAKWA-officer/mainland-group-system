@@ -4,7 +4,8 @@
     "SUBMITTED": "Imewasilishwa",
     "POSTED": "Imewekwa",
     "REJECTED": "Imekataliwa",
-    "CANCELLED": "Imeghairiwa"
+    "CANCELLED": "Imeghairiwa",
+    "VOIDED": "Imefutwa"
   },
   "direction": {
     "IN": "Ongeza (+)",
@@ -17,7 +18,8 @@
     "cancel": "Ghairi",
     "approve": "Idhinisha",
     "reject": "Kataa",
-    "delete": "Futa"
+    "delete": "Futa",
+    "title": "Vitendo"
   },
   "rejectPrompt": "Sababu ya kukataa:",
   "confirmDelete": "Futa hati {{docNo}}? Ufutaji unabaki kwenye kumbukumbu za ukaguzi.",
