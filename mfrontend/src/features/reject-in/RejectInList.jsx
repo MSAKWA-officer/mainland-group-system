@@ -20,7 +20,7 @@ export function RowActions({ d, showView, onChanged, onError, afterDelete }) {
   const navigate = useNavigate();
   const mine = d.createdBy === user.id;
   const posted = canCorrectDoc(d, user, can, 'reject_in');                       // POSTED: Delete = reverse the stock, Edit = correct
-  const reversePosted = useReversePosted({ api: rejectInApi, onChanged: afterDelete || onChanged, onError });
+  const reversePosted = useReversePosted({ api: rejectInApi, onChanged: afterDelete || onChanged, onError, askReason: false });
   const run = async (fn) => { onError(''); try { await fn(); onChanged?.(); } catch (x) { onError(errMsg(x)); } };
   const act = (action, body) => run(() => rejectInApi.act(d.id, action, body));
   const remove = async () => {

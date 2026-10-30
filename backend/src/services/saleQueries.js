@@ -59,6 +59,7 @@ async function list(req, types, q) {
   const { saleType, status, paymentStatus, customerId, salespersonId, createdBy, search, from, to, overdue: od, page, limit } = q;
   if (saleType) and.push({ saleType });
   if (status) and.push({ status });
+  else if (q.hideVoided) and.push({ status: { [Op.ne]: 'VOIDED' } });     // deleted (voided) sales leave the list unless the status filter asks for them
   if (paymentStatus) and.push({ paymentStatus });
   if (customerId) and.push({ customerId });
   if (salespersonId) and.push({ salespersonId });

@@ -20,10 +20,10 @@ export function RowActions({ r, showView, onChanged, onError }) {
   const { can } = useAuth();
   const navigate = useNavigate();
   const doVoid = async () => {
-    const reason = window.prompt(t('actions.voidPrompt', { no: r.saleNo }));
-    if (!reason || reason.trim().length < 3) return;
+    // One click + confirm: the stock goes back and the payment is cancelled; the reason is recorded automatically in the audit trail.
+    if (!window.confirm(t('actions.deleteConfirm', { no: r.saleNo, defaultValue: `Delete cash sale ${r.saleNo}? The stock will go back to the warehouse and the payment will be cancelled.` }))) return;
     onError('');
-    try { await cashSaleApi.voidSale(r.id, reason.trim()); onChanged?.(); } catch (x) { onError(errMsg(x)); }
+    try { await cashSaleApi.voidSale(r.id, 'Deleted by user'); onChanged?.(); } catch (x) { onError(errMsg(x)); }
   };
   return (
     <div className="flex items-center gap-2">

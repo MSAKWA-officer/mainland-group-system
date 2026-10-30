@@ -11,7 +11,7 @@ exports.paymentAccounts = async (req, res) => {
     include: [{ model: Bank, as: 'bank', attributes: ['id', 'code', 'name', 'shortName'] }], order: [[{ model: Bank, as: 'bank' }, 'name', 'ASC'], ['accountName', 'ASC']] });
   res.json({ data: rows });
 };
-exports.list = async (req, res) => res.json(await q.list(req, only, req.query));
+exports.list = async (req, res) => res.json(await q.list(req, only, { ...req.query, hideVoided: true }));
 exports.getOne = async (req, res) => res.json(await q.fetch(req, req.params.id, only));
 exports.create = async (req, res) => res.status(201).json(await q.fetch(req, (await svc.create(req, req.body)).id, only));
 exports.correct = async (req, res) => {
