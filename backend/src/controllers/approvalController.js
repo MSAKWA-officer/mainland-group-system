@@ -1,6 +1,7 @@
 const { ApprovalRequest, User } = require('../models');
 const { AppError } = require('../utils/errors');
 const svc = require('../services/approvals');
+const details = require('../services/approvalDetails');
 
 const view = (r) => r.toJSON();
 const people = [
@@ -23,7 +24,8 @@ exports.getOne = async (req, res) => {
   const r = await ApprovalRequest.findByPk(req.params.id, { include: people });
   if (!r || (r.requestedBy !== req.user.id && !req.user.permissions.has('approvals.read_all')))
     throw new AppError(404, 'NOT_FOUND', 'Approval request not found');
-  res.json(view(r));
+  // `details` = the full record being approved (sale with items / payments / customer debts, sales order, stock document).
+  res.json({ ...view(r), details: await details.build(r) });
 };
 
 exports.create = async (req, res) => res.status(201).json(view(await svc.create(req, req.body)));
