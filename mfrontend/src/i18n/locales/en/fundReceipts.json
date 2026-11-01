@@ -65,6 +65,31 @@
   "actions": {
     "void": "Void",
     "voidPrompt": "Why are you voiding {{no}}? The deposit will be removed from the bank account too.",
-    "voided": "Receipt voided."
+    "voided": "Receipt voided.",
+    "view": "View"
+  },
+  "create": {
+    "title": "Receive funds",
+    "sub": "Record money received into a bank account. It is added to the account balance straight away.",
+    "back": "Back to fund receipts"
+  },
+  "view": {
+    "fallbackTitle": "Fund receipt",
+    "back": "Back to fund receipts",
+    "amount": "Amount received",
+    "account": "Bank account",
+    "date": "Date received",
+    "source": "Source of funds",
+    "receivedFrom": "Received from",
+    "purpose": "Money is for",
+    "reference": "Reference",
+    "notes": "Notes",
+    "bankRows": "Bank ledger entry",
+    "reconciled": "reconciled",
+    "postedBy": "Posted by",
+    "posted": "Posted on",
+    "voidedBy": "Voided by",
+    "voidedOn": "Voided on",
+    "voidReason": "Void reason"
   }
 }

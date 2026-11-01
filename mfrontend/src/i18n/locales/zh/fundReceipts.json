@@ -65,6 +65,31 @@
   "actions": {
     "void": "作废",
     "voidPrompt": "为什么要作废 {{no}}？银行账户中的存款也将被冲销。",
-    "voided": "收据已作废。"
+    "voided": "收据已作废。",
+    "view": "查看"
+  },
+  "create": {
+    "title": "接收资金",
+    "sub": "记录收入银行账户的资金，金额会立即计入账户余额。",
+    "back": "返回资金接收"
+  },
+  "view": {
+    "fallbackTitle": "资金收据",
+    "back": "返回资金接收",
+    "amount": "收款金额",
+    "account": "银行账户",
+    "date": "收款日期",
+    "source": "资金来源",
+    "receivedFrom": "付款方",
+    "purpose": "资金用途",
+    "reference": "参考号",
+    "notes": "备注",
+    "bankRows": "银行流水记录",
+    "reconciled": "已对账",
+    "postedBy": "录入人",
+    "posted": "录入时间",
+    "voidedBy": "作废人",
+    "voidedOn": "作废时间",
+    "voidReason": "作废原因"
   }
 }

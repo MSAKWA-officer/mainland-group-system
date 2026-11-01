@@ -65,6 +65,31 @@
   "actions": {
     "void": "Batilisha",
     "voidPrompt": "Kwa nini unabatilisha {{no}}? Amana pia itaondolewa kwenye akaunti ya benki.",
-    "voided": "Risiti imebatilishwa."
+    "voided": "Risiti imebatilishwa.",
+    "view": "Angalia"
+  },
+  "create": {
+    "title": "Pokea pesa",
+    "sub": "Rekodi pesa zilizopokelewa kwenye akaunti ya benki. Zinaongezwa kwenye salio la akaunti mara moja.",
+    "back": "Rudi kwenye pesa zilizopokelewa"
+  },
+  "view": {
+    "fallbackTitle": "Risiti ya pesa",
+    "back": "Rudi kwenye pesa zilizopokelewa",
+    "amount": "Kiasi kilichopokelewa",
+    "account": "Akaunti ya benki",
+    "date": "Tarehe ya kupokea",
+    "source": "Chanzo cha pesa",
+    "receivedFrom": "Imepokelewa kutoka",
+    "purpose": "Pesa ni kwa ajili ya",
+    "reference": "Kumbukumbu",
+    "notes": "Maelezo",
+    "bankRows": "Rekodi ya leja ya benki",
+    "reconciled": "imekubaliana",
+    "postedBy": "Imewekwa na",
+    "posted": "Imewekwa tarehe",
+    "voidedBy": "Imebatilishwa na",
+    "voidedOn": "Imebatilishwa tarehe",
+    "voidReason": "Sababu ya kubatilisha"
   }
 }
