@@ -75,6 +75,7 @@ router.use('/physical-counts', authenticate, require('./physicalCountRoutes'));
 router.use('/drivers', authenticate, require('./driverRoutes'));
 router.use('/vehicles', authenticate, require('./vehicleRoutes'));
 router.use('/fuel-funding', authenticate, require('./fuelFundingRoutes'));
+router.use('/fund-receipts', authenticate, require('./fundReceiptRoutes'));
 router.use('/fuel-usage', authenticate, require('./fuelUsageRoutes'));
 router.use('/fuel-balances', authenticate, require('./fuelBalanceRoutes'));
 router.use('/fuel-reports', authenticate, require('./fuelReportRoutes'));

@@ -1,0 +1,70 @@
+{
+  "title": "资金接收",
+  "subtitle": "收入银行账户的资金，用于燃油、费用或其他用途。每笔收款都会在银行流水中增加一笔存款。错误需注明原因后作废。",
+  "new": "接收资金",
+  "stats": {
+    "total": "收款总额"
+  },
+  "source": {
+    "OWNER_CAPITAL": "股东/资本",
+    "HEAD_OFFICE": "总部",
+    "LOAN": "贷款",
+    "GRANT": "补助",
+    "OTHER": "其他"
+  },
+  "purpose": {
+    "FUEL": "燃油",
+    "EXPENSES": "费用",
+    "OTHER": "其他"
+  },
+  "status": {
+    "POSTED": "已入账",
+    "VOIDED": "已作废",
+    "ALL": "全部"
+  },
+  "form": {
+    "account": "收入账户",
+    "selectAccount": "选择账户…",
+    "source": "资金来源",
+    "receivedFrom": "付款方",
+    "receivedFromPlaceholder": "个人或机构",
+    "purpose": "资金用途",
+    "amount": "金额",
+    "amountCur": "金额（{{currency}}）",
+    "date": "收款日期",
+    "reference": "参考号（单据/转账号）",
+    "notes": "备注",
+    "hint": "金额会立即计入账户余额，可用于燃油拨款、费用和付款。",
+    "submit": "保存并入账",
+    "saving": "保存中…",
+    "cancel": "取消",
+    "amountError": "请输入大于 0 的金额",
+    "saved": "收据 {{no}} 已保存并入账。"
+  },
+  "list": {
+    "search": "搜索收据号、付款方、参考号",
+    "allAccounts": "所有账户",
+    "allPurposes": "所有用途",
+    "allSources": "所有来源",
+    "status": "状态",
+    "postedTotal": "已入账合计",
+    "emptyFiltered": "没有符合筛选条件的收据。",
+    "emptyNone": "暂无资金接收记录。",
+    "columns": {
+      "receiptNo": "收据号",
+      "date": "日期",
+      "account": "账户",
+      "receivedFrom": "付款方",
+      "source": "来源",
+      "purpose": "用途",
+      "amount": "金额",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "actions": {
+    "void": "作废",
+    "voidPrompt": "为什么要作废 {{no}}？银行账户中的存款也将被冲销。",
+    "voided": "收据已作废。"
+  }
+}

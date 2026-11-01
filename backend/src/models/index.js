@@ -58,6 +58,7 @@ const CustomerPaymentAllocation = require('./CustomerPaymentAllocation');
 const Driver = require('./Driver');
 const Vehicle = require('./Vehicle');
 const FuelFunding = require('./FuelFunding');
+const FundReceipt = require('./FundReceipt');
 const FuelUsage = require('./FuelUsage');
 
 // Associations
@@ -205,6 +206,11 @@ FuelFunding.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
 FuelFunding.belongsTo(User, { as: 'decider', foreignKey: 'decidedBy' });
 FuelFunding.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
 FuelFunding.hasMany(BankTransaction, { as: 'bankTransactions', foreignKey: 'fuelFundingId' });
+FundReceipt.belongsTo(BankAccount, { as: 'bankAccount', foreignKey: 'bankAccountId' });
+FundReceipt.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
+FundReceipt.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
+FundReceipt.hasMany(BankTransaction, { as: 'bankTransactions', foreignKey: 'fundReceiptId' });
+BankTransaction.belongsTo(FundReceipt, { as: 'fundReceipt', foreignKey: 'fundReceiptId' });
 BankTransaction.belongsTo(FuelFunding, { as: 'fuelFunding', foreignKey: 'fuelFundingId' });
 
 // Phase 6b - Fuel usage associations
@@ -265,7 +271,7 @@ module.exports = {
   OrderWorkflow, OrderWorkflowEvent,
   Bank, BankAccount, BankTransaction, CustomerPayment, CustomerPaymentAllocation,
   Expense, Payment,
-  Driver, Vehicle, FuelFunding, FuelUsage,
+  Driver, Vehicle, FuelFunding, FuelUsage, FundReceipt,
   Warehouse, WarehouseStorekeeper, WarehouseStock, WarehouseItemSetting, WarehouseTransfer, WarehouseTransferLine,
   PhysicalCount, PhysicalCountLine,
 };

@@ -1,0 +1,70 @@
+{
+  "title": "Pesa zilizopokelewa",
+  "subtitle": "Pesa zinazopokelewa kwenye akaunti ya benki kwa ajili ya mafuta, matumizi au shughuli nyingine. Kila risiti huongeza amana kwenye leja ya benki. Makosa hubatilishwa kwa sababu.",
+  "new": "Pokea pesa",
+  "stats": {
+    "total": "Jumla iliyopokelewa"
+  },
+  "source": {
+    "OWNER_CAPITAL": "Mmiliki / mtaji",
+    "HEAD_OFFICE": "Ofisi kuu",
+    "LOAN": "Mkopo",
+    "GRANT": "Ruzuku",
+    "OTHER": "Nyingine"
+  },
+  "purpose": {
+    "FUEL": "Mafuta",
+    "EXPENSES": "Matumizi",
+    "OTHER": "Nyingine"
+  },
+  "status": {
+    "POSTED": "Imewekwa",
+    "VOIDED": "Imebatilishwa",
+    "ALL": "Zote"
+  },
+  "form": {
+    "account": "Pokea kwenye akaunti",
+    "selectAccount": "Chagua akaunti…",
+    "source": "Chanzo cha pesa",
+    "receivedFrom": "Imepokelewa kutoka",
+    "receivedFromPlaceholder": "Mtu au taasisi",
+    "purpose": "Pesa ni kwa ajili ya",
+    "amount": "Kiasi",
+    "amountCur": "Kiasi ({{currency}})",
+    "date": "Tarehe ya kupokea",
+    "reference": "Kumbukumbu (slip / namba ya uhamisho)",
+    "notes": "Maelezo",
+    "hint": "Kiasi kinaongezwa kwenye salio la akaunti mara moja na kinaweza kutumika kwa mafuta, matumizi na malipo.",
+    "submit": "Hifadhi na weka",
+    "saving": "Inahifadhi…",
+    "cancel": "Ghairi",
+    "amountError": "Weka kiasi kikubwa kuliko 0",
+    "saved": "Risiti {{no}} imehifadhiwa na kuwekwa kwenye akaunti ya benki."
+  },
+  "list": {
+    "search": "Tafuta namba ya risiti, aliyetoa, kumbukumbu",
+    "allAccounts": "Akaunti zote",
+    "allPurposes": "Madhumuni yote",
+    "allSources": "Vyanzo vyote",
+    "status": "Hali",
+    "postedTotal": "Jumla iliyowekwa",
+    "emptyFiltered": "Hakuna risiti zinazolingana na vichujio.",
+    "emptyNone": "Hakuna pesa zilizopokelewa bado.",
+    "columns": {
+      "receiptNo": "Namba ya risiti",
+      "date": "Tarehe",
+      "account": "Akaunti",
+      "receivedFrom": "Imepokelewa kutoka",
+      "source": "Chanzo",
+      "purpose": "Madhumuni",
+      "amount": "Kiasi",
+      "status": "Hali",
+      "actions": "Vitendo"
+    }
+  },
+  "actions": {
+    "void": "Batilisha",
+    "voidPrompt": "Kwa nini unabatilisha {{no}}? Amana pia itaondolewa kwenye akaunti ya benki.",
+    "voided": "Risiti imebatilishwa."
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "title": "Fund receipts",
+  "subtitle": "Money received into a bank account for fuel, expenses or other use. Each receipt adds a deposit to the bank ledger. Mistakes are voided with a reason.",
+  "new": "Receive funds",
+  "stats": {
+    "total": "Total received"
+  },
+  "source": {
+    "OWNER_CAPITAL": "Owner / capital",
+    "HEAD_OFFICE": "Head office",
+    "LOAN": "Loan",
+    "GRANT": "Grant",
+    "OTHER": "Other"
+  },
+  "purpose": {
+    "FUEL": "Fuel",
+    "EXPENSES": "Expenses",
+    "OTHER": "Other"
+  },
+  "status": {
+    "POSTED": "Posted",
+    "VOIDED": "Voided",
+    "ALL": "All"
+  },
+  "form": {
+    "account": "Receive into account",
+    "selectAccount": "Select an account…",
+    "source": "Source of funds",
+    "receivedFrom": "Received from",
+    "receivedFromPlaceholder": "Person or organisation",
+    "purpose": "Money is for",
+    "amount": "Amount",
+    "amountCur": "Amount ({{currency}})",
+    "date": "Date received",
+    "reference": "Reference (slip / transfer no)",
+    "notes": "Notes",
+    "hint": "The amount is added to the account balance straight away and can be spent on fuel funding, expenses and payments.",
+    "submit": "Save and post",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "amountError": "Enter an amount greater than 0",
+    "saved": "Receipt {{no}} saved and posted to the bank account."
+  },
+  "list": {
+    "search": "Search receipt no, received from, reference",
+    "allAccounts": "All accounts",
+    "allPurposes": "All purposes",
+    "allSources": "All sources",
+    "status": "Status",
+    "postedTotal": "Posted total",
+    "emptyFiltered": "No receipts match your filters.",
+    "emptyNone": "No funds received yet.",
+    "columns": {
+      "receiptNo": "Receipt no",
+      "date": "Date",
+      "account": "Account",
+      "receivedFrom": "Received from",
+      "source": "Source",
+      "purpose": "Purpose",
+      "amount": "Amount",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "actions": {
+    "void": "Void",
+    "voidPrompt": "Why are you voiding {{no}}? The deposit will be removed from the bank account too.",
+    "voided": "Receipt voided."
+  }
+}

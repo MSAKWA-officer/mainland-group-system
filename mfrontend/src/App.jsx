@@ -103,6 +103,7 @@ import BankAccountsList from './features/bankAccounts/BankAccountsList.jsx';
 import BankAccountsView from './features/bankAccounts/BankAccountsView.jsx';
 import BankAccountForm from './features/bankAccounts/BankAccountForm.jsx';
 import BankTransactionsList from './features/bankTransactions/BankTransactionsList.jsx';
+import FundReceiptsPage from './features/fundReceipts/FundReceiptsPage.jsx';
 import BankTransactionsCreate from './features/bankTransactions/BankTransactionsCreate.jsx';
 import BankTransactionsTransfer from './features/bankTransactions/BankTransactionsTransfer.jsx';
 import BankTransactionsView from './features/bankTransactions/BankTransactionsView.jsx';
@@ -292,6 +293,7 @@ export default function App() {
         <Route path="/bank-accounts/new" element={<Guard perm="bank_accounts.create"><BankAccountForm /></Guard>} />
         <Route path="/bank-accounts/:id" element={<Guard perm="bank_accounts.read"><BankAccountsView /></Guard>} />
         <Route path="/bank-accounts/:id/edit" element={<Guard perm="bank_accounts.update"><BankAccountForm /></Guard>} />
+        <Route path="/fund-receipts" element={<Guard perm="fund_receipts.read"><FundReceiptsPage /></Guard>} />
         <Route path="/bank-transactions" element={<Guard perm="bank_transactions.read"><BankTransactionsList /></Guard>} />
         <Route path="/bank-transactions/new" element={<Guard perm="bank_transactions.create"><BankTransactionsCreate /></Guard>} />
         <Route path="/bank-transactions/transfer" element={<Guard perm="bank_transactions.transfer"><BankTransactionsTransfer /></Guard>} />

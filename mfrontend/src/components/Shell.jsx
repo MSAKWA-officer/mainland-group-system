@@ -36,7 +36,7 @@ const GROUPS = [
   ] },
   { key: 'banking', label: 'Banking & Payments', items: [
     ['/banks', 'Banks', 'banks.read'], ['/bank-accounts', 'Bank accounts', 'bank_accounts.read'],
-    ['/bank-transactions', 'Bank transactions', 'bank_transactions.read'], ['/customer-payments', 'Customer payments', 'customer_payments.read'],
+    ['/bank-transactions', 'Bank transactions', 'bank_transactions.read'], ['/fund-receipts', 'Fund receipts', 'fund_receipts.read'], ['/customer-payments', 'Customer payments', 'customer_payments.read'],
     ['/expenses', 'Expenses', 'expenses.read'], ['/payments', 'Payments', 'payments.read'],
     ['/transfers', 'Transfers', 'transfers.read'], ['/reconciliation', 'Reconciliation', 'bank_transactions.reconcile'],
   ] },
