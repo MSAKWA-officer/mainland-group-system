@@ -59,6 +59,8 @@
     "warehouse-transfers": "仓库调拨",
     "physical-counts": "实物盘点",
     "sales-reports": "销售报表",
+    "payment-reports": "付款报表",
+    "customer-balance-reports": "客户余额报表",
     "deleted-records": "已删除记录"
   },
   "password": "修改密码",

@@ -1,0 +1,24 @@
+{
+  "title": "Ripoti za malipo",
+  "subtitle": "Pesa zilizopokelewa kutoka kwa wateja (mauzo ya pesa taslimu na ya mkopo yaliyokamilika, pamoja na Malipo ya wateja), zinahesabiwa papo hapo. Malipo yaliyobatilishwa hayahesabiwi. \"Yaliyotolewa\" inaonyesha pesa zilizolipwa kupitia moduli ya Malipo. Ni Owner / Manager tu.",
+  "tabs": { "detail": "Risiti", "summary": "Muhtasari", "methods": "Kwa njia ya malipo", "customers": "Kwa mteja", "accounts": "Kwa akaunti", "paidOut": "Yaliyotolewa" },
+  "toolbar": {
+    "today": "Leo", "thisMonth": "Mwezi huu", "last30": "Siku 30 zilizopita", "thisYear": "Mwaka huu",
+    "method": "Njia ya malipo", "allMethods": "Njia zote", "type": "Aina ya mauzo", "allTypes": "Pesa taslimu na mkopo", "cashSales": "Mauzo ya pesa taslimu", "creditSales": "Mauzo ya mkopo",
+    "groupBy": "Panga kwa", "byDay": "Kwa siku", "byMonth": "Kwa mwezi", "byYear": "Kwa mwaka",
+    "download": "Pakua Excel", "preparing": "Inaandaa…", "downloadPdf": "Print PDF", "downloadCsv": "Pakua CSV"
+  },
+  "methods": { "CASH": "Pesa taslimu", "MOBILE_MONEY": "Pesa ya simu", "BANK": "Benki", "CARD": "Kadi", "CHEQUE": "Hundi" },
+  "errors": { "chooseBoth": "Chagua tarehe zote mbili.", "fromAfterTo": "Tarehe ya kuanza ni baada ya tarehe ya mwisho.", "maxDays": "Chagua siku zisizozidi {{max}}." },
+  "empty": "Hakuna malipo yaliyopokelewa katika kipindi hiki.",
+  "emptyPaidOut": "Hakuna malipo yaliyotolewa katika kipindi hiki.",
+  "total": "JUMLA",
+  "cols": {
+    "period_day": "Tarehe", "period_month": "Mwezi", "period_year": "Mwaka",
+    "date": "Tarehe", "receiptNo": "Namba ya risiti", "saleNo": "Namba ya mauzo", "saleType": "Aina ya mauzo", "customer": "Mteja", "method": "Njia ya malipo",
+    "account": "Akaunti ya benki / pesa ya simu", "reference": "Rejea", "receivedBy": "Alipokea", "total": "Kiasi (TZS)", "count": "Risiti",
+    "cash": "Pesa taslimu", "mobileMoney": "Pesa ya simu", "bank": "Benki", "card": "Kadi", "cheque": "Hundi", "share": "Sehemu (%)",
+    "code": "Msimbo", "name": "Mteja", "lastPayment": "Malipo ya mwisho", "bankName": "Benki", "accountNo": "Namba ya akaunti", "accountName": "Jina la akaunti",
+    "paymentNo": "Namba ya malipo", "payee": "Aliyelipwa"
+  }
+}

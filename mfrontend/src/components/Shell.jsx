@@ -30,6 +30,7 @@ const GROUPS = [
     ['/customer-balances', 'Customer balance', 'customer_balances.read'], ['/payment-history', 'Payment history', 'payment_history.read'],
     ['/credit-ageing', 'Credit ageing', 'credit_ageing.read'],
     ['/sales-reports', 'Sales reports', 'sales_reports.read'],
+    ['/payment-reports', 'Payments reports', 'payment_reports.read'], ['/customer-balance-reports', 'Customer balance reports', 'customer_balance_reports.read'],
     ...(DISCOUNTS ? [['/discounts', 'Discounts', 'discounts.read']] : []),   // hidden for now (config/features.js)
     ['/efd-receipts', 'EFD numbers', 'efd_receipts.read'], ['/efd-z-reports', 'Z reports', 'efd_z_reports.read'], ['/efd-reconciliations', 'Daily reconciliation', 'efd_reconciliations.read'], ['/efd-differences', 'Difference detection', 'efd_differences.read'], ['/efd-reports', 'EFD reports', 'efd_reports.read'], ['/efd-devices', 'EFD devices', 'efd_devices.read'],
   ] },

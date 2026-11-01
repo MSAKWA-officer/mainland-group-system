@@ -77,6 +77,8 @@ import DiscountsList from './features/discounts/DiscountsList.jsx';
 import DiscountsView from './features/discounts/DiscountsView.jsx';
 import DiscountForm from './features/discounts/DiscountForm.jsx';
 import SalesReportsPage from './features/salesReports/SalesReportsPage.jsx';
+import PaymentReportsPage from './features/paymentReports/PaymentReportsPage.jsx';
+import CustomerBalanceReportsPage from './features/customerBalanceReports/CustomerBalanceReportsPage.jsx';
 import EfdReceiptsList from './features/efdReceipts/EfdReceiptsList.jsx';
 import EfdReceiptsCreate from './features/efdReceipts/EfdReceiptsCreate.jsx';
 import EfdReceiptsView from './features/efdReceipts/EfdReceiptsView.jsx';
@@ -257,6 +259,8 @@ export default function App() {
         <Route path="/cash-sales/:id/edit" element={<Guard perm="cash_sales.void"><CashSalesCreate /></Guard>} />
         <Route path="/cash-sales/:id" element={<Guard perm="cash_sales.read"><CashSalesView /></Guard>} />
         <Route path="/sales-reports" element={<Guard perm="sales_reports.read"><SalesReportsPage /></Guard>} />
+        <Route path="/payment-reports" element={<Guard perm="payment_reports.read"><PaymentReportsPage /></Guard>} />
+        <Route path="/customer-balance-reports" element={<Guard perm="customer_balance_reports.read"><CustomerBalanceReportsPage /></Guard>} />
         {DISCOUNTS && <>   {/* hidden for now: set VITE_ENABLE_DISCOUNTS=true to bring back */}
         <Route path="/discounts" element={<Guard perm="discounts.read"><DiscountsList /></Guard>} />
         <Route path="/discounts/new" element={<Guard perm="discounts.create"><DiscountForm /></Guard>} />

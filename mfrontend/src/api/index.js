@@ -55,3 +55,5 @@ export * as fuelReportApi from './fuelReportApi';
 export * as warehouseApi from './warehouseApi';
 export * as warehouseTransferApi from './warehouseTransferApi';
 export * as physicalCountApi from './physicalCountApi';
+export * as paymentReportApi from './paymentReportApi';
+export * as customerBalanceReportApi from './customerBalanceReportApi';

@@ -5,7 +5,7 @@ const ExcelJS = require('exceljs');
    TOTAL uses SUBTOTAL, so the totals follow the Excel filters. Dates, quantities and amounts are real numbers (not text). */
 // Colours taken from the company template: title bar 17365D, header 1F4E78, Total column EAF2F8, black cell borders.
 const NAVY = 'FF17365D'; const HEAD = 'FF1F4E78'; const SHADE = 'FFEAF2F8';
-const SHADED_KEYS = new Set(['total', 'value']);
+const SHADED_KEYS = new Set(['total', 'value', 'balance']);
 const line = { style: 'thin', color: { argb: 'FF000000' } };
 const BOX = { top: line, left: line, bottom: line, right: line };
 const FMT = { money: '#,##0.00', count: '#,##0', qty: '#,##0.###', date: 'dd/mm/yyyy' };
@@ -16,6 +16,7 @@ const dmy = (d) => d.split('-').reverse().join('/');
 const lastDay = (y, m) => new Date(Date.UTC(y, m, 0)).getUTCDate();
 
 function titleOf(r) {
+  if (r.exportTitle) return r.exportTitle;
   if (r.report === 'detail') {
     const [fy, fm, fd] = r.from.split('-').map(Number); const [ty, tm, td] = r.to.split('-').map(Number);
     if (r.from === r.to) return 'DAILY SALES REPORT';
@@ -40,7 +41,7 @@ const cellValue = (c, v) => {
 async function toXlsx(report) {
   const { columns, rows, totals } = report; const n = columns.length;
   const wb = new ExcelJS.Workbook(); wb.creator = 'Mainland Group'; wb.created = new Date();
-  const ws = wb.addWorksheet('Sales report', {
+  const ws = wb.addWorksheet(report.sheetName || 'Sales report', {
     views: [{ state: 'frozen', ySplit: 3 }],
     pageSetup: { orientation: 'landscape', paperSize: 9, fitToPage: true, fitToWidth: 1, fitToHeight: 0, printTitlesRow: '1:3' },
   });
@@ -55,7 +56,7 @@ async function toXlsx(report) {
   t.font = { name: 'Calibri', size: 16, bold: true, color: { argb: 'FFFFFFFF' } }; t.alignment = { horizontal: 'center', vertical: 'middle' }; t.fill = fill(NAVY);
   ws.getRow(1).height = 30;
   const info = ws.getCell(2, 1);
-  info.value = `Period: ${dmy(report.from)} to ${dmy(report.to)}     Sales: ${(report.types || []).join(' + ') || '-'}`;
+  info.value = report.infoLine || `Period: ${dmy(report.from)} to ${dmy(report.to)}     Sales: ${(report.types || []).join(' + ') || '-'}`;
   info.font = { name: 'Calibri', size: 10, italic: true, color: { argb: 'FF404040' } };
   ws.getRow(2).height = 16;
 
@@ -83,7 +84,7 @@ async function toXlsx(report) {
   });
 
   if (!rows.length) {
-    ws.mergeCells(first, 1, first, n); const e = ws.getCell(first, 1); e.value = 'No completed sales in this period.'; e.border = BOX; e.font = { name: 'Calibri', size: 11, italic: true };
+    ws.mergeCells(first, 1, first, n); const e = ws.getCell(first, 1); e.value = report.emptyText || 'No completed sales in this period.'; e.border = BOX; e.font = { name: 'Calibri', size: 11, italic: true };
     return Buffer.from(await wb.xlsx.writeBuffer());
   }
 

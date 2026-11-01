@@ -59,6 +59,8 @@
     "warehouse-transfers": "Uhamisho wa maghala",
     "physical-counts": "Hesabu halisi ya stoo",
     "sales-reports": "Ripoti za mauzo",
+    "payment-reports": "Ripoti za malipo",
+    "customer-balance-reports": "Ripoti za salio la wateja",
     "deleted-records": "Zilizofutwa"
   },
   "password": "Badili nenosiri",

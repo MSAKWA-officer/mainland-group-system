@@ -1,0 +1,17 @@
+{
+  "title": "Payments reports",
+  "subtitle": "Money received from customers (completed cash and credit sales, including Customer payments), calculated live. Voided payments are not counted. \"Paid out\" shows money paid from the Payments module. Owner / Manager only.",
+  "tabs": { "detail": "Receipts", "summary": "Summary", "methods": "By method", "customers": "By customer", "accounts": "By account", "paidOut": "Paid out" },
+  "toolbar": {
+    "today": "Today", "thisMonth": "This month", "last30": "Last 30 days", "thisYear": "This year",
+    "method": "Payment method", "allMethods": "All methods", "type": "Sale type", "allTypes": "Cash and credit sales", "cashSales": "Cash sales", "creditSales": "Credit sales",
+    "groupBy": "Group by", "byDay": "By day", "byMonth": "By month", "byYear": "By year",
+    "download": "Download Excel", "preparing": "Preparing…", "downloadPdf": "Print PDF", "downloadCsv": "Download CSV"
+  },
+  "methods": { "CASH": "Cash", "MOBILE_MONEY": "Mobile money", "BANK": "Bank", "CARD": "Card", "CHEQUE": "Cheque" },
+  "errors": { "chooseBoth": "Choose both dates.", "fromAfterTo": "The start date is after the end date.", "maxDays": "Choose at most {{max}} days." },
+  "empty": "No payments received in this period.",
+  "emptyPaidOut": "No payments made in this period.",
+  "total": "TOTAL",
+  "cols": { "period_day": "Date", "period_month": "Month", "period_year": "Year" }
+}

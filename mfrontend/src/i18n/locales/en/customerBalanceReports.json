@@ -1,0 +1,18 @@
+{
+  "title": "Customer balance reports",
+  "subtitle": "Credit sales only, calculated live \"as at\" a date: what each customer owes, how old the debt is, the unpaid invoices and a statement of account. Balance = invoice total - payments. Owner / Manager only.",
+  "tabs": { "balances": "Balances", "ageing": "Ageing", "invoices": "Unpaid invoices", "statement": "Statement" },
+  "toolbar": {
+    "asOf": "As at", "today": "Today", "salesperson": "Salesperson", "allSalespersons": "All salespersons", "customer": "Select customer…",
+    "overdueOnly": "Overdue only", "includeZero": "Include customers who owe nothing",
+    "download": "Download Excel", "preparing": "Preparing…", "downloadPdf": "Print PDF", "downloadCsv": "Download CSV"
+  },
+  "statement": { "opening": "Opening balance", "closing": "Closing balance" },
+  "errors": { "chooseCustomer": "Select a customer to see the statement.", "chooseBoth": "Choose both dates.", "fromAfterTo": "The start date is after the end date.", "maxDays": "Choose at most {{max}} days." },
+  "empty": {
+    "balances": "No customer owes money on this date.", "ageing": "No unpaid credit invoices on this date.",
+    "invoices": "No unpaid credit invoices on this date.", "statement": "No entries."
+  },
+  "total": "TOTAL",
+  "cols": {}
+}

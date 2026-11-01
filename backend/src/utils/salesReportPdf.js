@@ -44,7 +44,7 @@ function toPdf(report) {
     doc.fillColor('#FFFFFF').font('Helvetica-Bold').fontSize(14).text(titleOf(report), M, y + 7, { width: W, align: 'center', lineBreak: false });
     y += TITLE_H;
     doc.fillColor('#404040').font('Helvetica-Oblique').fontSize(8)
-      .text(`Period: ${dmy(report.from)} to ${dmy(report.to)}     Sales: ${(report.types || []).join(' + ') || '-'}`, M, y + 4, { width: W, lineBreak: false });
+      .text(report.infoLine || `Period: ${dmy(report.from)} to ${dmy(report.to)}     Sales: ${(report.types || []).join(' + ') || '-'}`, M, y + 4, { width: W, lineBreak: false });
     y += 16;
     columns.forEach((c, i) => {
       box(x0[i], y, w[i], HEAD_H, HEAD);
@@ -56,7 +56,7 @@ function toPdf(report) {
   let y = header();
   if (!rows.length) {
     box(M, y, W, ROW);
-    cellText('No completed sales in this period.', M, y, W, ROW, { size: 8 });
+    cellText(report.emptyText || 'No completed sales in this period.', M, y, W, ROW, { size: 8 });
   }
   rows.forEach((r) => {
     if (y + ROW > BOTTOM) { doc.addPage(); y = header(); }

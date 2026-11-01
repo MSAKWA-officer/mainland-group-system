@@ -1,0 +1,24 @@
+{
+  "title": "客户余额报表",
+  "subtitle": "仅限赊销，按“截至日期”实时计算：每位客户欠款多少、账龄多久、未付发票和对账单。余额 = 发票总额 − 已付款。仅限 Owner / Manager。",
+  "tabs": { "balances": "余额", "ageing": "账龄", "invoices": "未付发票", "statement": "对账单" },
+  "toolbar": {
+    "asOf": "截至", "today": "今天", "salesperson": "销售员", "allSalespersons": "全部销售员", "customer": "选择客户…",
+    "overdueOnly": "仅逾期", "includeZero": "包含无欠款客户",
+    "download": "下载 Excel", "preparing": "准备中…", "downloadPdf": "打印 PDF", "downloadCsv": "下载 CSV"
+  },
+  "statement": { "opening": "期初余额", "closing": "期末余额" },
+  "errors": { "chooseCustomer": "请选择客户以查看对账单。", "chooseBoth": "请选择两个日期。", "fromAfterTo": "开始日期晚于结束日期。", "maxDays": "最多选择 {{max}} 天。" },
+  "empty": {
+    "balances": "该日期没有客户欠款。", "ageing": "该日期没有未付的赊销发票。",
+    "invoices": "该日期没有未付的赊销发票。", "statement": "没有记录。"
+  },
+  "total": "合计",
+  "cols": {
+    "code": "编码", "name": "客户", "phone": "电话", "salesperson": "销售员", "creditLimit": "信用额度", "openInvoices": "未结发票数",
+    "invoiced": "已开发票", "paid": "已付款", "balance": "余额", "overdue": "逾期", "lastPayment": "最近付款",
+    "current": "未到期", "days1to30": "1-30天", "days31to60": "31-60天", "days61to90": "61-90天", "over90": "90天以上",
+    "customer": "客户", "saleNo": "发票号", "saleDate": "发票日期", "dueDate": "到期日", "daysOverdue": "逾期天数", "bucket": "账龄区间",
+    "date": "日期", "type": "类型", "reference": "参考号", "description": "说明", "debit": "开票 (借方)", "credit": "付款 (贷方)"
+  }
+}

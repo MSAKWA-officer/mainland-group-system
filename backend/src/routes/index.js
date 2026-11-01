@@ -38,6 +38,8 @@ router.use('/salespersons', authenticate, require('./salespersonRoutes'));
 if (SALES_ORDERS) router.use('/sales-orders', authenticate, require('./salesOrderRoutes'));       // hidden for now (config/features.js)
 if (DISCOUNTS) router.use('/discounts', authenticate, require('./discountRoutes'));                 // hidden for now (config/features.js)
 router.use('/sales-reports', authenticate, require('./salesReportRoutes'));
+router.use('/payment-reports', authenticate, require('./paymentReportRoutes'));
+router.use('/customer-balance-reports', authenticate, require('./customerBalanceReportRoutes'));
 router.use('/efd-devices', authenticate, require('./efdDeviceRoutes'));
 router.use('/efd-receipts', authenticate, require('./efdReceiptRoutes'));
 
