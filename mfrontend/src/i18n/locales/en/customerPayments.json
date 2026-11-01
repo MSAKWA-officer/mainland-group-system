@@ -7,21 +7,22 @@
   },
   "list": {
     "title": "Customer payments",
-    "subtitle": "Money received from customers, applied to their unpaid credit sales.",
+    "subtitle": "Money received from customers: customer payments, cash sale payments and credit sale receipts, all in one list.",
     "receive": "Receive Payment",
-    "search": "Search payment no, reference or customer",
-    "searchAria": "Search customer payments",
+    "search": "Search payment / receipt no, sale no, reference or customer",
+    "searchAria": "Search payments",
     "filterStatusAria": "Filter by status",
     "filterMethodAria": "Filter by method",
     "allMethods": "All methods",
     "allBankAccounts": "All bank accounts",
     "clearCustomer": "Showing one customer · clear",
     "emptyFiltered": "No payments match your filters.",
-    "emptyNone": "No customer payments yet. Use “Receive Payment” to record the first one.",
+    "emptyNone": "No payments yet. Cash sale payments and credit sale receipts appear here automatically. Use “Receive Payment” to record a customer payment.",
     "notBanked": "Not banked",
     "totalPage": "Total on this page (active payments)",
     "columns": {
-      "paymentNo": "Payment no",
+      "paymentNo": "Payment / receipt no",
+      "source": "Type",
       "date": "Date",
       "customer": "Customer",
       "method": "Method",
@@ -30,6 +31,14 @@
       "receivedBy": "Received by",
       "status": "Status",
       "actions": "Actions"
+    },
+    "filterSourceAria": "Filter by type",
+    "allSources": "All types",
+    "walkIn": "Walk-in customer",
+    "source": {
+      "CUSTOMER_PAYMENT": "Customer payment",
+      "CASH_SALE": "Cash sale",
+      "CREDIT_SALE": "Credit sale"
     }
   },
   "actions": {

@@ -7,21 +7,22 @@
   },
   "list": {
     "title": "Malipo ya wateja",
-    "subtitle": "Pesa zilizopokelewa kutoka kwa wateja, zikiwekwa kwenye mauzo yao ya mkopo ambayo hayajalipwa.",
+    "subtitle": "Pesa zilizopokelewa kutoka kwa wateja: malipo ya wateja, malipo ya mauzo ya fedha taslimu na risiti za mauzo ya mkopo, yote kwenye orodha moja.",
     "receive": "Pokea Malipo",
-    "search": "Tafuta namba ya malipo, kumbukumbu au mteja",
-    "searchAria": "Tafuta malipo ya wateja",
+    "search": "Tafuta namba ya malipo / risiti, namba ya mauzo, kumbukumbu au mteja",
+    "searchAria": "Tafuta malipo",
     "filterStatusAria": "Chuja kwa hali",
     "filterMethodAria": "Chuja kwa njia",
     "allMethods": "Njia zote",
     "allBankAccounts": "Akaunti zote za benki",
     "clearCustomer": "Inaonyesha mteja mmoja · futa kichujio",
     "emptyFiltered": "Hakuna malipo yanayolingana na vichujio vyako.",
-    "emptyNone": "Bado hakuna malipo ya wateja. Tumia “Pokea Malipo” kurekodi la kwanza.",
+    "emptyNone": "Bado hakuna malipo. Malipo ya mauzo ya fedha taslimu na risiti za mauzo ya mkopo huonekana hapa kiotomatiki. Tumia “Pokea Malipo” kurekodi malipo ya mteja.",
     "notBanked": "Haijawekwa benki",
     "totalPage": "Jumla kwenye ukurasa huu (malipo halali)",
     "columns": {
-      "paymentNo": "Namba ya malipo",
+      "paymentNo": "Namba ya malipo / risiti",
+      "source": "Aina",
       "date": "Tarehe",
       "customer": "Mteja",
       "method": "Njia",
@@ -30,6 +31,14 @@
       "receivedBy": "Alipokea",
       "status": "Hali",
       "actions": "Vitendo"
+    },
+    "filterSourceAria": "Chuja kwa aina",
+    "allSources": "Aina zote",
+    "walkIn": "Mteja wa papo hapo",
+    "source": {
+      "CUSTOMER_PAYMENT": "Malipo ya mteja",
+      "CASH_SALE": "Mauzo ya fedha taslimu",
+      "CREDIT_SALE": "Mauzo ya mkopo"
     }
   },
   "actions": {

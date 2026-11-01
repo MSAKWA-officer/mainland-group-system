@@ -7,6 +7,7 @@ const c = require('../controllers/customerPaymentController');
 
 const opt = (s) => z.preprocess((v) => (v === '' ? null : v), s.nullable().optional());
 const METHODS = ['CASH', 'MOBILE_MONEY', 'BANK', 'CARD', 'CHEQUE'];
+const SOURCES = ['CUSTOMER_PAYMENT', 'CASH_SALE', 'CREDIT_SALE'];   // list rows: customer payments + cash sale receipts + credit sale receipts
 const amount = money.refine((n) => n > 0, 'Amount must be greater than 0');
 
 // allocations is optional: leave it out and the money is applied to the customer's oldest unpaid credit sales first.
@@ -21,7 +22,7 @@ const voidS = z.object({ reason: text(500).min(3, 'A reason is required') });
 const customerParam = z.object({ customerId: uuid });
 const listQ = z.object({
   search: text(80).optional(), customerId: uuid.optional(), bankAccountId: uuid.optional(), method: z.enum(METHODS).optional(),
-  status: z.enum(['ACTIVE', 'VOIDED', 'ALL']).default('ACTIVE'), from: date.optional(), to: date.optional(),
+  source: z.enum(SOURCES).optional(), status: z.enum(['ACTIVE', 'VOIDED', 'ALL']).default('ACTIVE'), from: date.optional(), to: date.optional(),
   sortBy: z.enum(['paidOn', 'amount', 'paymentNo', 'customer']).default('paidOn'), sortDir: z.enum(['asc', 'desc']).default('desc'), ...paging,
 }).refine((q) => !q.from || !q.to || q.from <= q.to, { message: '"from" must not be after "to"', path: ['from'] });
 

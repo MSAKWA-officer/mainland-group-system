@@ -11,6 +11,13 @@ import { AccountSelect, IconBtn, METHOD, NOTICE, TONES, askReason, day, money, u
 export { NOTICE };
 
 const DOTS = { ACTIVE: 'bg-emerald-600', VOIDED: 'bg-red-500', POSTED: 'bg-emerald-600' };
+const SOURCES = ['CUSTOMER_PAYMENT', 'CASH_SALE', 'CREDIT_SALE'];
+const SOURCE_DOTS = { CUSTOMER_PAYMENT: 'bg-sky-600', CASH_SALE: 'bg-emerald-600', CREDIT_SALE: 'bg-indigo-600' };
+// Where the money came from: a customer payment, a cash sale, or a receipt on a credit sale.
+export const SourceDot = ({ value }) => {
+  const { t } = useTranslation('customerPayments');
+  return <span className="inline-flex items-center gap-2 text-black"><span className={`h-2 w-2 shrink-0 rounded-full ${SOURCE_DOTS[value] || 'bg-slate-400'}`} />{t(`list.source.${value}`, { defaultValue: value })}</span>;
+};
 // Status as black text with a coloured dot, translated (the shared Dot has English labels built in).
 export const PayDot = ({ value }) => {
   const { t } = useTranslation('customerPayments');
@@ -32,10 +39,14 @@ const Pager = ({ page, total, limit, set }) => {
 };
 
 // Icon-only actions: View and Void. Voiding reverses the sale receipts, the sale balances and the bank entry together.
+// Cash sale and credit sale receipts open in Payment History and cannot be voided here (a cash sale payment goes with its sale, a credit sale receipt is voided on the credit sale).
 export function RowActions({ r, showView, onChanged, onError }) {
   const { t } = useTranslation('customerPayments');
   const { can } = useAuth();
   const navigate = useNavigate();
+  const isCustomerPayment = !r.source || r.source === 'CUSTOMER_PAYMENT';      // the detail screen (RowActions) has no `source`: it is always a customer payment
+  const viewPath = isCustomerPayment ? `/customer-payments/${r.id}` : `/payment-history/${r.id}`;
+  const canView = isCustomerPayment || can('payment_history.read');
   const voidIt = async () => {
     const reason = askReason(t('actions.voidPrompt', { no: r.paymentNo, amount: money(r.amount) }));
     if (!reason) return;
@@ -44,19 +55,20 @@ export function RowActions({ r, showView, onChanged, onError }) {
   };
   return (
     <div className="flex items-center gap-2">
-      {showView && <IconBtn label={t('actions.view')} tone={TONES.view} onClick={() => navigate(`/customer-payments/${r.id}`)}><EyeIcon /></IconBtn>}
-      {r.status === 'ACTIVE' && can('customer_payments.void') && <IconBtn label={t('actions.void')} tone={TONES.del} onClick={voidIt}><BanIcon /></IconBtn>}
+      {showView && canView && <IconBtn label={t('actions.view')} tone={TONES.view} onClick={() => navigate(viewPath)}><EyeIcon /></IconBtn>}
+      {isCustomerPayment && r.status === 'ACTIVE' && can('customer_payments.void') && <IconBtn label={t('actions.void')} tone={TONES.del} onClick={voidIt}><BanIcon /></IconBtn>}
     </div>
   );
 }
 
-// Money received from customers, applied to their credit sales. Users without customer_payments.read_all only see their own customers.
+// Every payment received: customer payments (applied to credit sales) + cash sale payments + receipts taken directly on credit sales.
+// The cash / credit rows are merged in automatically by the API. Users without customer_payments.read_all only see their own customers' (and own sales') payments.
 // Table look: Arial 14px, near-black text, 1px light-grey grid on every cell, ~39px rows,
 // first column left-aligned and the rest centred, capital column titles.
 const CELL = 'h-[39px] border border-[#e5e7eb] px-3 py-2 align-middle text-[14px] font-normal leading-5 text-[#212121]';
 const HEAD = `${CELL} bg-white font-semibold uppercase`;
 const al = (i) => (i === 0 ? 'text-left' : 'text-center');
-const COLS = ['paymentNo', 'date', 'customer', 'method', 'paidInto', 'amount', 'receivedBy', 'status', 'actions'];
+const COLS = ['paymentNo', 'source', 'date', 'customer', 'method', 'paidInto', 'amount', 'receivedBy', 'status', 'actions'];
 
 export default function CustomerPaymentsList() {
   const { t } = useTranslation('customerPayments');
@@ -67,7 +79,7 @@ export default function CustomerPaymentsList() {
   const customerId = params.get('customerId') || '';
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState(''); const [q, setQ] = useState('');
-  const [f, setF] = useState({ status: 'ACTIVE', method: '', bankAccountId: '', from: '', to: '' });
+  const [f, setF] = useState({ status: 'ACTIVE', source: '', method: '', bankAccountId: '', from: '', to: '' });
   const [err, setErr] = useState(''); const [ok, setOk] = useState('');
   useEffect(() => { const t0 = setTimeout(() => { setQ(search.trim()); setPage(1); }, 300); return () => clearTimeout(t0); }, [search]);
   const accounts = useAccounts();
@@ -92,6 +104,9 @@ export default function CustomerPaymentsList() {
         <select className="input max-w-[9rem] !text-[14px] !text-[#212121]" aria-label={t('list.filterStatusAria')} value={f.status} onChange={setFilter('status')}>
           <option value="ACTIVE">{t('status.ACTIVE')}</option><option value="VOIDED">{t('status.VOIDED')}</option><option value="ALL">{t('status.ALL')}</option>
         </select>
+        <select className="input max-w-[13rem] !text-[14px] !text-[#212121]" aria-label={t('list.filterSourceAria')} value={f.source} onChange={setFilter('source')}>
+          <option value="">{t('list.allSources')}</option>{SOURCES.map((k) => <option key={k} value={k}>{t(`list.source.${k}`)}</option>)}
+        </select>
         <select className="input max-w-[11rem] !text-[14px] !text-[#212121]" aria-label={t('list.filterMethodAria')} value={f.method} onChange={setFilter('method')}>
           <option value="">{t('list.allMethods')}</option>{Object.entries(METHOD).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
@@ -108,9 +123,10 @@ export default function CustomerPaymentsList() {
             {!list.loading && rows.length === 0 && <tr><td className={`${CELL} text-left`} colSpan={COLS.length}>{filtered ? t('list.emptyFiltered') : t('list.emptyNone')}</td></tr>}
             {rows.map((r) => (
               <tr key={r.id} className="bg-white">
-                <td className={`${CELL} whitespace-nowrap text-left`}>{r.paymentNo}</td>
+                <td className={`${CELL} whitespace-nowrap text-left`}>{r.paymentNo}{r.saleNo && <div className="text-xs">{r.saleNo}</div>}</td>
+                <td className={`${CELL} whitespace-nowrap text-center`}><div className="flex justify-center"><SourceDot value={r.source} /></div></td>
                 <td className={`${CELL} whitespace-nowrap text-center`}>{day(r.paidOn)}</td>
-                <td className={`${CELL} text-center`}>{r.customer?.name || '—'}{r.customer?.code && <div className="text-xs">{r.customer.code}</div>}</td>
+                <td className={`${CELL} text-center`}>{r.customer?.name || (r.source === 'CASH_SALE' ? t('list.walkIn') : '—')}{r.customer?.code && <div className="text-xs">{r.customer.code}</div>}</td>
                 <td className={`${CELL} text-center`}>{METHOD[r.method] || r.method}{r.reference && <div className="text-xs">{r.reference}</div>}</td>
                 <td className={`${CELL} text-center`}>{r.bankAccount ? <>{r.bankAccount.accountName}<div className="text-xs">{r.bankAccount.bank?.name} · {r.bankAccount.accountNo}</div></> : <span className="text-xs">{t('list.notBanked')}</span>}</td>
                 <td className={`${CELL} whitespace-nowrap text-center ${r.status === 'VOIDED' ? '!text-slate-500 line-through' : ''} !font-semibold`}>{money(r.amount)}</td>
@@ -121,7 +137,7 @@ export default function CustomerPaymentsList() {
             ))}
           </tbody>
           {rows.length > 0 && (
-            <tfoot><tr className="bg-white"><td className={`${CELL} text-left !font-semibold`} colSpan={5}>{t('list.totalPage')}</td>
+            <tfoot><tr className="bg-white"><td className={`${CELL} text-left !font-semibold`} colSpan={6}>{t('list.totalPage')}</td>
               <td className={`${CELL} text-center !font-semibold`}>{money(pageTotal)}</td><td className={`${CELL} text-center`} colSpan={3} /></tr></tfoot>
           )}
         </table>

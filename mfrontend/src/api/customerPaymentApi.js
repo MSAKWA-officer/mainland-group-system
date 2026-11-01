@@ -1,6 +1,8 @@
 import { api } from './client';
 
-// params: { page, limit, search, customerId, bankAccountId, method, status (ACTIVE|VOIDED|ALL), from, to, sortBy (paidOn|amount|paymentNo|customer), sortDir }
+// Every payment received, in one list: customer payments + cash sale payments + receipts taken directly on credit sales (merged by the API).
+// params: { page, limit, search, customerId, bankAccountId, method, source (CUSTOMER_PAYMENT|CASH_SALE|CREDIT_SALE), status (ACTIVE|VOIDED|ALL), from, to, sortBy (paidOn|amount|paymentNo|customer), sortDir }
+// rows: { id, source, paymentNo, paidOn, amount, method, reference, status, customer, bankAccount, receiver, saleId, saleNo }  (saleId/saleNo only on cash / credit sale rows)
 export const list = (params) => api.get('/customer-payments', { params }).then((r) => r.data);
 export const get = (id) => api.get(`/customer-payments/${id}`).then((r) => r.data);
 // body: { customerId, amount, method, bankAccountId?, reference?, paidOn?, notes?, allocations?: [{ saleId, amount }] }

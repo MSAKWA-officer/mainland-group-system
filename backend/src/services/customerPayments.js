@@ -1,4 +1,4 @@
-const { Op, literal } = require('sequelize');
+const { Op, literal, QueryTypes } = require('sequelize');
 const { sequelize, Sale, SalePayment, Customer, BankAccount, Bank, BankTransaction, CustomerPayment, CustomerPaymentAllocation, User } = require('../models');
 const { AppError } = require('../utils/errors');
 const { like } = require('../utils/schemas');
@@ -161,18 +161,65 @@ const includes = (custWhere) => [
   { model: BankAccount, as: 'bankAccount', attributes: ['id', 'accountNo', 'accountName', 'currency'], include: [{ model: Bank, as: 'bank', attributes: ['id', 'code', 'name'] }] },
   { model: User, as: 'receiver', attributes: ['id', 'fullName'] },
 ];
-const SORT = { paidOn: 'paidOn', amount: 'amount', paymentNo: 'paymentNo' };
+/* ---------- list: ONE feed of every payment received ----------
+   The list shows three kinds of rows, merged automatically (nothing to sync, it is a live query):
+     CUSTOMER_PAYMENT  money recorded on this screen (CPY-...), applied to credit sales
+     CASH_SALE         the receipt taken when a cash sale is completed (RCP-...)
+     CREDIT_SALE       a receipt recorded directly on a credit sale (RCP-...)
+   A receipt that was created BY a customer payment is already represented by its CPY- row, so those `sale_payments` rows are left out (no double counting).
+   Only CUSTOMER_PAYMENT rows can be voided here: a cash sale payment goes with its sale, a credit sale receipt is voided on the credit sale. */
+const SOURCES = ['CUSTOMER_PAYMENT', 'CASH_SALE', 'CREDIT_SALE'];
+const NONE = '00000000-0000-0000-0000-000000000000';
+const FEED = `
+  SELECT 'CUSTOMER_PAYMENT' AS source, cp.id, cp.payment_no, cp.paid_on, cp.amount, cp.method, cp.reference, cp.status, cp.created_at,
+         cp.customer_id, c.code AS customer_code, c.name AS customer_name, cp.bank_account_id, cp.received_by,
+         NULL::uuid AS sale_id, NULL::text AS sale_no, c.salesperson_id AS sp_customer, c.salesperson_id AS sp_sale
+    FROM customer_payments cp JOIN customers c ON c.id = cp.customer_id
+  UNION ALL
+  SELECT CASE WHEN s.sale_type = 'CASH' THEN 'CASH_SALE' ELSE 'CREDIT_SALE' END, p.id, p.receipt_no, p.paid_on, p.amount, p.method, p.reference,
+         CASE WHEN p.voided_at IS NULL THEN 'ACTIVE' ELSE 'VOIDED' END, p.created_at,
+         s.customer_id, c.code, COALESCE(c.name, s.walk_in_name), p.bank_account_id, p.received_by,
+         s.id, s.sale_no, c.salesperson_id, s.salesperson_id
+    FROM sale_payments p JOIN sales s ON s.id = p.sale_id LEFT JOIN customers c ON c.id = s.customer_id
+   WHERE NOT EXISTS (SELECT 1 FROM customer_payment_allocations a WHERE a.sale_payment_id = p.id)`;
+const SORT = { paidOn: 'u.paid_on', amount: 'u.amount', paymentNo: 'u.payment_no', customer: 'u.customer_name' };
 
 async function list(req, q) {
-  const where = {};
-  if (q.status !== 'ALL') where.status = q.status;
-  for (const k of ['customerId', 'bankAccountId', 'method']) if (q[k]) where[k] = q[k];
-  if (q.from || q.to) where.paidOn = { ...(q.from && { [Op.gte]: q.from }), ...(q.to && { [Op.lte]: q.to }) };
-  if (q.search) where[Op.or] = [{ paymentNo: { [Op.iLike]: like(q.search) } }, { reference: { [Op.iLike]: like(q.search) } },
-    { '$customer.name$': { [Op.iLike]: like(q.search) } }, { '$customer.code$': { [Op.iLike]: like(q.search) } }];
-  const order = q.sortBy === 'customer' ? [[{ model: Customer, as: 'customer' }, 'name', q.sortDir.toUpperCase()]] : [[SORT[q.sortBy], q.sortDir.toUpperCase()], ['createdAt', 'DESC']];
-  const { rows, count } = await CustomerPayment.findAndCountAll({ where, include: includes(await customerFilter(req)), order, limit: q.limit, offset: (q.page - 1) * q.limit, distinct: true, subQuery: false });
-  return { data: rows, total: count, page: q.page, limit: q.limit };
+  const where = ['1 = 1']; const rep = {};
+  if (q.status !== 'ALL') { where.push('u.status = :status'); rep.status = q.status; }
+  if (q.source) { where.push('u.source = :source'); rep.source = q.source; }
+  if (q.customerId) { where.push('u.customer_id = :customerId'); rep.customerId = q.customerId; }
+  if (q.bankAccountId) { where.push('u.bank_account_id = :bankAccountId'); rep.bankAccountId = q.bankAccountId; }
+  if (q.method) { where.push('u.method = :method'); rep.method = q.method; }
+  if (q.from) { where.push('u.paid_on >= :from'); rep.from = q.from; }
+  if (q.to) { where.push('u.paid_on <= :to'); rep.to = q.to; }
+  if (q.search) {
+    where.push('(u.payment_no ILIKE :search OR u.sale_no ILIKE :search OR u.reference ILIKE :search OR u.customer_name ILIKE :search OR u.customer_code ILIKE :search)');
+    rep.search = like(q.search);
+  }
+  if (!canAll(req, PERM_ALL)) {                                                         // own customers' payments, or receipts of own sales
+    const sp = await mine(req);
+    where.push('(u.sp_customer = :sp OR u.sp_sale = :sp)'); rep.sp = sp ? sp.id : NONE;
+  }
+  const w = where.join(' AND ');
+  const dir = q.sortDir === 'asc' ? 'ASC' : 'DESC';
+  const run = (sql, r) => sequelize.query(sql, { replacements: r, type: QueryTypes.SELECT });
+  const [rows, [count]] = await Promise.all([
+    run(`SELECT u.*, ba.account_no, ba.account_name, b.name AS bank_name, us.full_name AS receiver_name
+           FROM (${FEED}) u
+           LEFT JOIN bank_accounts ba ON ba.id = u.bank_account_id LEFT JOIN banks b ON b.id = ba.bank_id LEFT JOIN users us ON us.id = u.received_by
+          WHERE ${w} ORDER BY ${SORT[q.sortBy] || SORT.paidOn} ${dir}, u.created_at DESC, u.id LIMIT :limit OFFSET :offset`,
+      { ...rep, limit: q.limit, offset: (q.page - 1) * q.limit }),
+    run(`SELECT COUNT(*)::int AS n FROM (${FEED}) u WHERE ${w}`, rep),
+  ]);
+  const data = rows.map((r) => ({
+    id: r.id, source: r.source, paymentNo: r.payment_no, paidOn: r.paid_on, amount: r.amount, method: r.method, reference: r.reference, status: r.status,
+    customer: r.customer_name ? { id: r.customer_id, code: r.customer_code, name: r.customer_name } : null,
+    bankAccount: r.bank_account_id ? { id: r.bank_account_id, accountNo: r.account_no, accountName: r.account_name, bank: { name: r.bank_name } } : null,
+    receiver: { id: r.received_by, fullName: r.receiver_name },
+    saleId: r.sale_id, saleNo: r.sale_no,
+  }));
+  return { data, total: count.n, page: q.page, limit: q.limit };
 }
 
 async function getOne(req, id) {
