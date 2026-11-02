@@ -5,6 +5,7 @@ const { titleOf, headLabel, dmy, SHADED_KEYS } = require('./salesReportXlsx');
    navy title bar, dark-blue header row (repeated on every page), black cell borders, Total column shaded light blue, TOTAL row on the last page, "Page x of y" footer.
    The built-in PDF font has no Chinese / emoji glyphs, so such characters print as "?". */
 const NAVY = '#17365D'; const HEAD = '#1F4E78'; const SHADE = '#EAF2F8';
+const CREAM = '#FFF2CC';
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const safe = (v) => String(v ?? '').replace(/[^\u0000-\u00FF]/g, '?');
 const nf = (min, max) => (v) => Number(v).toLocaleString('en-US', { minimumFractionDigits: min, maximumFractionDigits: max });
@@ -16,7 +17,7 @@ const show = (c, v) => {
 };
 
 function toPdf(report) {
-  const { columns, rows, totals } = report; const n = columns.length;
+  const { columns, rows, totals } = report; const n = columns.length; const plain = report.layout === 'balances';
   const doc = new PDFDocument({ size: 'A4', layout: 'landscape', margin: 20, bufferPages: true, info: { Title: titleOf(report), Author: 'Mainland Group' } });
   const chunks = []; doc.on('data', (b) => chunks.push(b));
   const done = new Promise((resolve, reject) => { doc.on('end', () => resolve(Buffer.concat(chunks))); doc.on('error', reject); });
@@ -40,14 +41,14 @@ function toPdf(report) {
 
   const header = () => {
     let y = M;
-    doc.rect(M, y, W, TITLE_H).fill(NAVY);
-    doc.fillColor('#FFFFFF').font('Helvetica-Bold').fontSize(14).text(titleOf(report), M, y + 7, { width: W, align: 'center', lineBreak: false });
+    if (!plain) doc.rect(M, y, W, TITLE_H).fill(NAVY);
+    doc.fillColor(plain ? '#000000' : '#FFFFFF').font('Helvetica-Bold').fontSize(14).text(titleOf(report), M, y + 7, { width: W, align: 'center', lineBreak: false });
     y += TITLE_H;
     doc.fillColor('#404040').font('Helvetica-Oblique').fontSize(8)
       .text(report.infoLine || `Period: ${dmy(report.from)} to ${dmy(report.to)}     Sales: ${(report.types || []).join(' + ') || '-'}`, M, y + 4, { width: W, lineBreak: false });
     y += 16;
     columns.forEach((c, i) => {
-      box(x0[i], y, w[i], HEAD_H, HEAD);
+      box(x0[i], y, w[i], HEAD_H, plain ? NAVY : HEAD);
       doc.fillColor('#FFFFFF').font('Helvetica-Bold').fontSize(8).text(safe(headLabel(c)), x0[i] + 3, y + 4, { width: w[i] - 6, height: HEAD_H - 6, align: 'center', ellipsis: true });
     });
     return y + HEAD_H;
@@ -61,17 +62,17 @@ function toPdf(report) {
   rows.forEach((r) => {
     if (y + ROW > BOTTOM) { doc.addPage(); y = header(); }
     columns.forEach((c, i) => {
-      box(x0[i], y, w[i], ROW, SHADED_KEYS.has(c.key) ? SHADE : null);
-      cellText(show(c, r[c.key]), x0[i], y, w[i], ROW, { align: c.type === 'text' ? (DATE.test(r[c.key]) ? 'center' : 'left') : 'right' });
+      box(x0[i], y, w[i], ROW, SHADED_KEYS.has(c.key) ? SHADE : plain ? CREAM : null);
+      cellText(show(c, r[c.key]), x0[i], y, w[i], ROW, { color: c.color && `#${c.color}`, align: c.type === 'text' ? (DATE.test(r[c.key]) ? 'center' : 'left') : 'right' });
     });
     y += ROW;
   });
   if (rows.length) {
     if (y + ROW > BOTTOM) { doc.addPage(); y = header(); }
     columns.forEach((c, i) => {
-      box(x0[i], y, w[i], ROW, SHADED_KEYS.has(c.key) ? SHADE : null);
+      box(x0[i], y, w[i], ROW, SHADED_KEYS.has(c.key) ? SHADE : plain ? CREAM : null);
       const v = i === 0 ? 'TOTAL' : (totals && totals[c.key] !== undefined && c.type !== 'text' ? show(c, totals[c.key]) : '');
-      cellText(v, x0[i], y, w[i], ROW, { bold: true, align: i === 0 ? 'left' : 'right' });
+      cellText(v, x0[i], y, w[i], ROW, { bold: true, color: c.color && `#${c.color}`, align: i === 0 ? 'left' : 'right' });
     });
   }
 

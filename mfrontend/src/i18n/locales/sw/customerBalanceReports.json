@@ -1,24 +1,79 @@
 {
   "title": "Ripoti za salio la wateja",
   "subtitle": "Mauzo ya mkopo tu, yanahesabiwa papo hapo \"hadi tarehe\" fulani: kila mteja anadaiwa kiasi gani, deni lina umri gani, ankara ambazo hazijalipwa na taarifa ya akaunti. Salio = Jumla ya ankara − Malipo. Ni Owner / Manager tu.",
-  "tabs": { "balances": "Salio", "ageing": "Umri wa madeni", "invoices": "Ankara zisizolipwa", "statement": "Taarifa ya akaunti" },
-  "toolbar": {
-    "asOf": "Hadi tarehe", "today": "Leo", "salesperson": "Muuzaji", "allSalespersons": "Wauzaji wote", "customer": "Chagua mteja…",
-    "overdueOnly": "Yaliyochelewa tu", "includeZero": "Jumuisha wateja wasiodaiwa",
-    "download": "Pakua Excel", "preparing": "Inaandaa…", "downloadPdf": "Print PDF", "downloadCsv": "Pakua CSV"
+  "tabs": {
+    "balances": "Salio",
+    "ageing": "Umri wa madeni",
+    "invoices": "Ankara zisizolipwa",
+    "statement": "Taarifa ya akaunti"
   },
-  "statement": { "opening": "Salio la kuanzia", "closing": "Salio la mwisho" },
-  "errors": { "chooseCustomer": "Chagua mteja ili kuona taarifa.", "chooseBoth": "Chagua tarehe zote mbili.", "fromAfterTo": "Tarehe ya kuanza ni baada ya tarehe ya mwisho.", "maxDays": "Chagua siku zisizozidi {{max}}." },
+  "toolbar": {
+    "asOf": "Hadi tarehe",
+    "today": "Leo",
+    "salesperson": "Muuzaji",
+    "allSalespersons": "Wauzaji wote",
+    "customer": "Chagua mteja…",
+    "overdueOnly": "Yaliyochelewa tu",
+    "includeZero": "Jumuisha wateja wasiodaiwa",
+    "download": "Pakua Excel",
+    "preparing": "Inaandaa…",
+    "downloadPdf": "Print PDF",
+    "downloadCsv": "Pakua CSV",
+    "from": "Kuanzia (si lazima)"
+  },
+  "statement": {
+    "opening": "Salio la kuanzia",
+    "closing": "Salio la mwisho"
+  },
+  "errors": {
+    "chooseCustomer": "Chagua mteja ili kuona taarifa.",
+    "chooseBoth": "Chagua tarehe zote mbili.",
+    "fromAfterTo": "Tarehe ya kuanza ni baada ya tarehe ya mwisho.",
+    "maxDays": "Chagua siku zisizozidi {{max}}.",
+    "fromAfterAsOf": "Tarehe ya \"kuanzia\" ni baada ya \"hadi tarehe\"."
+  },
   "empty": {
-    "balances": "Hakuna mteja anayedaiwa katika tarehe hii.", "ageing": "Hakuna ankara za mkopo ambazo hazijalipwa katika tarehe hii.",
-    "invoices": "Hakuna ankara za mkopo ambazo hazijalipwa katika tarehe hii.", "statement": "Hakuna miamala."
+    "balances": "Hakuna mteja anayedaiwa katika tarehe hii.",
+    "ageing": "Hakuna ankara za mkopo ambazo hazijalipwa katika tarehe hii.",
+    "invoices": "Hakuna ankara za mkopo ambazo hazijalipwa katika tarehe hii.",
+    "statement": "Hakuna miamala."
   },
   "total": "JUMLA",
   "cols": {
-    "code": "Msimbo", "name": "Mteja", "phone": "Simu", "salesperson": "Muuzaji", "creditLimit": "Kikomo cha mkopo", "openInvoices": "Ankara wazi",
-    "invoiced": "Iliyoandikwa ankara", "paid": "Kilicholipwa", "balance": "Salio", "overdue": "Lililochelewa", "lastPayment": "Malipo ya mwisho",
-    "current": "Bado halijafika (Current)", "days1to30": "Siku 1-30", "days31to60": "Siku 31-60", "days61to90": "Siku 61-90", "over90": "Zaidi ya siku 90",
-    "customer": "Mteja", "saleNo": "Namba ya ankara", "saleDate": "Tarehe ya ankara", "dueDate": "Tarehe ya kulipa", "daysOverdue": "Siku za kuchelewa", "bucket": "Kundi la umri",
-    "date": "Tarehe", "type": "Aina", "reference": "Rejea", "description": "Maelezo", "debit": "Ankara (debit)", "credit": "Malipo (credit)"
+    "code": "Msimbo",
+    "name": "Mteja",
+    "phone": "Simu",
+    "salesperson": "Muuzaji",
+    "creditLimit": "Kikomo cha mkopo",
+    "openInvoices": "Ankara wazi",
+    "invoiced": "Iliyoandikwa ankara",
+    "paid": "Kilicholipwa",
+    "balance": "Salio",
+    "overdue": "Lililochelewa",
+    "lastPayment": "Malipo ya mwisho",
+    "current": "Bado halijafika (Current)",
+    "days1to30": "Siku 1-30",
+    "days31to60": "Siku 31-60",
+    "days61to90": "Siku 61-90",
+    "over90": "Zaidi ya siku 90",
+    "customer": "Mteja",
+    "saleNo": "Namba ya ankara",
+    "saleDate": "Tarehe ya ankara",
+    "dueDate": "Tarehe ya kulipa",
+    "daysOverdue": "Siku za kuchelewa",
+    "bucket": "Kundi la umri",
+    "date": "Tarehe",
+    "type": "Aina",
+    "reference": "Rejea",
+    "description": "Maelezo",
+    "debit": "Ankara (debit)",
+    "credit": "Malipo (credit)",
+    "customerId": "Namba ya mteja",
+    "customerName": "Jina la mteja",
+    "opening": "Salio la kuanzia (TZS)",
+    "creditSales": "Jumla ya mauzo ya mkopo",
+    "totalPaid": "Jumla iliyolipwa (TZS)",
+    "remaining": "Salio lililobaki (TZS)",
+    "remark": "MAELEZO"
   }
 }

@@ -7,8 +7,9 @@ const c = require('../controllers/customerBalanceReportController');
 
 const MAX_DAYS = 1100;   // statement: about 3 years
 const format = z.enum(['json', 'csv', 'xlsx', 'pdf']).default('json');
-const asOfQ = z.object({ asOf: date.optional(), customerId: uuid.optional(), salespersonId: uuid.optional(),
-  includeZero: bool.default('false'), overdueOnly: bool.default('false'), format });
+const asOfQ = z.object({ asOf: date.optional(), from: date.optional(), customerId: uuid.optional(), salespersonId: uuid.optional(),
+  includeZero: bool.default('false'), overdueOnly: bool.default('false'), format })
+  .refine((q) => !q.from || !q.asOf || q.from <= q.asOf, { message: '"from" must not be after "as at"', path: ['from'] });
 const statementQ = z.object({ customerId: uuid, from: date, to: date, format })
   .refine((q) => q.from <= q.to, { message: '"from" must not be after "to"', path: ['from'] })
   .refine((q) => !(q.from <= q.to) || (Date.parse(`${q.to}T00:00:00Z`) - Date.parse(`${q.from}T00:00:00Z`)) / 86400000 + 1 <= MAX_DAYS, { message: `Choose at most ${MAX_DAYS} days`, path: ['to'] });

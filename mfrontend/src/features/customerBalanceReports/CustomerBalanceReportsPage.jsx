@@ -21,7 +21,7 @@ export default function CustomerBalanceReportsPage() {
   const { can } = useAuth();
   const today = tzToday();
   const [tab, setTab] = useState('balances');
-  const [f, setF] = useState({ asOf: today, salespersonId: '', includeZero: false, overdueOnly: false, from: `${today.slice(0, 4)}-01-01`, to: today });
+  const [f, setF] = useState({ asOf: today, salespersonId: '', includeZero: false, overdueOnly: false, from: `${today.slice(0, 4)}-01-01`, to: today, balFrom: '' });
   const [customer, setCustomer] = useState(null);
   const [busy, setBusy] = useState(false); const [dlErr, setDlErr] = useState('');
   const sps = useLoad(() => (can('salespersons.read') ? salespersonApi.list({ limit: 100 }) : Promise.resolve(null)), []);
@@ -29,12 +29,13 @@ export default function CustomerBalanceReportsPage() {
   const tick = (k) => (e) => setF({ ...f, [k]: e.target.checked });
   const isStatement = tab === 'statement';
 
-  const err = isStatement
+  const err = !isStatement && tab === 'balances' && f.balFrom && f.balFrom > f.asOf ? t('errors.fromAfterAsOf')
+    : isStatement
     ? (!customer ? t('errors.chooseCustomer') : !f.from || !f.to ? t('errors.chooseBoth') : f.from > f.to ? t('errors.fromAfterTo') : span(f.from, f.to) > MAX_DAYS ? t('errors.maxDays', { max: MAX_DAYS }) : '')
     : '';
   const params = isStatement
     ? clean({ customerId: customer?.id, from: f.from, to: f.to })
-    : clean({ asOf: f.asOf, salespersonId: f.salespersonId, ...(tab === 'balances' && { includeZero: f.includeZero, overdueOnly: f.overdueOnly }) });
+    : clean({ asOf: f.asOf, salespersonId: f.salespersonId, ...(tab === 'balances' && { from: f.balFrom, includeZero: f.includeZero, overdueOnly: f.overdueOnly }) });
   const rpt = useLoad(() => (err ? Promise.resolve(null) : customerBalanceReportApi[tab](params)), [tab, JSON.stringify(params), err]);
   const download = async (format) => { setBusy(true); setDlErr(''); try { await customerBalanceReportApi.download(tab, params, format); } catch (x) { setDlErr(errMsg(x)); } setBusy(false); };
   const d = err ? null : rpt.data;
@@ -61,6 +62,7 @@ export default function CustomerBalanceReportsPage() {
           <>
             <label className="flex items-center gap-2">{t('toolbar.asOf')} <input type="date" className={INPUT} value={f.asOf} onChange={set('asOf')} /></label>
             <button type="button" className="btn-ghost" onClick={() => setF({ ...f, asOf: today })}>{t('toolbar.today')}</button>
+            {tab === 'balances' && <label className="flex items-center gap-2">{t('toolbar.from')} <input type="date" className={INPUT} value={f.balFrom} max={f.asOf || undefined} onChange={set('balFrom')} /></label>}
             {sps.data?.data?.length > 0 && (
               <select className={`${INPUT} max-w-[14rem]`} aria-label={t('toolbar.salesperson')} value={f.salespersonId} onChange={set('salespersonId')}>
                 <option value="">{t('toolbar.allSalespersons')}</option>{sps.data.data.map((s) => <option key={s.id} value={s.id}>{s.fullName}</option>)}

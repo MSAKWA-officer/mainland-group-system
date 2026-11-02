@@ -6,6 +6,7 @@ const ExcelJS = require('exceljs');
 // Colours taken from the company template: title bar 17365D, header 1F4E78, Total column EAF2F8, black cell borders.
 const NAVY = 'FF17365D'; const HEAD = 'FF1F4E78'; const SHADE = 'FFEAF2F8';
 const SHADED_KEYS = new Set(['total', 'value', 'balance']);
+const CREAM = 'FFFFF2CC';   // Customer balances layout: cream rows, plain black title, navy header; a column may carry its own font colour (c.color)
 const line = { style: 'thin', color: { argb: 'FF000000' } };
 const BOX = { top: line, left: line, bottom: line, right: line };
 const FMT = { money: '#,##0.00', count: '#,##0', qty: '#,##0.###', date: 'dd/mm/yyyy' };
@@ -53,7 +54,8 @@ async function toXlsx(report) {
   // Row 1: title bar. Row 2: period + sale types.
   ws.mergeCells(1, 1, 1, n);
   const t = ws.getCell(1, 1); t.value = titleOf(report);
-  t.font = { name: 'Calibri', size: 16, bold: true, color: { argb: 'FFFFFFFF' } }; t.alignment = { horizontal: 'center', vertical: 'middle' }; t.fill = fill(NAVY);
+  const plain = report.layout === 'balances';
+  t.font = { name: 'Calibri', size: 16, bold: true, color: { argb: plain ? 'FF000000' : 'FFFFFFFF' } }; t.alignment = { horizontal: 'center', vertical: 'middle' }; if (!plain) t.fill = fill(NAVY);
   ws.getRow(1).height = 30;
   const info = ws.getCell(2, 1);
   info.value = report.infoLine || `Period: ${dmy(report.from)} to ${dmy(report.to)}     Sales: ${(report.types || []).join(' + ') || '-'}`;
@@ -63,7 +65,7 @@ async function toXlsx(report) {
   // Row 3: header
   columns.forEach((c, i) => {
     const h = ws.getCell(3, i + 1); h.value = headLabel(c);
-    h.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } }; h.fill = fill(HEAD); h.border = BOX;
+    h.font = { name: 'Calibri', size: 11, bold: true, color: { argb: 'FFFFFFFF' } }; h.fill = fill(plain ? NAVY : HEAD); h.border = BOX;
     h.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
   });
   ws.getRow(3).height = 36;
@@ -74,8 +76,8 @@ async function toXlsx(report) {
     const row = ws.getRow(first + k);
     columns.forEach((c, i) => {
       const cell = row.getCell(i + 1); const v = cellValue(c, r[c.key]);
-      cell.value = v; cell.border = BOX; cell.font = { name: 'Calibri', size: 11 };
-      if (SHADED_KEYS.has(c.key)) cell.fill = fill(SHADE);
+      cell.value = v; cell.border = BOX; cell.font = { name: 'Calibri', size: 11, ...(c.color && { color: { argb: `FF${c.color}` } }) };
+      if (SHADED_KEYS.has(c.key)) cell.fill = fill(SHADE); else if (plain) cell.fill = fill(CREAM);
       if (v instanceof Date) { cell.numFmt = FMT.date; cell.alignment = { horizontal: 'center', vertical: 'middle' }; }
       else if (c.type === 'text') cell.alignment = { vertical: 'middle' };
       else { cell.numFmt = FMT[c.type]; cell.alignment = { horizontal: 'right', vertical: 'middle' }; }
@@ -91,7 +93,7 @@ async function toXlsx(report) {
   // TOTAL row (follows the filters)
   const tr = ws.getRow(last + 1);
   columns.forEach((c, i) => {
-    const cell = tr.getCell(i + 1); cell.border = BOX; cell.font = { name: 'Calibri', size: 11, bold: true }; if (SHADED_KEYS.has(c.key)) cell.fill = fill(SHADE);
+    const cell = tr.getCell(i + 1); cell.border = BOX; cell.font = { name: 'Calibri', size: 11, bold: true, ...(c.color && { color: { argb: `FF${c.color}` } }) }; if (SHADED_KEYS.has(c.key)) cell.fill = fill(SHADE); else if (plain) cell.fill = fill(CREAM);
     if (i === 0) { cell.value = 'TOTAL'; return; }
     cell.alignment = { horizontal: 'right', vertical: 'middle' };
     if (totals && totals[c.key] !== undefined && c.type !== 'text') {

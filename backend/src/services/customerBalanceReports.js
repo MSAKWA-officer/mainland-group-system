@@ -34,23 +34,35 @@ const asOfOf = async (q) => q.asOf || (await run("SELECT to_char(CURRENT_DATE, '
 const ctx = async (q) => { const asOf = await asOfOf(q); return { asOf, rep: { asOf, cid: q.customerId ?? null, sp: q.salespersonId ?? null } }; };
 const head = (report, title, exportTitle, asOf, empty) => ({ report, title, exportTitle: `${exportTitle} AS AT ${dmy(asOf)}`, asOf, infoLine: `As at: ${dmy(asOf)}     Credit sales only`, emptyText: empty, sheetName: 'Customer balances' });
 
-/* 0. Balances */
+/* 0. Balances - company layout: Date | Customer ID | Customer name | Phone | Opening balance | Total credit sales | Total paid | Remaining balance | Remark.
+   With "from": opening = what the customer still owed before that date; credit sales / paid = invoices and payments from that date up to "asOf". Without "from" opening is 0 and everything counts.
+   Remaining = opening + credit sales - paid (= the balance as at "asOf"). Date = date of the customer's latest credit sale in the period. */
 async function balances(req, q) {
   const { asOf, rep } = await ctx(q);
-  const od = 'SUM(o.bal) FILTER (WHERE o.bal > 0 AND o.days > 0)';
-  const rows = await run(`${CTE} SELECT COALESCE(c.code, '') AS code, c.name, COALESCE(c.phone, '') AS phone, COALESCE(sp.full_name, '') AS salesperson,
-      c.credit_limit::numeric(20,2)::text AS "creditLimit", COUNT(*) FILTER (WHERE o.bal > 0)::int AS "openInvoices",
-      ${M('SUM(o.total)')} AS invoiced, ${M('SUM(o.paid)')} AS paid, ${M('SUM(o.bal)')} AS balance, ${M(od)} AS overdue,
-      (SELECT to_char(MAX(p.paid_on), 'YYYY-MM-DD') FROM sale_payments p JOIN sales s2 ON s2.id = p.sale_id
-        WHERE s2.customer_id = c.id AND s2.sale_type = 'CREDIT' AND p.voided_at IS NULL AND p.paid_on <= ${AS_OF}) AS "lastPayment"
-    FROM customers c JOIN o ON o.customer_id = c.id LEFT JOIN salespersons sp ON sp.id = c.salesperson_id
-    WHERE ${CUST} GROUP BY c.id, sp.full_name
-    HAVING (CAST(:includeZero AS boolean) OR SUM(o.bal) > 0) AND (NOT CAST(:overdueOnly AS boolean) OR COALESCE(${od}, 0) > 0)
-    ORDER BY SUM(o.bal) DESC, c.name LIMIT ${LIMIT}`, { ...rep, includeZero: !!q.includeZero, overdueOnly: !!q.overdueOnly });
-  return { ...head('balances', 'Customer balances', 'CUSTOMER BALANCES', asOf, 'No customer owes money on this date.'),
-    columns: cols([['code', 'Code', 'text'], ['name', 'Customer', 'text'], ['phone', 'Phone', 'text'], ['salesperson', 'Salesperson', 'text'], ['creditLimit', 'Credit limit'],
-      ['openInvoices', 'Open invoices', 'count'], ['invoiced', 'Invoiced'], ['paid', 'Paid'], ['balance', 'Balance'], ['overdue', 'Overdue'], ['lastPayment', 'Last payment', 'text']]),
-    totals: { ...countTotals(rows, ['openInvoices']), ...moneyTotals(rows, ['invoiced', 'paid', 'balance', 'overdue']) }, rows };
+  const from = q.from || null;
+  const F = "COALESCE(CAST(:from AS date), DATE '1900-01-01')";
+  const OVD = '(SELECT COALESCE(SUM(o.bal), 0) FROM o WHERE o.customer_id = c.id AND o.bal > 0 AND o.days > 0)';
+  const rows = await run(`${CTE},
+    ci AS (SELECT o.customer_id, SUM(o.total) FILTER (WHERE o.sale_date < ${F}) AS o_inv, SUM(o.total) FILTER (WHERE o.sale_date >= ${F}) AS sales,
+        MAX(o.sale_date) FILTER (WHERE o.sale_date >= ${F}) AS last_sale FROM o GROUP BY o.customer_id),
+    cp AS (SELECT s.customer_id, SUM(p.amount) FILTER (WHERE p.paid_on < ${F}) AS o_pay, SUM(p.amount) FILTER (WHERE p.paid_on >= ${F}) AS paid
+        FROM sale_payments p JOIN sales s ON s.id = p.sale_id
+        WHERE s.sale_type = 'CREDIT' AND s.status = 'COMPLETED' AND s.customer_id IS NOT NULL AND s.sale_date <= ${AS_OF} AND p.paid_on <= ${AS_OF}
+          AND (p.voided_at IS NULL OR CAST(p.voided_at AS date) > ${AS_OF}) GROUP BY s.customer_id)
+    SELECT * FROM (SELECT COALESCE(to_char(ci.last_sale, 'YYYY-MM-DD'), '') AS date, COALESCE(c.code, '') AS "customerId", c.name AS "customerName", COALESCE(c.phone, '') AS phone,
+        ${M('COALESCE(ci.o_inv, 0) - COALESCE(cp.o_pay, 0)')} AS opening, ${M('ci.sales')} AS "creditSales", ${M('cp.paid')} AS "totalPaid",
+        ${M('COALESCE(ci.o_inv, 0) + COALESCE(ci.sales, 0) - COALESCE(cp.o_pay, 0) - COALESCE(cp.paid, 0)')} AS remaining,
+        ${OVD} AS overdue_n, COALESCE(ci.o_inv, 0) + COALESCE(ci.sales, 0) - COALESCE(cp.o_pay, 0) - COALESCE(cp.paid, 0) AS remaining_n
+      FROM customers c JOIN ci ON ci.customer_id = c.id LEFT JOIN cp ON cp.customer_id = c.id WHERE ${CUST}) x
+    WHERE (CAST(:includeZero AS boolean) OR x.remaining_n > 0) AND (NOT CAST(:overdueOnly AS boolean) OR x.overdue_n > 0)
+    ORDER BY x.remaining_n DESC, x."customerName" LIMIT ${LIMIT}`, { ...rep, from, includeZero: !!q.includeZero, overdueOnly: !!q.overdueOnly });
+  const out = rows.map(({ overdue_n: od, remaining_n: rem, ...r }) => ({ ...r, remark: Number(od) > 0 ? 'Overdue' : Number(rem) <= 0 ? 'Fully paid' : '' }));
+  const info = `As at: ${dmy(asOf)}${from ? `     From: ${dmy(from)}` : ''}     Credit sales only`;
+  return { ...head('balances', 'Customer balances', 'CUSTOMER BALANCES', asOf, 'No customer owes money on this date.'), infoLine: info, layout: 'balances',
+    columns: [{ key: 'date', label: 'DATE', type: 'text' }, { key: 'customerId', label: 'Customer ID', type: 'text' }, { key: 'customerName', label: 'Customer name', type: 'text' }, { key: 'phone', label: 'Phone', type: 'text' },
+      { key: 'opening', label: 'Opening balance (TZS)', type: 'money' }, { key: 'creditSales', label: 'Total Credit Sales', type: 'money' }, { key: 'totalPaid', label: 'Total paid (TZS)', type: 'money', color: '008000' },
+      { key: 'remaining', label: 'Remaining balance (TZS)', type: 'money', color: 'FF0000' }, { key: 'remark', label: 'REMARK', type: 'text' }],
+    totals: moneyTotals(out, ['opening', 'creditSales', 'totalPaid', 'remaining']), rows: out };
 }
 
 /* 1. Ageing */
