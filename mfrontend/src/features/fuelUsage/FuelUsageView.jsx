@@ -47,6 +47,7 @@ export default function FuelUsageView() {
             <Row label={t('view.tankFilled')}>{r.isFullTank ? t('view.yes') : t('view.partFill')}</Row>
             <Row label={t('view.station')}>{r.station}</Row>
             <Row label={t('view.receiptNo')}>{r.receiptNo}</Row>
+            <Row label={t('view.paymentMethod')}>{r.paymentMethod && t(`payment.${r.paymentMethod}`)}</Row>
             <Row label={t('view.notes')}>{r.notes}</Row>
             <Row label={t('view.recordedBy')}>{r.creator?.fullName}</Row>
             <Row label={t('view.recorded')}>{fmt(r.createdAt)}</Row>

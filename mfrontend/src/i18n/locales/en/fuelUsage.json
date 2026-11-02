@@ -59,7 +59,9 @@
     "fullTank": "Tank was filled up (needed for km per litre)",
     "station": "Fuel station (optional)",
     "receiptNo": "Receipt number (optional)",
-    "notes": "Notes (optional)"
+    "notes": "Notes (optional)",
+    "paymentMethod": "Payment method (optional)",
+    "paymentNone": "Not stated"
   },
   "create": {
     "title": "Record fuel usage",
@@ -102,6 +104,11 @@
     "recorded": "Recorded",
     "voidedBy": "Voided by",
     "voidedOn": "Voided on",
-    "voidReason": "Void reason"
+    "voidReason": "Void reason",
+    "paymentMethod": "Payment method"
+  },
+  "payment": {
+    "CASH": "Cash",
+    "CARD": "Card"
   }
 }

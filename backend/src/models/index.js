@@ -59,6 +59,8 @@ const Driver = require('./Driver');
 const Vehicle = require('./Vehicle');
 const FuelFunding = require('./FuelFunding');
 const FundReceipt = require('./FundReceipt');
+const VehicleTrip = require('./VehicleTrip');
+const VehicleRequest = require('./VehicleRequest');
 const FuelUsage = require('./FuelUsage');
 
 // Associations
@@ -219,6 +221,16 @@ FuelUsage.belongsTo(Vehicle, { as: 'vehicle', foreignKey: 'vehicleId' });
 FuelUsage.belongsTo(Driver, { as: 'driver', foreignKey: 'driverId' });
 FuelUsage.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
 FuelUsage.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
+VehicleTrip.belongsTo(Vehicle, { as: 'vehicle', foreignKey: 'vehicleId' });
+VehicleTrip.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
+VehicleTrip.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
+VehicleRequest.belongsTo(Vehicle, { as: 'vehicle', foreignKey: 'vehicleId' });
+VehicleRequest.belongsTo(Driver, { as: 'driver', foreignKey: 'driverId' });
+VehicleRequest.belongsTo(User, { as: 'creator', foreignKey: 'createdBy' });
+VehicleRequest.belongsTo(User, { as: 'decider', foreignKey: 'decidedBy' });
+VehicleRequest.belongsTo(User, { as: 'keyIssuer', foreignKey: 'keyIssuedBy' });
+VehicleRequest.belongsTo(User, { as: 'keyReceiver', foreignKey: 'keyReturnedBy' });
+VehicleRequest.belongsTo(User, { as: 'voider', foreignKey: 'voidedBy' });
 FuelFunding.hasMany(FuelUsage, { as: 'usages', foreignKey: 'fuelFundingId' });
 Vehicle.hasMany(FuelUsage, { as: 'fuelUsages', foreignKey: 'vehicleId' });
 Driver.hasMany(FuelUsage, { as: 'fuelUsages', foreignKey: 'driverId' });
@@ -271,7 +283,7 @@ module.exports = {
   OrderWorkflow, OrderWorkflowEvent,
   Bank, BankAccount, BankTransaction, CustomerPayment, CustomerPaymentAllocation,
   Expense, Payment,
-  Driver, Vehicle, FuelFunding, FuelUsage, FundReceipt,
+  Driver, Vehicle, FuelFunding, FuelUsage, FundReceipt, VehicleTrip, VehicleRequest,
   Warehouse, WarehouseStorekeeper, WarehouseStock, WarehouseItemSetting, WarehouseTransfer, WarehouseTransferLine,
   PhysicalCount, PhysicalCountLine,
 };

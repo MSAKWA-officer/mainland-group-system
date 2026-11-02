@@ -22,11 +22,11 @@ const notFound = () => new AppError(404, 'NOT_FOUND', 'Fuel usage record not fou
 const half = (n, d) => (n * 2n + d) / (2n * d);                                   // divide, rounding half up
 const pricePerLitre = (amountCents, litres) => str(half(amountCents * 1000n, BigInt(Math.round(Number(litres) * 1000))));
 const audited = (u) => ({ usageNo: u.usageNo, fuelFundingId: u.fuelFundingId, vehicleId: u.vehicleId, driverId: u.driverId, usageDate: u.usageDate, litres: u.litres,
-  amount: u.amount, pricePerLitre: u.pricePerLitre, odometerKm: u.odometerKm, isFullTank: u.isFullTank, station: u.station, receiptNo: u.receiptNo, status: u.status });
+  amount: u.amount, pricePerLitre: u.pricePerLitre, odometerKm: u.odometerKm, isFullTank: u.isFullTank, station: u.station, receiptNo: u.receiptNo, paymentMethod: u.paymentMethod, status: u.status });
 
 // Normalises client input into exactly what is stored.
 const norm = (s) => ({ usageDate: s.usageDate, litres: Number(s.litres).toFixed(3), amount: str(cents(s.amount)),
-  odometerKm: s.odometerKm != null ? Number(s.odometerKm).toFixed(1) : null, isFullTank: s.isFullTank, station: s.station ?? null, receiptNo: s.receiptNo ?? null, notes: s.notes ?? null });
+  odometerKm: s.odometerKm != null ? Number(s.odometerKm).toFixed(1) : null, isFullTank: s.isFullTank, station: s.station ?? null, receiptNo: s.receiptNo ?? null, paymentMethod: s.paymentMethod ?? null, notes: s.notes ?? null });
 
 async function lockFunding(req, id, t) {
   const f = await FuelFunding.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
@@ -88,7 +88,7 @@ const update = (req, id, body) => sequelize.transaction(async (t) => {
   const u = await FuelUsage.findByPk(id, { transaction: t, lock: t.LOCK.UPDATE });
   if (u.createdBy !== req.user.id) throw new AppError(403, 'FORBIDDEN', 'Only the person who recorded this usage can edit it');
   if (u.status !== 'ACTIVE') throw new AppError(409, 'BAD_STATE', `A ${u.status.toLowerCase()} usage record cannot be edited`);
-  const eff = { usageDate: u.usageDate, litres: u.litres, amount: u.amount, odometerKm: u.odometerKm, isFullTank: u.isFullTank, station: u.station, receiptNo: u.receiptNo, notes: u.notes };
+  const eff = { usageDate: u.usageDate, litres: u.litres, amount: u.amount, odometerKm: u.odometerKm, isFullTank: u.isFullTank, station: u.station, receiptNo: u.receiptNo, paymentMethod: u.paymentMethod, notes: u.notes };
   for (const k of Object.keys(eff)) if (body[k] !== undefined) eff[k] = body[k];     // checked against the merged state, not just the patch
   const s = norm(eff);
   await check(f, s, await core.dbToday(t), u.id, t);

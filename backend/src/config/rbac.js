@@ -53,6 +53,8 @@ const PERMISSIONS = {
   // ---- Phase 5: Banking & Payments ----
   banks: ['read', 'create', 'update', 'deactivate', 'delete'],
   bank_accounts: ['read', 'create', 'update', 'deactivate', 'delete', 'view_balance'],        // view_balance = see balances and statements
+  vehicle_requests: ['read', 'read_all', 'create', 'update', 'approve', 'issue_key', 'void', 'export'],   // official vehicle use REQUEST form: user asks, approver decides, key custodian gives out / takes back the key
+  vehicle_log: ['read', 'create', 'update', 'void', 'export'],                              // official vehicle USE registration (trips); the monthly sheet pairs it with fuel usage
   fund_receipts: ['read', 'create', 'void'],                                                 // money received into a bank account for fuel / expenses / other
   bank_transactions: ['read', 'create', 'transfer', 'void', 'reconcile'],                     // ledger of money in / out of bank accounts
   customer_payments: ['read', 'read_all', 'create', 'void'],                                  // read_all = every customer, not only own
@@ -101,6 +103,12 @@ const FUEL_USAGE_MODULES = ['fuel_usage', 'fuel_balances', 'fuel_reports'];
 const SALES_REPORT_MODULES = ['sales_reports'];
 const salesReportsManager = ['sales_reports.read', 'sales_reports.export'];
 const PAYMENT_REPORT_MODULES = ['payment_reports', 'customer_balance_reports'];
+const VEHICLE_REQUEST_MODULES = ['vehicle_requests'];
+const vehicleRequestsSelf = ['vehicle_requests.read', 'vehicle_requests.create', 'vehicle_requests.update'];
+const vehicleRequestsManager = ['vehicle_requests.read', 'vehicle_requests.read_all', 'vehicle_requests.create', 'vehicle_requests.update', 'vehicle_requests.approve', 'vehicle_requests.issue_key', 'vehicle_requests.void', 'vehicle_requests.export'];
+const VEHICLE_LOG_MODULES = ['vehicle_log'];
+const vehicleLogSelf = ['vehicle_log.read', 'vehicle_log.create', 'vehicle_log.update'];
+const vehicleLogManager = ['vehicle_log.read', 'vehicle_log.create', 'vehicle_log.update', 'vehicle_log.void', 'vehicle_log.export'];
 const FUND_RECEIPT_MODULES = ['fund_receipts'];
 const fundReceiptsManager = ['fund_receipts.read', 'fund_receipts.create', 'fund_receipts.void'];
 const paymentReportsManager = ['payment_reports.read', 'payment_reports.export', 'customer_balance_reports.read', 'customer_balance_reports.export'];
@@ -178,8 +186,8 @@ const warehouseManager = ['warehouses.read', 'warehouses.read_all', 'warehouses.
 const ROLES = {
   OWNER: { name: 'Owner', level: 100, description: 'Full executive access', permissions: ALL },
   MANAGER: { name: 'Manager', level: 70, description: 'Reviews and approves; limited admin',
-    permissions: [...common, 'approvals.read_all', 'approvals.approve', 'users.read', 'roles.read', ...invManager, ...salesManager, ...salesV2Manager, ...salesExtraManager, ...workflowManager, ...bankingManager, ...fuelManager, ...fuelUsageManager, ...efdManager, ...warehouseManager, ...salesReportsManager, ...paymentReportsManager, ...fundReceiptsManager] },
-  STOREKEEPER: { name: 'Storekeeper', level: 40, description: 'Warehouse and stock control', permissions: [...common, ...invStorekeeper, ...workflowStorekeeper, ...bankingSelf.filter((p) => p.startsWith('expenses.')), ...fuelSelf, ...fuelUsageSelf, ...warehouseStorekeeper] },
+    permissions: [...common, 'approvals.read_all', 'approvals.approve', 'users.read', 'roles.read', ...invManager, ...salesManager, ...salesV2Manager, ...salesExtraManager, ...workflowManager, ...bankingManager, ...fuelManager, ...fuelUsageManager, ...vehicleLogManager, ...vehicleRequestsManager, ...efdManager, ...warehouseManager, ...salesReportsManager, ...paymentReportsManager, ...fundReceiptsManager] },
+  STOREKEEPER: { name: 'Storekeeper', level: 40, description: 'Warehouse and stock control', permissions: [...common, ...invStorekeeper, ...workflowStorekeeper, ...bankingSelf.filter((p) => p.startsWith('expenses.')), ...fuelSelf, ...fuelUsageSelf, ...vehicleLogSelf, ...vehicleRequestsSelf, ...warehouseStorekeeper] },
   SALESPERSON: { name: 'Sales Person', level: 30, description: 'Own customers, orders and sales', permissions: [...common, ...invView, ...salesSelf, ...salesV2Self, ...salesExtraSelf, ...workflowSelf, ...bankingSelf, ...warehouseSalesperson, ...statementOnly] },
 };
-module.exports = { PERMISSIONS, ALL, ROLES, INVENTORY_MODULES, SALES_MODULES, SALES_V2_MODULES, SALES_V3_MODULES, SALES_EXTRA_MODULES, STAFF_MODULES, DOC_MODULES, WORKFLOW_MODULES, BANKING_MODULES, BANKING_EXTRA_MODULES, FUEL_MODULES, FUEL_USAGE_MODULES, EFD_MODULES, WAREHOUSE_MODULES, PHYSICAL_COUNT_MODULES, SALES_REPORT_MODULES, PAYMENT_REPORT_MODULES, FUND_RECEIPT_MODULES };
+module.exports = { PERMISSIONS, ALL, ROLES, INVENTORY_MODULES, SALES_MODULES, SALES_V2_MODULES, SALES_V3_MODULES, SALES_EXTRA_MODULES, STAFF_MODULES, DOC_MODULES, WORKFLOW_MODULES, BANKING_MODULES, BANKING_EXTRA_MODULES, FUEL_MODULES, FUEL_USAGE_MODULES, EFD_MODULES, WAREHOUSE_MODULES, PHYSICAL_COUNT_MODULES, SALES_REPORT_MODULES, PAYMENT_REPORT_MODULES, FUND_RECEIPT_MODULES, VEHICLE_LOG_MODULES, VEHICLE_REQUEST_MODULES };

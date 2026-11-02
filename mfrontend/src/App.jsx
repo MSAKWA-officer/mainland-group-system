@@ -103,6 +103,16 @@ import BankAccountsList from './features/bankAccounts/BankAccountsList.jsx';
 import BankAccountsView from './features/bankAccounts/BankAccountsView.jsx';
 import BankAccountForm from './features/bankAccounts/BankAccountForm.jsx';
 import BankTransactionsList from './features/bankTransactions/BankTransactionsList.jsx';
+import VehicleRequestList from './features/vehicleRequests/VehicleRequestList.jsx';
+import VehicleRequestCreate from './features/vehicleRequests/VehicleRequestCreate.jsx';
+import VehicleRequestUpdate from './features/vehicleRequests/VehicleRequestUpdate.jsx';
+import VehicleRequestView from './features/vehicleRequests/VehicleRequestView.jsx';
+import VehicleRequestRegister from './features/vehicleRequests/VehicleRequestRegister.jsx';
+import VehicleLogList from './features/vehicleLog/VehicleLogList.jsx';
+import VehicleLogCreate from './features/vehicleLog/VehicleLogCreate.jsx';
+import VehicleLogUpdate from './features/vehicleLog/VehicleLogUpdate.jsx';
+import VehicleLogView from './features/vehicleLog/VehicleLogView.jsx';
+import VehicleLogSheet from './features/vehicleLog/VehicleLogSheet.jsx';
 import FundReceiptList from './features/fundReceipts/FundReceiptList.jsx';
 import FundReceiptCreate from './features/fundReceipts/FundReceiptCreate.jsx';
 import FundReceiptView from './features/fundReceipts/FundReceiptView.jsx';
@@ -295,6 +305,16 @@ export default function App() {
         <Route path="/bank-accounts/new" element={<Guard perm="bank_accounts.create"><BankAccountForm /></Guard>} />
         <Route path="/bank-accounts/:id" element={<Guard perm="bank_accounts.read"><BankAccountsView /></Guard>} />
         <Route path="/bank-accounts/:id/edit" element={<Guard perm="bank_accounts.update"><BankAccountForm /></Guard>} />
+        <Route path="/vehicle-requests" element={<Guard perm="vehicle_requests.read"><VehicleRequestList /></Guard>} />
+        <Route path="/vehicle-requests/new" element={<Guard perm="vehicle_requests.create"><VehicleRequestCreate /></Guard>} />
+        <Route path="/vehicle-requests/register" element={<Guard perm="vehicle_requests.read"><VehicleRequestRegister /></Guard>} />
+        <Route path="/vehicle-requests/:id" element={<Guard perm="vehicle_requests.read"><VehicleRequestView /></Guard>} />
+        <Route path="/vehicle-requests/:id/edit" element={<Guard perm="vehicle_requests.update"><VehicleRequestUpdate /></Guard>} />
+        <Route path="/vehicle-log" element={<Guard perm="vehicle_log.read"><VehicleLogList /></Guard>} />
+        <Route path="/vehicle-log/new" element={<Guard perm="vehicle_log.create"><VehicleLogCreate /></Guard>} />
+        <Route path="/vehicle-log/sheet" element={<Guard perm="vehicle_log.read"><VehicleLogSheet /></Guard>} />
+        <Route path="/vehicle-log/:id" element={<Guard perm="vehicle_log.read"><VehicleLogView /></Guard>} />
+        <Route path="/vehicle-log/:id/edit" element={<Guard perm="vehicle_log.update"><VehicleLogUpdate /></Guard>} />
         <Route path="/fund-receipts" element={<Guard perm="fund_receipts.read"><FundReceiptList /></Guard>} />
         <Route path="/fund-receipts/new" element={<Guard perm="fund_receipts.create"><FundReceiptCreate /></Guard>} />
         <Route path="/fund-receipts/:id" element={<Guard perm="fund_receipts.read"><FundReceiptView /></Guard>} />

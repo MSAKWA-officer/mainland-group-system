@@ -4,20 +4,20 @@ import i18n from '../../i18n';
 import { fmtNum } from '../../utils/format';
 import { money, today, toCents } from '../fuel/fuelUi.jsx';
 
-export const EMPTY = { usageDate: today(), litres: '', amount: '', odometerKm: '', isFullTank: true, station: '', receiptNo: '', notes: '' };
+export const EMPTY = { usageDate: today(), litres: '', amount: '', odometerKm: '', isFullTank: true, station: '', receiptNo: '', paymentMethod: '', notes: '' };
 
 // Form state -> request body (blank optional fields become null so an edit can clear them). The price per litre is NOT sent: the server calculates it.
 export const toBody = (f) => ({
   usageDate: f.usageDate || undefined, litres: Number(f.litres), amount: Number(f.amount),
   odometerKm: f.odometerKm === '' ? null : Number(f.odometerKm), isFullTank: f.isFullTank,
-  station: f.station.trim() || null, receiptNo: f.receiptNo.trim() || null, notes: f.notes.trim() || null,
+  station: f.station.trim() || null, receiptNo: f.receiptNo.trim() || null, paymentMethod: f.paymentMethod || null, notes: f.notes.trim() || null,
 });
 
 // Saved usage (from the API) -> form state.
 export const fromUsage = (u) => ({
   usageDate: u.usageDate || today(), litres: String(Number(u.litres)), amount: String(Number(u.amount)),
   odometerKm: u.odometerKm == null ? '' : String(Number(u.odometerKm)), isFullTank: !!u.isFullTank,
-  station: u.station || '', receiptNo: u.receiptNo || '', notes: u.notes || '',
+  station: u.station || '', receiptNo: u.receiptNo || '', paymentMethod: u.paymentMethod || '', notes: u.notes || '',
 });
 
 // One line that describes a funding in the drop-down (translated; text from locales/<lang>/fuelUsage.json -> fundingLeft).
@@ -50,6 +50,7 @@ export default function FuelUsageForm({ f, setF, fe, funding, available }) {
       </div>
       <Field label={t('form.station')} error={fe.station}><input className="input" maxLength={100} value={f.station} onChange={set('station')} /></Field>
       <Field label={t('form.receiptNo')} error={fe.receiptNo}><input className="input" maxLength={50} value={f.receiptNo} onChange={set('receiptNo')} /></Field>
+      <Field label={t('form.paymentMethod')} error={fe.paymentMethod}><select className="input" value={f.paymentMethod} onChange={set('paymentMethod')}><option value="">{t('form.paymentNone')}</option><option value="CASH">{t('payment.CASH')}</option><option value="CARD">{t('payment.CARD')}</option></select></Field>
       <div className="sm:col-span-2"><Field label={t('form.notes')} error={fe.notes}><textarea className="input" rows={3} maxLength={1000} value={f.notes} onChange={set('notes')} /></Field></div>
     </div>
   );

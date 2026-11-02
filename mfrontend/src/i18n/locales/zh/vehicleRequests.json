@@ -1,0 +1,124 @@
+{
+  "title": "用车申请",
+  "subtitle": "车辆使用官方申请：用车人申请，审批人决定，钥匙保管人发放车钥匙。",
+  "new": "新建申请",
+  "registerBtn": "月度登记表",
+  "status": {
+    "PENDING": "待审批",
+    "APPROVED": "已批准",
+    "REJECTED": "已驳回",
+    "KEY_OUT": "钥匙已领",
+    "RETURNED": "已归还",
+    "VOIDED": "已作废",
+    "ALL": "全部"
+  },
+  "create": {
+    "title": "申请用车",
+    "sub": "说明谁需要用车、所属部门以及用车理由，由审批人决定。",
+    "back": "返回用车申请",
+    "submit": "提交申请",
+    "saving": "提交中…",
+    "saved": "申请 {{no}} 已提交审批。"
+  },
+  "update": {
+    "title": "编辑申请",
+    "titleNo": "编辑 {{no}}",
+    "back": "返回申请",
+    "submit": "保存更改",
+    "saving": "保存中…",
+    "saved": "申请已更新。",
+    "locked": "只有待审批的申请才能编辑。"
+  },
+  "form": {
+    "date": "用车日期",
+    "userName": "用车人",
+    "department": "部门",
+    "purpose": "用车理由",
+    "notes": "备注（可选）"
+  },
+  "list": {
+    "search": "搜索申请号、用车人、部门、理由、车牌",
+    "status": "状态",
+    "emptyFiltered": "没有符合筛选条件的申请。",
+    "emptyNone": "暂无用车申请。",
+    "columns": {
+      "requestNo": "申请号",
+      "date": "日期",
+      "userName": "用车人",
+      "department": "部门",
+      "purpose": "理由",
+      "vehicle": "车牌号",
+      "driver": "司机",
+      "status": "状态",
+      "actions": "操作"
+    }
+  },
+  "view": {
+    "fallbackTitle": "用车申请",
+    "back": "返回用车申请",
+    "date": "用车日期",
+    "userName": "用车人",
+    "department": "部门",
+    "purpose": "用车理由",
+    "notes": "备注",
+    "raisedBy": "申请人",
+    "approver": "审批人",
+    "decidedOn": "审批时间",
+    "decisionNote": "审批意见",
+    "plate": "车牌号",
+    "driver": "司机",
+    "keyTaken": "领取钥匙时间",
+    "keyIssuedBy": "钥匙发放人",
+    "keyReturned": "归还钥匙时间",
+    "voidedBy": "作废人",
+    "voidedOn": "作废时间",
+    "voidReason": "作废原因"
+  },
+  "issue": {
+    "title": "发放钥匙",
+    "sub": "记录车辆、司机和领取钥匙的时间。",
+    "vehicle": "车牌号",
+    "selectVehicle": "选择车辆…",
+    "driver": "司机",
+    "defaultDriver": "车辆默认司机",
+    "keyTaken": "领取钥匙时间",
+    "submit": "发放钥匙",
+    "saving": "保存中…",
+    "done": "钥匙已发放。"
+  },
+  "actions": {
+    "view": "查看",
+    "edit": "编辑",
+    "approve": "批准",
+    "reject": "驳回",
+    "issueKey": "发放钥匙",
+    "returnKey": "钥匙已归还",
+    "void": "作废",
+    "approved": "申请已批准。",
+    "rejected": "申请已驳回。",
+    "returned": "钥匙已标记为归还。",
+    "voided": "申请已作废。",
+    "rejectPrompt": "为什么要驳回 {{no}}？",
+    "voidPrompt": "为什么要作废 {{no}}？"
+  },
+  "register": {
+    "title": "月度登记表",
+    "sub": "单月的车辆使用申请表。已驳回和已作废的申请不包含在内。",
+    "back": "返回用车申请",
+    "month": "月份",
+    "download": "下载 Excel",
+    "downloading": "准备中…",
+    "empty": "本月没有申请。",
+    "columns": {
+      "date": "日期",
+      "userName": "用车人",
+      "department": "部门",
+      "purpose": "用车理由",
+      "status": "状态",
+      "plate": "车牌号",
+      "driver": "司机",
+      "keyTaken": "领取钥匙时间",
+      "keyReturned": "归还钥匙时间"
+    }
+  }
+}

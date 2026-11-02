@@ -59,7 +59,9 @@
     "fullTank": "Tanki ilijazwa (inahitajika kwa km kwa lita)",
     "station": "Kituo cha mafuta (si lazima)",
     "receiptNo": "Namba ya risiti (si lazima)",
-    "notes": "Maelezo (si lazima)"
+    "notes": "Maelezo (si lazima)",
+    "paymentMethod": "Njia ya malipo (hiari)",
+    "paymentNone": "Haijatajwa"
   },
   "create": {
     "title": "Rekodi matumizi ya mafuta",
@@ -102,6 +104,11 @@
     "recorded": "Yalirekodiwa",
     "voidedBy": "Yalibatilishwa na",
     "voidedOn": "Yalibatilishwa tarehe",
-    "voidReason": "Sababu ya kubatilisha"
+    "voidReason": "Sababu ya kubatilisha",
+    "paymentMethod": "Njia ya malipo"
+  },
+  "payment": {
+    "CASH": "Taslimu",
+    "CARD": "Kadi"
   }
 }

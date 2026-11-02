@@ -1,0 +1,124 @@
+{
+  "title": "Vehicle requests",
+  "subtitle": "Official vehicle use request: the user asks, an approver decides, and the key custodian gives out the vehicle key.",
+  "new": "New request",
+  "registerBtn": "Monthly register",
+  "status": {
+    "PENDING": "Pending",
+    "APPROVED": "Approved",
+    "REJECTED": "Rejected",
+    "KEY_OUT": "Key out",
+    "RETURNED": "Returned",
+    "VOIDED": "Voided",
+    "ALL": "All"
+  },
+  "create": {
+    "title": "Request a vehicle",
+    "sub": "Say who needs the vehicle, from which department and why. An approver will decide.",
+    "back": "Back to vehicle requests",
+    "submit": "Send request",
+    "saving": "Sending…",
+    "saved": "Request {{no}} sent for approval."
+  },
+  "update": {
+    "title": "Edit request",
+    "titleNo": "Edit {{no}}",
+    "back": "Back to request",
+    "submit": "Save changes",
+    "saving": "Saving…",
+    "saved": "Request updated.",
+    "locked": "Only a pending request can be edited."
+  },
+  "form": {
+    "date": "Date of use",
+    "userName": "User's name",
+    "department": "Department",
+    "purpose": "Purpose",
+    "notes": "Notes (optional)"
+  },
+  "list": {
+    "search": "Search request no, user, department, purpose, plate",
+    "status": "Status",
+    "emptyFiltered": "No requests match your filters.",
+    "emptyNone": "No vehicle requests yet.",
+    "columns": {
+      "requestNo": "Request no",
+      "date": "Date",
+      "userName": "User",
+      "department": "Department",
+      "purpose": "Purpose",
+      "vehicle": "Plate no",
+      "driver": "Driver",
+      "status": "Status",
+      "actions": "Actions"
+    }
+  },
+  "view": {
+    "fallbackTitle": "Vehicle request",
+    "back": "Back to vehicle requests",
+    "date": "Date of use",
+    "userName": "User's name",
+    "department": "Department",
+    "purpose": "Purpose",
+    "notes": "Notes",
+    "raisedBy": "Raised by",
+    "approver": "Approver",
+    "decidedOn": "Decided on",
+    "decisionNote": "Decision note",
+    "plate": "Plate number",
+    "driver": "Driver",
+    "keyTaken": "Key taken",
+    "keyIssuedBy": "Key given out by",
+    "keyReturned": "Key returned",
+    "voidedBy": "Voided by",
+    "voidedOn": "Voided on",
+    "voidReason": "Void reason"
+  },
+  "issue": {
+    "title": "Give out the key",
+    "sub": "Record the vehicle, the driver and the time the key was taken.",
+    "vehicle": "Plate number",
+    "selectVehicle": "Select a vehicle…",
+    "driver": "Driver",
+    "defaultDriver": "Vehicle's default driver",
+    "keyTaken": "Key taken time",
+    "submit": "Give out key",
+    "saving": "Saving…",
+    "done": "Key given out."
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "approve": "Approve",
+    "reject": "Reject",
+    "issueKey": "Give out key",
+    "returnKey": "Key returned",
+    "void": "Void",
+    "approved": "Request approved.",
+    "rejected": "Request rejected.",
+    "returned": "Key marked as returned.",
+    "voided": "Request voided.",
+    "rejectPrompt": "Why are you rejecting {{no}}?",
+    "voidPrompt": "Why are you voiding {{no}}?"
+  },
+  "register": {
+    "title": "Monthly register",
+    "sub": "The Official Vehicle Use REQUEST Form for one month. Rejected and voided requests are left out.",
+    "back": "Back to vehicle requests",
+    "month": "Month",
+    "download": "Download Excel",
+    "downloading": "Preparing…",
+    "empty": "No requests in this month.",
+    "columns": {
+      "date": "Date",
+      "userName": "User's name",
+      "department": "Department",
+      "purpose": "Purpose",
+      "status": "Status",
+      "plate": "Plate number",
+      "driver": "Driver's name",
+      "keyTaken": "Key taken time",
+      "keyReturned": "Key return time"
+    }
+  }
+}

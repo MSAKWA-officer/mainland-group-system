@@ -59,7 +59,9 @@
     "fullTank": "已加满油箱（计算每升公里数时需要）",
     "station": "加油站（可选）",
     "receiptNo": "收据号码（可选）",
-    "notes": "备注（可选）"
+    "notes": "备注（可选）",
+    "paymentMethod": "支付方式（可选）",
+    "paymentNone": "未填写"
   },
   "create": {
     "title": "记录燃油使用",
@@ -102,6 +104,11 @@
     "recorded": "记录时间",
     "voidedBy": "作废人",
     "voidedOn": "作废时间",
-    "voidReason": "作废原因"
+    "voidReason": "作废原因",
+    "paymentMethod": "支付方式"
+  },
+  "payment": {
+    "CASH": "现金",
+    "CARD": "刷卡"
   }
 }

@@ -1,0 +1,124 @@
+{
+  "title": "Maombi ya gari",
+  "subtitle": "Ombi rasmi la kutumia gari: mtumiaji anaomba, mwidhinishaji anaamua, na mtunza funguo anatoa ufunguo wa gari.",
+  "new": "Ombi jipya",
+  "registerBtn": "Rejista ya mwezi",
+  "status": {
+    "PENDING": "Inasubiri",
+    "APPROVED": "Imeidhinishwa",
+    "REJECTED": "Imekataliwa",
+    "KEY_OUT": "Ufunguo nje",
+    "RETURNED": "Imerudishwa",
+    "VOIDED": "Imebatilishwa",
+    "ALL": "Zote"
+  },
+  "create": {
+    "title": "Omba gari",
+    "sub": "Eleza nani anahitaji gari, kutoka idara gani na kwa nini. Mwidhinishaji ataamua.",
+    "back": "Rudi kwenye maombi ya gari",
+    "submit": "Tuma ombi",
+    "saving": "Inatuma…",
+    "saved": "Ombi {{no}} limetumwa kuidhinishwa."
+  },
+  "update": {
+    "title": "Hariri ombi",
+    "titleNo": "Hariri {{no}}",
+    "back": "Rudi kwenye ombi",
+    "submit": "Hifadhi mabadiliko",
+    "saving": "Inahifadhi…",
+    "saved": "Ombi limesasishwa.",
+    "locked": "Ombi linalosubiri pekee ndilo linaweza kuhaririwa."
+  },
+  "form": {
+    "date": "Tarehe ya kutumia",
+    "userName": "Jina la mtumiaji",
+    "department": "Idara",
+    "purpose": "Sababu",
+    "notes": "Maelezo (hiari)"
+  },
+  "list": {
+    "search": "Tafuta namba ya ombi, mtumiaji, idara, sababu, namba ya gari",
+    "status": "Hali",
+    "emptyFiltered": "Hakuna maombi yanayolingana na vichujio.",
+    "emptyNone": "Hakuna maombi ya gari bado.",
+    "columns": {
+      "requestNo": "Namba ya ombi",
+      "date": "Tarehe",
+      "userName": "Mtumiaji",
+      "department": "Idara",
+      "purpose": "Sababu",
+      "vehicle": "Namba ya gari",
+      "driver": "Dereva",
+      "status": "Hali",
+      "actions": "Vitendo"
+    }
+  },
+  "view": {
+    "fallbackTitle": "Ombi la gari",
+    "back": "Rudi kwenye maombi ya gari",
+    "date": "Tarehe ya kutumia",
+    "userName": "Jina la mtumiaji",
+    "department": "Idara",
+    "purpose": "Sababu",
+    "notes": "Maelezo",
+    "raisedBy": "Ameomba",
+    "approver": "Mwidhinishaji",
+    "decidedOn": "Ameamua tarehe",
+    "decisionNote": "Maelezo ya uamuzi",
+    "plate": "Namba ya gari",
+    "driver": "Dereva",
+    "keyTaken": "Ufunguo ulichukuliwa",
+    "keyIssuedBy": "Ufunguo ametoa",
+    "keyReturned": "Ufunguo ulirudishwa",
+    "voidedBy": "Amebatilisha",
+    "voidedOn": "Imebatilishwa tarehe",
+    "voidReason": "Sababu ya kubatilisha"
+  },
+  "issue": {
+    "title": "Toa ufunguo",
+    "sub": "Rekodi gari, dereva na muda ufunguo ulipochukuliwa.",
+    "vehicle": "Namba ya gari",
+    "selectVehicle": "Chagua gari…",
+    "driver": "Dereva",
+    "defaultDriver": "Dereva wa kawaida wa gari",
+    "keyTaken": "Muda wa kuchukua ufunguo",
+    "submit": "Toa ufunguo",
+    "saving": "Inahifadhi…",
+    "done": "Ufunguo umetolewa."
+  },
+  "actions": {
+    "view": "Angalia",
+    "edit": "Hariri",
+    "approve": "Idhinisha",
+    "reject": "Kataa",
+    "issueKey": "Toa ufunguo",
+    "returnKey": "Ufunguo umerudi",
+    "void": "Batilisha",
+    "approved": "Ombi limeidhinishwa.",
+    "rejected": "Ombi limekataliwa.",
+    "returned": "Ufunguo umewekwa kuwa umerudi.",
+    "voided": "Ombi limebatilishwa.",
+    "rejectPrompt": "Kwa nini unakataa {{no}}?",
+    "voidPrompt": "Kwa nini unabatilisha {{no}}?"
+  },
+  "register": {
+    "title": "Rejista ya mwezi",
+    "sub": "Fomu rasmi ya Ombi la Kutumia Gari kwa mwezi mmoja. Maombi yaliyokataliwa na kubatilishwa hayamo.",
+    "back": "Rudi kwenye maombi ya gari",
+    "month": "Mwezi",
+    "download": "Pakua Excel",
+    "downloading": "Inaandaa…",
+    "empty": "Hakuna maombi mwezi huu.",
+    "columns": {
+      "date": "Tarehe",
+      "userName": "Mtumiaji",
+      "department": "Idara",
+      "purpose": "Sababu",
+      "status": "Hali",
+      "plate": "Namba ya gari",
+      "driver": "Jina la dereva",
+      "keyTaken": "Muda wa kuchukua ufunguo",
+      "keyReturned": "Muda wa kurudisha ufunguo"
+    }
+  }
+}

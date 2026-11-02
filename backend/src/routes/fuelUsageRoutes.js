@@ -14,7 +14,7 @@ const fields = {
   usageDate: noBlank(date),                                                           // defaults to today
   litres: quantity, amount: money.refine((n) => n > 0, 'Amount must be greater than 0'),
   odometerKm: opt(decimal(1).refine((n) => n >= 0 && n <= 999999999, 'Enter a valid odometer reading')),
-  isFullTank: z.boolean(), station: opt(text(100)), receiptNo: opt(text(50)), notes: opt(text(1000)),
+  isFullTank: z.boolean(), station: opt(text(100)), receiptNo: opt(text(50)), paymentMethod: opt(z.enum(['CASH', 'CARD'])), notes: opt(text(1000)),
 };
 const createS = z.object({ fuelFundingId: uuid, ...fields, isFullTank: fields.isFullTank.default(true) });
 const updateS = z.object(fields).partial().refine((o) => Object.keys(o).length > 0, 'Nothing to update');   // the funding itself can never be changed

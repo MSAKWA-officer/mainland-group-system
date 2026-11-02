@@ -51,6 +51,8 @@ export * as vehicleApi from './vehicleApi';
 export * as fuelFundingApi from './fuelFundingApi';
 export * as fundReceiptApi from './fundReceiptApi';
 export * as fuelUsageApi from './fuelUsageApi';
+export * as vehicleLogApi from './vehicleLogApi';
+export * as vehicleRequestApi from './vehicleRequestApi';
 export * as fuelBalanceApi from './fuelBalanceApi';
 export * as fuelReportApi from './fuelReportApi';
 export * as warehouseApi from './warehouseApi';

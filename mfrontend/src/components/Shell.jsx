@@ -42,7 +42,7 @@ const GROUPS = [
   ] },
   { key: 'fuel', label: 'Fuel', items: [
     ['/drivers', 'Drivers', 'drivers.read'], ['/vehicles', 'Vehicles', 'vehicles.read'], ['/fuel-funding', 'Fuel funding', 'fuel_funding.read'],
-    ['/fuel-usage', 'Fuel usage', 'fuel_usage.read'], ['/fuel-balances', 'Fuel balances', 'fuel_balances.read'], ['/fuel-reports', 'Fuel reports', 'fuel_reports.read'],
+    ['/fuel-usage', 'Fuel usage', 'fuel_usage.read'], ['/vehicle-requests', 'Vehicle requests', 'vehicle_requests.read'], ['/vehicle-log', 'Vehicle log', 'vehicle_log.read'], ['/fuel-balances', 'Fuel balances', 'fuel_balances.read'], ['/fuel-reports', 'Fuel reports', 'fuel_reports.read'],
   ] },
   { key: 'admin', label: 'Administration', items: [
     ['/staff', 'Staff', 'staff.read'], ['/users', 'User management', 'users.read'], ['/roles', 'Roles & permissions', 'roles.read'], ['/audit', 'Audit log', 'audit.read'], ['/deleted-records', 'Deleted records', 'deleted_records.read'],
