@@ -29,7 +29,7 @@ module.exports = {
     await sql("ALTER TABLE vehicle_trips ADD CONSTRAINT vehicle_trips_void_chk CHECK (status <> 'VOIDED' OR (voided_at IS NOT NULL AND voided_by IS NOT NULL AND void_reason IS NOT NULL))");
     await sql("CREATE UNIQUE INDEX vehicle_trips_one_open_uq ON vehicle_trips (vehicle_id) WHERE end_km IS NULL AND status = 'ACTIVE'");   // one open trip per vehicle
     for (const c of ['vehicle_id', 'trip_date', 'status', 'created_by']) await q.addIndex('vehicle_trips', [c]);
-    await sql('CREATE TRIGGER vehicle_trips_no_delete BEFORE DELETE ON vehicle_trips FOR EACH ROW EXECUTE FUNCTION forbid_change()');
+    await sql('CREATE TRIGGER vehicle_trips_no_delete BEFORE DELETE ON vehicle_trips FOR EACH ROW EXECUTE PROCEDURE forbid_change()');
 
     await sql('ALTER TABLE fuel_usages ADD COLUMN payment_method VARCHAR(4)');
     await sql("ALTER TABLE fuel_usages ADD CONSTRAINT fuel_usages_payment_chk CHECK (payment_method IS NULL OR payment_method IN ('CASH','CARD'))");

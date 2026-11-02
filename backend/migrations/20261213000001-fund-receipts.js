@@ -28,7 +28,7 @@ module.exports = {
     await sql("ALTER TABLE fund_receipts ADD CONSTRAINT fund_receipts_chk CHECK (amount > 0 AND status IN ('POSTED','VOIDED') "
       + "AND source IN ('OWNER_CAPITAL','HEAD_OFFICE','LOAN','GRANT','OTHER') AND purpose IN ('FUEL','EXPENSES','OTHER'))");
     for (const c of ['bank_account_id', 'receipt_date', 'purpose', 'source', 'status']) await q.addIndex('fund_receipts', [c]);
-    await sql('CREATE TRIGGER fund_receipts_no_delete BEFORE DELETE ON fund_receipts FOR EACH ROW EXECUTE FUNCTION forbid_change()');
+    await sql('CREATE TRIGGER fund_receipts_no_delete BEFORE DELETE ON fund_receipts FOR EACH ROW EXECUTE PROCEDURE forbid_change()');
 
     await sql('ALTER TABLE bank_transactions ADD COLUMN fund_receipt_id uuid REFERENCES fund_receipts(id) ON DELETE RESTRICT');
     await sql('CREATE INDEX bank_transactions_fund_receipt_idx ON bank_transactions (fund_receipt_id) WHERE fund_receipt_id IS NOT NULL');

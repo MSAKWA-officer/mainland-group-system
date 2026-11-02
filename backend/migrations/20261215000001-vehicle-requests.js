@@ -31,7 +31,7 @@ module.exports = {
     await sql("ALTER TABLE vehicle_requests ADD CONSTRAINT vehicle_requests_void_chk CHECK (status <> 'VOIDED' OR (voided_at IS NOT NULL AND voided_by IS NOT NULL AND void_reason IS NOT NULL))");
     await sql("CREATE UNIQUE INDEX vehicle_requests_key_out_uq ON vehicle_requests (vehicle_id) WHERE status = 'KEY_OUT'");   // a vehicle's key can only be out once
     for (const c of ['request_date', 'status', 'created_by', 'vehicle_id', 'driver_id']) await q.addIndex('vehicle_requests', [c]);
-    await sql('CREATE TRIGGER vehicle_requests_no_delete BEFORE DELETE ON vehicle_requests FOR EACH ROW EXECUTE FUNCTION forbid_change()');
+    await sql('CREATE TRIGGER vehicle_requests_no_delete BEFORE DELETE ON vehicle_requests FOR EACH ROW EXECUTE PROCEDURE forbid_change()');
   },
   async down(q) {
     await q.dropTable('vehicle_requests', { cascade: true });
