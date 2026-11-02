@@ -27,10 +27,10 @@ const GROUPS = [
     ['/customers', 'Customers', 'customers.read'], ['/salespersons', 'Salespersons', 'salespersons.read'],
     ...(SALES_ORDERS ? [['/sales-orders', 'Sales orders', 'sales_orders.read'], ['/order-workflow', 'Order approvals', 'order_workflow.read'], ['/sales', 'Sales', 'sales.read']] : []),   // hidden for now (config/features.js)
     ['/cash-sales', 'Cash sales', 'cash_sales.read'], ['/credit-sales', 'Credit sales', 'credit_sales.read'],
-    ['/customer-balances', 'Customer balance', 'customer_balances.read'], ['/payment-history', 'Payment history', 'payment_history.read'],
+    ['/customer-balances', 'Customer balance', 'customer_balances.read'],
     ['/credit-ageing', 'Credit ageing', 'credit_ageing.read'],
     ['/sales-reports', 'Sales reports', 'sales_reports.read'],
-    ['/payment-reports', 'Payments reports', 'payment_reports.read'], ['/customer-balance-reports', 'Customer balance reports', 'customer_balance_reports.read'],
+    ['/customer-balance-reports', 'Customer balance reports', 'customer_balance_reports.read'],
     ...(DISCOUNTS ? [['/discounts', 'Discounts', 'discounts.read']] : []),   // hidden for now (config/features.js)
     ['/efd-receipts', 'EFD numbers', 'efd_receipts.read'], ['/efd-z-reports', 'Z reports', 'efd_z_reports.read'], ['/efd-reconciliations', 'Daily reconciliation', 'efd_reconciliations.read'], ['/efd-differences', 'Difference detection', 'efd_differences.read'], ['/efd-reports', 'EFD reports', 'efd_reports.read'], ['/efd-devices', 'EFD devices', 'efd_devices.read'],
   ] },
@@ -38,6 +38,7 @@ const GROUPS = [
     ['/banks', 'Banks', 'banks.read'], ['/bank-accounts', 'Bank accounts', 'bank_accounts.read'],
     ['/bank-transactions', 'Bank transactions', 'bank_transactions.read'], ['/fund-receipts', 'Fund receipts', 'fund_receipts.read'], ['/customer-payments', 'Customer payments', 'customer_payments.read'],
     ['/expenses', 'Expenses', 'expenses.read'], ['/payments', 'Payments', 'payments.read'],
+    ['/payment-history', 'Payment history', 'payment_history.read'], ['/payment-reports', 'Payments reports', 'payment_reports.read'],
     ['/transfers', 'Transfers', 'transfers.read'], ['/reconciliation', 'Reconciliation', 'bank_transactions.reconcile'],
   ] },
   { key: 'fuel', label: 'Fuel', items: [
